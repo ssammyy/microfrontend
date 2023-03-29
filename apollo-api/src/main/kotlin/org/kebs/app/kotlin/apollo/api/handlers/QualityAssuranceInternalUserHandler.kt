@@ -84,6 +84,20 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun getAllMyTaskPSCList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            qaDaoServices.findLoggedInUserTaskPSC(page, permitTypeID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
     fun putAllPermitSearchList(req: ServerRequest): ServerResponse {
         return try {
@@ -461,8 +475,11 @@ class QualityAssuranceInternalUserHandler(
     }
     fun getFullyFilledInspectionReport(req: ServerRequest): ServerResponse {
         return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
-            inspectionReportDaoServices.getFullyFilledInspectionReport()
+
+            inspectionReportDaoServices.getFullyFilledInspectionReport(permitID)
                 .let {
                     ok().body(it)
                 }

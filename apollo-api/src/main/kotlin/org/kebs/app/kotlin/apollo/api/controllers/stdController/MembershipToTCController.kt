@@ -43,9 +43,13 @@ class MembershipToTCController(
     //***************************************************** submit justification for formation of TC ***************************//
     @PostMapping("/membershipToTC/submitCallForApplication")
     @ResponseBody
-    fun submitCallsForTCMembers(@RequestBody callForTCApplication: CallForTCApplication): ServerResponse{
+    fun submitCallsForTCMembers(@RequestBody callForTCApplication: CallForTCApplication): ServerResponse {
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
-        return ServerResponse(HttpStatus.OK,"Successfully submitted call for applications",membershipToTCService.submitCallsForTCMembers(callForTCApplication))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully submitted call for applications",
+            membershipToTCService.submitCallsForTCMembers(callForTCApplication)
+        )
     }
 
     @GetMapping("anonymous/membershipToTC/getCallForApplications")
@@ -56,15 +60,32 @@ class MembershipToTCController(
 
     @PostMapping("/membershipToTC/process")
     @ResponseBody
-    fun checkState( @RequestBody id: ID): ServerResponse {
-        return ServerResponse(HttpStatus.OK,"Successfully returned process history",membershipToTCService.checkProcessHistory(id))
+    fun checkState(@RequestBody id: ID): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully returned process history",
+            membershipToTCService.checkProcessHistory(id)
+        )
     }
 
 
     @PostMapping("anonymous/membershipToTC/submitTCMemberApplication")
     @ResponseBody
-    fun submitTCMemberApplication(@RequestBody membershipTCApplication: MembershipTCApplication): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully application to be TC Member",membershipToTCService.submitTCMemberApplication(membershipTCApplication))
+    fun submitTCMemberApplication(@RequestBody membershipTCApplication: MembershipTCApplication): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully application to be TC Member",
+            membershipToTCService.submitTCMemberApplication(membershipTCApplication)
+        )
+    }
+
+    @GetMapping("/anonymous/membershipToTC/approveUserApplication")
+    fun getApprovalUserApplication(
+        response: ServerResponse,
+        @RequestParam("applicationID") applicationID: String
+    ): ResponseEntity<String> {
+        return membershipToTCService.approveUserApplication(applicationID)
+
     }
 
     @GetMapping("/membershipToTC/getApplicationsForReview")

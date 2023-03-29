@@ -1054,12 +1054,13 @@ export class StdLevyPendingTasksComponent implements OnInit {
         (response) => {
           //console.log(response);
           this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `Report Prepared`);
           this.onClickSaveUploads(response.body.savedRowID)
           //this.prepareReportFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          console.log(error.message);
+            this.showToasterError("Error", `Try Again`);
         }
     );
     this.hideModelCloseModalSiteVisit()
@@ -1094,6 +1095,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             console.log(error.message);
           }
       );
+    }else{
+        this.getMnPendingTask();
+        this.SpinnerService.hide();
     }
 
   }

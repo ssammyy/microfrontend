@@ -4743,15 +4743,28 @@
                                         <select (change)="updateSelectedRecommendation()"
                                                 [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="recommendationId" name="recommendationId" required>
+                                                class="form-control two-column-input" formControlName="recommendationId" name="recommendationId" required>
                                             <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
+<!--                                            <option value="61">Other</option>-->
                                         </select>
-                                        <input *ngIf="showOther" class="form-control two-column-input" type="text"
-                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
+
                                     </div>
                                 </div>
+                                <div class="col" *ngIf="showOther">
+                                    <div class="form-group">
+                                        <form [formGroup] = "otherFinalRecommendation">
+                                            <input style="border: 1px solid red" *ngIf="showOther" class="form-control two-column-input" type="text"
+                                                   formControlName="otherRecommendationName" name="recommendationName" placeholder="Enter other recommendation name" #otherRecommendation>
+                                        </form>
+                                    </div>
 
+
+                                </div>
+
+
+                            </div>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button
@@ -7838,7 +7851,7 @@
                                         </mat-form-field>
                                         <!-- Failed Parameters field will only be shown if compliance status is non-compliant -->
                                         <div *ngIf="!ssfSaveComplianceStatusForm.get('complianceStatus').value">
-                                            <label for="failedParametersSSF"><b>Failed Parameters</b></label>
+                                            <label for="failedParametersSSF4"><b>Failed Parameters</b></label>
                                             <mat-form-field class="example-full-width">
                                                 <textarea id="failedParametersSSF4" matInput type="text"
                                                           formControlName="failedParameters"

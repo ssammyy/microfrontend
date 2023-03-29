@@ -102,11 +102,11 @@
                                                 <i class="material-icons">preview</i> Recommendations
                                             </a>
                                         </li>
-                                        <!--                                        <li class="nav-item">-->
-                                        <!--                                            <a class="nav-link" data-toggle="tab" href="#link8" role="tablist">-->
-                                        <!--                                                <i class="material-icons">summarize</i> Documents Attached-->
-                                        <!--                                            </a>-->
-                                        <!--                                        </li>-->
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link8" role="tablist">
+                                                <i class="material-icons">summarize</i> Documents Attached
+                                            </a>
+                                        </li>
                                         <!--                                        <li class="nav-item">-->
                                         <!--                                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">-->
                                         <!--                                                <i class="material-icons">table_view</i> Version Details-->
@@ -209,38 +209,38 @@
                                                 <div class="card-body" style="margin-top: 20px;">
 
 
-                                                        <table class="table table-striped w-auto">
-                                                            <thead style="text-align: left;">
-                                                            <tr>
+                                                    <table class="table table-striped w-auto">
+                                                        <thead style="text-align: left;">
+                                                        <tr>
 
-                                                                <th style="width: 40%"><strong>Aspects Checked</strong>
-                                                                </th>
-                                                                <th><strong>Details of Findings</strong></th>
-                                                                <th><strong>Remarks</strong></th>
-                                                            </tr>
-                                                            </thead>
+                                                            <th style="width: 40%"><strong>Aspects Checked</strong>
+                                                            </th>
+                                                            <th><strong>Details of Findings</strong></th>
+                                                            <th><strong>Remarks</strong></th>
+                                                        </tr>
+                                                        </thead>
 
-                                                            <tbody>
-                                                            <tr>
-                                                                <td><strong>State whether the firm is implementing any
-                                                                    management system and Specify the management system
-                                                                    being implemented e.g. QMS,FSMS,HACCP</strong>
-                                                                </td>
-                                                                <td>{{technicalDetails?.firmImplementedAnyManagementSystem}}</td>
-                                                                <td>{{technicalDetails?.firmImplementedAnyManagementSystemRemarks}}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><strong>Indicate the relevant product
-                                                                    standards and codes of practice in the
-                                                                    firm’s
-                                                                    possession</strong>
-                                                                </td>
-                                                                <td>{{technicalDetails?.indicateRelevantProductStandardCodes}}</td>
-                                                                <td>{{technicalDetails?.indicateRelevantProductStandardCodesRemarks}}</td>
-                                                            </tr>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td><strong>State whether the firm is implementing any
+                                                                management system and Specify the management system
+                                                                being implemented e.g. QMS,FSMS,HACCP</strong>
+                                                            </td>
+                                                            <td>{{technicalDetails?.firmImplementedAnyManagementSystem}}</td>
+                                                            <td>{{technicalDetails?.firmImplementedAnyManagementSystemRemarks}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Indicate the relevant product
+                                                                standards and codes of practice in the
+                                                                firm’s
+                                                                possession</strong>
+                                                            </td>
+                                                            <td>{{technicalDetails?.indicateRelevantProductStandardCodes}}</td>
+                                                            <td>{{technicalDetails?.indicateRelevantProductStandardCodesRemarks}}</td>
+                                                        </tr>
 
-                                                            </tbody>
-                                                        </table>
+                                                        </tbody>
+                                                    </table>
 
                                                 </div>
                                             </div>
@@ -585,12 +585,55 @@
 
 
                                         </div>
-                                        <!--                                        <div class="tab-pane" id="link8">-->
-                                        <!--                                            <h3>Documents Attached</h3>-->
-                                        <!--                                            <div class="row">-->
+                                        <div class="tab-pane" id="link8">
+                                            <h3>Documents Attached</h3>
+                                            <div class="row">
+                                                <div class="material-datatables" style="width: 100%">
+                                                    <table class=" table table-bordered table-hover table-striped"
+                                                           datatable
+                                                           [dtOptions]="dtOptionsDOCS"
+                                                           [dtTrigger]="dtTriggerDOCS">
+                                                        <thead style="text-align: left;">
+                                                        <tr>
+                                                            <th><strong>File
+                                                                Name</strong></th>
+
+                                                            <th><strong>Document
+                                                                Description</strong>
+                                                            </th>
+
+                                                            <th class="text-center">
+                                                                <strong>View
+                                                                    Details</strong>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let docsDetails of allInspectionReportDetails?.inspectionReportDocs">
+                                                            <td>{{docsDetails?.name}}</td>
+                                                            <td>{{docsDetails?.documentType}}</td>
+                                                            <td class="text-center">
+<!--                                                                <a target="_blank" (click)="viewSavedFilesSaved(docsDetails)"-->
+<!--                                                                   class="btn btn-info"-->
+<!--                                                                   style="background: rgba(0, 0, 0, 0)-->
+<!--                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>-->
+                                                                <button class="btn btn-info tooltips"
+                                                                        style="width: inherit"
+                                                                        (click)="viewSavedFilesSaved(docsDetails)"
+                                                                        data-placement="top"
+                                                                ><i
+                                                                        class="fa fa-eye"></i> View
+                                                                </button>
+
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
 
 
-                                        <!--                                            </div>-->
+                                            </div>
+                                        </div>
                                         <!--                                        </div>-->
                                         <!--                                        <div class="tab-pane" id="link9">-->
                                         <!--                                            <h3>Version Details</h3>-->

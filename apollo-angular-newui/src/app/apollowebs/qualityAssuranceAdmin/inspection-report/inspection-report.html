@@ -1270,15 +1270,13 @@
                                                                                     <th>File Name</th>
                                                                                     <th>File Type</th>
                                                                                     <th>Document Description</th>
-                                                                                    <th>Version Number</th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                <tr *ngFor="let r of sta10FilesList; let i=index">
+                                                                                <tr *ngFor="let r of allInspectionReportDetails.inspectionReportDocs; let i=index">
                                                                                     <td>{{r.name}}</td>
                                                                                     <td>{{r.fileType}}</td>
                                                                                     <td>{{r.documentType}}</td>
-                                                                                    <td>{{r.versionNumber}}</td>
                                                                                     <!--                    <td><button (click)="removePersonnelDetails(i)"-->
                                                                                     <!--                                type="button" class="btn btn-warning btn-sm">-->
                                                                                     <!--                        <span class="" aria-hidden="true">Remove</span>-->

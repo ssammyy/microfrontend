@@ -269,6 +269,48 @@
                                         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
                                                        aria-label="Select page of users"></mat-paginator>
                                     </div>
+                                    <div class="material-datatables">
+                                        <table class="table table-striped table-bordered table-hover"
+                                               datatable
+                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                            <thead>
+                                            <tr>
+                                                <th class="task">Subject</th>
+                                                <th class="task">Proposer</th>
+                                                <th class="task">Purpose</th>
+                                                <th class="task">TC Number</th>
+                                                <th class="action">TC Name</th>
+                                                <th class="action">Status</th>
+                                                <th class="action">Actions</th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let justification of approvedJustifications let i= index; ">
+
+                                                <td>{{justification.subject}}</td>
+                                                <td>{{justification.proposer}}</td>
+                                                <td>{{justification.purpose}}</td>
+                                                <td>{{justification.tcNumber}}</td>
+                                                <td>{{justification.nameOfTC}}</td>
+                                                <td>  <span style=" font-size: 10px;"
+                                                            class="badge badge-success">Approved</span></td>
+
+                                                <td>
+                                                    <a (click)="openModalToView(justification)"
+                                                       class="btn btn-info tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Upload NWI">View More</a> <br>
+
+
+
+                                                </td>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

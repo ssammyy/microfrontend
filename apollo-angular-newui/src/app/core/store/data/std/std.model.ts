@@ -2224,7 +2224,7 @@ export interface NwaRequestList{
     phone: string;
     email: string;
     submissionDate: Timestamp<any>;
-    departmentId: string;
+    departmentId: number;
     productSubCategoryId: string;
     tcId: string;
     productId: string;

@@ -9,6 +9,8 @@ import {QaInternalService} from "../../../../core/store/data/qa/qa-internal.serv
 import {NgxSpinnerService} from "ngx-spinner";
 import {ApiResponseModel} from "../../../../core/store/data/ms/ms.model";
 import * as CryptoJS from 'crypto-js';
+import {selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-fmark-all-applications',
@@ -18,6 +20,7 @@ import * as CryptoJS from 'crypto-js';
 export class FmarkAllApplicationsComponent implements OnInit {
 
   public allPermitTaskData: MyTasksPermitEntityDto[];
+  roles: string[];
 
   dtOptions: DataTables.Settings = {};
   @ViewChildren(DataTableDirective)
@@ -36,10 +39,15 @@ export class FmarkAllApplicationsComponent implements OnInit {
               private router: Router,
               private internalService: QaInternalService,
               private SpinnerService: NgxSpinnerService,
+              private store$: Store<any>,
   ) {
   }
 
   ngOnInit(): void {
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      this.roles = u.roles;
+      return this.roles = u.roles;
+    });
     this.getMySmarkComplete();
 
   }

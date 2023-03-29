@@ -67,6 +67,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
   @ViewChild('standardsInput') standardsInput: ElementRef;
+  @ViewChild('otherRecommendation') otherRecommendation: ElementRef;
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
@@ -113,6 +114,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   finalRemarkHODForm!: FormGroup;
   investInspectReportForm!: FormGroup;
   finalRecommendationDetailsForm!: FormGroup;
+  otherFinalRecommendation!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
@@ -226,6 +228,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
   uploadedAppealFiles: FileList;
+  uploadedFinalRemarksFiles: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
   uploadedFilesDataReport: FileList;
@@ -1967,7 +1970,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
-      failedParameters: [''],
+      failedParameters: null,
       totalCompliance: null,
       totalComplianceTest: null,
     });
@@ -1990,6 +1993,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+    });
+    this.otherFinalRecommendation = this.formBuilder.group({
+      otherRecommendationName: ['', Validators.required],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -2447,23 +2453,25 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   updateSelectedRecommendation() {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
-    const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
     if (this.selectedRecommendationID == 61){
       this.showOther = true;
     }
-    else {
+    const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
       for (let h = 0; h < valueFound.length; h++) {
         this.selectedRecommendationName = valueFound[h].recommendationName;
         console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
       }
       console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
-    }
+    this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(this.selectedRecommendationName);
   }
 
 
   onClickAddDataRecommendationDetails() {
-    if(this.showOther){
-      this.selectedRecommendationName = this.finalRecommendationDetailsForm?.get('recommendationName')?.value;
+    if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
+      const userRecommendation = this.otherFinalRecommendation?.get('otherRecommendationName')?.value;
+      this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(userRecommendation);
+    }else if(this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid){
+      this.msService.showWarning("Please type in a recommendation or select another recommendation");
     }
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
     // tslint:disable-next-line:max-line-length
@@ -2474,6 +2482,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
     }
     this.finalRecommendationDetailsForm?.reset();
+    this.otherRecommendation.nativeElement.value = '';
+    this.showOther = false;
   }
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
@@ -2548,7 +2558,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3806,6 +3816,53 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveUploadFinalEndWorkPlanResults() {
+    if (this.uploadedFinalRemarksFiles.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to End MS PROCESS?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveFilesUploadFinalEndWorkPlanResults();
+          });
+    } else {
+      this.msService.showError('NO FILE SELECTED FOR UPLOAD');
+    }
+
+  }
+
+
+  saveFilesUploadFinalEndWorkPlanResults() {
+    if (this.uploadedFinalRemarksFiles.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFinalRemarksFiles;
+      this.dataSaveFinalRemarks = {...this.dataSaveFinalRemarks, ...this.finalRemarkHODForm.value};
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      formData.append('data', JSON.stringify(this.dataSaveFinalRemarks));
+      formData.append('docTypeName', 'WORK_PLAN_END_UPLOAD');
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+        // this.uploadedFiles.item(i).slice();
+      }
+      this.msService.saveWorkPlanFilesFinalENDWorkPlan(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            this.uploadedFinalRemarksFiles = this.uploadedFinalRemarksFiles;
+            console.log(data);
+            // this.loadStandards();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REMARKS AND STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
   saveFilesUploadFinalReportResultsHOFHOD() {
     if (this.uploadedFilesOnly.length > 0) {
       this.SpinnerService.show();
@@ -4064,7 +4121,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     for (let selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
-        standardsArrayControl.setValue(valueInControl + " " + selectedStandard + "; ");
+        standardsArrayControl.setValue(selectedStandard + "; ");
       }
     }
 
@@ -4255,6 +4312,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
     this.submitted = true;
+    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ){
+      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(" ");
+    }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length

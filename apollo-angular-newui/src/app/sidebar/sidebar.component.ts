@@ -873,7 +873,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'reviewJustificationOfTC',
                 title: 'SPC Review',
                 ab: 'SPC',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ','SPC_SEC_SD_READ']
             },
             {
                 path: 'reviewFeedbackSAC',
@@ -885,7 +885,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ','HOD_TWO_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ','HOD_TWO_SD_READ','SPC_SEC_SD_READ'],
         collapse: 'formation',
     },
     {

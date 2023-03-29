@@ -119,7 +119,7 @@ export class InspectionReport implements OnInit {
         });
 
         this.checkIfInspectionReportExists(this.permitId);
-        this.getInspectionReportsFullyFilled()
+        this.getInspectionReportsFullyFilled(this.permitId)
 
         this.technicalForm = this.formBuilder.group({
             id: [''],
@@ -734,8 +734,8 @@ export class InspectionReport implements OnInit {
     }
 
 
-    private getInspectionReportsFullyFilled() {
-        this.internalService.getFullyFilledInspectionReport().subscribe(
+    private getInspectionReportsFullyFilled(permitId: string) {
+        this.internalService.getFullyFilledInspectionReport(permitId).subscribe(
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetailsToBeCloned = data?.data as InspectionReportToBeClonedDto[];
