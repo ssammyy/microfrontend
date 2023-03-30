@@ -234,6 +234,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesOnly: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedAppealFiles: FileList;
+  uploadedAppealNotSuccesFiles: FileList;
   uploadedFinalRemarksFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
@@ -3248,7 +3249,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickSaveClientAppealed(valid: boolean) {
 
 
-    const file = this.uploadedAppealFiles;
+    const file = this.uploadedAppealNotSuccesFiles;
     if (file === undefined) {
       if (valid) {
         this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
@@ -3267,7 +3268,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   saveAppealFilesResults(docName: string) {
     this.SpinnerService.show();
-    const appealFiles = this.uploadedAppealFiles;
+    const appealFiles = this.uploadedAppealNotSuccesFiles;
     const formData = new FormData();
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
     formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
@@ -3328,6 +3329,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            // tslint:disable-next-line:max-line-length
             this.selectedProductRecommendation = this.workPlanInspection.productList.find(lab => lab.referenceNo === this.selectedProductRecommendation.referenceNo);
             this.recommendationDetailsLoad();
             window.$('#myModal5').modal('hide');
@@ -4084,8 +4086,16 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.uploadDestructionReportFiles = null;
             console.log(data);
             this.recommendationDetailsLoad();
+            this.selectedProductRecommendation = this.workPlanInspection.productList.find(lab => lab.referenceNo === this.selectedProductRecommendation.referenceNo);
+            this.recommendationDetailsLoad();
+            window.$('#myModal5').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#finalRecommendationView').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
             this.SpinnerService.hide();
-            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.viewRecommendationRecord(this.selectedProductRecommendation)});
           },
           error => {
             this.SpinnerService.hide();

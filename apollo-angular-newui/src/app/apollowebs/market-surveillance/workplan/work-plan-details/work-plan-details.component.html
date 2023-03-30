@@ -1778,42 +1778,6 @@
                             </div>
                         </form>
                     </div>
-<!--                    <div *ngIf="(currDiv == 'clientAppealed')">-->
-<!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
-<!--                            <div class="form-body">-->
-<!--                                <div class="form-group">-->
-<!--                                    <div>-->
-<!--                                        <label ><b>Select Status</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select placeholder="Please Select an option"-->
-<!--                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"-->
-<!--                                                        formControlName="approvalStatus"  name="approvalStatus" >-->
-<!--                                                <mat-option [value]="true">YES</mat-option>-->
-<!--                                                <mat-option [value]="false">NO</mat-option>-->
-
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">-->
-<!--                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>-->
-<!--                                            <form #demoForm="ngForm">-->
-<!--                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"-->
-<!--                                                             id="uploadedAppealFilesID"-->
-<!--                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">-->
-<!--                                                </file-upload>-->
-<!--                                            </form>-->
-<!--                                        </div>-->
-<!--                                        <label ><b>Please write, in detail, your feedback:</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <textarea matInput type="text"-->
-<!--                                                      formControlName="remarks"-->
-<!--                                                      name="remarks" required>-->
-<!--                                            </textarea>-->
-<!--                                        </mat-form-field>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
                     <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
                         <form [formGroup]="approvePreliminaryForm" class="form">
                             <div class="form-body">
@@ -7932,40 +7896,6 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">
-                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="clientFullName"><b>Client Full Name</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"
-                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid
-                                                    && formClientEmailNotificationForm.clientFullName.touched">
-                                        </mat-form-field>
-                                        <label for="clientEmail"><b>Client Email</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"
-                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid
-                                                    && formClientEmailNotificationForm.clientEmail.touched">
-                                        </mat-form-field>
-                                        <label for="files"><b>Upload Document Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFilesDestination" name="files" id="files8"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
-                                        </form>
-                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                     <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
                         <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
@@ -7994,93 +7924,6 @@
                                         <mat-form-field class="example-full-width">
                                             <input id="complainantEmail" matInput type="text" placeholder="Please Enter complainant Email" formControlName="complainantEmail" name="complainantEmail">
                                         </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-<!--                    <div *ngIf="(currDiv == 'clientAppealed')">-->
-<!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
-<!--                            <div class="form-body">-->
-<!--                                <div class="form-group">-->
-<!--                                    <div>-->
-<!--                                        <label ><b>Select Status</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select (selectionChange)="updateSelectedStatus()" placeholder="Please Select an option"-->
-<!--                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"-->
-<!--                                                        formControlName="approvalStatus"  name="approvalStatus" >-->
-<!--                                                <mat-option [value]="true">YES</mat-option>-->
-<!--                                                <mat-option [value]="false">NO</mat-option>-->
-
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">-->
-<!--                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>-->
-<!--                                            <form #demoForm="ngForm">-->
-<!--                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"-->
-<!--                                                             id="uploadedAppealFilesID5"-->
-<!--                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">-->
-<!--                                                </file-upload>-->
-<!--                                            </form>-->
-<!--                                        </div>-->
-<!--                                        <label ><b>Please write, in detail, your feedback:</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <textarea matInput type="text"-->
-<!--                                                      formControlName="remarks"-->
-<!--                                                      name="remarks" required>-->
-<!--                                            </textarea>-->
-<!--                                        </mat-form-field>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
-                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
-                        <form [formGroup]="approvePreliminaryForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label><b>Select Status</b></label>
-                                        <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
-                                                        formControlName="approvalStatus"  name="approvalStatus" >
-                                                <mat-option [value]="true">YES</mat-option>
-                                                <mat-option [value]="false">NO</mat-option>
-
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <div>
-                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
-                                                             id="appealFiles"
-                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
-                                                </file-upload>
-                                            </form>
-                                        </div>
-                                        <label ><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadDestructionReport')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Document Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadDestructionReportFiles" name="files" id="files4"
-                                                         fileslimit="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
-                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -8124,11 +7967,6 @@
                     <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -8326,7 +8164,7 @@
                                         <div *ngIf="(selectClientAppealedStatus == 'Accept')">
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
+                                                <file-upload [(ngModel)]="uploadedAppealNotSuccesFiles" name="uploadedAppealNotSuccesFiles"
                                                              id="uploadedAppealFilesID5"
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
