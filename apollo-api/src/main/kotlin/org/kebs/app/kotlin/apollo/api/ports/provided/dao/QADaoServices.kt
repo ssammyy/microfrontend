@@ -232,18 +232,18 @@ class QADaoServices(
                 }
             }
 
-            when (a.authority) {
-                "QA_PSC_MEMBERS_READ" -> {
-                    findAllUserTasksPACPSCPCMByTaskID(
-                        loggedInUser,
-                        auth,
-                        "QA_PSC_MEMBERS_READ",
-                        permitTypeID,
-                        applicationMapProperties.mapUserTaskNamePSC, page
-                    )?.toList().let { it?.let { it1 -> listPermits(it1, map) } }
-                        ?.let { permitListMyTasksAddedTogether.addAll(it) }
-                }
-            }
+//            when (a.authority) {
+//                "QA_PSC_MEMBERS_READ" -> {
+//                    findAllUserTasksPACPSCPCMByTaskID(
+//                        loggedInUser,
+//                        auth,
+//                        "QA_PSC_MEMBERS_READ",
+//                        permitTypeID,
+//                        applicationMapProperties.mapUserTaskNamePSC, page
+//                    )?.toList().let { it?.let { it1 -> listPermits(it1, map) } }
+//                        ?.let { permitListMyTasksAddedTogether.addAll(it) }
+//                }
+//            }
 
             when (a.authority) {
                 "QA_PCM_READ" -> {
