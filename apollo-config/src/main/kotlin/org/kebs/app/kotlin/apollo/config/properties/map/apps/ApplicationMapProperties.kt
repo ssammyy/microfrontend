@@ -667,6 +667,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.remediation.invoice.path}")
     val mapMSFuelInvoiceRemediationPath: String = ""
 
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sd.tor.path}")
+    val mapSdTorPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
     val mapMSSampleCollectionPath: String = ""
 

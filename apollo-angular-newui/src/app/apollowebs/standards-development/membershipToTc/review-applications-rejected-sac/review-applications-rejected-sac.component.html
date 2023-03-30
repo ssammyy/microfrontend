@@ -5,17 +5,15 @@
                 <div class="card-icon">
                     <i class="material-icons">assignment</i>
                 </div>
-                <h4 class="card-title"><b>All Applications</b></h4>
+                <h4 class="card-title"><b>Rejected Applications</b></h4>
             </div>
 
             <div class="card-body">
                 <div class="toolbar">
                     <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
                         <div class="d-flex flex-wrap align-items-center">
-                            <h5 class="mr-4">All Applications</h5>
-                            <div class="resolved-pill">
-                                <p>{{tcTasks.length}}</p>
-                            </div>
+                            <h5 class="mr-4">Rejected Applications</h5>
+
                         </div>
                     </div>
                 </div>
@@ -210,11 +208,11 @@
                         <div class="card ">
                             <div class="card-body ">
                                 <ng-container [ngSwitch]="this.actionRequest?.status">
-                                    <ng-container *ngSwitchCase="'0'">
+                                    <ng-container *ngSwitchCase="'3'">
                                         <div class="row">
                                             <div class=" col-12">
                                                 <ul class="list-group">
-                                                    <li style="background-color: red" class="list-group-item active">HOF
+                                                    <li style="background-color: red" class="list-group-item active">SAC
                                                         REJECTION
                                                     </li>
 
@@ -224,28 +222,7 @@
 
                                                     <li style="background: lightgray"
                                                         class="list-group-item">REJECTION REASON:
-                                                        {{this.actionRequest?.comments_by_hof}}
-                                                    </li>
-
-
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'1'">
-                                        <div class="row">
-                                            <div class=" col-12">
-                                                <ul class="list-group">
-                                                    <li class="list-group-item active">HOF ACCEPTANCE
-                                                    </li>
-
-                                                    <li style="background: lightgray"
-                                                        class="list-group-item">ACCEPTED
-                                                        BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
-
-                                                    <li style="background: lightgray"
-                                                        class="list-group-item">ACCEPTANCE REASON:
-                                                        {{this.actionRequest?.comments_by_hof}}
+                                                        {{this.actionRequest?.commentsBySac}}
                                                     </li>
 
 
@@ -257,6 +234,44 @@
                                     <ng-container *ngSwitchDefault></ng-container>
                                 </ng-container>
 
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class=" col-12">
+                        <div class="card ">
+                            <div class="card-header card-header-rose card-header-text">
+                                <div class="card-text">
+                                    <h4 class="card-title">Resubmit Applicant Request</h4>
+                                </div>
+                            </div>
+                            <div class="card-body ">
+                                <div class="row">
+                                    <form #editForm="ngForm" class="form" style="width: 100%">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label><b>Provide reason for the decision</b></label>
+                                                <textarea
+                                                        aria-describedby="inputGroup-sizing-sm" ngModel
+                                                        id="commentsBySpc"
+                                                        aria-label="Small"
+                                                        class="form-control one-column-input"
+                                                        name="commentsBySpc"
+                                                        placeholder=" " type="text" required></textarea>
+                                            </div>
+                                        </div>
+
+
+                                        <button class="btn btn-info"
+                                                (click)="decisionOnApplications(editForm.value,actionRequest?.id)">
+                                            Resubmit
+                                        </button>
+
+                                    </form>
+                                </div>
                             </div>
                         </div>
 

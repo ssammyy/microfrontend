@@ -1,22 +1,23 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Document, ReviewApplicationTask} from "../../../../../core/store/data/std/request_std.model";
+import {Document, ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
-import {MembershipToTcService} from "../../../../../core/store/data/std/membership-to-tc.service";
-import {NotificationService} from "../../../../../core/store/data/std/notification.service";
+import {UserRegister} from "../../../../shared/models/user";
+import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ActivatedRoute} from "@angular/router";
+import {MasterService} from "../../../../core/store/data/master/master.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
-import {UserRegister} from "../../../../../shared/models/user";
-import {ActivatedRoute} from "@angular/router";
-import {MasterService} from "../../../../../core/store/data/master/master.service";
 
 @Component({
-    selector: 'app-all-applications',
-    templateUrl: './all-applications.component.html',
-    styleUrls: ['./all-applications.component.css']
+    selector: 'app-review-applications-rejected-sac',
+    templateUrl: './review-applications-rejected-sac.component.html',
+    styleUrls: ['./review-applications-rejected-sac.component.css']
 })
-export class AllApplicationsComponent implements OnInit {
+export class ReviewApplicationsRejectedSacComponent implements OnInit {
+
     p = 1;
     p2 = 1;
     public tcTasks: ReviewApplicationTask[] = [];
@@ -45,15 +46,15 @@ export class AllApplicationsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getApplicationsForReview();
+        this.getApplicationsRejectedBySpc();
 
     }
 
-    public getApplicationsForReview(): void {
+    public getApplicationsRejectedBySpc(): void {
         this.loading = true
         this.loadingText = "Retrieving Applications Please Wait ...."
         this.SpinnerService.show();
-        this.membershipToTcService.getAllApplications().subscribe(
+        this.membershipToTcService.getRejectedFromSPC().subscribe(
             (response: ReviewApplicationTask[]) => {
                 console.log(response);
                 this.tcTasks = response;
@@ -78,8 +79,8 @@ export class AllApplicationsComponent implements OnInit {
         this.actionRequest = task;
         button.setAttribute('data-target', '#decisionModal');
         this.getAllDocs(String(this.actionRequest.id))
-        if (task.hofId != null) {
-            this.getSelectedUser(task.hofId)
+        if (task.sacId != null) {
+            this.getSelectedUser(task.sacId)
         }
 
         // @ts-ignore
@@ -103,7 +104,6 @@ export class AllApplicationsComponent implements OnInit {
         this.notifyService.showError(message, title)
 
     }
-
 
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
@@ -167,6 +167,33 @@ export class AllApplicationsComponent implements OnInit {
             );
 
         });
+    }
+
+    public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): void {
+
+        if (reviewApplicationTask.commentsBySpc === "") {
+            this.showToasterError("Error", `Please Enter Your Reason For Resubmission.`);
+
+        } else {
+            this.SpinnerService.show();
+            this.loadingText = "Sending Recommendation";
+            this.membershipToTcService.resubmitReview(reviewApplicationTask, tCApplicationId).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.getApplicationsRejectedBySpc();
+                    this.SpinnerService.hide();
+                    this.notifyService.showSuccess("Success", 'Your Recommendation Has Been Sent To The SAC Secretary')
+
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+
+            this.hideModel();
+            this.clearForm();
+        }
+
     }
 
 

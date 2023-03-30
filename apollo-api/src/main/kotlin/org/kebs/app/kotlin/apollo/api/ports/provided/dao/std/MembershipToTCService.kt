@@ -47,6 +47,8 @@ class MembershipToTCService(
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val usersRepo: IUserRepository,
+    private val draftDocumentService: DraftDocumentService,
+
 
     ) {
 
@@ -204,8 +206,6 @@ class MembershipToTCService(
         }
 
 
-
-
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
@@ -225,20 +225,51 @@ class MembershipToTCService(
 
     }
 
+    fun rejectApplicantRecommendation(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "0" //application rejected
+        u.comments_by_hof = membershipTCApplication.comments_by_hof
+        u.hofId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+
+    }
+
     //SPC
     fun getRecommendationsFromHOF(): List<MembershipTCApplication> {
 
         return membershipTCRepository.findByStatus("1")
     }
 
+    fun getAllApplications(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findAll()
+    }
+
+    fun getRejectedFromHOF(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("0")
+    }
+
 
     fun completeSPCReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
         u.status = "2"
         u.commentsBySpc = membershipTCApplication.commentsBySpc
         u.spcId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+
+    }
+
+    fun resubmitReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "2"
+        u.commentsBySpc = membershipTCApplication.commentsBySpc
+        u.spcId = loggedInUser.id.toString()
+        u.resubmission = "1"
         membershipTCRepository.save(u)
 
     }
@@ -293,13 +324,25 @@ class MembershipToTCService(
             "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
         val messageBody =
             " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
-                    "${u.technicalCommittee}. Please click on the following link to confirm appointment  \n " +
+                    "${u.technicalCommittee}. Please find attached the Terms Of Reference. Also please click on the following link to confirm appointment  \n " +
                     link +
                     "\n\n\n\n\n\n"
 
-        val messageBody2 = "<a href='${link}'>Next</a>"
+        u.email?.let {
 
-        u.email?.let { notifications.sendEmail(it, "Technical Committee Appointment  Letter", messageBody) }
+            val fileName = "static/tor.pdf"
+            val classLoader = javaClass.classLoader
+            val fileUrl = classLoader.getResource(fileName)
+            val filePath = fileUrl?.path ?: throw IllegalArgumentException("File not found: $fileName")
+
+
+            notifications.sendEmail(
+                it,
+                "Technical Committee Appointment  Letter",
+                messageBody,
+                filePath
+            )
+        }
         u.status = "5" // approved and appointment letter email has been sent by HOD
         u.varField10 = encryptedId
 
@@ -542,5 +585,13 @@ class MembershipToTCService(
         return sdNwaUploadsEntityRepository.save(uploads)
     }
 
+    fun getUserCv(
+        standardId: Long,
+        documentType: String,
+        documentTypeDef: String
+    ): Collection<DatKebsSdStandardsEntity?>? {
+
+        return draftDocumentService.findUserCv(standardId, documentType, documentTypeDef)
+    }
 
 }

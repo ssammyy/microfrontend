@@ -46,18 +46,38 @@ class DraftDocumentService(
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
     }
 
-    fun findUploadedDIFileBYIdAndType(diDocumentId: Long, documentType:String): Collection<DatKebsSdStandardsEntity?>? {
-        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentType(diDocumentId,documentType)
+    fun findUploadedDIFileBYIdAndType(
+        diDocumentId: Long,
+        documentType: String
+    ): Collection<DatKebsSdStandardsEntity?>? {
+        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentType(diDocumentId, documentType)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
+    }
+
+
+    fun findUserCv(
+        diDocumentId: Long,
+        documentType: String,
+        documentTypeDef: String
+    ): Collection<DatKebsSdStandardsEntity?>? {
+        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentTypeAndDocumentTypeDef(
+            diDocumentId,
+            documentType,
+            documentTypeDef
+        )
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
     }
 
     fun findUploadedDIFileBYIdAndByType(diDocumentId: Long, doctype: String): DatKebsSdStandardsEntity {
-        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentTypeDef(diDocumentId,doctype)
-            ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
+        return standardsDocumentsRepository.findBySdDocumentIdAndDocumentTypeDef(diDocumentId, doctype)
     }
 
     fun findFile(documentId: Long): DatKebsSdStandardsEntity {
         return standardsDocumentsRepository.findSDocumentId(documentId)
+    }
+
+    fun findDocument(documentId: Long): Optional<DatKebsSdStandardsEntity> {
+        return standardsDocumentsRepository.findById(documentId)
     }
 
 }
