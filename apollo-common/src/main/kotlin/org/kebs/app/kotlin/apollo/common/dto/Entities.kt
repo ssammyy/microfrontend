@@ -589,6 +589,7 @@ data class CompanyUpgradeStatusDto(
     var upgradeType: Boolean? = null,
     var updateDetailsStatus: Boolean? = null,
     var inspectionFeeRequerd: Boolean? = null,
+    var firmType: String? = null,
 )
 data class InspectionReportDtoPermit(
     var id: Long? = null,

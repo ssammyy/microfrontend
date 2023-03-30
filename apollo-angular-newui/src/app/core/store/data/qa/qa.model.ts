@@ -435,6 +435,7 @@ export class CompanyUpgradeStatusDto {
     upgradeType: boolean;
     updateDetailsStatus: boolean;
     inspectionFeeRequerd: boolean;
+    firmType: string;
 }
 
 export class AllPermitDetailsDto {

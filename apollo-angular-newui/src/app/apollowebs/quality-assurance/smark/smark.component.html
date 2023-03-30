@@ -1634,6 +1634,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
+
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
                         && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.inspectionFeeInvoice != null
                         && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
@@ -1643,6 +1644,37 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
+
+                        <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.companyStatusDetails?.firmType == 'MEDIUM'
+                        && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
+                                mat-raised-button=""
+                                (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.companyStatusDetails?.firmType == 'LARGE'
+                        && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
+                                mat-raised-button=""
+                                (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.inspectionFeeInvoice != null
+                        && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
+                                mat-raised-button=""
+                                (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
                         <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitReGenerateInvoice
                         && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated "
                                 mat-raised-button=""
