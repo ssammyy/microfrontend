@@ -101,6 +101,10 @@ class ComStdDraft {
     @Basic
     var departmentId: Long?=null
 
+    @Column(name="DEPARTMENT_NAME")
+    @Basic
+    var departmentName: String?=null
+
     @Column(name = "SUBJECT")
     @Basic
     var subject: String? = null

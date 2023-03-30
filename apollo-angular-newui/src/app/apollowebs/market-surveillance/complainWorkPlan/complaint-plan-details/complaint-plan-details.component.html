@@ -26,7 +26,7 @@
                     <div class="card-body" *ngIf="workPlanInspection">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps" (selectedTabChange)="onTabClicked($event)">
                                     <mat-tab *ngIf="workPlanInspection" label="1">
                                         <ng-template mat-tab-label>
                                             WHO, WHAT, FROM WHERE
@@ -774,7 +774,7 @@
                                                 <label><b>Average compliance: </b></label>
                                             </div>
                                             <div style="margin-right: 20%;">
-                                                <label><b>{{workPlanInspection?.overAllCompliance}}</b></label>
+                                                <label><b>{{averageCompliance}}</b></label>
                                             </div>
 
                                         </div>
@@ -1293,7 +1293,7 @@
                                             </button>
 <!--                                            workPlanInspection?.compliantStatusAdded &&-->
                                             <button *ngIf="workPlanInspection?.onsiteEndStatus &&
-                                                    workPlanInspection?.msPreliminaryReportStatus == false"
+                                                    workPlanInspection?.msPreliminaryReportStatus == false && workPlanInspection?.bsNumberStatus == true"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span

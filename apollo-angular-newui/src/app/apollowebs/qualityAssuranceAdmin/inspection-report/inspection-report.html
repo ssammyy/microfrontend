@@ -1270,6 +1270,11 @@
                                                                                     <th>File Name</th>
                                                                                     <th>File Type</th>
                                                                                     <th>Document Description</th>
+                                                                                    <th><strong>Uploaded
+                                                                                        By</strong></th>
+                                                                                    <th><strong>Created
+                                                                                        On</strong>
+                                                                                    </th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
@@ -1277,6 +1282,8 @@
                                                                                     <td>{{r.name}}</td>
                                                                                     <td>{{r.fileType}}</td>
                                                                                     <td>{{r.documentType}}</td>
+                                                                                    <td>{{r.createdBy }}</td>
+                                                                                    <td>{{formatFormDate(r.createdOn)}}</td>
                                                                                     <!--                    <td><button (click)="removePersonnelDetails(i)"-->
                                                                                     <!--                                type="button" class="btn btn-warning btn-sm">-->
                                                                                     <!--                        <span class="" aria-hidden="true">Remove</span>-->

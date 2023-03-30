@@ -1283,6 +1283,8 @@ class InspectionReportDaoServices(
                 f.fileType,
                 f.documentType,
                 f.versionNumber,
+                f.createdBy,
+                f.createdOn,
                 f.document,
             )
         }

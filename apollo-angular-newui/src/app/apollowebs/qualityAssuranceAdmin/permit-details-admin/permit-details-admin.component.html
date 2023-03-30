@@ -1070,8 +1070,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <td>{{row[3]}}</td>
 
                                                             <td class="td-actions text-right">
-                                                                <button mat-raised-button type="button" data-toggle="modal"
-                                                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal"
+                                                                        (click)="viewPdfFile(row[4], row[0], row[1])"
+                                                                        class="btn btn-info {{row[4]}}">
                                                                     <i class="material-icons">visibility</i>
 
                                                                 </button>
@@ -1158,7 +1160,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                             <tr>
 
                                                                                                 <td>{{inspectionReportDetailsDto?.refNo}}</td>
-                                                                                                <td>{{inspectionReportDetailsDto?.createdOn}}</td>
+                                                                                                <td>{{formatFormDate(inspectionReportDetailsDto?.createdOn)}}</td>
                                                                                                 <td style="padding: .75rem;
                                                                                                               vertical-align: top;color: #0082f3;font-size: .875rem;
                                                                                                               font-weight: 400;">
@@ -1229,10 +1231,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                                             <th><strong>File
                                                                                                 Name</strong></th>
-                                                                                            <th><strong>File
-                                                                                                Type</strong></th>
-                                                                                            <th><strong>Document
-                                                                                                Description</strong>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
                                                                                             </th>
                                                                                             <th><strong>Version
                                                                                                 Number</strong></th>
@@ -1245,8 +1247,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <tbody>
                                                                                         <tr *ngFor="let scsDetails of allPermitDetails?.schemeOfSuperVisionList">
                                                                                             <td>{{scsDetails?.name}}</td>
-                                                                                            <td>{{scsDetails?.fileType }}</td>
-                                                                                            <td>{{scsDetails?.documentType}}</td>
+                                                                                            <td>{{scsDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(scsDetails?.createdOn)}}</td>
                                                                                             <td>{{scsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedFilesSaved(scsDetails)"
@@ -1410,7 +1412,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr *ngFor="let remarksParam of allPermitDetails?.remarksDetailsList let i=index ">
-                                                                                            <td>{{i + 1}} </td>
                                                                                             <td>{{remarksParam?.processName}}</td>
                                                                                             <td>{{remarksParam?.processBy }}</td>
                                                                                             <td>{{remarksParam?.createdOn}}</td>
@@ -1478,10 +1479,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <tr>
                                                                                             <th><strong>File
                                                                                                 Name</strong></th>
-                                                                                            <th><strong>File
-                                                                                                Type</strong></th>
-                                                                                            <th><strong>Document
-                                                                                                Description</strong>
+                                                                                            <th><strong>Uploaded
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
                                                                                             </th>
                                                                                             <th><strong>Version
                                                                                                 Number</strong></th>
@@ -1494,8 +1495,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <tbody>
                                                                                         <tr *ngFor="let docsDetails of allPermitDetails?.ordinaryFilesList">
                                                                                             <td>{{docsDetails?.name}}</td>
-                                                                                            <td>{{docsDetails?.fileType }}</td>
-                                                                                            <td>{{docsDetails?.documentType}}</td>
+                                                                                            <td>{{docsDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(docsDetails?.createdOn)}}</td>
                                                                                             <td>{{docsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedFilesSaved(docsDetails)"
@@ -1711,7 +1712,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 && allPermitDetails?.inspectionInvoiceUploaded !=null && allPermitDetails?.inspectionNeeded"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('viewInspectionInvoiceDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOADED INSPECTION INVOICE DETAILS</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOADED INSPECTION INVOICE
+                                    DETAILS</a>
 
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.branchID !=null  && allPermitDetails?.inspectionInvoiceUpload !=null
                                 && allPermitDetails?.inspectionInvoiceUploaded !=null && allPermitDetails?.inspectionNeeded"
@@ -1728,92 +1730,90 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
-                        <div *ngFor="let role of roles">
-                            <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
+                        <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('updateSection')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('updateSection')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('updateBrand')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('updateBrand')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
 
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('permitCompleteness')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                            <a data-toggle="modal"
+                               *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('permitCompleteness')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && allPermitDetails?.permitDetails?.changesMadeStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('permitCompleteness')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('permitCompleteness')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-                                <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                            <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                            <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                            <!--                                   data-target="#allProcessModel"-->
+                            <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-                                <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-                                <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                            <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                            <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                            <!--                                   data-target="#allProcessModel"-->
+                            <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                            <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
                                    && !allPermitDetails?.permitDetails?.assignOfficerStatus "
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('assignOfficer')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('assignOfficer')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
                                    && allPermitDetails?.permitDetails?.hofQamCompletenessStatus
                                    && allPermitDetails?.permitDetails?.assignOfficerStatus "
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('assignOfficer')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('assignOfficer')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-                                <!--                                <a data-toggle="modal"-->
-                                <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                                <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
+                            <!--                                <a data-toggle="modal"-->
+                            <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                            <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                            <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
+                            <!--                                   data-target="#allProcessModel"-->
+                            <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
+                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
 
-                                <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                                <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
-                                <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
+                            <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                            <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                            <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+                            <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+                            <!--                                   data-target="#allProcessModel"-->
+                            <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
+                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null
                                    && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                    && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
                                     && allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
-                            </div>
-
-
-                        <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                               data-target="#allProcessModel"
+                               (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                               class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
+                        </div>
+                        <div *ngFor="let role of roles">
+                            <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addStandardsDetails')"
@@ -1943,14 +1943,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    && allPermitDetails?.permitDetails?.sendForPcmReview"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT REVIEW</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                    REVIEW</a>
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
                                     && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
                                    && allPermitDetails?.permitDetails?.sendForPcmReview"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT REVIEW</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                    REVIEW</a>
 
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
                                  && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
@@ -2347,7 +2349,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
-                                                   <label><b>Paid Date</b></label>
+                                                    <label><b>Paid Date</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="paidDate" id="paidDate"
                                                                matInput name="paidDate" disabled
@@ -2363,7 +2365,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <mat-form-field class="example-full-width">
                                                         <a data-toggle="modal"
                                                            (click)="viewPdfFile(allPermitDetails?.inspectionInvoiceUploaded.toString(), 'Inspection fees Invoice','application/pdf')"
-                                                           class="btn btn-kebs mat-raised-button mat-button-base">VIEW UPLOADED INSPECTION
+                                                           class="btn btn-kebs mat-raised-button mat-button-base">VIEW
+                                                            UPLOADED INSPECTION
                                                             INVOICE DETAILS</a>
                                                     </mat-form-field>
                                                 </div>
@@ -2545,7 +2548,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                               name="supervisorComments">
                                                     </textarea>
                                                     </mat-form-field>
-                                                    <label><b>Add Recommendation Remarks on recommendation by QAO:</b></label>
+                                                    <label><b>Add Recommendation Remarks on recommendation by
+                                                        QAO:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                     <textarea matInput type="text"
                                                               formControlName="recommendationApprovalRemarks"

@@ -649,6 +649,12 @@ export interface ManufacturingStatus {
 export interface OperationStatus {
     manufacturerStatus: number;
 }
+export interface NotificationForm {
+    responseMessage: string;
+    responseStatus: string;
+    responseButton: string;
+    responseMsg: string;
+}
 export interface NotificationStatus {
     responseMessage: number;
 }

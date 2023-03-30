@@ -680,6 +680,8 @@ data class FilesListDto(
     var fileType: String? = null,
     var documentType: String? = null,
     var versionNumber: Long? = null,
+    var createdBy: String? =null,
+    var createdOn: Timestamp? = null,
     var document: ByteArray? = null
 ) {
     override fun equals(other: Any?): Boolean {

@@ -1100,6 +1100,9 @@ class RegistrationDaoServices(
         var add = stdLevyNotificationForm
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
        val countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         val toCheckSl: Long = 0
 
@@ -1115,8 +1118,8 @@ class RegistrationDaoServices(
             if (resultFound!=null){
                 val kraResponseCode = resultFound
 
-                val gson = Gson()
-                KotlinLogging.logger { }.info { "Response from API" + gson.toJson(kraResponseCode) }
+//                val gson = Gson()
+//                KotlinLogging.logger { }.info { "Response from API" + gson.toJson(kraResponseCode) }
                 when (kraResponseCode.responseResponseCode) {
                     "90000" -> {
 
@@ -1187,34 +1190,52 @@ class RegistrationDaoServices(
                         sm.message = "You have Successfully Registered, Email Has been sent with Entry Number "
 
                         slFormResponse="Entry number is ${eNumber.entryNumber}, Check your E-mail for registration details"
+                        responseStatus="success"
+                        responseButton="btn btn-success form-wizard-next-btn"
+                        response="Saved"
 
                     }
                     "90001" -> {
                         slFormResponse="Form not saved..Form data is in the wrong format"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90002" -> {
                         slFormResponse="Form not saved..KRA Pin used is invalid"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90003" -> {
                         slFormResponse="Form not saved..Invalid User access credentials"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90004" -> {
                         slFormResponse="Form not saved..Invalid User ID and Password"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     else -> {
                         slFormResponse="Form not saved..Kindly try again"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
                     }
                 }
                 //return NotificationForm(stdLevyNotificationForm.id,eNumber.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
-                return NotificationForm(slFormResponse)
+                return NotificationForm(slFormResponse,responseStatus,responseButton,response)
 
 
             }else{
@@ -1224,7 +1245,10 @@ class RegistrationDaoServices(
         }
         else{
             slFormResponse="Operation is not allowed..Form Has Already been Filled.."
-            return NotificationForm(slFormResponse)
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Saved"
+            return NotificationForm(slFormResponse,responseStatus,responseButton,response)
         }
 
 //        if (countOfSlForm != null) {

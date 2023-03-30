@@ -5097,8 +5097,11 @@ class QADaoServices(
                 f.fileType,
                 f.documentType,
                 f.versionNumber,
+                f.createdBy,
+                f.createdOn,
                 f.document,
-            )
+
+                )
         }
     }
 
@@ -5136,6 +5139,8 @@ class QADaoServices(
             f.fileType,
             f.documentType,
             f.versionNumber,
+            f.createdBy,
+            f.createdOn,
             f.document,
         )
     }

@@ -26,7 +26,7 @@
                     <div class="card-body" *ngIf="workPlanInspection">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps" (selectedTabChange)="onTabClicked($event)">
                                     <mat-tab *ngIf="workPlanInspection" label="1">
                                         <ng-template mat-tab-label>
                                             WHO, WHAT, FROM WHERE
@@ -792,7 +792,7 @@
                                             ></ng2-smart-table>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.dataReportDto?.length!=0" label="16" (click)="calculateAverageCompliance()">
+                                    <mat-tab *ngIf="workPlanInspection?.dataReportDto?.length!=0" label="16">
                                         <ng-template mat-tab-label>
                                             DATA REPORT
                                         </ng-template>
@@ -1322,7 +1322,7 @@
                                             </button>
 <!--                                            workPlanInspection?.compliantStatusAdded &&-->
                                             <button *ngIf="workPlanInspection?.onsiteEndStatus && workPlanInspection?.bsNumberCountAdded ==
-                                                    workPlanInspection?.sampleSubmitted.length &&
+                                                    workPlanInspection?.sampleSubmitted.length && workPlanInspection?.bsNumberStatus== true &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
@@ -1739,7 +1739,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
+                                        <label><b>Please write, in detail, your feedback for Approving/Declining the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks1" matInput type="text"
                                                       formControlName="remarks"
@@ -1766,7 +1766,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1865,7 +1865,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
                                                        formControlName="remarks"
@@ -1892,7 +1892,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1919,7 +1919,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1972,7 +1972,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
@@ -5726,8 +5726,8 @@
                                 </div>
                             </div>
 
-                            <h4 class="mb-3" style="color: #0066B1">PRELIMINARY OUTLETS DETAILS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <h4 class="mb-3" style="color: #0066B1">PROGRESS REPORT OUTLETS DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
                             <form [formGroup]="preliminaryReportParamForm">
                                 <div >
                                     <h5 class="mb-3" style="color: #0066B1">Outlet Details</h5>

@@ -100,7 +100,7 @@ export class MyTasksPermitEntityDto {
     encryptedPermitId: string;
     encryptedUserId: string;
 
-    assignOfficer:string;
+    assignOfficer: string;
 
 }
 
@@ -389,6 +389,11 @@ export class FilesListDto {
     fileType: string;
     documentType: string;
     versionNumber: number;
+
+    createdBy: string;
+
+    createdOn: string;
+
     document: Blob;
 }
 
@@ -499,7 +504,7 @@ export class InspectionReportDetailsDto {
     id: bigint;
     refNo: string;
     submittedInspectionReportStatus: string;
-    createdOn: Date;
+    createdOn: String;
 }
 
 export class InspectionInvoiceUploadedDto {

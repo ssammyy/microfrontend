@@ -5,7 +5,7 @@ import {
     ManufactureBranchDto, ManufactureDetailList,
     ManufactureInfo,
     ManufacturingBranchDto,
-    ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlFormStatus, SlModel
+    ManufacturingInfo, ManufacturingStatus, NotificationForm, NotificationStatus, SlFormStatus, SlModel
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -35,6 +35,7 @@ export class CustomerRegistrationComponent implements OnInit {
   slFormDetails !: SlModel;
   slBranchName !: Branch;
   notificationFormStatus !: NotificationStatus;
+  notificationForm !: NotificationForm;
   slNotificationFormStatus !: SlFormStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
@@ -51,6 +52,9 @@ export class CustomerRegistrationComponent implements OnInit {
   message="check";
   step = 1;
   slStatus: number;
+  iconStatus: string;
+    private tm: "success" ;
+    private tms: "error";
   constructor(
       private router: Router,
       private formBuilder: FormBuilder,
@@ -243,16 +247,17 @@ export class CustomerRegistrationComponent implements OnInit {
       this.SpinnerService.show();
       this.levyService.addSL1Details(this.manufacturerInfoForm.value).subscribe(
           (response) => {
-            console.log(response);
+           // console.log(response);
             this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
             swal.fire({
+                title: response.body.responseMsg,
               text: response.body.responseMessage,
               buttonsStyling: false,
               customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                confirmButton: response.body.responseButton,
               },
-              icon: 'success'
+              icon: response.body.responseStatus
             });
             this.router.navigateByUrl('/dashboard').then(r => {});
           },
@@ -293,16 +298,17 @@ export class CustomerRegistrationComponent implements OnInit {
             this.SpinnerService.show();
             this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
                 (response) => {
-                    console.log(response);
+
                     this.SpinnerService.hide();
                     this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
                     swal.fire({
+                        title: response.body.responseMsg,
                         text: response.body.responseMessage,
                         buttonsStyling: false,
                         customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            confirmButton: response.body.responseButton,
                         },
-                        icon: 'success'
+                        icon: response.body.responseStatus
                     });
                     this.router.navigateByUrl('/dashboard').then(r => {});
                 },

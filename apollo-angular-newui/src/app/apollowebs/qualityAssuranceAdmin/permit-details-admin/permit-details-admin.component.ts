@@ -39,6 +39,7 @@ import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {DataTableDirective} from 'angular-datatables';
 import {StandardsDto} from '../../../core/store/data/master/master.model';
+import {formatDate} from "@angular/common";
 
 
 @Component({
@@ -92,7 +93,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
 
-
+    dateFormat = "MMM dd yyyy";
+    language = "en";
     pdfSources: any;
     SelectedSectionId;
     pdfInvoiceBreakDownSources: any;
@@ -1976,6 +1978,10 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
 
+    }
+
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 }
