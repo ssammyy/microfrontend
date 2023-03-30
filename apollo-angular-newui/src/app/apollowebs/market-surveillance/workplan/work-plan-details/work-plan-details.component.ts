@@ -2637,6 +2637,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.addSeizureProductsStatus = true;
     }
 
+    if (divVal === 'dataReportDetails') {
+      this.addProductsStatus = true;
+    }
+
     if (divVal === 'finalLabComplianceStatus') {
       let complianceLabs = 0;
       const totalCount = this.workPlanInspection?.sampleLabResults.length;
@@ -2882,6 +2886,19 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   closePopUpsModal3() {
     window.$('#myModal3').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#dataReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#dataReportModal').modal('show');
+    }, 500);
+  }
+
+  closePopUpsModal4() {
+    window.$('#dataReportModalUCR').modal('hide');
     window.$('body').removeClass('modal-open');
     window.$('.modal-backdrop').remove();
     window.$('#dataReportModal').modal('hide');
@@ -4249,6 +4266,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
+      this.dataSaveSampleSubmitBSNumber.ssfID = this.ssfSelectedID;
       this.msService.msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
@@ -4817,7 +4835,7 @@ export class WorkPlanDetailsComponent implements OnInit {
               this.currDiv = 'verificationUCRDetails';
               // this.verificationPermitForm.disabled;
 
-              window.$('#myModal3').modal('show');
+              window.$('#dataReportModalUCR').modal('show');
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
             error => {

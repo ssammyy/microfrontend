@@ -3,6 +3,10 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ktor.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
@@ -770,6 +774,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
+                GlobalScope.launch(Dispatchers.IO) {
+                    delay(100L)
                     hodList
                         ?.forEach { mp ->
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
@@ -850,6 +856,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 fileSaved.first
                             )
                         }
+                }
 
 
                 return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetail)
@@ -1235,6 +1242,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 dateSubmitted = commonDaoServices.getCurrentDate()
 
                             }
+                        GlobalScope.launch(Dispatchers.IO) {
+                            delay(100L)
                             userDetails?.let {
                                 commonDaoServices.sendEmailWithUserEntity(
                                     it,
@@ -1244,6 +1253,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     fileSaved.first
                                 )
                             }
+                        }
 
 
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
@@ -3177,6 +3187,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 workPlanScheduled.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
                             )
 
+                            GlobalScope.launch(Dispatchers.IO) {
+                                delay(100L)
                                 hofList
                                     ?.forEach { mp ->
                                         val taskNotify = NotificationBodyDto().apply {
@@ -3215,6 +3227,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                             remarksSaved.first
                                         )
                                     }
+                            }
 
                             return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                         }
@@ -3519,8 +3532,8 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                 val dataValue = FuelScheduledLabResultsDTO()
                 with(dataValue) {
-                    sourceProductEvidence = sampleFound?.sourceProductEvidence
-                    failedResults = body.failedParameters
+                    sourceProductEvidence = dataReportRepo.findByIdOrNull(sampleFound?.dataReportID?: -1L)?.outletName
+                    failedResults = savedSSfComplianceStatus.failedParameters
                     standardName = sampleFound?.referencesStandards
                     baseUrl = applicationMapProperties.baseUrlValue
                     refNumber = savedSSfComplianceStatus.bsNumber
@@ -3671,6 +3684,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                 commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)
                     ?.let { daysConvert -> commonDaoServices.localDateToTimestamp(daysConvert) }
             }
+
+//            if(workPlanScheduled.){
+//
+//            }
+
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -6213,8 +6231,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val preliminaryReportList = findPreliminaryReportListByWorkPlanInspectionID(workPlanScheduledDetails.id, map.activeStatus)
         val preliminaryReportListDto = preliminaryReportList?.let { mapInspectionInvestigationDetailsListDto(it) }
 
-        val inspectionInvestigation =
-            findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduledDetails.id, map.inactiveStatus)
+        val inspectionInvestigation =findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduledDetails.id, map.inactiveStatus)
         val inspectionInvestigationDto = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
 
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduledDetails.id)
@@ -6551,7 +6568,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.latestPreliminaryReport,
             wKP.latestFinalPreliminaryReport,
             complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber,
-//            overAllCompliance
+            overAllCompliance
 
         )
     }

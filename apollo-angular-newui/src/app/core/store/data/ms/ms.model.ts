@@ -1648,6 +1648,7 @@ export class SampleSubmissionItemsDto {
 export class BSNumberSaveDto {
     bsNumber: string;
     submittedDate: Date;
+    ssfID: number;
     remarks: string;
 }
 
