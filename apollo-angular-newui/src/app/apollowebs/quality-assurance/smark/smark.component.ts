@@ -29,7 +29,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {TableData} from '../../../md/md-table/md-table.component';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Branches, BranchesService} from '../../../core/store';
+import {Branches, BranchesService, Company, CompanyService} from '../../../core/store';
 import {Observable} from 'rxjs';
 
 interface Permit {
@@ -45,6 +45,8 @@ interface Permit {
 export class SmarkComponent implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
     branches$: Observable<Branches[]>;
+    companies$: Observable<Company[]>;
+    CompanyDetails: Company;
     permitTypeName!: string;
     currDiv!: string;
     currDivLabel!: string;
@@ -141,6 +143,7 @@ export class SmarkComponent implements OnInit {
         private router: Router,
         private qaService: QaService,
         private service: BranchesService,
+        private serviceCompany: CompanyService,
         private formBuilder: FormBuilder,
         private _loading: LoadingService,
         private SpinnerService: NgxSpinnerService,
@@ -150,6 +153,8 @@ export class SmarkComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.companies$ = this.serviceCompany.entities$;
+
 
 
         this.getSelectedPermit();

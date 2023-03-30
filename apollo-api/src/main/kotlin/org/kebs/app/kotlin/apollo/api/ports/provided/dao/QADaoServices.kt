@@ -5534,7 +5534,8 @@ class QADaoServices(
             updateFirmTypeID = companyDetails.updateFirmType,
             upgradeType = companyDetails.upgradeType == 1,
             updateDetailsStatus = companyDetails.updateDetailsStatus == 1,
-            inspectionFeeRequerd = plantDetails.inspectionFeeStatus == 1
+            inspectionFeeRequerd = plantDetails.inspectionFeeStatus == 1,
+            firmType = companyDetails.firmCategory?.let { findFirmTypeById(it).firmType }
         )
 
         return AllPermitDetailsDto(
