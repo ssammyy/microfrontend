@@ -406,8 +406,6 @@ export interface DraftEditing {
     draftId: string;
 
 
-
-
 }
 
 export interface EditorTask {
@@ -471,16 +469,18 @@ export interface ReviewApplicationTask {
 
     id: number,
     technicalCommittee: string,
-    organization: string,
+    organisationName: string,
+
+    organisationClassification: string,
     nomineeName: string,
     position: string,
     postalAddress: string,
     mobileNumber: string,
     email: string,
-    authorizingName: string,
-    authorisingPersonPosition: string,
-    authorisingPersonEmail: string,
-    qualifications: string,
+    authorizingPerson: string,
+    authorizingPersonPosition: string,
+    authorizingPersonEmail: string,
+    qualification: string,
     commitment: string,
     tcApplicationId: number,
     dateOfApplication: string,

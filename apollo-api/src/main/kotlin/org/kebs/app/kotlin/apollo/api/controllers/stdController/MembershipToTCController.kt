@@ -106,10 +106,35 @@ class MembershipToTCController(
         )
     }
 
+    @PostMapping("/membershipToTC/rejectApplicantRecommendation")
+    @ResponseBody
+    fun rejectApplicantRecommendation(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Rejected application for membership to TC",
+            membershipToTCService.rejectApplicantRecommendation(membershipTCApplication, tCApplicationId)
+        )
+    }
+
     @GetMapping("/membershipToTC/getRecommendationsFromHOF")
     fun getRecommendationsFromHOF(): List<MembershipTCApplication> {
         return membershipToTCService.getRecommendationsFromHOF()
     }
+
+    @GetMapping("/membershipToTC/getAllApplications")
+    fun getAllApplications(): List<MembershipTCApplication> {
+        return membershipToTCService.getAllApplications()
+    }
+
+
+    @GetMapping("/membershipToTC/getRejectedFromHOF")
+    fun getRejectedFromHOF(): List<MembershipTCApplication> {
+        return membershipToTCService.getRejectedFromHOF()
+    }
+
 
     @PostMapping("/membershipToTC/completeSPCReview")
     @ResponseBody
@@ -118,6 +143,15 @@ class MembershipToTCController(
         @RequestParam("tCApplicationId") tCApplicationId: Long,
     ) {
         return membershipToTCService.completeSPCReview(membershipTCApplication, tCApplicationId);
+    }
+
+    @PostMapping("/membershipToTC/resubmitReview")
+    @ResponseBody
+    fun resubmitReview(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ) {
+        return membershipToTCService.resubmitReview(membershipTCApplication, tCApplicationId);
     }
 
     @GetMapping("/membershipToTC/getRecommendationsFromSPC")
@@ -302,8 +336,9 @@ class MembershipToTCController(
         @RequestParam("draftStandardId") diDocumentId: Long,
         @RequestParam("doctype") doctype: String
     ) {
-        val fileUploaded = draftDocumentService.findUploadedDIFileBYIdAndByType(diDocumentId, doctype)
-        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        val fileUploaded = draftDocumentService.findFile(diDocumentId)
+        println(fileUploaded)
+        val fileDoc = fileUploaded.let { commonDaoServices.mapClass(it) }
         response.contentType = "application/pdf"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
@@ -315,6 +350,19 @@ class MembershipToTCController(
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+
+    }
+
+
+    @GetMapping("/membershipToTC/getUserCv")
+    fun getUserCv(
+        @RequestParam("requestId") requestId: Long,
+        @RequestParam("documentType") documentType: String,
+        @RequestParam("documentTypeDef") documentTypeDef: String,
+
+
+        ): Collection<DatKebsSdStandardsEntity?>? {
+        return membershipToTCService.getUserCv(requestId, documentType, documentTypeDef)
     }
 
 

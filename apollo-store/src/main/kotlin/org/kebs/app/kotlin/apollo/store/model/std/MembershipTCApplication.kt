@@ -20,6 +20,11 @@ class MembershipTCApplication {
     @Basic
     var organisationName:String? = null
 
+    @Column(name="ORGANIZATION_CLASSIFICATION")
+    @Basic
+    var organisationClassification:String? = null
+
+
     @Column(name="NOMINEE_NAME")
     @Basic
     var nomineeName:String? = null
@@ -108,6 +113,10 @@ class MembershipTCApplication {
     @Column(name = "APPROVED_BY_ORGANISATION")
     @Basic
     var approvedByOrganization: String? = null
+
+    @Column(name = "RESUBMISSION")
+    @Basic
+    var resubmission: String? = null
 
 
     @Transient

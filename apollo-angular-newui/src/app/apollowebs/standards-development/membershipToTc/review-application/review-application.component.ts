@@ -9,6 +9,7 @@ import {DataTableDirective} from "angular-datatables";
 import {NgForm} from '@angular/forms';
 import {takeUntil} from "rxjs/operators";
 import {Router} from "@angular/router";
+import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 
 @Component({
     selector: 'app-review-application',
@@ -41,6 +42,7 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
 
     constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
                 private router: Router,
+                private standardDevelopmentService: StandardDevelopmentService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
@@ -92,6 +94,8 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
         console.log(task.taskId);
         this.actionRequest = task;
         button.setAttribute('data-target', '#decisionModal');
+        this.getAllDocs(String(this.actionRequest.id))
+
 
         // @ts-ignore
         container.appendChild(button);
@@ -99,7 +103,6 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
     }
 
     @ViewChild('closeViewModal') private closeModal: ElementRef;
-
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
@@ -142,6 +145,31 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
 
     }
 
+    public rejectApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): void {
+
+        if (reviewApplicationTask.comments_by_hof === "") {
+            this.showToasterError("Error", `Please Enter A Comment.`);
+
+        } else {
+            this.SpinnerService.show();
+            this.loadingText = "Rejecting Applicant";
+            this.membershipToTcService.rejectApplicantRecommendation(reviewApplicationTask, tCApplicationId).subscribe(
+                (response) => {
+                    this.getApplicationsForReview();
+                    this.SpinnerService.hide();
+
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+
+            this.hideModel();
+            this.clearForm();
+        }
+
+    }
+
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
@@ -152,13 +180,7 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
 
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                this.pdfSrc = downloadURL
-                console.log(downloadURL)
-                link.download = fileName;
-                link.click();
-                // this.pdfUploadsView = dataPdf;
+                window.open(downloadURL, fileName);
             },
         );
     }
@@ -195,6 +217,20 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
             this.router.navigate([currentUrl]);
         });
+    }
+
+    public getAllDocs(applicationId: string): void {
+        this.membershipToTcService.getUserCV(applicationId, "UPLOADS", "ApplicantCV").subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
     }
 
 
