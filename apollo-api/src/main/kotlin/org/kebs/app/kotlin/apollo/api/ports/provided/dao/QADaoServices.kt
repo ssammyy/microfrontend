@@ -2223,8 +2223,7 @@ class QADaoServices(
                         //Generate FMARK AFTER SMARK IS AWARDED
                         when {
                             permit.fmarkGenerateStatus == 1 && permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                val fmarkGeneratedResults =
-                                    permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
+                                val fmarkGeneratedResults = permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
                                 when (fmarkGeneratedResults.first.status) {
                                     map.successStatus -> {
                                         permit.fmarkGenerated = 1
@@ -5578,7 +5577,6 @@ class QADaoServices(
             inspectionFeeInvoice = inspectionFeeInvoice,
             inspectionInvoiceUploaded = inspectionInvoiceUploaded,
             inspectionReportDetails = inspectionReportDetails,
-
             )
     }
 

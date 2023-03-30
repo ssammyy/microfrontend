@@ -1403,12 +1403,12 @@ export class QaService {
         );
     }
 
-    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10RawMaterialsDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_RAW_MATERIAL);
         const params = new HttpParams()
             .set('qaSta10ID', qaSta10ID);
-        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
-            map(function (response: STA10ProductsManufactureDto) {
+        return this.http.get<STA10RawMaterialsDto[]>(url, {params}).pipe(
+            map(function (response: STA10RawMaterialsDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

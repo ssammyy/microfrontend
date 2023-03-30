@@ -2713,7 +2713,16 @@ class QualityAssuranceHandler(
 
                 // Create FMARK From SMark
                 if (permit.fmarkGenerateStatus == 1) {
-                    var fmarkGenerated = qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).second
+//                    var fmarkGenerated : PermitApplicationsEntity
+                    var fmarkGenerated = when (permit.renewalStatus) {
+                        map.activeStatus -> {
+                            qaDaoServices.findFmarkWithSmarkId(permit.id ?: throw Exception("INVALID PERMIT ID")).fmarkId?.let { qaDaoServices.findPermitBYID(it) }!!
+                        }
+                        else -> {
+                            qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).second
+
+                        }
+                    }
                     with(fmarkGenerated) {
                         sendApplication = map.activeStatus
                         endOfProductionStatus = map.inactiveStatus
@@ -2721,6 +2730,7 @@ class QualityAssuranceHandler(
                         permitStatus = applicationMapProperties.mapQaStatusPPayment
                     }
                     fmarkGenerated = qaDaoServices.permitUpdateDetails(fmarkGenerated, map, loggedInUser).second
+
                 }
 
                 qaDaoServices.mapAllPermitDetailsTogether(

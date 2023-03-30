@@ -941,9 +941,31 @@ export class PermitDetailsAdminComponent implements OnInit {
         if (this.allPermitDetails?.permitDetails?.permitTypeID === this.SMarkTypeID) {
             this.allSTA10Details = this.allPermitDetails.sta10DTO;
             this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+            const qaSta10ID = this.allSTA10Details.sta10FirmDetails.id;
+            this.qaService.viewSTA10PersonnelDetails(String(qaSta10ID)).subscribe(
+                (data10Personal: STA10PersonnelDto[]) => {
+                    this.sta10PersonnelDetails = data10Personal;
+                },
+            );
+            this.qaService.viewSTA10ProductsManufactureDetails(String(qaSta10ID)).subscribe(
+                (data10ProductsManufacture: STA10ProductsManufactureDto) => {
+                    this.sta10ProductsManufactureDetail = data10ProductsManufacture;
+                },
+            );
+            this.qaService.viewSTA10RawMaterialsDetails(String(qaSta10ID)).subscribe(
+                (data10RawMaterialsDetails: STA10RawMaterialsDto[]) => {
+                    this.sta10RawMaterialsDetails = data10RawMaterialsDetails;
+                },
+            );
+            // this.qaService.viewSTA10RawMaterialsDetails(String(qaSta10ID)).subscribe(
+            //     (data10RawMaterialsDetails: STA10RawMaterialsDto[]) => {
+            //         this.sta10RawMaterialsDetails = data10RawMaterialsDetails;
+            //     },
+            // );
+
+            // this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+            // this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+            // this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
             this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
             this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
             this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
