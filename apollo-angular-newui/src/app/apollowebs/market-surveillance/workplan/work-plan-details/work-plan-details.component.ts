@@ -1679,6 +1679,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     endDate: new Date(Date.now()),
   };
 
+  public selectClientAppealedStatus: string;
+
 
 
   constructor(
@@ -2542,7 +2544,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       const userRecommendation = this.otherFinalRecommendation?.get('otherRecommendationName')?.value;
       this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(userRecommendation);
     }else if(this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid){
-      this.msService.showWarning("Please type in a recommendation or select another recommendation");
+      this.msService.showWarning('Please type in a recommendation or select another recommendation');
     }
 
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
@@ -2752,6 +2754,15 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  updateSelectedStatus() {
+    const valueSelected = this.approvePreliminaryForm?.get('approvalStatus')?.value;
+    if (valueSelected) {
+      this.selectClientAppealedStatus = 'Accept';
+    } else {
+      this.selectClientAppealedStatus = 'Reject';
+    }
+  }
+
   updateDataReport(data: DataReportDto) {
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
@@ -2929,6 +2940,19 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     setTimeout(function() {
       window.$('#sampleLabResultsModal').modal('show');
+    }, 500);
+  }
+
+  closePopUpsModal5() {
+    window.$('#myModal5').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#finalRecommendationView').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#finalRecommendationView').modal('show');
     }, 500);
   }
 
@@ -3223,16 +3247,22 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealed(valid: boolean) {
 
-    if (this.uploadedAppealFiles.length > 0) {
+
+    const file = this.uploadedAppealFiles;
+    if (file === undefined) {
+      if (valid) {
+        this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
+              this.saveClientAppealed(valid);
+            });
+      }
+    }
+
+    if (file.length > 0) {
         this.saveAppealFilesResults('CLIENT_APPEAL_DOCUMENT');
     }
-    if (valid) {
-      this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
-          // tslint:disable-next-line:max-line-length
-          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
-            this.saveClientAppealed(valid);
-          });
-    }
+
   }
 
   saveAppealFilesResults(docName: string) {
@@ -3249,7 +3279,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
         },
         error => {
           this.SpinnerService.hide();
@@ -3273,7 +3303,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
         },
         error => {
           this.SpinnerService.hide();
@@ -3298,8 +3328,16 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            this.selectedProductRecommendation = this.workPlanInspection.productList.find(lab => lab.referenceNo === this.selectedProductRecommendation.referenceNo);
             this.recommendationDetailsLoad();
-            this.msService.showSuccess('Client appeal status,Saved successfully');
+            window.$('#myModal5').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#finalRecommendationView').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            this.msService.showSuccess('Client appeal status,Saved Test successfully',
+                () => {this.viewRecommendationRecord(this.selectedProductRecommendation)});
           },
           error => {
             this.SpinnerService.hide();
