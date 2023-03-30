@@ -1799,9 +1799,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
 
                             <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
-                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                    && allPermitDetails?.permitDetails?.recommendationApprovalStatus"
+                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && allPermitDetails?.permitDetails?.changesMadeStatus
+                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
                                data-target="#allProcessModel"
                                (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
                                class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
