@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
 import org.apache.commons.lang3.SerializationUtils
 import org.jasypt.encryption.StringEncryptor
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.spec.PermitSpecification
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
@@ -39,6 +41,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
+import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -119,6 +122,7 @@ class QADaoServices(
     @Lazy
     @Autowired
     lateinit var systemsAdminDaoService: SystemsAdminDaoService
+
 
 
     final var appId = applicationMapProperties.mapQualityAssurance
@@ -988,7 +992,7 @@ class QADaoServices(
                         pcmReviewApprovalStatus = 1
                         resubmitApplicationStatus = 0
                         changesMadeStatus = 0
-                        permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
+//                        permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
                         userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                     }
 
@@ -1021,6 +1025,54 @@ class QADaoServices(
                         map,
                         loggedInUser
                     )
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_PCM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitSubmitForPayment(
+        permitID: Long
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+
+            with(permit) {
+                sendApplication = map.activeStatus
+                invoiceGenerated = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusPPayment
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+//                    permitAddRemarksDetails(
+//                        permit.id ?: throw Exception("ID NOT FOUND"),
+//                        permit.pcmReviewApprovalRemarks,
+//                        permit.pcmReviewApprovalStatus,
+//                        "PCM",
+//                        "PCM REVIEW COMPLETENESS",
+//                        map,
+//                        loggedInUser
+//                    )
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
                     val permitAllDetails =
@@ -7925,9 +7977,9 @@ class QADaoServices(
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
         permitInvoiceCalculation(s, permitUser, permit, invoiceDetails)
         with(permit) {
-            sendApplication = s.activeStatus
-            invoiceGenerated = s.activeStatus
-            permitStatus = applicationMapProperties.mapQaStatusPPayment
+//            sendApplication = s.activeStatus
+//            invoiceGenerated = s.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPendingAddExtraCharges
         }
         permitUpdateDetails(permit, s, user)
     }
@@ -8822,8 +8874,7 @@ class QADaoServices(
             batchInvoiceDetail
         )
 
-        val manufactureDetails =
-            commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
+        val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
         val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
         with(myAccountDetails) {
 //                reveneCode = paymentRevenueCode.revenueCode
@@ -10044,6 +10095,11 @@ class QADaoServices(
             populateInvoiceDetails(companyProfile, batchInvoiceEntity, map),
             listPermitsInvoices(allInvoicesInBatch, null, map)
         )
+    }
+
+    fun mapSageInvoiceDetailsListDto(officersName: String): List<SageValuesDto>? {
+        val userListType: Type = object : TypeToken<ArrayList<SageValuesDto?>?>() {}.type
+        return gson.fromJson(officersName, userListType)
     }
 
     fun listPermitsInvoices(

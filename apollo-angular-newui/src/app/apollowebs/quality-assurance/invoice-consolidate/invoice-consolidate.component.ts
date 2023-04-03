@@ -134,13 +134,13 @@ export class InvoiceConsolidateComponent implements OnInit {
         const permitInvoicesIDS: number[] = [];
         permitInvoicesIDS.push(invoicesID);
         const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
-        consolidatedInvoice.batchID = null;
+        consolidatedInvoice.batchID = -1;
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-        consolidatedInvoice.isWithHolding = this.isWithHolding;
+        // consolidatedInvoice.isWithHolding = this.isWithHolding;
 
-        console.log( consolidatedInvoice.isWithHolding);
+        // console.log( consolidatedInvoice.isWithHolding);
         this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);

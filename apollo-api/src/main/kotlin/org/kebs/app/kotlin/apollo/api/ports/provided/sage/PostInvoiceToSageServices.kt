@@ -399,7 +399,6 @@ class PostInvoiceToSageServices(
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
         runBlocking {
-
             val headerBody = SageQAHeaderB().apply {
                 serviceName = "BSKApp"
                 messageID = "BSK KIMS REF- ${invoiceFound.referenceCode} on ${commonDaoServices.convertTimestampToKeswsValidDate(commonDaoServices.getTimestamp())}"

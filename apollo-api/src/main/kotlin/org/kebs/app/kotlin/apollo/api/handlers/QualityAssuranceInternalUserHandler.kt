@@ -345,6 +345,20 @@ class QualityAssuranceInternalUserHandler(
         }
     }
 
+    fun updatePermitDetailsSubmitForPayment(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            qaDaoServices.updatePermitSubmitForPayment(permitID, )
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun updatePermitDetailsDifferenceStatusActivate(req: ServerRequest): ServerResponse {
         return try {
             val permitID =
