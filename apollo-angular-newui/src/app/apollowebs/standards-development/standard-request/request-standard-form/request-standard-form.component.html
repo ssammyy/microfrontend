@@ -34,7 +34,8 @@
 </div>
 
 <div class="container-fluid" style="margin-top: 5%">
-    <form #formDirective="ngForm" (ngSubmit)="saveStandard(formDirective)" [formGroup]="stdRequestFormGroup" class="form">
+    <form #formDirective="ngForm" (ngSubmit)="saveStandard(formDirective)" [formGroup]="stdRequestFormGroup"
+          class="form">
 
         <h1 style="color: #0A95FC">Proposing Subjects for Standardization</h1>
         <h3>Guidelines for collecting and filling in the information required for this template</h3>
@@ -92,12 +93,13 @@
             </div>
             <div class="form-group">
                 <label><b>Telephone Number</b></label>
-<!--                <mat-form-field class="example-full-width has-label"-->
-<!--                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">-->
+                <!--                <mat-form-field class="example-full-width has-label"-->
+                <!--                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">-->
 
 
                 <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"
-                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                                    [selectFirstCountry]="false"
                                     [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"
                                     [phoneValidation]="true"
                                     required
@@ -107,18 +109,20 @@
                         *ngIf="isFormSubmitted && stdRequestFormGroup.controls['phone'].errors?.required">
                     Please Enter Your Phone Number
                 </mat-error>
-<!--                </mat-form-field>-->
+                <!--                </mat-form-field>-->
             </div>
             <div class="form-group">
                 <label><b>Email address:</b></label>
 
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailRegister===true}">
                     <input
+                            (input)="stdRequestFormGroup.controls['email'].setValue(stdRequestFormGroup.controls['email'].value.toLowerCase())"
                             type="email"
                             matInput
                             placeholder="Email Address *"
                             [errorStateMatcher]="matcher"
                             formControlName="email"
+                            style="text-transform: lowercase"
                             (ngModelChange)="emailValidationRegister($event)">
                     <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                         Please enter a valid email address
@@ -329,12 +333,12 @@
             </div>
             <div class="form-group">
 
-            <re-captcha formControlName="captcha" name="captcha" required></re-captcha>
+                <re-captcha formControlName="captcha" name="captcha" required></re-captcha>
                 <mat-error
                         *ngIf="isFormSubmitted && stdRequestFormGroup.controls['captcha'].errors?.required">
                     Captcha must be solved
                 </mat-error>
-            <button class="button-row" (click)="validateCaptcha()">Reset Captcha</button>
+                <button class="button-row" (click)="validateCaptcha()">Reset Captcha</button>
             </div>
 
 

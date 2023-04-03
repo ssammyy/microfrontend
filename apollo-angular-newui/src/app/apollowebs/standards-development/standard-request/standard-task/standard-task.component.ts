@@ -12,10 +12,8 @@ import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
 import {MatRadioChange} from '@angular/material/radio';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-standard-task',
@@ -27,11 +25,9 @@ export class StandardTaskComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
-    dtTrigger2: Subject<any> = new Subject<any>();
-    dtTrigger3: Subject<any> = new Subject<any>();
+
     dtTrigger4: Subject<any> = new Subject<any>();
-    dtTrigger5: Subject<any> = new Subject<any>();
-    dtTrigger6: Subject<any> = new Subject<any>();
+
 
     onApproveApplication: boolean = false;
     // data source for the radio buttons:
@@ -66,16 +62,8 @@ export class StandardTaskComponent implements OnInit {
     rejectedTasks: StandardRequestB[] = [];
     onHoldTasks: StandardRequestB[] = [];
 
-
-    displayedColumns: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions'];
-    displayedColumn: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions', 'action'];
-    dataSource!: MatTableDataSource<StandardRequestB>;
-    dataSourceB!: MatTableDataSource<StandardRequestB>;
-    dataSourceC!: MatTableDataSource<StandardRequestB>;
-
-    dataSourceD!: MatTableDataSource<StandardRequestB>;
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatSort) sort!: MatSort;
+    loading = false;
+    loadingText: string;
 
 
     public actionRequest: StandardRequestB;
@@ -95,6 +83,7 @@ export class StandardTaskComponent implements OnInit {
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
+                private router: Router,
                 private committeeService: CommitteeService,
     ) {
     }
@@ -113,8 +102,7 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
-        this.getApprovedTasks();
-        this.getRejectedTasks();
+
         this.getOnHoldTasks();
 
         this.stdDepartmentChange = this.formBuilder.group({
@@ -140,9 +128,10 @@ export class StandardTaskComponent implements OnInit {
 
     tabChange(ids: any) {
         this.id = ids;
-        console.log(this.id);
+        if (this.id == "Pending Review") {
+            this.reloadCurrentRoute()
+        }
     }
-
 
 
     ngAfterViewInit(): void {
@@ -175,50 +164,20 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public getHOFTasks(): void {
+        this.loading = true
+        this.loadingText = "Retrieving Applications Please Wait ...."
         this.SpinnerService.show()
         this.standardDevelopmentService.getHOFTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide()
-                this.dataSource = new MatTableDataSource(this.tasks);
+                this.rerender()
 
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
                 this.SpinnerService.hide()
 
-            }
-        );
-    }
-
-    public getApprovedTasks(): void {
-        this.standardDevelopmentService.getTCSECTasks().subscribe(
-            (response: StandardRequestB[]) => {
-                this.approvedTasks = response;
-                this.dataSourceB = new MatTableDataSource(this.approvedTasks);
-
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
-
-    public getRejectedTasks(): void {
-        this.standardDevelopmentService.getRejectedReviewsForStandards().subscribe(
-            (response: StandardRequestB[]) => {
-                this.rejectedTasks = response;
-                this.dataSourceC = new MatTableDataSource(this.rejectedTasks);
-
-                this.dataSourceC.paginator = this.paginator;
-                this.dataSourceC.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
             }
         );
     }
@@ -228,10 +187,7 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getOnHoldReviewsForStandards().subscribe(
             (response: StandardRequestB[]) => {
                 this.onHoldTasks = response;
-                this.dataSourceD = new MatTableDataSource(this.onHoldTasks);
 
-                this.dataSourceD.paginator = this.paginator;
-                this.dataSourceD.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -259,8 +215,7 @@ export class StandardTaskComponent implements OnInit {
                         this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                         this.SpinnerService.hide();
                         this.getHOFTasks();
-                        this.getApprovedTasks();
-                        this.getRejectedTasks();
+
                         this.stdHOFReview.reset();
                         this.hideModel()
                     },
@@ -284,8 +239,7 @@ export class StandardTaskComponent implements OnInit {
                         this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                         this.SpinnerService.hide();
                         this.getHOFTasks();
-                        this.getApprovedTasks();
-                        this.getRejectedTasks();
+
                         this.stdHOFReview.reset();
                         this.hideModel()
                     },
@@ -380,17 +334,12 @@ export class StandardTaskComponent implements OnInit {
         this.dtElements.forEach((dtElement: DataTableDirective) => {
             if (dtElement.dtInstance)
                 dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.clear();
                     dtInstance.destroy();
                 });
         });
         setTimeout(() => {
             this.dtTrigger1.next();
-            this.dtTrigger2.next();
-            this.dtTrigger3.next();
-            this.dtTrigger4.next();
-            this.dtTrigger5.next();
-            this.dtTrigger6.next();
+
 
         });
 
@@ -463,38 +412,10 @@ export class StandardTaskComponent implements OnInit {
     ngOnDestroy(): void {
         // Do not forget to unsubscribe the event
         this.dtTrigger1.unsubscribe();
-        this.dtTrigger2.unsubscribe();
-        this.dtTrigger3.unsubscribe();
-        this.dtTrigger4.unsubscribe();
-        this.dtTrigger5.unsubscribe();
-        this.dtTrigger6.unsubscribe();
-
     }
 
     formatFormDate(date: Date) {
         return formatDate(date, this.dateFormat, this.language);
-    }
-
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-        this.dataSourceB.filter = filterValue.trim().toLowerCase();
-        this.dataSourceC.filter = filterValue.trim().toLowerCase();
-        this.dataSourceD.filter = filterValue.trim().toLowerCase();
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-        }
-        if (this.dataSourceB.paginator) {
-            this.dataSourceB.paginator.firstPage();
-        }
-        if (this.dataSourceC.paginator) {
-            this.dataSourceC.paginator.firstPage();
-        }
-
-        if (this.dataSourceD.paginator) {
-            this.dataSourceD.paginator.firstPage();
-        }
     }
 
     onRadiobuttonchange($event: MatRadioChange) {
@@ -504,6 +425,13 @@ export class StandardTaskComponent implements OnInit {
             this.onApproveApplication = false;
         }
 
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 
 

@@ -27,7 +27,6 @@ export class AllApplicationsComponent implements OnInit {
     dtTrigger: Subject<any> = new Subject<any>();
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
-    isDtInitialized: boolean = false
     blob: Blob;
     display = 'none'; //default Variable
     loading = false;
@@ -55,7 +54,6 @@ export class AllApplicationsComponent implements OnInit {
         this.SpinnerService.show();
         this.membershipToTcService.getAllApplications().subscribe(
             (response: ReviewApplicationTask[]) => {
-                console.log(response);
                 this.tcTasks = response;
                 this.rerender()
 
