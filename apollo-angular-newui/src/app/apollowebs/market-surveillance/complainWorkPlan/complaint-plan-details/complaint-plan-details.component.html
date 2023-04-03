@@ -764,7 +764,7 @@
                                             ></ng2-smart-table>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.dataReportDto?.length!=0" label="16" (click)="calculateAverageCompliance()">
+                                    <mat-tab *ngIf="workPlanInspection?.dataReportDto?.length!=0" label="16">
                                         <ng-template mat-tab-label>
                                             DATA REPORT
                                         </ng-template>
@@ -1292,8 +1292,9 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 <!--                                            workPlanInspection?.compliantStatusAdded &&-->
-                                            <button *ngIf="workPlanInspection?.onsiteEndStatus &&
-                                                    workPlanInspection?.msPreliminaryReportStatus == false && workPlanInspection?.bsNumberStatus == true"
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus && workPlanInspection?.bsNumberCountAdded ==
+                                                    workPlanInspection?.sampleSubmitted.length && workPlanInspection?.bsNumberStatus== true &&
+                                                    workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1301,8 +1302,9 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                     (click)="openModalAddDetails('updateIOPreliminary')" mat-raised-button="" data-toggle="modal"
@@ -1311,8 +1313,9 @@
                                                     class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHod
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                     (click)="openModalAddDetails('updateIOPreliminary')" mat-raised-button="" data-toggle="modal"
@@ -1808,42 +1811,42 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
-                        <form [formGroup]="approvePreliminaryForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label><b>Select Status</b></label>
-                                        <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
-                                                        formControlName="approvalStatus"  name="approvalStatus" >
-                                                <mat-option [value]="true">YES</mat-option>
-                                                <mat-option [value]="false">NO</mat-option>
+<!--                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">-->
+<!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label><b>Select Status</b></label>-->
+<!--                                        <mat-form-field>-->
+<!--                                            <mat-select placeholder="Please Select an option"-->
+<!--                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"-->
+<!--                                                        formControlName="approvalStatus"  name="approvalStatus" >-->
+<!--                                                <mat-option [value]="true">YES</mat-option>-->
+<!--                                                <mat-option [value]="false">NO</mat-option>-->
 
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <div>
-                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
-                                                             id="appealFiles1"
-                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
-                                                </file-upload>
-                                            </form>
-                                        </div>
-                                        <label ><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <div>-->
+<!--                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>-->
+<!--                                            <form #demoForm="ngForm">-->
+<!--                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"-->
+<!--                                                             id="appealFiles1"-->
+<!--                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">-->
+<!--                                                </file-upload>-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                        <label ><b>Please write, in detail, your feedback:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea matInput type="text"-->
+<!--                                                      formControlName="remarks"-->
+<!--                                                      name="remarks" required>-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                     <div *ngIf="(currDiv == 'approveFinalPreliminaryHOF')">
                         <form [formGroup]="approvePreliminaryForm" class="form">
                             <div class="form-body">
@@ -3505,6 +3508,65 @@
                     <button mat-raised-button type="button"
                             class="btn btn-danger" data-dismiss="modal"  (click)="closePopUpsModal3();">Close
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dataReportModalUCR" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" (click)="closePopUpsModal4();" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div  *ngIf="(currDiv == 'verificationUCRDetails')">
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesSeizureProducts"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>NO:</th>
+                                        <th>Item Id</th>
+                                        <th>Ucr Number</th>
+                                        <th>Item Description</th>
+                                        <th>Quantity</th>
+                                        <th>Package Quantity</th>
+                                        <th>Item Gross Weight</th>
+                                        <th>Hs Description</th>
+                                        <th>Item Hs Code</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataUcrNumberSearchList; let i=index">
+                                        <td>{{i}}</td>
+                                        <td>{{r.itemId}}</td>
+                                        <td>{{r.ucrNumber}}</td>
+                                        <td>{{r.itemDescription}}</td>
+                                        <td>{{r.quantity}}</td>
+                                        <td>{{r.packageQuantity}}</td>
+                                        <td>{{r.itemGrossWeight}}</td>
+                                        <td>{{r.hsDescription}}</td>
+                                        <td>{{r.itemHsCode}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button mat-raised-button type="button"
+                                class="btn btn-danger" data-dismiss="modal"  (click)="closePopUpsModal4();">Close
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -6138,7 +6200,7 @@
                                         <label><b>Select the SSF to clone</b></label>
                                         <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
                                         <datalist id="SSFValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
+                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -7154,7 +7216,7 @@
                                                   (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
                                                   data-target="#myModal2"
                                                   class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
+                                                class="mat-button-wrapper">WAS APPEAL SUCCESSFUL ?</span>
 
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -7784,7 +7846,7 @@
                                     <div>
                                         <label ><b>Select Status</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
+                                            <mat-select (selectionChange)="updateSelectedStatus()" placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">YES</mat-option>
@@ -7792,11 +7854,11 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">
+                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
-                                                             id="uploadedAppealFilesID"
+                                                <file-upload [(ngModel)]="uploadedAppealNotSuccesFiles" name="uploadedAppealNotSuccesFiles"
+                                                             id="uploadedAppealFilesID5"
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
@@ -7868,7 +7930,7 @@
                 <div class="modal-footer">
 
                     <button mat-raised-button type="button"
-                            class="btn btn-danger" data-dismiss="modal" (click)="closePopUpsModal2();" >Close
+                            class="btn btn-danger" data-dismiss="modal" (click)="closePopUpsModal5();" >Close
                     </button>
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"

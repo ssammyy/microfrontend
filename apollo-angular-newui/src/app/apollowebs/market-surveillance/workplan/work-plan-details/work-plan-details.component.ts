@@ -3248,23 +3248,18 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealed(valid: boolean) {
 
-
-    const file = this.uploadedAppealNotSuccesFiles;
-    if (file === undefined) {
-      if (valid) {
-        this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
-            // tslint:disable-next-line:max-line-length
-            'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
-              this.saveClientAppealed(valid);
-            });
-      }
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure you want to add the details?', 'You won\'t be able to update the details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and change the details/files before saving', 'SUCCESS', () => {
+            this.saveClientAppealed(valid);
+          });
     }
-
-    if (file.length > 0) {
-        this.saveAppealFilesResults('CLIENT_APPEAL_DOCUMENT');
+    else {
+      // Handle the case when there are no uploaded files and the form is invalid.
     }
-
   }
+
 
   saveAppealFilesResults(docName: string) {
     this.SpinnerService.show();
@@ -3338,7 +3333,31 @@ export class WorkPlanDetailsComponent implements OnInit {
             window.$('#finalRecommendationView').modal('hide');
             window.$('body').removeClass('modal-open');
             window.$('.modal-backdrop').remove();
-            this.msService.showSuccess('Client appeal status,Saved Test successfully',
+            const appealFiles = this.uploadedAppealNotSuccesFiles;
+            if (appealFiles?.length > 0){
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+              formData.append('docTypeName', 'CLIENT_APPEAL_DOCUMENT');
+              for (let i = 0; i < appealFiles.length; i++) {
+                formData.append('docFile', appealFiles[i], appealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log("Appeal Files uploaded successfully");
+                    this.closePopUpsModal5();
+                    //this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    console.log(error);
+                    console.log("Appeal files not uploaded.. above error");
+                    this.closePopUpsModal5();
+                  },
+              );
+            }
+
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILE(S) SAVED SUCCESSFULLY',
                 () => {this.viewRecommendationRecord(this.selectedProductRecommendation)});
           },
           error => {
@@ -3351,9 +3370,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
-    if (this.uploadedSuccessfulAppealFiles.length > 0) {
-      this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
-    }
+    // if (this.uploadedSuccessfulAppealFiles.length > 0) {
+    //   this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+    // }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
@@ -3378,8 +3397,31 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.approvePreliminaryForm.reset();
             this.recommendationDetailsLoad();
+            const successfulAppealFiles = this.uploadedSuccessfulAppealFiles;
+            if (successfulAppealFiles?.length > 0){
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+              formData.append('docTypeName', 'SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+              for (let i = 0; i < successfulAppealFiles.length; i++) {
+                formData.append('docFile', successfulAppealFiles[i], successfulAppealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log("Appeal Files both success/unsuccessful uploaded successfully")
+                    //this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    //this.SpinnerService.hide();
+                    console.log(error);
+                    console.log("Files were not uploaded.. check error above");
+                    //this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
+            }
             this.SpinnerService.hide();
-            this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILES(S) SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

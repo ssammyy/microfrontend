@@ -101,6 +101,14 @@ class MSJSONControllers(
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         dataReportDocId = fileDocSaved!!.id
                     }
+                    "CLIENT_APPEAL_DOCUMENT" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        clientAppealDocID = fileDocSaved!!.id
+                    }
+                    "SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        successfulOrUnsuccessfulAppealDocID = fileDocSaved!!.id
+                    }
                 }
             }
             workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
