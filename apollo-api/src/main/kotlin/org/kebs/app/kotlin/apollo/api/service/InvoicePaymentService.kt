@@ -270,11 +270,11 @@ class InvoicePaymentService(
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             if (demandNote.varField5.isNullOrEmpty()) {
                 demandNote.varField5 =
                     "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             }
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
             this.billingService.registerBillTransaction(
