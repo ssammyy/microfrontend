@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
 import org.apache.commons.lang3.SerializationUtils
@@ -110,6 +111,7 @@ class QADaoServices(
 
     ) {
 
+    val gson = Gson()
 
     @Lazy
     @Autowired
