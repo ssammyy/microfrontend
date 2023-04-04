@@ -1775,42 +1775,42 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'clientAppealed')">
-                        <form [formGroup]="approvePreliminaryForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label ><b>Select Status</b></label>
-                                        <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
-                                                        formControlName="approvalStatus"  name="approvalStatus" >
-                                                <mat-option [value]="true">YES</mat-option>
-                                                <mat-option [value]="false">NO</mat-option>
+<!--                    <div *ngIf="(currDiv == 'clientAppealed')">-->
+<!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label ><b>Select Status</b></label>-->
+<!--                                        <mat-form-field>-->
+<!--                                            <mat-select placeholder="Please Select an option"-->
+<!--                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"-->
+<!--                                                        formControlName="approvalStatus"  name="approvalStatus" >-->
+<!--                                                <mat-option [value]="true">YES</mat-option>-->
+<!--                                                <mat-option [value]="false">NO</mat-option>-->
 
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">
-                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
-                                                             id="uploadedAppealFilesID2"
-                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
-                                                </file-upload>
-                                            </form>
-                                        </div>
-                                        <label ><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">-->
+<!--                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>-->
+<!--                                            <form #demoForm="ngForm">-->
+<!--                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"-->
+<!--                                                             id="uploadedAppealFilesID2"-->
+<!--                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">-->
+<!--                                                </file-upload>-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                        <label ><b>Please write, in detail, your feedback:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea matInput type="text"-->
+<!--                                                      formControlName="remarks"-->
+<!--                                                      name="remarks" required>-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
 <!--                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">-->
 <!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
 <!--                            <div class="form-body">-->
