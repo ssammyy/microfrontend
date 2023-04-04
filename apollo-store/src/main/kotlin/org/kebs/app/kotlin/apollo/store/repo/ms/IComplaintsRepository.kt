@@ -79,6 +79,17 @@ interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, Jpa
         @Param("regionID") regionID: Long,
     ): List<ComplaintEntity>
 
+    @Query(
+        "SELECT cp.* FROM  DAT_KEBS_MS_COMPLAINT cp, DAT_KEBS_MS_COMPLAINT_LOCATION cpl\n" +
+                "WHERE cp.id = cpl.COMPLAINT_ID  and  cp.USER_TASK_ID =:userTaskID and  cp.VAR_FIELD_1 =:msProcessID AND cpl.REGION = :regionID",
+        nativeQuery = true
+    )
+    fun findNewComplaintDueToRegionChange(
+        @Param("userTaskID") userTaskID: Long,
+        @Param("msProcessID") msProcessID: String,
+        @Param("regionID") regionID: Long,
+    ): List<ComplaintEntity>
+
     //    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int, pageable: Pageable):  Page<ComplaintEntity>?
     fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int): ComplaintEntity?
     fun findByUuid(uuid: String): ComplaintEntity?

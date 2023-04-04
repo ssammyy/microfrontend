@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, NgModule, OnInit} from '@angular/core';
 import {Department, Product, ProductSubCategory, TechnicalCommittee} from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -8,6 +8,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
+import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
+
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -15,6 +17,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
         return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }
+
+
 
 @Component({
     selector: 'app-request-standard-form',
@@ -60,6 +64,10 @@ export class RequestStandardFormComponent implements OnInit {
 
     isFormSubmitted = false;
 
+    SearchCountryField = SearchCountryField;
+    CountryISO = CountryISO;
+    PhoneNumberFormat = PhoneNumberFormat;
+    preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -119,6 +127,8 @@ export class RequestStandardFormComponent implements OnInit {
             integration: ['', Validators.required],
             exportMarkets: ['', Validators.required],
             levelOfStandard: ['', Validators.required],
+            captcha: ['', Validators.required],
+
         });
     }
 
@@ -172,7 +182,9 @@ export class RequestStandardFormComponent implements OnInit {
             // if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
             //     this.onClickSaveUploads("568","Marvin")
             // }
-
+           // e164Number:"+254702882256"
+            let Data:any = this.stdRequestFormGroup.controls['phone'].value;
+            this.stdRequestFormGroup.controls['phone'].setValue(Data.e164Number)
             this.SpinnerService.show();
             this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
                 (response) => {
@@ -302,6 +314,11 @@ export class RequestStandardFormComponent implements OnInit {
         } else {
             this.validNumberType = false;
         }
+    }
+
+    validateCaptcha() {
+        this.stdRequestFormGroup.value.captcha = '';
+
     }
 
 

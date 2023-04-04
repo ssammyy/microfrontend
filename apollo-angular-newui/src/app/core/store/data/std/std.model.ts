@@ -46,8 +46,15 @@ export interface UsersEntity {
     firstName: string;
     userTypes: number;
     email: string;
+    telephone: string;
 
 
+}
+export interface CompanyView {
+    company: string;
+}
+export interface KraPinView {
+    kraPin: string;
 }
 
 export interface BusinessLinesView {
@@ -626,6 +633,22 @@ export class PredefinedSdIntCommentsFields{
     requestID: number;
     draftID: number;
 }
+export class ProposalComments{
+    commentDocumentType: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    standardNumber: string;
+    commentTitle: string;
+    scope: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    requestId: number;
+    draftId: number;
+    adoptionAcceptableAsPresented: string;
+}
 export class PredefinedSDCommentsFields {
     standardNumber: string;
     commentTitle: string;
@@ -650,9 +673,11 @@ export class PredefinedSDCommentsFields {
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
+    requestId: number;
     docName: string;
     title: string;
     tcSecName: string;
+    tcSecEmail: string;
     circulationDate: string;
     closingDate: string;
     scope: string;
@@ -667,7 +692,8 @@ export interface ISAdoptionProposal {
     dateOfApplication: string;
     proposalNumber: string;
     stakeholdersList: string[];
-    addStakeholdersList: string[];
+    addStakeholdersList: StakeHoldersFields[]
+    //addStakeholdersList: string[];
     iStandardNumber: string;
     deadlineDate: Timestamp<any>;
     noOfComments: number;
@@ -685,6 +711,12 @@ export interface ISAdoptionProposal {
     description: string;
     special: string;
     normativeReference: string;
+    adoptionProposalLink: string;
+    adoptionLink: string;
+    voteFor: number;
+    voteAgainst: number;
+    requesterName: string;
+    departmentName: string;
 }
 
 export interface ISJustificationProposal {
@@ -925,7 +957,11 @@ export interface ISProposalJustification{
     closingDate : Timestamp<any>;
     tcAcceptanceDate : string;
     proposalId : number;
-    draftId : number;  
+    draftId : number;
+    tcSecName: string;
+    standardNumber: string;
+    title: string;
+    referenceMaterial: string;
 }
 
 export interface ISAdoptionJustification {
@@ -1020,6 +1056,7 @@ export interface ISDraftDecisionStd {
     scope: string;
     special: string;
     standardNumber: string;
+    standardType: string;
 }
 
 export interface ISSacSecTASKS {
@@ -2188,7 +2225,7 @@ export interface NwaRequestList{
     phone: string;
     email: string;
     submissionDate: Timestamp<any>;
-    departmentId: string;
+    departmentId: number;
     productSubCategoryId: string;
     tcId: string;
     productId: string;
@@ -2607,6 +2644,31 @@ export interface HistoricalData{
     amount : number;
     location : string;
     prn : string;
+}
+export class StakeHoldersFields{
+    stakeHolderName: string;
+    stakeHolderEmail: string;
+    stakeHolderPhone: string;
+}
+
+export interface HistoricalPayments{
+    id: number;
+    paymentDate: Timestamp<any>;
+    paymentAmount: number;
+    levyPaid: number;
+    kraPin: string;
+    periodFrom: Timestamp<any>;
+    periodTo: Timestamp<any>;
+    entryNumber: string;
+    nameOfFirm: string;
+    location: string;
+    prn: string;
+    monthsLate: number;
+    penaltyApplied: number;
+    levyPenaltyPayable: number;
+    levyPenaltiesPaid: number;
+    overallNetAmt: number;
+    levyPenaltyPaymentDate: Timestamp<any>;
 }
 
 

@@ -70,6 +70,7 @@ class StandardRequestService(
     private val usersRepo: IUserRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
 
+
     ) {
 
     val PROCESS_DEFINITION_KEY = "requestModule"
@@ -78,6 +79,7 @@ class StandardRequestService(
     val TASK_CANDIDATE_GROUP_TC = "TC"
     val TASK_CANDIDATE_GROUP_SPC_SEC = "SPC-sec"
     val variable: MutableMap<String, Any> = HashMap()
+
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
@@ -211,18 +213,30 @@ class StandardRequestService(
                 .orElseThrow { RuntimeException("No Standard Request found") }
         }
         if (standardRequestToUpdate != null) {
-            if (hofFeedback.sdResult == "Approve For Review") {
-                standardRequestToUpdate.status = "Assigned To TC Sec"
-                standardRequestToUpdate.process = hofFeedback.sdOutput
-                standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
-                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+            when (hofFeedback.sdResult) {
+                "Approve For Review" -> {
+                    standardRequestToUpdate.status = "Assigned To TC Sec"
+                    standardRequestToUpdate.process = hofFeedback.sdOutput
+                    standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
+                    standardRequestToUpdate.tcAssigned = hofFeedback.tcId
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
 
-            } else if (hofFeedback.sdResult == "Reject For Review") {
-                standardRequestToUpdate.status = "Rejected For Review"
-                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                }
 
+                "Reject For Review" -> {
+                    standardRequestToUpdate.status = "Rejected For Review"
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+
+                }
+
+                "On Hold" -> {
+                    standardRequestToUpdate.status = "On Hold"
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+
+                }
             }
             standardRequestRepository.save(standardRequestToUpdate)
         }
@@ -246,9 +260,9 @@ class StandardRequestService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndTcSecAssigned(
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndProcess(
                 "Assigned To TC Sec",
-                loggedInUser.id.toString()
+                "Develop a standard through committee draft"
             )
 
         return standardRequest.map { p ->
@@ -272,8 +286,9 @@ class StandardRequestService(
                 p.exportMarkets,
                 p.levelOfStandard,
                 p.status,
-                departmentRepository.findNameById(p.departmentId?.toLong()),
+                returnDepartmentName(p.departmentId!!.toLong()),
                 //Feedback Segment From Review
+
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.lastName,
@@ -314,7 +329,51 @@ class StandardRequestService(
                 p.exportMarkets,
                 p.levelOfStandard,
                 p.status,
-                departmentRepository.findNameById(p.departmentId?.toLong()),
+                returnDepartmentName(p.departmentId!!.toLong()),
+                //Feedback Segment From Review
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
+
+                returnUsername(p.id.toString()),
+                p.id.let { findHofFeedbackDetails(it.toString())?.createdOn },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdOutput },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdResult },
+                p.id.let { findHofFeedbackDetails(it.toString())?.reason },
+
+
+                )
+        }
+
+
+    }
+
+
+    fun getAllOnHoldStandardRequestsToPrepareNWI(): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("On Hold")
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                returnDepartmentName(p.departmentId!!.toLong()),
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -336,17 +395,17 @@ class StandardRequestService(
     fun uploadNWI(standardNWI: StandardNWI): ProcessInstanceResponseValue {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var allOrganization = ""
-        val klaxon = Klaxon()
-        JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
-            reader.beginArray {
-                while (reader.hasNext()) {
-                    val liaisonOrganization = klaxon.parse<LiaisonOrganization>(reader)
-                    println(liaisonOrganization?.name)
-                    allOrganization += liaisonOrganization?.name + ","
-                }
-            }
-        }
-        standardNWI.liaisonOrganisation = allOrganization
+//        val klaxon = Klaxon()
+//        JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
+//            reader.beginArray {
+//                while (reader.hasNext()) {
+//                    val liaisonOrganization = klaxon.parse<LiaisonOrganization>(reader)
+//                    println(liaisonOrganization?.name)
+//                    allOrganization += liaisonOrganization?.name + ","
+//                }
+//            }
+//        }
+//        standardNWI.liaisonOrganisation = allOrganization
 
         val standardRequestToUpdate = standardNWI.standardId?.let {
             standardRequestRepository.findById(it)
@@ -508,7 +567,10 @@ class StandardRequestService(
     fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardNWIRepository.findAllByStatusAndProcessStatusIsNullAndTcSec("Upload Justification",loggedInUser.id.toString())
+        return standardNWIRepository.findAllByStatusAndProcessStatusIsNullAndTcSec(
+            "Upload Justification",
+            loggedInUser.id.toString()
+        )
     }
 
 
@@ -573,25 +635,37 @@ class StandardRequestService(
     fun getJustificationsPendingDecision(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Created. Awaiting Decision", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Created. Awaiting Decision",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getApprovedJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Approved", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Approved",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getRejectedJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Rejected",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected With Amendments", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Rejected With Amendments",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getJustificationByNwiId(nwiId: Long): List<StandardJustification> {
@@ -973,7 +1047,7 @@ class StandardRequestService(
     }
 
     fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {
-        hofFeedbackRepository.findTopBySdRequestID(sdRequestNumber).let {
+        hofFeedbackRepository.findTopBySdRequestIDOrderByIdDesc(sdRequestNumber).let {
             return it
         }
     }
@@ -986,6 +1060,18 @@ class StandardRequestService(
             user?.firstName + " " + user?.lastName
         } else {
             "Not Assigned"
+        }
+
+
+    }
+
+    fun returnDepartmentName(departmentId: Long): String? {
+        val department = departmentRepository.findById(departmentId)
+
+        return if (department.isEmpty) {
+            "Not Assigned"
+        } else {
+            department.get().name
         }
 
 

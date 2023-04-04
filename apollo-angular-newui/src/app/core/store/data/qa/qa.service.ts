@@ -390,6 +390,23 @@ export class QaService {
         );
     }
 
+    public qaApprovePermitPCMReview(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.APPROVE_REJECT_PERMIT_PCM_REVIEW);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public qaPermitCompletenessUpgrade(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
@@ -515,6 +532,40 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPcmAddAmountToInvoice(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_EXTRA_AMOUNT);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPcmSubmitForPayment(permitID: string): Observable<any> {
+        // console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SUBMIT_FOR_PAYMENT);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -1313,6 +1364,21 @@ export class QaService {
         );
     }
 
+    public reSubmitInvoiceConsolidatedDetails(batchID: string): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATED_RE_SUBMIT);
+        const params = new HttpParams()
+            .set('batchID', batchID);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, null, {params}).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public createInvoiceConsolidatedDifferenceDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_DIFFERENCE_SUBMIT);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
@@ -1369,12 +1435,12 @@ export class QaService {
         );
     }
 
-    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10RawMaterialsDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_RAW_MATERIAL);
         const params = new HttpParams()
             .set('qaSta10ID', qaSta10ID);
-        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
-            map(function (response: STA10ProductsManufactureDto) {
+        return this.http.get<STA10RawMaterialsDto[]>(url, {params}).pipe(
+            map(function (response: STA10RawMaterialsDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

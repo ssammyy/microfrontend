@@ -200,4 +200,8 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var workPlanGeneratedID: Long? = null
 
+    @Column(name = "CHANGES_MADE")
+    @Basic
+    var changesMade: String? = null
+
 }

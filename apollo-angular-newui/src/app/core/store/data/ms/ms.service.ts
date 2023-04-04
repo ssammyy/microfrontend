@@ -89,7 +89,7 @@ import {
     ConsumerComplaintViewSearchValues,
     SeizeViewSearchValues,
     SubmittedSamplesSummaryViewSearchValues,
-    OGAEntity, WorkPlanScheduleOnsiteDto,
+    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -726,13 +726,13 @@ export class MsService {
         );
     }
 
-    public loadUCRDetailsSearch(ucrNumber: string): Observable<PermitUcrSearch> {
+    public loadUCRDetailsSearch(ucrNumber: string): Observable<UcrNumberSearch[]> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_SEARCH_UCR_NUMBER);
         const params = new HttpParams()
             .set('ucrNumber', ucrNumber);
-        return this.http.get<PermitUcrSearch>(url, {params}).pipe(
-            map(function (response: PermitUcrSearch) {
+        return this.http.get<UcrNumberSearch[]>(url, {params}).pipe(
+            map(function (response: UcrNumberSearch[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -1160,6 +1160,9 @@ export class MsService {
                 break;
             case 'completed':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.COMPLETED_WORK_PLAN_LIST);
+                break;
+            case 'same-with-others':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.SAME_WORK_PLAN_LIST);
                 break;
         }
 
@@ -1971,6 +1974,28 @@ export class MsService {
         );
     }
 
+    public saveWorkPlanFilesFinalENDWorkPlan(data: FormData): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_FINAL_COMPLAINT_REMARKS_WORK_PLAN_FILE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public saveWorkPlanFilesFinalReportHOFHOD(data: FormData): Observable<any> {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
@@ -2612,6 +2637,9 @@ export class MsService {
                 break;
             case 'new-complaint':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.NEW_COMPLAINT_LIST);
+                break;
+            case 'region-change-complaint':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.REGION_CHANGED_COMPLAINT_LIST);
                 break;
             case 'completed':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLETED_COMPLAINT_LIST);

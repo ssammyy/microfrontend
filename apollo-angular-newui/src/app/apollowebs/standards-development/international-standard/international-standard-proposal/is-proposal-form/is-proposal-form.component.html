@@ -24,172 +24,211 @@ type="ball-scale-multiple"
 <div class="toolbar">
 
 </div>
-<div class="material-datatables">
-<form (ngSubmit)="uploadProposal()" [formGroup]="isProposalFormGroup" class="form">
+<div class="material-datatables table-responsive">
+    <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="knw">Request Number</th>
+            <th class="sl">Name</th>
+            <th class="sl">Phone</th>
+            <th class="requestNumber">Organisation Name</th>
+            <th class="knw">Subject</th>
+            <th>Department</th>
+            <th>Date Submitted</th>
+            <th class="action">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr  *ngFor="let nwaRequestList of nwaRequestLists let i=index">
+            <td>{{i+1}}</td>
+            <td>{{nwaRequestList.requestNumber}}</td>
+            <td>{{nwaRequestList.name}}</td>
+            <td>{{nwaRequestList.phone}}</td>
+            <td>{{nwaRequestList.organisationName}}</td>
+            <td>{{nwaRequestList.subject}}</td>
+            <td>{{nwaRequestList.departmentName}}</td>
+            <td>{{nwaRequestList.submissionDate | date: 'dd/MM/yyyy' }}</td>
+            <td ><a  (click)="onOpenModal(nwaRequestList,'prepareJustification')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Prepare Proposal</a></td>
 
-<hr>
+        </tr>
+        </tbody>
+    </table>
+    <div class="modal fade" id="prepareJustification" tabindex="-1" role="dialog" aria-labelledby="prepareJustificationLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="logo"><a class="simple-text logo-mini">
+                        <div class="logo-img"><img src="/assets/img/white_logo.png" alt="kebs_logo" style="width: 90px;"></div>
+                    </a></div>
+                    <h3 class="modal-title" id="prepareJustificationLabel">ADOPTION PROPOSAL FORM</h3>
+                    <button type="button" #closeModalUploadJustification class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-<div class="form-body">
-    <div class="row col-12">
-<div class="form-group col-12">
-    <label><b>Enter Document Type</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" ngModel="{{proposal_doc_name}}" formControlName="proposal_doc_name" name="proposal_doc_name"
-placeholder="name" type="text" disabled>
-</div>
-    </div>
-    <div class="row col-12">
-    <div class="form-group col-6">
-        <label><b>Uploaded By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-        <input
-                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                class="form-control one-column-input" formControlName="tcSecName" ngModel="{{fullname}}" name="tcSecName"
-                placeholder="Name" type="text" disabled>
-    </div>
-        <div class="form-group col-6">
-            <label><b>Date of Circulation</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <input
-                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                    class="form-control one-column-input" formControlName="circulationDate" name="circulationDate"
-                    placeholder="circulationDate" type="date" >
-        </div>
-        <div class="form-group col-6">
-            <label><b>Closing Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <input
-                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                    class="form-control one-column-input" formControlName="closingDate" name="closingDate"
-                    placeholder="closingDate" type="date" >
-        </div>
-        <div class="form-group col-12">
-            <label><b>Select Stakeholders to send Adoption proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <ng-multiselect-dropdown
-                    [placeholder]="'Select Stakeholders to send Adoption proposal'"
-                    [settings]="dropdownSettings"
-                    [data]="dropdownList"
-                    (onSelect)="onItemSelect($event)"
-                    (onSelectAll)="onSelectAll($event)"
-                    formControlName="stakeholdersList"
-                    name="stakeholdersList">
-            </ng-multiselect-dropdown>
-        </div>
+                    <div class="modal-body">
+                            <form (ngSubmit)="uploadProposal()" [formGroup]="isProposalFormGroup" class="form">
+                            <div class="form-body">
+                                <div class="row col-12">
+                                    <div class="form-group col-12">
+                                        <label><b>Enter Document Type</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                               class="form-control one-column-input" value="{{proposal_doc_name}}" formControlName="proposal_doc_name" name="proposal_doc_name"
+                                               placeholder="name" type="text" disabled>
+                                    </div>
+                                </div>
+                                <div class="row col-12">
+                                    <div class="form-group col-6">
+                                        <label><b>Uploaded By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" formControlName="tcSecName" value="{{fullname}}" name="tcSecName"
+                                                placeholder="Name" type="text" disabled>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Date of Circulation</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" formControlName="circulationDate" name="circulationDate"
+                                                placeholder="circulationDate" type="date" >
+                                    </div>
+                                </div>
 
-        <div class="form-group col-12">
-            <p style="color: red">(*)Type Emails of stake holders that are not on the Dropdown Select List(Comma Separated)</p>
-            <label><b>Stake Holders Email</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                      class="form-control one-column-input" formControlName="addStakeholdersList" name="addStakeholdersList"
-                      placeholder="Email Address" type="text"></textarea>
+                                <h4 style="font-weight: bold">
+                                    The Kenya Bureau of Standards intends to adopt the International Standard as detailed here below
+                                </h4>
+                                <div class="row col-12">
+                                    <div class="form-group col-6">
+                                        <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"  formControlName="iStandardNumber" name="iStandardNumber"
+                                                placeholder="International Standard Number" type="text" >
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                  class="form-control one-column-input" value="{{actionRequests?.subject}}" formControlName="title" name="title"
+                                                  placeholder="International Standard Title" type="text"></textarea>
 
-        </div>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                  class="form-control one-column-input" value="{{actionRequests?.description}}" formControlName="scope" name="scope"
+                                                  placeholder="International Standard Scope" type="text"></textarea>
 
-    </div>
+                                    </div>
+                                    <div class="form-group col-sm-12">
+                                        <label *ngIf="formISProposal.adoptionProposalLink.invalid"><b>Append Link</b><span style="font-size: small; color: red;">(*)Kindly ensure the URL entered is in the correct format and is valid</span></label>
+                                        <label *ngIf="formISProposal.adoptionProposalLink.valid"><b>Append Link</b><span style="font-size: small; color: green; font-weight: bold">(*)URL Format has been validated</span></label>
+                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                  class="form-control one-column-input" formControlName="adoptionProposalLink" name="adoptionProposalLink"
+                                                  placeholder="" type="text"></textarea>
 
-        <h4 style="font-weight: bold">
-            The Kenya Bureau of Standards intends to adopt the International Standard as detailed here below
-        </h4>
-    <div class="row col-12">
-        <div class="form-group col-6">
-            <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <input
-                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                    class="form-control one-column-input"  formControlName="iStandardNumber" name="iStandardNumber"
-                    placeholder="International Standard Number" type="text" >
-        </div>
-        <div class="form-group col-12">
-            <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                      class="form-control one-column-input" formControlName="title" name="title"
-                      placeholder="International Standard Title" type="text"></textarea>
+<!--                                        <div *ngIf="formISProposal.adoptionProposalLink.touched && formISProposal.adoptionProposalLink.invalid" >-->
+<!--                                            <div *ngIf="formISProposal.adoptionProposalLink.errors.required"> This field is required!</div>-->
+<!--                                            <div *ngIf="formISProposal.adoptionProposalLink.errors.url"> invalid URL </div>-->
+<!--                                        </div>-->
 
-        </div>
-        <div class="form-group col-12">
-            <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                      class="form-control one-column-input" formControlName="scope" name="scope"
-                      placeholder="International Standard Scope" type="text"></textarea>
+                                    </div>
 
-        </div>
+                                    <div class="form-group col-12">
+                                        <label><b>Select Stakeholders to send Adoption proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <ng-multiselect-dropdown
+                                                [placeholder]="'Select Stakeholders to send Adoption proposal'"
+                                                [settings]="dropdownSettings"
+                                                [data]="dropdownList"
+                                                (onSelect)="onItemSelect($event)"
+                                                (onSelectAll)="onSelectAll($event)"
+                                                formControlName="stakeholdersList"
+                                                name="stakeholdersList">
+                                        </ng-multiselect-dropdown>
+                                    </div>
 
-        <div class="row col-12">
-            <div class="form-group col-12">
-                <label><b>Attach Adoption Proposal Document</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                <form #demoForm="ngForm">
-                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".docx" ></file-upload>
-                    <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
-                </form>
+                                    <div class="row col-12">
+                                        <br>
+                                        <p style="color: red">(*)Type Emails,Phone Number and Names of stake holders that are not on the Dropdown Select List(Comma Separated)</p>
+                                        <label><b>Stake Holders Contacts</b><span style="font-size: xx-small; color: red;"></span></label>
+                                        <div class="form-group col-4">
+                                            <label><b>Names</b><span style="font-size: xx-small; color: red;"></span></label>
+                                            <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                     class="form-control one-column-input" formControlName="stakeHolderName"  name="stakeHolderName"
+                                                     placeholder="" type="text">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label><b>Email</b><span style="font-size: xx-small; color: red;"></span></label>
+                                            <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                     class="form-control one-column-input" formControlName="stakeHolderEmail"  name="stakeHolderEmail"
+                                                     placeholder="" type="text">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label><b>Phone Number</b><span style="font-size: xx-small; color: red;"></span></label>
+                                            <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                     class="form-control one-column-input" formControlName="stakeHolderPhone"  name="stakeHolderPhone"
+                                                     placeholder="" type="text">
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="isProposalFormGroup.valid" mat-raised-button
+                                                        class="btn btn-success float-right" (click)="onClickAddResource()" type="button" >Add StakeHolder
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12" *ngIf="isProposalFormGroup.valid">
+                                            <div class="table-responsive">
+                                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Names</th>
+                                                        <th>Email Address</th>
+                                                        <th>Phone Number</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let r of dataSaveResourcesRequiredList; let i=index">
+                                                        <td>{{r.stakeHolderName}}</td>
+                                                        <td>{{r.stakeHolderEmail}}</td>
+                                                        <td>{{r.stakeHolderPhone}}</td>
+                                                        <td>
+                                                            <button (click)="removeDataResource(i)"
+                                                                    type="button"
+                                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <input type="hidden" value="{{actionRequests?.id}}" formControlName="requestId" name="requestId" >
+                                    <input type="hidden" value="{{actionRequests?.departmentId}}" formControlName="departmentId" name="departmentId" >
+                                    <input type="hidden" value="{{actionRequests?.departmentName}}" formControlName="departmentName" name="departmentName" >
+                                </div>
+                            </div>
+                            </form>
+
+                            <div class="row col-12 float-right modal-footer" *ngIf="isProposalFormGroup.valid">
+                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                <button  class="btn btn-sm btn-info float-right" (click)="onClickSaveProposal()" type="button">Submit</button>
+                            </div>
+
+
+                    </div>
+                <div class="col-12">
+                    <h3 style="font-weight: bold; color: black">NOTE: Absence of any reply or comments shall be deemed to be an acceptance of the proposal for adoption and shall constitute an approval vote.</h3>
+                </div>
+
+
             </div>
         </div>
-<!--        <div class="form-group col-12">-->
-<!--            <label><b>Adoption Acceptable as Presented</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                      class="form-control one-column-input" formControlName="adoptionAcceptableAsPresented" name="adoptionAcceptableAsPresented"-->
-<!--                      placeholder="Adoption Acceptable as Presented" type="text"></textarea>-->
-
-<!--        </div>-->
-<!--        <div class="form-group col-12">-->
-<!--            <label><b>Reasons for Not Acceptance</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                      class="form-control one-column-input" formControlName="reasonsForNotAcceptance" name="reasonsForNotAcceptance"-->
-<!--                      placeholder="Reasons for Not Acceptance" type="text"></textarea>-->
-
-<!--        </div>-->
-<!--        <div class="form-group col-12">-->
-<!--            <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                      class="form-control one-column-input" formControlName="recommendations" name="recommendations"-->
-<!--                      placeholder="Recommendations" type="text"></textarea>-->
-
-<!--        </div>-->
-<!--        <div class="form-group col-6">-->
-<!--            <label><b>Name of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <input-->
-<!--                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                    class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"-->
-<!--                    placeholder="" type="text" >-->
-<!--        </div>-->
-<!--        <div class="form-group col-6">-->
-<!--            <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <input-->
-<!--                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                    class="form-control one-column-input" formControlName="positionOfRespondent" name="positionOfRespondent"-->
-<!--                    placeholder="" type="text" >-->
-<!--        </div>-->
-<!--        <div class="form-group col-6">-->
-<!--            <label><b>Name of Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <input-->
-<!--                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                    class="form-control one-column-input" formControlName="nameOfOrganization" name="nameOfOrganization"-->
-<!--                    placeholder="" type="text" >-->
-<!--        </div>-->
-<!--        <div class="form-group col-6">-->
-<!--            <label><b>Date of Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--            <input-->
-<!--                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                    class="form-control one-column-input" formControlName="dateOfApplication" name="dateOfApplication"-->
-<!--                    placeholder="" type="date" >-->
-<!--        </div>-->
     </div>
-<!--    <div class="row col-12">-->
-<!--        <div class=" col-12">-->
-<!--            <label><b>Upload Proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--    <form #demoForm="ngForm">-->
-<!--        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf" ></file-upload>-->
-<!--        <input class="form-control one-column-input" ngModel="IS Proposal"  name="DocDescription" type="hidden">-->
-<!--    </form>-->
-<!--        </div>-->
-<!--    </div>-->
-    </div>
-    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-        <button  class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
-
-    </div>
-
-
-
-
-
-</form>
-
 </div>
 </div>
 </div>

@@ -22,7 +22,7 @@ data class StdLevyNotificationFormDTO(
 
 )
 
-class NotificationForm (val responseMessage: String) {
+class NotificationForm (val responseMessage: String,val responseStatus: String,val responseButton: String,val responseMsg: String) {
 }
 
 class PaymentStatus (val responseStatus: Long) {
@@ -177,6 +177,12 @@ data class CompanySuspendDto(
     var companyId: Long? = null,
 ){}
 
+data class ExemptionStatusDto(
+    var companyId: Long? = null,
+    var exemptionStatus: Long? = null
+
+){}
+
 data class CompanyCloseDto(
     var id: Long? = null,
     var companyId: Long? = null,
@@ -285,12 +291,19 @@ class ResponseMessage (val responseMessage: String) {
 }
 class ResponseNotification (val responseMessage: Int) {
 }
+data class LevyFiltersDTOs(
+    var startDate: Date? = null,
+    var endDate: Date? =null,
+    var region : String? = null
+){}
 
 data class LevyFilterDTO(
     var startDate: Date? = null,
     var endDate: Date? =null,
     var businessLines: Long?= null,
     var region : Long? = null,
+    var company : String? = null,
+    var kraPin : String? = null,
 ){}
 
 data class LevyFiltersDTO(

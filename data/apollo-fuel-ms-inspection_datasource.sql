@@ -992,9 +992,10 @@ SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where
 
 
 create OR REPLACE view SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW as
-SELECT b.ID,b.SENDERS_DATE,b.DATE_VISIT,b.SAMPLE_REFERENCES,b.SAMPLE_COLLECTION_DATE,c.RESULTS_DATE,c.RESULT_SENT_DATE,a.OFFICER_ID,a.COMPLAINT_DEPARTMENT,
+SELECT b.ID,b.SENDERS_DATE,b.DATE_VISIT,b.SAMPLE_REFERENCES,c.RESULTS_DATE,c.RESULT_SENT_DATE,a.OFFICER_ID,a.COMPLAINT_DEPARTMENT,
        nvl(TO_CHAR(TRUNC(b.DATE_VISIT),'DD/MM/YYYY'),'N/A') AS DATEOF_VISIT,
        nvl(TO_CHAR(TRUNC(b.SENDERS_DATE),'DD/MM/YYYY'),'N/A') AS SAMPLE_SUBMISSION_DATE,
+       nvl(TO_CHAR(TRUNC(b.SAMPLE_COLLECTION_DATE),'DD/MM/YYYY'),'N/A') AS SAMPLE_COLLECTION_DATE,
        b.MARKET_CENTRE,b.NAME_ADDRESS_OUTLET,b.PRODUCT_DESCRIPTION,b.SECTOR,b.UCR_PERMIT_NO,b.SOURCE_PRODUCT_EVIDENCE,
         nvl(b.LB_ID_TRADE_MARK||' / '||b.MANUFACTURE_NAME,'N/A') AS BRAND_AND_MANUFACTURER,
         nvl(b.VAR_FIELD_3,'N/A') AS NO_SAMPLES_TESTED,
@@ -1196,6 +1197,43 @@ Select a.ID, a.WORKPLAN_YEAR_ID, a.TIME_ACTIVITY_END_DATE,b.REGION_ID, a.OFFICER
 WHERE a.WORKPLAN_YEAR_ID= :workplanYearId AND  a.TIME_ACTIVITY_END_DATE = :timeActivityEndDate
   AND b.REGION_ID=:regionId AND b.COUNTY_ID=:countyId AND b.TOWNS_ID=:townsId;
 
+
+-- create OR REPLACE view WORK_PLAN_VIEW_UCR_NUMBER_ITEMS as
+SELECT a.ID as ITEM_ID,b.UCR_NUMBER, a.ITEM_DESCRIPTION,a.QUANTITY,a.PACKAGE_QUANTITY,
+       a.ITEM_GROSS_WEIGHT,a.HS_DESCRIPTION,a.ITEM_HS_CODE
+FROM DAT_KEBS_CD_ITEM_DETAILS a
+         JOIN DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS b on b.id = a.CD_DOC_ID
+WHERE b.UCR_NUMBER = 'UCR202204149558'
+ORDER BY a.ID DESC;
+
+
+SELECT other_workplans.* from
+ (
+     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID
+     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b
+     WHERE a.id=b.work_plan_id
+       --AND a.id<>
+       AND a.WORKPLAN_YEAR_ID =:workPlanYearId
+       AND a.OFFICER_ID <>:officerID
+       AND a.APPROVED_STATUS=1
+       AND a.onsite_end_status!=1
+       AND a.COMPLAINT_ID IS NOT NULL
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')
+ )other_workplans,
+ (
+     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID
+     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,
+          DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b
+     WHERE a.id=b.work_plan_id
+       AND a.OFFICER_ID =:officerID
+     --AND a.id=1347
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')
+ )lookup
+WHERE lookup.county_id=other_workplans.county_id
+  AND lookup.towns_id=other_workplans.towns_id
+  AND trunc(lookup.time_activity_date)=trunc(other_workplans.time_activity_date)
 
 
 

@@ -88,7 +88,7 @@ export class StdTcTasksComponent implements OnInit {
         this.stdHOFReview = this.formBuilder.group({
             decision: ['', Validators.required],
             nwiId: ['', Validators.required],
-            reason: ['', Validators.required],
+            reason: [''],
 
         });
 
@@ -148,7 +148,8 @@ export class StdTcTasksComponent implements OnInit {
     public onReviewTask(): void {
 
 
-        if (this.stdHOFReview.valid) {
+        if (this.stdHOFReview.get('decision').value) {
+
             this.SpinnerService.show();
 
             this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
@@ -172,7 +173,33 @@ export class StdTcTasksComponent implements OnInit {
                 }
             )
         } else {
-            this.showToasterError("Error", `Please Fill In All The Fields.`);
+            if(this.stdHOFReview.get('reason').value != null){
+                this.SpinnerService.show();
+
+                this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
+                    (response) => {
+                        if (response.body == "You Have Already Voted") {
+                            this.showToasterError("Error", response.body);
+
+                        } else {
+                            this.showToasterSuccess(response.httpStatus, response.body);
+                        }
+                        this.SpinnerService.hide();
+
+                        this.getTCTasks();
+                        this.stdHOFReview.reset();
+                        this.hideModel()
+                    },
+                    (error: HttpErrorResponse) => {
+                        alert(error.message);
+                        this.SpinnerService.hide();
+
+                    },
+                );
+             }
+            else{
+                this.showToasterError("Error", `Please give a reason for rejection.`);
+            }
 
         }
     }

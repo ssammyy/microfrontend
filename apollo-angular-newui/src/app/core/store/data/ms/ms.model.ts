@@ -156,6 +156,17 @@ export class PermitUcrSearch {
     validityStatus: boolean;
 }
 
+export class UcrNumberSearch {
+    itemId: number;
+    ucrNumber: string;
+    itemDescription: string;
+    quantity: number;
+    packageQuantity: number;
+    itemGrossWeight: string;
+    hsDescription: string;
+    itemHsCode: string;
+}
+
 export class NotificationBodyDto {
     taskRefNumber: string;
     fromName: string;
@@ -289,6 +300,7 @@ export class WorkPlanListDto {
     budget: string;
     progressStep: string;
     batchRefNumber: string;
+    product: string;
 }
 
 export class CountriesEntityDto {
@@ -647,6 +659,7 @@ export class InspectionInvestigationReportDto {
     version: number;
     createdBy: string;
     createdOn: Date;
+    changesMade: string;
 }
 
 export class FieldReportAdditionalInfo {
@@ -1053,6 +1066,8 @@ export class WorkPlanInspectionDto {
     currentDate: Date;
     latestPreliminaryReport: number;
     latestFinalPreliminaryReport: number;
+    complaintReferenceNumber: string;
+    overAllCompliance: number;
 }
 
 export class CountryListDto {
@@ -1620,6 +1635,8 @@ export class SampleSubmissionDto {
     productDescription: string;
     sourceProductEvidence: string;
     parametersList: SampleSubmissionItemsDto[];
+    dataReportID: number;
+    nameOutlet: string;
 }
 
 export class SampleSubmissionItemsDto {
@@ -1631,6 +1648,7 @@ export class SampleSubmissionItemsDto {
 export class BSNumberSaveDto {
     bsNumber: string;
     submittedDate: Date;
+    ssfID: number;
     remarks: string;
 }
 

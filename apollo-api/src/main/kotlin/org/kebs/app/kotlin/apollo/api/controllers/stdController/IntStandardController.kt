@@ -53,37 +53,24 @@ class IntStandardController(
         return internationalStandardService.findStandardStakeholders()
     }
 
+    //Get KNW Committee
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('KNW_SEC_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getIntStandardProposals")
+    @ResponseBody
+    fun getIntStandardProposals(): MutableList<StandardRequest>
+    {
+        return internationalStandardService.getIntStandardProposals()
+    }
+
 
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('KNW_SEC_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/prepareAdoptionProposal")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDto): ServerResponse{
 
-        val iSAdoptionProposal=ISAdoptionProposal().apply {
-            proposal_doc_name=iSAdoptionProposalDto.proposal_doc_name
-            circulationDate=iSAdoptionProposalDto.circulationDate
-            closingDate=iSAdoptionProposalDto.closingDate
-            tcSecName=iSAdoptionProposalDto.tcSecName
-            title=iSAdoptionProposalDto.title
-            scope=iSAdoptionProposalDto.scope
-            iStandardNumber=iSAdoptionProposalDto.iStandardNumber
-            //stakeholdersList= iSAdoptionProposalDto.stakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
-            addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
-//            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
-//            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
-//            recommendations=iSAdoptionProposalDto.recommendations
-//            nameOfRespondent=iSAdoptionProposalDto.nameOfRespondent
-//            positionOfRespondent=iSAdoptionProposalDto.positionOfRespondent
-//            nameOfOrganization=iSAdoptionProposalDto.nameOfOrganization
-//            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
-            uploadedBy=iSAdoptionProposalDto.uploadedBy
-        }
-        val stakeholders = iSAdoptionProposalDto.stakeholdersList
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Request Proposal:" + gson.toJson(iSAdoptionProposalDto) }
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal,stakeholders))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposalDto))
     }
 
     @PostMapping("/international_standard/draft-file-upload")
@@ -248,7 +235,7 @@ class IntStandardController(
     }
 
     @PostMapping("/anonymous/international_standard/submitDraftComments")
-    fun submitDraftComments(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
+    fun submitDraftComments(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
     {
 
@@ -256,8 +243,8 @@ class IntStandardController(
 
     }
 
-    @PostMapping("/international_standard/submitDraftComments")
-    fun submitDraftComment(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
+    @PostMapping("/international_standard/submitDraftComment")
+    fun submitDraftComment(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
     {
 
@@ -272,14 +259,14 @@ class IntStandardController(
         return internationalStandardService.getAllComments(proposalId)
     }
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getAllComments")
     fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISProposalComments>?
     {
         return internationalStandardService.getProposalComments(proposalId)
     }
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getProposalComments")
     fun getProposalComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISProposalComments>?
     {
@@ -287,9 +274,9 @@ class IntStandardController(
     }
 
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('SPC_SEC_SD_READ')" +
-            " or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') or hasAuthority('EDITOR_SD_READ') or hasAuthority('PROOFREADER_SD_READ') " +
-            " or hasAuthority('HO_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN') or hasAuthority('DRAUGHTSMAN_SD_READ')  ")
+//    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('SPC_SEC_SD_READ')" +
+//            " or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') or hasAuthority('EDITOR_SD_READ') or hasAuthority('PROOFREADER_SD_READ') " +
+//            " or hasAuthority('HO_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN') or hasAuthority('DRAUGHTSMAN_SD_READ')  ")
     @GetMapping("/international_standard/getUserTasks")
     fun getUserTasks():List<InternationalStandardTasks>
     {
@@ -298,7 +285,7 @@ class IntStandardController(
 
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/decisionOnProposal")
     fun decisionOnProposal(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
     ) : ServerResponse
@@ -326,7 +313,7 @@ class IntStandardController(
         return internationalStandardService.getDraftComments(requestId)
     }
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedProposals")
     @ResponseBody
     fun getApprovedProposals(): MutableList<ProposalDetails>
@@ -335,14 +322,14 @@ class IntStandardController(
     }
 
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/prepareJustification")
     @ResponseBody
     fun prepareJustification(@RequestBody isProposalJustification: ISProposalJustification): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(isProposalJustification))
     }
 
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustification")
     @ResponseBody
     fun getJustification(): MutableList<ProposalDetails>
@@ -350,7 +337,7 @@ class IntStandardController(
         return internationalStandardService.getJustification()
     }
 
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getISJustification")
     @ResponseBody
     fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionProposalJustification>
@@ -359,7 +346,7 @@ class IntStandardController(
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/decisionOnJustification")
     fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
     ) : ServerResponse
@@ -381,7 +368,7 @@ class IntStandardController(
 
     }
 
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedJustification")
     @ResponseBody
     fun getApprovedJustification(): MutableList<ProposalDetails>
@@ -389,7 +376,7 @@ class IntStandardController(
         return internationalStandardService.getApprovedJustification()
     }
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/submitDraftForEditing")
     @ResponseBody
     fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
@@ -473,7 +460,7 @@ class IntStandardController(
 //
 //    }
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedISJustification")
     @ResponseBody
     fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification>
@@ -489,7 +476,7 @@ class IntStandardController(
     }
 
     //approve International Standard
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/justificationDecision")
     fun justificationDecision(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
     {
@@ -499,7 +486,7 @@ class IntStandardController(
 
 
 
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getUploadedDraft")
     @ResponseBody
     fun getUploadedDraft(): MutableList<ISUploadedDraft>
@@ -507,7 +494,7 @@ class IntStandardController(
         return internationalStandardService.getUploadedDraft()
     }
 
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getIsPublishingTasks")
     @ResponseBody
     fun getIsPublishingTasks(): MutableList<ISUploadedDraft>
@@ -518,7 +505,7 @@ class IntStandardController(
 
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/checkRequirements")
     fun checkRequirements(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
@@ -528,7 +515,7 @@ class IntStandardController(
 
     }
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedDraft")
     @ResponseBody
     fun getApprovedDraft(): MutableList<ISUploadedDraft>
@@ -538,16 +525,18 @@ class IntStandardController(
 
     //approve International Standard
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/editStandardDraft")
     @ResponseBody
     fun editStandardDraft(@RequestBody isDraftDto: ISDraftDto): ServerResponse
     {
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(isDraftDto) }
 
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(isDraftDto))
     }
 
-    @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getEditedDraft")
     @ResponseBody
     fun getEditedDraft(): MutableList<ISUploadedDraft>
@@ -556,7 +545,7 @@ class IntStandardController(
     }
 
 
-    @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/draughtStandard")
     @ResponseBody
     fun draughtStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
@@ -565,7 +554,7 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(isDraftDto))
     }
 
-    @PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getDraughtedDraft")
     @ResponseBody
     fun getDraughtedDraft(): MutableList<ISUploadedDraft>
@@ -573,7 +562,7 @@ class IntStandardController(
         return internationalStandardService.getDraughtedDraft()
     }
 
-    @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/proofReadStandard")
     @ResponseBody
     fun proofReadStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
@@ -583,7 +572,7 @@ class IntStandardController(
     }
 
 
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getProofReadDraft")
     @ResponseBody
     fun getProofReadDraft(): MutableList<ISUploadedDraft>
@@ -592,7 +581,7 @@ class IntStandardController(
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
     fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDrDecisions
     ) : ServerResponse
@@ -603,7 +592,7 @@ class IntStandardController(
     }
 
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedProofReadDraft")
     @ResponseBody
     fun getApprovedProofReadDraft(): MutableList<ISUploadedDraft>
@@ -612,7 +601,7 @@ class IntStandardController(
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveEditedStandard")
     fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
@@ -623,7 +612,7 @@ class IntStandardController(
     }
 
 
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedEditedDraft")
     @ResponseBody
     fun getApprovedEditedDraft(): MutableList<ISUploadedDraft>
@@ -632,18 +621,20 @@ class IntStandardController(
     }
 
     //SAC Decision
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveInternationalStandard")
     fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDraftDecisions) }
 
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSDraftDecisions))
 
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/uploadInternationalStandard")
     fun uploadInternationalStandard(@RequestBody iStandardUploadDto: IStandardUploadDto
     ) : ServerResponse
@@ -661,7 +652,7 @@ class IntStandardController(
         return internationalStandardService.getStakeHoldersList(draftId)
     }
 
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+   // @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getStandardForGazettement")
     @ResponseBody
     fun getStandardForGazettement(): MutableList<ISUploadedDraft>
@@ -691,7 +682,7 @@ class IntStandardController(
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/uploadGazetteNotice")
     @ResponseBody
     fun uploadGazetteNotice(@RequestBody standardGazetteDto: StandardGazetteDto): ServerResponse

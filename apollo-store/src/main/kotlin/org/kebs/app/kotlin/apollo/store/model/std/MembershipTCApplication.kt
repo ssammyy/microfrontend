@@ -18,7 +18,12 @@ class MembershipTCApplication {
 
     @Column(name="ORGANIZATION")
     @Basic
-    var organization:String? = null
+    var organisationName:String? = null
+
+    @Column(name="ORGANIZATION_CLASSIFICATION")
+    @Basic
+    var organisationClassification:String? = null
+
 
     @Column(name="NOMINEE_NAME")
     @Basic
@@ -42,19 +47,19 @@ class MembershipTCApplication {
 
     @Column(name="AUTHORISING_PERSON_NAME")
     @Basic
-    var authorizingName:String? = null
+    var authorizingPerson:String? = null
 
     @Column(name="AUTHORISING_PERSON_POSITION")
     @Basic
-    var authorisingPersonPosition:String? = null
+    var authorizingPersonPosition:String? = null
 
     @Column(name = "AUTHORISING_PERSON_EMAIL")
     @Basic
-    var authorisingPersonEmail: String? = null
+    var authorizingPersonEmail: String? = null
 
     @Column(name = "QUALIFICATIONS")
     @Basic
-    var qualifications: String? = null
+    var qualification: String? = null
 
     @Column(name = "COMMITTMENT")
     @Basic
@@ -63,7 +68,7 @@ class MembershipTCApplication {
 
     @Column(name = "TC_APPLICATION_ID")
     @Basic
-    var tcApplicationId: Long? = null
+    var tcId: Long? = null
 
     @Column(name = "DATE_OF_APPLICATION")
     @Basic
@@ -105,80 +110,18 @@ class MembershipTCApplication {
     @Basic
     var varField10: String? = null
 
+    @Column(name = "APPROVED_BY_ORGANISATION")
+    @Basic
+    var approvedByOrganization: String? = null
+
+    @Column(name = "RESUBMISSION")
+    @Basic
+    var resubmission: String? = null
+
+
     @Transient
     @JsonProperty("taskId")
     var taskId: String? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MembershipTCApplication
-
-        if (id != other.id) return false
-        if (technicalCommittee != other.technicalCommittee) return false
-        if (organization != other.organization) return false
-        if (nomineeName != other.nomineeName) return false
-        if (position != other.position) return false
-        if (postalAddress != other.postalAddress) return false
-        if (mobileNumber != other.mobileNumber) return false
-        if (email != other.email) return false
-        if (authorizingName != other.authorizingName) return false
-        if (authorisingPersonPosition != other.authorisingPersonPosition) return false
-        if (authorisingPersonEmail != other.authorisingPersonEmail) return false
-        if (qualifications != other.qualifications) return false
-        if (commitment != other.commitment) return false
-        if (tcApplicationId != other.tcApplicationId) return false
-        if (dateOfApplication != other.dateOfApplication) return false
-        if (status != other.status) return false
-        if (comments_by_hof != other.comments_by_hof) return false
-        if (commentsBySpc != other.commentsBySpc) return false
-        if (commentsBySac != other.commentsBySac) return false
-        if (hofId != other.hofId) return false
-        if (spcId != other.spcId) return false
-        if (sacId != other.sacId) return false
-        if (varField9 != other.varField9) return false
-        if (varField10 != other.varField10) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (technicalCommittee?.hashCode() ?: 0)
-        result = 31 * result + (organization?.hashCode() ?: 0)
-        result = 31 * result + (nomineeName?.hashCode() ?: 0)
-        result = 31 * result + (position?.hashCode() ?: 0)
-        result = 31 * result + (postalAddress?.hashCode() ?: 0)
-        result = 31 * result + (mobileNumber?.hashCode() ?: 0)
-        result = 31 * result + (email?.hashCode() ?: 0)
-        result = 31 * result + (authorizingName?.hashCode() ?: 0)
-        result = 31 * result + (authorisingPersonPosition?.hashCode() ?: 0)
-        result = 31 * result + (authorisingPersonEmail?.hashCode() ?: 0)
-        result = 31 * result + (qualifications?.hashCode() ?: 0)
-        result = 31 * result + (commitment?.hashCode() ?: 0)
-        result = 31 * result + (tcApplicationId?.hashCode() ?: 0)
-        result = 31 * result + (dateOfApplication?.hashCode() ?: 0)
-        result = 31 * result + (status?.hashCode() ?: 0)
-        result = 31 * result + (comments_by_hof?.hashCode() ?: 0)
-        result = 31 * result + (commentsBySpc?.hashCode() ?: 0)
-        result = 31 * result + (commentsBySac?.hashCode() ?: 0)
-        result = 31 * result + (hofId?.hashCode() ?: 0)
-        result = 31 * result + (spcId?.hashCode() ?: 0)
-        result = 31 * result + (sacId?.hashCode() ?: 0)
-        result = 31 * result + (varField9?.hashCode() ?: 0)
-        result = 31 * result + (varField10?.hashCode() ?: 0)
-
-
-        return result
-    }
-
-    override fun toString(): String {
-        return "MembershipTCApplication(id=$id, technicalCommittee=$technicalCommittee, organization=$organization, nomineeName=$nomineeName, position=$position, postalAddress=$postalAddress, mobileNumber=$mobileNumber, email=$email, authorizingName=$authorizingName, authorisingPersonPosition=$authorisingPersonPosition, authorisingPersonEmail=$authorisingPersonEmail, qualifications=$qualifications, " +
-                "commitment=$commitment,tcApplicationId=$tcApplicationId,dateOfApplication=$dateOfApplication,status=$status" +
-                ",comments_by_hof=$comments_by_hof,commentsBySpc=$commentsBySpc,commentsBySac=$commentsBySac,hofId=$hofId,spcId=$spcId,sacId=$sacId," +
-                "varField9=$varField9,varField10=$varField10)"
-    }
 
 
 }

@@ -42,16 +42,23 @@ export const ROUTES: RouteInfo[] = [
         path: '/admin',
         title: 'Admin',
         type: 'sub',
-        icontype: 'dashboard',
-        collapse: 'admin',
-        privilege: ['SYSADMIN_VIEW'],
         children: [
-            {path: 'user_management', title: 'User Management', ab: 'UM'},
-            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM'},
-            {path: 'business_management', title: 'Business Management', ab: 'BM'},
+            {path: 'user_management', title: 'User Management', ab: 'UM', privilege: ['SYSADMIN_VIEW']},
+            {
+                path: 'tivet_management',
+                title: 'Tivet Management',
+                ab: 'TM',
+                privilege: ['SYSADMIN_VIEW', 'TIVET_MANAGE']
+            },
+            {path: 'business_management', title: 'Business Management', ab: 'BM', privilege: ['SYSADMIN_VIEW']},
 
         ],
+        icontype: 'dashboard',
+        collapse: 'admin',
+        privilege: ['SYSADMIN_VIEW', 'TIVET_MANAGE'],
+
     },
+
 
     {
         path: '/company',
@@ -223,7 +230,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
             {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
             {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
-            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
+            {path: 'stdLevyQaReports', title: 'QA-SL Reports', ab: 'QSR'},
 
 
         ],
@@ -546,6 +553,8 @@ export const ROUTES: RouteInfo[] = [
             {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
             {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
             {path: 'stdLevyHistoricalPayments', title: 'Payments Made', ab: 'PM'},
+            {path: 'stdLevyQaReports', title: 'QA-SL Reports', ab: 'QSR'},
+            {path: 'stdLevySiteVisitReport', title: 'Site Visit Reports', ab: 'SVR'},
 
         ],
     },
@@ -670,6 +679,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'receipt',
+        // tslint:disable-next-line:max-line-length
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'HOF_SD_READ', 'TC_SEC_SD_READ', 'TC_SD_READ', 'SPC_SEC_SD_READ'],
         collapse: 'requestModule',
 
@@ -796,6 +806,49 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'PDS',
                 privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
             },
+            {
+                path: 'isUploadDraft',
+                title: 'Upload Draft For Editing',
+                ab: 'UD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ', 'TC_SEC_SD_READ']
+            },
+            {
+                path: 'isCheckRequirements',
+                title: 'Check Requirements',
+                ab: 'CR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'isApproveDraftStd',
+                title: 'Edit Draft',
+                ab: 'ED',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'isStdDraughting',
+                title: 'Drafting',
+                ab: 'SD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ', 'EDITOR_SD_READ']
+            },
+            {
+                path: 'isStdProofReading',
+                title: 'Proof-Reading',
+                ab: 'PR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'PROOFREADER_SD_READ']
+            },
+            {
+                path: 'isApproveChanges',
+                title: 'Approve Draft Changes',
+                ab: 'AP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'isApprovedEdits',
+                title: 'Edited Standards',
+                ab: 'ES',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
@@ -812,19 +865,19 @@ export const ROUTES: RouteInfo[] = [
                 path: 'requestForFormationOfTC',
                 title: 'Request For Formation',
                 ab: 'RFF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ']
             },
             {
                 path: 'hofReviewJustificationOfTC',
-                title: 'HOF Review',
-                ab: 'HOF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ']
+                title: 'HOD Review',
+                ab: 'HOD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ']
             },
             {
                 path: 'reviewJustificationOfTC',
                 title: 'SPC Review',
                 ab: 'SPC',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ', 'SPC_SEC_SD_READ']
             },
             {
                 path: 'reviewFeedbackSAC',
@@ -836,29 +889,72 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ'],
         collapse: 'formation',
     },
     {
         path: '',
         title: 'Membership To A TC',
         type: 'sub',
-        icontype: 'groups',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'membership',
         children: [
-            {path: 'reviewApplication', title: 'Review Applications', ab: 'RA'},
-            {path: 'reviewRecommendation', title: 'Review Recommendations', ab: 'RAR'},
-            {path: 'reviewRecommendationOfSpc', title: 'SPC Review', ab: 'SR'},
-            {path: 'reviewAccepted', title: 'Appointment Letter', ab: 'AL'},
-            {path: 'reviewRejected', title: 'Rejected Appointments', ab: 'RA'},
-            {path: 'approvedMembers', title: 'Approved Members', ab: 'AM'},
-            {path: 'createCredentials', title: 'Credentials Creation', ab: 'CC'},
-            {path: 'sendInductionEmail', title: 'Send Induction Email', ab: 'SIE'},
-            {path: 'sendNotice', title: 'Send Notice', ab: 'SN'},
+            {
+                path: 'reviewApplication',
+                title: 'Review Applications',
+                ab: 'RA',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY', 'HOF_SD_READ']
+            },
+            {
+                path: 'reviewRecommendation', title: 'SPC Review', ab: 'SPC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SEC_SD_MODIFY']
+            },
+            {
+                path: 'reviewRecommendationOfSpc', title: 'SAC Review', ab: 'SR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ', 'DI_SDT_SD_MODIFY']
+            },
+            {
+                path: 'reviewAccepted',
+                title: 'Approve Members',
+                ab: 'AL',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DI_SDT_SD_MODIFY', 'HOD_TWO_SD_READ']
+            },
+
+            {
+                path: 'reviewRejected',
+                title: 'Rejected Appointments',
+                ab: 'RA',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
+            },
+            {
+                path: 'approvedMembers',
+                title: 'Approved Members',
+                ab: 'AM',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
+            },
+            {
+                path: 'createCredentials',
+                title: 'Credentials Creation',
+                ab: 'CC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
+            },
+            {
+                path: 'sendInductionEmail',
+                title: 'Send Induction Email',
+                ab: 'SIE',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
+            },
+            {
+                path: 'sendNotice',
+                title: 'Send Notice',
+                ab: 'SN',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY', 'TC_SEC_SD_READ']
+            },
 
 
         ],
+        icontype: 'groups',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ'],
+        collapse: 'membership',
+
     },
     {
         path: '',
@@ -1000,6 +1096,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
             },
             {
+                path: 'isPropComments',
+                title: 'Comment on Proposal ',
+                ab: 'VP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
                 path: 'isProposals',
                 title: 'View Proposals ',
                 ab: 'VP',
@@ -1018,16 +1120,10 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
             },
             {
-                path: 'isUploadDraft',
-                title: 'Upload Draft',
-                ab: 'UD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
-            },
-            {
                 path: 'isSacApproval',
                 title: 'SAC Tasks',
                 ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
             },
             {
                 path: 'isUploadStd',

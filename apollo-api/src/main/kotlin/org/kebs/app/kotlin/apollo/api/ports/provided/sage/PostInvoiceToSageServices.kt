@@ -6,6 +6,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
@@ -397,10 +399,9 @@ class PostInvoiceToSageServices(
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
         runBlocking {
-
             val headerBody = SageQAHeaderB().apply {
                 serviceName = "BSKApp"
-                messageID = "BSK"
+                messageID = "BSK KIMS REF- ${invoiceFound.referenceCode} on ${commonDaoServices.convertTimestampToKeswsValidDate(commonDaoServices.getTimestamp())}"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
 
@@ -413,7 +414,7 @@ class PostInvoiceToSageServices(
                 CurrencyCode = "KES"
                 CustomerCode = null
                 CustomerName = invoiceAccountDetails.accountName
-                InvoiceDesc = "QA ${invoiceFound.referenceCode} Billing"
+                InvoiceDesc = "Quality Assurance Bill -$DocumentDate"
                 InvoiceAmnt = invoiceFound.invoiceAmount
                 TaxPINNo = invoiceAccountDetails.accountNumber
                 Withholding = invoiceAccountDetails.isWithHolding
@@ -493,14 +494,14 @@ class PostInvoiceToSageServices(
             when (response.second?.header?.statusCode) {
                 200 -> {
                     with(invoiceFound) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                     }
                     val stgReconDetails = invoiceDaoService.updateStgReconciliationTableDetails(invoiceFound, user)
 
                     var batchInvoiceDetails = invoiceDaoService.findInvoiceBatchDetails(stgReconDetails.invoiceId
                             ?: throw  ExpectedDataNotFound("Missing Invoice Batch ID"))
                     with(batchInvoiceDetails) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                         KotlinLogging.logger { }.error { "Sage Invoice Number: $sageInvoiceNumber" }
 
                     }
@@ -509,15 +510,15 @@ class PostInvoiceToSageServices(
                     val qaBatchInvoice = qaDaoServices.findBatchInvoicesWithRefNO(batchInvoiceDetails.batchNumber
                             ?: throw  ExpectedDataNotFound("Missing Invoice QA Ref No"))
                     with(qaBatchInvoice) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                     }
-
 
                     qaDaoServices.updateQAInvoiceBatchDetails(qaBatchInvoice, user)
                 }
                 else -> {
                     val gson = Gson()
                     KotlinLogging.logger { }.error { "Request Response: ${gson.toJson(response.second)}" }
+                        throw  ExpectedDataNotFound("An Error Occurred trying to connect to sage ")
                 }
             }
 
@@ -655,8 +656,9 @@ class PostInvoiceToSageServices(
     }
 
 
-    fun processPaymentSageNotification(value: SageNotificationResponse): NotificationResponseValue {
-        val result = NotificationResponseValue()
+    fun processPaymentSageNotification(value: SageNotificationResponse): CallbackResponses {
+//        val result = NotificationResponseValue()
+        val result = CallbackResponses()
 //        val loggedInUSer = commonDaoServices.loggedInUserDetails()
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
@@ -672,19 +674,18 @@ class PostInvoiceToSageServices(
                                         invoiceLogPaymentRepo.findByTransactionId(value.request?.paymentReferenceNo?: throw Exception("Missing paymentReferenceNo, can't be null"))
                                             ?.let {
                                                 result.responseDate = Timestamp.from(Instant.now())
-                                                result.statusCode = invoiceStatus.duplicateTransaction
-                                                result.statusDescription = "THE RECIPE ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
+                                                result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                                                result.message = "THE RECIPE ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
                                                 return result
                                             }?: kotlin.run {
                                                 if (record.transactionId != null) {
                                                     result.responseDate = Timestamp.from(Instant.now())
-                                                    result.statusCode = invoiceStatus.duplicateTransaction
-                                                    result.statusDescription = record.statusDescription
+                                                    result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                                                    result.message = record.statusDescription
                                                     return result
                                                 }
                                                 else {
                                                     log.integrationRequest = daoService.mapper().writeValueAsString(value)
-                                                    result.billReferenceCode = record.sageInvoiceNumber
                                                     record.paidAmount = value.request?.paymentAmount
                                                     record.paymentSource = value.request?.paymentCode
                                                     record.paymentTransactionDate = value.request?.paymentDate
@@ -694,8 +695,13 @@ class PostInvoiceToSageServices(
                                                     record.extras = record.extras?.let { "${value.request?.additionalInfo}" }
                                                         ?: "${record.extras}|${value.request?.additionalInfo}"
                                                     record.paymentTablesUpdatedStatus = 1
-                                                    record.modifiedBy = "commonDaoServices.concatenateName(loggedInUSer)"
+                                                    record.modifiedBy = "SYSTEM"
                                                     record.modifiedOn = commonDaoServices.getTimestamp()
+                                                    result.data =  mutableMapOf(
+                                                        Pair("sageInvoiceNumber", record.sageInvoiceNumber),
+                                                        Pair("amountPaid", record.paidAmount),
+                                                        Pair("totalAmount", record.invoiceAmount)
+                                                    )
                                                     stagingRepo.save(record)
                                                     /**
                                                      * Sage Update Details on sage logs
@@ -709,8 +715,7 @@ class PostInvoiceToSageServices(
                                                     /**
                                                      * Sage Update Details on sage logs
                                                      * */
-                                                    sageRepo.findByStgPaymentId(record.id
-                                                        ?: throw Exception("MISSING STAGING ID"))
+                                                    sageRepo.findByStgPaymentId(record.id ?: throw Exception("MISSING STAGING ID"))
                                                         ?.let { sage ->
                                                             sage.status = 10
                                                             sage.description = daoService.mapper().writeValueAsString(value)
@@ -732,13 +737,13 @@ class PostInvoiceToSageServices(
                                                      */
 
                                                     result.responseDate = Timestamp.from(Instant.now())
-                                                    result.statusCode = invoiceStatus.success
-                                                    result.statusDescription = record.statusDescription
+                                                    result.status = ResponseCodes.SUCCESS_CODE
+                                                    result.message = record.statusDescription
 
 
                                                     log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                                                    log.responseStatus = invoiceStatus.success
-                                                    log.responseMessage = result.billReferenceCode
+                                                    log.responseStatus = ResponseCodes.SUCCESS_CODE
+                                                    log.responseMessage = result.data as String?
                                                     log.transactionCompletedDate = Timestamp.from(Instant.now())
                                                     logsRepo.save(log)
                                                     return result
@@ -748,8 +753,8 @@ class PostInvoiceToSageServices(
                                     }
                                     ?: run {
                                         result.responseDate = Timestamp.from(Instant.now())
-                                        result.statusCode = invoiceStatus.notFound
-                                        result.statusDescription = ""
+                                        result.status = ResponseCodes.NOT_FOUND
+                                        result.message = "THIS BILL REFERENCE NO ${code.toUpperCase()} DOES NOT EXIST"
                                         return result
                                     }
                         }
@@ -770,20 +775,19 @@ class PostInvoiceToSageServices(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            log.responseStatus = invoiceStatus.error
+            log.responseStatus = ResponseCodes.EXCEPTION_STATUS
             log.responseMessage = e.message
 
 
             result.responseDate = Timestamp.from(Instant.now())
-            result.statusCode = log.responseStatus
-            result.statusDescription = log.responseMessage
+            result.status = log.responseStatus
+            result.message = log.responseMessage
 
             log.integrationResponse = daoService.mapper().writeValueAsString(result)
 
             log.transactionCompletedDate = Timestamp.from(Instant.now())
             logsRepo.save(log)
             throw e
-
         }
     }
 }

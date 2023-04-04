@@ -317,6 +317,10 @@ export class StandardDevelopmentService {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllRejectedStdsForNwi')
     }
 
+    public getOnHoldReviewsForStandards(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllOnHoldStdsForNwi')
+    }
+
     public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
 
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
@@ -484,6 +488,11 @@ export class StandardDevelopmentService {
     public getTechnicalCommittees(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
     }
+
+    public getAllTcsForApplication(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl23}` + 'getAllTcsForApplication')
+    }
+
 
     public getProductCategories(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductCategories')

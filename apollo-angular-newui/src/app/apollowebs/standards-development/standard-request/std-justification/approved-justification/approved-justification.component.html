@@ -1,0 +1,211 @@
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-primary card-header-icon">
+                                    <div class="card-icon">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                    <h4 class="card-title">Approved <small
+                                            class="resolved-pill">{{approved.length}}
+                                        Justification</small>
+                                    </h4>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="toolbar">
+
+                                    </div>
+                                    <div class="mat-elevation-z8">
+                                        <mat-form-field appearance="standard" style="width:20%; float: right">
+                                            <mat-label>Search</mat-label>
+                                            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
+                                        </mat-form-field>
+                                        <table  class="table table-striped table-bordered table-hover"  mat-table [dataSource]="dataSource" matSort style="width: 100%">
+
+                                            <!-- ID Column -->
+                                            <ng-container matColumnDef="sl">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Sl No.</th>
+                                                <td mat-cell *matCellDef="let row"> {{row.sl}} </td>
+                                            </ng-container>
+
+                                            <!-- Progress Column -->
+                                            <ng-container matColumnDef="edition">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Edition</th>
+                                                <td mat-cell *matCellDef="let row"> {{row.edition}} </td>
+                                            </ng-container>
+
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="title">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+                                                <td mat-cell *matCellDef="let row"> {{row.title}} </td>
+                                            </ng-container>
+
+                                            <!-- Fruit Column -->
+                                            <ng-container matColumnDef="spcMeetingDate">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> SPC Meeting
+                                                    Date
+                                                </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.spcMeetingDate}} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="departmentId">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Department</th>
+                                                <td mat-cell *matCellDef="let row"> {{row.departmentId}} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="actions">
+                                                <th mat-header-cell *matHeaderCellDef> Actions</th>
+
+                                                <td mat-cell *matCellDef="let row">
+                                                    <a (click)="onOpenModalJustification(row,'view')"
+                                                       class="btn btn-info tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Review"> View</a>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                                            <!-- Row shown when there is no matching data. -->
+                                            <tr class="mat-row" *matNoDataRow>
+                                                <td class="mat-cell" colspan="4">
+                                                    "{{input.value}}"
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
+                                                       aria-label="Select page of users"></mat-paginator>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            <div class="modal fade" id="justificationDecisionModal" tabindex="-1" role="dialog"
+                 aria-labelledby="updateExampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">SPC JUSTIFICATION</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form #editForm="ngForm">
+                            <div class="modal-body">
+
+
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">Justification
+                                                Details
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Title: " + actionRequest?.title}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Edition: " + actionRequest?.edition}}
+                                                Version
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
+                                        </ul>
+                                        <div class="material-datatables">
+                                            <table class="table table-striped table-bordered table-hover"
+                                                   datatable
+                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
+                                                <thead>
+                                                <tr>
+                                                    <th class="task">Document Name</th>
+                                                    <th class="task">Descritpion</th>
+
+                                                    <th class="task">Action</th>
+
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let doc of docs let i= index; ">
+
+                                                    <td>{{doc.name}}</td>
+                                                    <td>{{doc.description}}</td>
+
+                                                    <td>
+                                                        <button class="btn btn-info tooltips"
+                                                                style="width: inherit"
+                                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                data-placement="top"
+                                                        ><i
+                                                                class="fa fa-eye"></i> View
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li class="list-group-item active">Decision
+                                                    Details
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">{{"Reason: " + actionRequest?.reason}}</li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <input hidden ngModel="true" name="decision">
+                            <input hidden ngModel="{{actionRequest?.id}}" name="referenceNo">
+                            <input hidden ngModel name="reason">
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeViewModal
+                                        (click)="hideModel()" data-dismiss="modal">Close
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            
+        
+        

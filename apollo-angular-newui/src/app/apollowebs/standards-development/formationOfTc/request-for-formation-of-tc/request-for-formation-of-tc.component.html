@@ -54,15 +54,20 @@
                                     </div>
                                     <h4 class="card-title">Request For Formation Of Technical Committee
                                     </h4>
-                                    <div (click)="openModal()">
-                                        <div style="float: right; margin: inherit" class="card-icon">
-                                            <i class="material-icons">add</i>
-                                        </div>
-                                        <div>
-                                            <h4 style="float: right; margin-right: 12px" class="card-title">New
-                                                Proposal</h4>
-                                        </div>
+                                    <div *ngFor="let role of roles">
+                                        <div *ngIf="role == 'HOF_SD_READ' || role == 'STANDARDS_DEVELOPMENT_FULL_ADMIN'">
 
+                                            <div (click)="openModal()">
+                                                <div style="float: right; margin: inherit" class="card-icon">
+                                                    <i class="material-icons">add</i>
+                                                </div>
+                                                <div>
+                                                    <h4 style="float: right; margin-right: 12px" class="card-title">New
+                                                        Proposal</h4>
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -110,7 +115,7 @@
                                                     <div *ngIf="row.status=='1'; then thenBlock else elseBlock"></div>
                                                     <ng-template #thenBlock>
                                                         <span style=" font-size: 10px;"
-                                                              class="badge badge-info">Awaiting Decision By HOF</span>
+                                                              class="badge badge-info">Awaiting Decision By HOD</span>
                                                     </ng-template>
                                                     <ng-template #elseBlock>
                                                       <span style="font-size: 10px;"
@@ -215,7 +220,7 @@
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'2'">
 <span style=" font-size: 10px;"
-      class="badge badge-success">Approved By HOF</span></ng-container>
+      class="badge badge-success">Approved By HOD</span></ng-container>
                                                         <ng-container *ngSwitchCase="'4'"><span
                                                                 style=" font-size: 10px;"
                                                                 class="badge badge-success">Approved By SPC</span>
@@ -264,6 +269,47 @@
                                         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
                                                        aria-label="Select page of users"></mat-paginator>
                                     </div>
+                                    <div class="material-datatables">
+                                        <table class="table table-striped table-bordered table-hover"
+                                               datatable
+                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                            <thead>
+                                            <tr>
+                                                <th class="task">Subject</th>
+                                                <th class="task">Proposer</th>
+                                                <th class="task">Purpose</th>
+                                                <th class="task">TC Number</th>
+                                                <th class="action">TC Name</th>
+                                                <th class="action">Status</th>
+                                                <th class="action">Actions</th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let justification of approvedJustifications let i= index; ">
+
+                                                <td>{{justification.subject}}</td>
+                                                <td>{{justification.proposer}}</td>
+                                                <td>{{justification.purpose}}</td>
+                                                <td>{{justification.tcNumber}}</td>
+                                                <td>{{justification.nameOfTC}}</td>
+                                                <td>  <span style=" font-size: 10px;"
+                                                            class="badge badge-success">Approved</span></td>
+
+                                                <td>
+                                                    <a (click)="openModalToView(justification)"
+                                                       class="btn btn-info tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Upload NWI">View More</a> <br>
+
+
+                                                </td>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -524,21 +570,21 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
-                                <div class="form-group col-6">
-                                    <label><b>Proposed TC Representation</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'proposedRepresentation')">
-                                        <input
-                                                matInput
 
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="proposedRepresentation"
-                                                placeholder="Proposed TC Representation *" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'proposedRepresentation')"
-                                                errorMsg="Please Enter Proposed TC Representation">
-                                        </app-field-error-display>
+
+                                <div class="form-group col-6">
+                                    <label><b>Department</b></label>
+                                    <mat-form-field>
+
+                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="departmentId"
+                                                    name="departmentId"
+                                                    placeholder="Select Department"
+                                                    [class.is-invalid]="formFormationRequest.departmentId.invalid && formFormationRequest.departmentId.touched">
+                                            <mat-option *ngFor="let department of departments"
+                                                        value="{{department.id}}">{{department.name}}</mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -581,7 +627,8 @@
 
                             <div class="row">
                                 <div class="form-group col-6">
-                                    <label><b>Liaison Organization</b></label>
+                                    <label><b>Liaison Organization</b><small> (Add multiple by separating with
+                                        comma)</small></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(formationRequestFormGroup, 'liaisonOrganization')">
                                         <input
@@ -617,21 +664,45 @@
                                 </div>
 
                             </div>
-                            <div class="form-group">
-                                <label><b>Department</b></label>
-                                <mat-form-field>
+                            <div class="row">
 
-                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                class="form-control" required
-                                                formControlName="departmentId"
-                                                name="departmentId"
-                                                placeholder="Select Department"
-                                                [class.is-invalid]="formFormationRequest.departmentId.invalid && formFormationRequest.departmentId.touched">
-                                        <mat-option *ngFor="let department of departments"
-                                                    value="{{department.id}}">{{department.name}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                <div class="form-group col-6">
+                                    <label><b>SO/IEE/IEC Mirror Committee </b></label>
+                                    <ng-multiselect-dropdown
+                                            [placeholder]="'Select ISO/IEE/IEC mirror committee'"
+                                            [settings]="dropdownSettings"
+                                            [data]="dropdownList"
+                                            (onSelect)="onItemSelect($event)"
+                                            (onSelectAll)="onSelectAll($event)">
+                                    </ng-multiselect-dropdown>
+
+
+                                </div>
+                                <div class="form-group col-6">
+                                    <label><b>Proposed TC Representation</b></label>
+                                    <ng-multiselect-dropdown
+                                            [placeholder]="'Select Proposed TC Representation'"
+                                            [settings]="dropdownSettings"
+                                            [data]="dropdownList"
+                                            (onSelect)="onItemSelect($event)"
+                                            (onSelectAll)="onSelectAll($event)"
+                                            [class.is-invalid]="formFormationRequest?.proposedRepresentationArray?.errors?.required
+                                                 && formFormationRequest?.proposedRepresentationArray?.touched"
+                                            formControlName="proposedRepresentationArray"
+                                            name="proposedRepresentationArray">
+                                    </ng-multiselect-dropdown>
+
+
+                                    <span *ngIf="formFormationRequest?.proposedRepresentationArray?.errors?.required
+                                        && formFormationRequest?.proposedRepresentationArray?.touched"
+                                          style="color: red;">Proposed TC Representation is required </span>
+                                </div>
+
+                                <input type="hidden" formControlName="proposedRepresentation">
+
+
                             </div>
+
                             <div class="form-group">
                                 <label><b>Attach Any Relevant Documents</b></label>
                                 <form>
@@ -912,21 +983,38 @@
 
                             </div>
                             <div class="row">
+
+
                                 <div class="form-group col-6">
                                     <label><b>Department</b></label>
                                     <mat-form-field>
-
                                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                                                     class="form-control" required
                                                     formControlName="departmentId"
                                                     name="departmentId"
                                                     placeholder="{{selectedDepartment}}"
+                                                    (selectionChange)="update()"
+
                                                     [class.is-invalid]="formEditFormationRequest.departmentId.invalid && formEditFormationRequest.departmentId.touched">
                                             <mat-option *ngFor="let department of departments"
                                                         value="{{department.id}}">{{department.name}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
+                                <div class="form-group col-6">
+                                    <div *ngIf="display">
+                                    <label><b>SO/IEE/IEC Mirror Committee </b></label>
+                                    <ng-multiselect-dropdown
+                                            [settings]="dropdownSettings"
+                                            [data]="isoList"
+                                            (onSelect)="onItemSelect($event)"
+                                            (onSelectAll)="onSelectAll($event)">
+                                    </ng-multiselect-dropdown>
+                                    </div>
+
+
+                                </div>
+
 
                             </div>
                             <div class="form-group">
@@ -968,7 +1056,8 @@
                                     <div class="row">
                                         <div class=" col-12">
                                             <ul class="list-group">
-                                                <li style="background-color: red" class="list-group-item active">HOF REJECTION
+                                                <li style="background-color: red" class="list-group-item active">HOD
+                                                    REJECTION
                                                 </li>
 
                                                 <li style="background: lightgray"
@@ -1011,7 +1100,8 @@
                                     <div class="row">
                                         <div class=" col-12">
                                             <ul class="list-group">
-                                                <li style="background-color: red" class="list-group-item active">SPC REJECTION
+                                                <li style="background-color: red" class="list-group-item active">SPC
+                                                    REJECTION
                                                 </li>
 
                                                 <li style="background: lightgray"
@@ -1312,7 +1402,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1331,7 +1421,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1377,7 +1467,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1446,7 +1536,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"

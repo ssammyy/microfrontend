@@ -1796,6 +1796,8 @@ class StdLevyController(
         return standardLevyService.getClosedFirms()
     }
 
+
+
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getRegisteredFirmsFilter")
@@ -2137,7 +2139,7 @@ class StdLevyController(
 
     @GetMapping("/getLevyHistoricalPayments")
     @ResponseBody
-    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+    fun getLevyHistoricalPayments(): MutableList<LogKebsLevyPayments>
     {
         return standardLevyService.getLevyHistoricalPayments()
     }
@@ -2148,14 +2150,16 @@ class StdLevyController(
 
     fun getLevyHistoricalPaymentsFilter(
         @RequestBody levyFilterDTO: LevyFilterDTO
-    ): MutableList<StdLevyHistoricalPayments>
+    ): MutableList<LogKebsLevyPayments>
     {
         val startDate= levyFilterDTO.startDate
         val endDate = levyFilterDTO.endDate
+        val company = levyFilterDTO.company
+        val kraPin = levyFilterDTO.kraPin
 
         val dateFormat = SimpleDateFormat("mm/dd/yyyy")
 
-        return standardLevyService.getLevyHistoricalPaymentsFilter(startDate ,endDate )
+        return standardLevyService.getLevyHistoricalPaymentsFilter(startDate ,endDate,company,kraPin )
     }
 
     @GetMapping("/getLevyPaymentStatus")
@@ -2165,7 +2169,71 @@ class StdLevyController(
         return standardLevyService.getLevyPaymentStatus()
     }
 
+    @PostMapping("/updateExemptionStatus")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateExemptionStatus(
+        @RequestBody exemptionStatusDto: ExemptionStatusDto
+    ): ServerResponse
+    {
 
+        return ServerResponse(HttpStatus.OK,"Company Status Approved",standardLevyService.updateExemptionStatus(exemptionStatusDto))
+
+    }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getPermitsAwardedApplications")
+    @ResponseBody
+    fun getPermitsAwardedApplications(
+
+    ): List<PermitsAwarded>
+    {
+        return standardLevyService.getPermitsAwardedApplications()
+    }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/getPermitsApplicationsFilters")
+    fun getPermitsApplicationsFilters(
+        @RequestBody levyFilterDTO: LevyFilterDTO
+
+    ): List<PermitsAwarded>
+    {
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        return standardLevyService.getPermitsApplicationsFilters(startDate ,endDate  ,region)
+    }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getSiteVisits")
+    @ResponseBody
+    fun getSiteVisits(
+
+    ): List<SiteVisits>
+    {
+        return standardLevyService.getSiteVisits()
+    }
+
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/getSiteVisitsFilter")
+    fun getSiteVisitsFilter(
+        @RequestBody levyFilterDTO: LevyFilterDTO
+
+    ): List<SiteVisits>
+    {
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        return standardLevyService.getSiteVisitsFilter(startDate ,endDate,businessLines  ,region)
+    }
 
 
 

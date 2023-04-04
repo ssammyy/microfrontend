@@ -200,10 +200,14 @@ export class HofReviewProposalComponent implements OnInit {
   }
 
   @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
-
   public hideModelC() {
     this.closeModalC?.nativeElement.click();
   }
+
+    @ViewChild('closeModalD') private closeModalD: ElementRef | undefined;
+    public hideModelD() {
+        this.closeModalD?.nativeElement.click();
+    }
     get formApproveOrRejectWithReason(): any {
         return this.stdApproveOrRejectWithReason.controls;
     }
@@ -282,7 +286,7 @@ export class HofReviewProposalComponent implements OnInit {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-success'
+                    cancelButton: 'btn btn-danger'
                 },
                 buttonsStyling: false
             });
@@ -292,8 +296,8 @@ export class HofReviewProposalComponent implements OnInit {
                 text: 'You won\'t be able to reverse this!',
                 icon: 'success',
                 showCancelButton: true,
-                confirmButtonText: 'Yes!',
-                cancelButtonText: 'No!',
+                confirmButtonText: 'Approve!',
+                cancelButtonText: 'Reject!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -339,7 +343,7 @@ export class HofReviewProposalComponent implements OnInit {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-success'
+                    cancelButton: 'btn btn-danger'
                 },
                 buttonsStyling: false
             });
@@ -364,7 +368,7 @@ export class HofReviewProposalComponent implements OnInit {
                                 'success'
                             );
                             this.SpinnerService.hide();
-                            this.hideModelC()
+                            this.hideModelD()
                             this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
                             this.getAllHofJustifications(false);
                             this.getAllHofJustificationsApproved()

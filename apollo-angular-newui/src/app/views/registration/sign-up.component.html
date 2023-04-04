@@ -393,6 +393,7 @@
                                     <mat-form-field>
                                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                                                     required
+                                                    (ngModelChange)="updateSelectedBusinessLine()"
                                                     formControlName="businessLines"
                                                     name="businessLines"
                                                     placeholder="Line Of Business"

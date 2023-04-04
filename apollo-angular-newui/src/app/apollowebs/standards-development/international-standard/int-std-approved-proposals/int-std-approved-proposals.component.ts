@@ -38,6 +38,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   internationalStandardsComments: InternationalStandardsComments[] = [];
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   loadingText: string;
+  edition: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
@@ -66,29 +67,33 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   ngOnInit(): void {
     this.getApprovedProposals();
     this.getDepartments();
+    this.edition='first'
     this.prepareJustificationFormGroup = this.formBuilder.group({
-      meetingDate: ['', Validators.required],
+        meetingDate: [],
+        department: [],
+        tcSecName: [],
+        standardNumber: [],
+        title: [],
+        edition: [],
+        requestedBy: [],
+        scope: [],
+        purposeAndApplication: [],
+        intendedUsers: [],
+        referenceMaterial: [],
+        circulationDate: [],
+        closingDate: [],
+        tcAcceptanceDate: [],
+        proposalId: [],
+        draftId: [],
       knw: ['', Validators.required],
       slNumber: ['', Validators.required],
-      requestedBy: [],
       remarks: [],
       status: [],
-      department: ['', Validators.required],
       issuesAddressed: ['', Validators.required],
-      tcAcceptanceDate: ['', Validators.required],
       uploadedFiles: [],
-      edition: [],
       DocDescription: [],
-      purposeAndApplication: [],
-      intendedUsers: [],
-      circulationDate:[],
-      closingDate: [],
       positiveVotes:[],
       negativeVotes:[],
-      scope:[],
-      proposalId:[],
-        draftId: [],
-
     });
   }
   ngOnDestroy(): void {
@@ -179,13 +184,17 @@ export class IntStdApprovedProposalsComponent implements OnInit {
       button.setAttribute('data-target', '#prepareJustification');
       this.prepareJustificationFormGroup.patchValue(
           {
-            requestedBy: this.actionRequest.tcSecName,
+            requestedBy: this.actionRequest.requesterName,
             slNumber: this.actionRequest.proposalNumber,
             scope: this.actionRequest.scope,
             circulationDate: this.actionRequest.circulationDate,
             closingDate: this.actionRequest.closingDate,
             proposalId: this.actionRequest.id,
               draftId: this.actionRequest.draftId,
+              tcSecName:this.actionRequest.tcSecName,
+              standardNumber: this.actionRequest.standardNumber,
+              title: this.actionRequest.title,
+              edition: this.edition
 
           }
       );

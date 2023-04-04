@@ -101,6 +101,10 @@ class ComStdDraft {
     @Basic
     var departmentId: Long?=null
 
+    @Column(name="DEPARTMENT_NAME")
+    @Basic
+    var departmentName: String?=null
+
     @Column(name = "SUBJECT")
     @Basic
     var subject: String? = null
@@ -168,6 +172,14 @@ class ComStdDraft {
     @Column(name="WORK_SHOP_DATE")
     @Basic
     var workShopDate: Timestamp?=null
+
+    @Column(name = "ADOPT")
+    @Basic
+    var adopt: Long? = null
+
+    @Column(name = "NOT_ADOPT")
+    @Basic
+    var notAdopt: Long? = null
 
 
 }

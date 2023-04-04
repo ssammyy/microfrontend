@@ -12,13 +12,13 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto, LevyFiltersDto,
+    EditCompanyDTO, EmailVerificationStatus, ExemptionDto, LevyFilterDto, LevyFiltersDto, LevySites,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus, OperationStatus,
-    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, RejectedComDetails,
+    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, QAPermitsDto, RejectedComDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
@@ -30,9 +30,9 @@ import {
     UsersEntityList, VerifyEmailDto,
     VisitTask
 } from "./levy.model";
-import {BusinessLinesView, HistoricalData, RegionView, UsersEntity} from "../std/std.model";
+import {BusinessLinesView, HistoricalData, HistoricalPayments, RegionView, UsersEntity} from "../std/std.model";
 import swal from "sweetalert2";
-import {FilterDto} from "../qa/qa.model";
+import {FilterDto, ReportsPermitEntityDto} from "../qa/qa.model";
 
 @Injectable({
   providedIn: 'root'
@@ -648,6 +648,8 @@ export class LevyService {
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
     }
 
+
+
     public getManufacturesLevyPenalty(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PENALTY_DETAILS);
         const params = new HttpParams();
@@ -970,10 +972,10 @@ export class LevyService {
         return this.http.get<RegionView[]>(url, {params}).pipe();
     }
 
-    public getLevyHistoricalPayments(): Observable<HistoricalData[]> {
+    public getLevyHistoricalPayments(): Observable<HistoricalPayments[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS);
         const params = new HttpParams();
-        return this.http.get<HistoricalData[]>(url, {params}).pipe();
+        return this.http.get<HistoricalPayments[]>(url, {params}).pipe();
     }
 
     public getLevyHistoricalPaymentsFilter(data: LevyFiltersDto[]): Observable<any> {
@@ -995,6 +997,73 @@ export class LevyService {
         return this.http.get<PaymentStatus>(url, {params}).pipe();
     }
 
+    public changeLevyStatus(exemptionDto: ExemptionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PAYMENTS_STATUS);
+        const params = new HttpParams();
+        return this.http.post<ExemptionDto>(url, exemptionDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public loadPermitGrantedReports(): Observable<QAPermitsDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_AWARDED_PERMITS);
+        // const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL);
+        const params = new HttpParams();
+        return this.http.get<QAPermitsDto[]>(url, {params}).pipe(
+            map(function (response: QAPermitsDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadPermitGrantedReportsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_AWARDED_PERMITS_FILTER);
+        //const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public getSiteVisits(): Observable<LevySites[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS);
+        const params = new HttpParams();
+        return this.http.get<LevySites[]>(url, {params}).pipe(
+            map(function (response: LevySites[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public getSiteVisitsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_FILTERS);
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
 

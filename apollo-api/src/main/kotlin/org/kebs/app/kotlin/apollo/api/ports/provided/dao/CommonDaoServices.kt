@@ -51,7 +51,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
@@ -105,10 +104,7 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
@@ -393,6 +389,16 @@ class CommonDaoServices(
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it.stringHashed)
             KotlinLogging.logger { }.info { "my hashed value =$it =  $hashed" }
+            hashedList.add(HashedStringDto(hashed))
+        }
+        return hashedList
+    }
+
+    fun UnhashString(plainText: List<HashedStringDto>): List<HashedStringDto> {
+        val hashedList = mutableListOf<HashedStringDto>()
+        plainText.forEach {
+            val hashed = jasyptStringEncryptor.decrypt(it.stringHashed)
+            KotlinLogging.logger { }.info { "my unhash value =$it =  $hashed" }
             hashedList.add(HashedStringDto(hashed))
         }
         return hashedList
@@ -766,7 +772,7 @@ class CommonDaoServices(
     ) {
         val map = serviceMapDetails(appID)
         val sr = mapServiceRequestForSuccess(map, payload, user)
-        runBlocking { user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) } }
+         user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }
 
 //        user.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification, userRegisteredSuccessfulEmailCompose(user), commonDaoServices.serviceMapDetails(appId), commonDaoServices.mapServiceRequestForSuccess(map, payload, user)) }
     }
@@ -1541,7 +1547,7 @@ class CommonDaoServices(
         return sr
     }
 
-    suspend fun sendEmailWithUserEntity(
+    fun sendEmailWithUserEntity(
         user: UsersEntity,
         uuid: String,
         valuesMapped: Any,
@@ -1583,7 +1589,87 @@ class CommonDaoServices(
         return true
     }
 
-    suspend fun sendEmailWithUserEmail(
+    fun sendEmailWithUserEntityAsync(
+        user: UsersEntity,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
+    ){
+
+            KotlinLogging.logger { }.info { "Started Mail process" }
+            notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
+                ?.let { list ->
+                    list.forEach { buffer ->
+                        /**
+                         * TODO: Make topic a field on the Buffer table
+                         */
+                        buffer.recipient?.let { recipient ->
+                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                            buffer.subject?.let { subject ->
+                                KotlinLogging.logger { }.info { "Started subject $subject" }
+                                buffer.messageBody?.let { messageBody ->
+                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                    if (attachmentFilePath != null) {
+                                        KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                        notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                    } else {
+                                        notifications.sendEmail(recipient, subject, messageBody)
+                                    }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                    KotlinLogging.logger { }.info { "Email sent" }
+                                }
+                            }
+                        }
+                    }
+                    sr.processingEndDate = getTimestamp()
+                    serviceRequestsRepository.save(sr)
+                }
+
+    }
+
+     fun sendEmailWithUserEmailAsync(
+        userEmail: String,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null,
+        subjectAppendValue: String? = null
+    ) {
+                KotlinLogging.logger { }.info { "Started Mail process" }
+                notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
+                    ?.let { list ->
+                        list.forEach { buffer ->
+                            /**
+                             * TODO: Make topic a field on the Buffer table
+                             */
+                            buffer.recipient?.let { recipient ->
+                                KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                                buffer.subject?.let { subject ->
+                                    KotlinLogging.logger { }.info { "Started subject $subject" }
+                                    buffer.messageBody?.let { messageBody ->
+                                        KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                        if (attachmentFilePath != null) {
+                                            KotlinLogging.logger { }
+                                                .info { "Started attached body $attachmentFilePath" }
+                                            notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                        } else {
+                                            notifications.sendEmail(recipient, subject, messageBody)
+                                        }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                        KotlinLogging.logger { }.info { "Email sent" }
+                                    }
+                                }
+                            }
+                        }
+                        sr.processingEndDate = getTimestamp()
+                        serviceRequestsRepository.save(sr)
+                    }
+    }
+
+    fun sendEmailWithUserEmail(
         userEmail: String,
         uuid: String,
         valuesMapped: Any,
@@ -1774,6 +1860,17 @@ class CommonDaoServices(
     fun getCalculatedDateInLong(d1: Date): Long {
         val differenceInTime: Long = getCurrentDate().time - d1.time
         return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
+    }
+
+    fun getCalculatedYearInLong(d1: Date): Int {
+        val givenLocalDate = d1.toLocalDate()
+        val currentDate = LocalDate.now()
+        return Period.between(givenLocalDate, currentDate).years
+    }
+
+    fun addYearsToWithDate(noOfYears: Long, d1: Date): Date {
+        val givenLocalDate = d1.toLocalDate()
+        return Date.valueOf(givenLocalDate.plusYears(noOfYears))
     }
 
     fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {

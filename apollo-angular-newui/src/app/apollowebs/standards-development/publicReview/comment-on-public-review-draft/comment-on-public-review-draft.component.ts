@@ -179,8 +179,8 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
             text: 'You won\'t be able to reverse this!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes!',
-            cancelButtonText: 'No!',
+            confirmButtonText: 'Approve!',
+            cancelButtonText: 'Reject!',
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {

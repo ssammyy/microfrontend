@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InspectionReportDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -46,9 +47,11 @@ class QualityAssuranceJSONControllers(
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
     private val limsServices: LimsServices,
-    private val usersSignatureRepository: UserSignatureRepository
+    private val usersSignatureRepository: UserSignatureRepository,
+    private val inspectionReportDaoServices: InspectionReportDaoServices,
 
-) {
+
+    ) {
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
@@ -90,9 +93,7 @@ class QualityAssuranceJSONControllers(
                 val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus)
                     ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
                 val selectedRate = ratesMap.firstOrNull {
-                    manufacture.yearlyTurnover!! > (it.min
-                        ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max
-                        ?: throw NullValueNotAllowedException("Max needs to be defined"))
+                    manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined"))
                 } ?: throw NullValueNotAllowedException("Rate not found")
                 with(branchDetails) {
                     varField9 = fileDoc.id.toString()
@@ -100,24 +101,19 @@ class QualityAssuranceJSONControllers(
                     invoiceInspectionGenerated = 1
                     paidDate = userPaidDate
                     val validityInYears = selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS")
-                    val yearsGotten = commonDaoServices.getCalculatedDateInLong(userPaidDate)
+                    val daysGotten = commonDaoServices.getCalculatedDaysInLong(userPaidDate, commonDaoServices.addYearsToWithDate(validityInYears,userPaidDate))
+//                    val yearsGotten = commonDaoServices.getCalculatedYearInLong(userPaidDate)
                     endingDate = when {
-                        validityInYears == yearsGotten -> {
-                            throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date")
-                        }
-
-                        yearsGotten > validityInYears -> {
+                        daysGotten == 0L -> { throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date") }
+                        daysGotten < 0L -> {
                             throw NullValueNotAllowedException("Inspection Fee has already passed, The validity date for $validityInYears years after payment date")
                         }
-
                         else -> {
-                            commonDaoServices.addYearsToCurrentDate(yearsGotten)
+                            commonDaoServices.addYearsToWithDate(validityInYears,userPaidDate)
                         }
                     }
-
                 }
                 manufacturePlantRepository.save(branchDetails)
-//                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
 
@@ -204,7 +200,7 @@ class QualityAssuranceJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadInspectionReport(
         @RequestParam("permitID") permitID: Long,
-        @RequestParam("inspectionReportId") inspectionReportId: String,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
         @RequestParam("data") data: String,
         @RequestParam("docFile") docFile: List<MultipartFile>?,
         model: Model
@@ -227,7 +223,7 @@ class QualityAssuranceJSONControllers(
                 with(uploads) {
                     ordinaryStatus = 0
                     inspectionReportStatus = 1
-                    varField1 = inspectionReportId
+                    inspectionReportId = inspectionReportID
                 }
                 val fileDocSaved = qaDaoServices.saveQaFileUploads(
                     fileDoc,
@@ -777,6 +773,10 @@ class QualityAssuranceJSONControllers(
 
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
+        val company = foundPermitDetails.companyId?.let { companyProfileRepo.findById(it) }
+        val branchAddress = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it).physicalAddress }
+
+
 
         val q = foundPermitDetails.permitNumber
         val url =
@@ -806,7 +806,8 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 //        map["QrCode"] = url
-        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
 
 
         val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
@@ -822,8 +823,7 @@ class QualityAssuranceJSONControllers(
                 map["Signature"] = image
 
             }
-        }
-        else {
+        } else {
             val signature = usersSignatureRepository.findByUserId(2775)
             mySignature = signature?.signature
             image = ByteArrayInputStream(mySignature)
@@ -1117,5 +1117,38 @@ class QualityAssuranceJSONControllers(
         return sm
 //        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
 
+    }
+
+    @PostMapping("/permit/upload/inspection-report")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesInspectionReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("inspectionReportId") inspectionReportId: Long,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        docFile.forEach { u ->
+            val upload = QaUploadsEntity()
+            with(upload) {
+                permitId = permitDetails.id
+            }
+            inspectionReportDaoServices.uploadInspectionReportDocs(
+                upload,
+                u,
+                "INSPECTION-REPORT-UPLOADS",
+                permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                inspectionReportId,
+                loggedInUser
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
     }
 }

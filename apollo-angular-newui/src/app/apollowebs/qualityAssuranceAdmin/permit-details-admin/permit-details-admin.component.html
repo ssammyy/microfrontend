@@ -27,7 +27,8 @@
                                             <i class="material-icons">description</i> Application Details
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
                                         </a>
@@ -42,7 +43,8 @@
                                             <i class="material-icons">assignment_turned_in</i> Application Invoice
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link10" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>Application Difference
                                             Invoice
@@ -87,6 +89,11 @@
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i> Branch Attached Details
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" *ngIf="allPermitDetails?.sta10FilesList.length > 0">
+                                        <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>STA 10 Uploaded Documents
                                         </a>
                                     </li>
                                 </ul>
@@ -234,14 +241,14 @@
                                                     <i class="material-icons" data-notify="icon">push_pin</i>
                                                     <table class="table">
                                                         <tbody>
-                                                            <tr>
-                                                                <td><strong>
-                                                                    Assigned officer:</strong></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignOfficer}}</td>
-    
-                                                            </tr>
+                                                        <tr>
+                                                            <td><strong>
+                                                                Assigned officer:</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignOfficer}}</td>
+
+                                                        </tr>
                                                         <tr>
                                                             <td><strong>
                                                                 Division:</strong></td>
@@ -1038,6 +1045,49 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
                                                                  [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
                                     </div>
+                                    <div class="tab-pane" id="link13">
+                                        <h3>STA 10 Uploaded Documents</h3>
+                                        <br>
+                                        <div id="main1">
+                                            <div class="container">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-left">{{ tableData2?.headerRow[0] }}</th>
+                                                            <th>{{ tableData2?.headerRow[1] }}</th>
+                                                            <th>{{ tableData2?.headerRow[2] }}</th>
+                                                            <th>{{ tableData2?.headerRow[3] }}</th>
+                                                            <th class="text-right">{{ tableData2?.headerRow[4] }}</th>
+
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let row of tableData2?.dataRows">
+                                                            <td class="text-left">{{row[0]}}</td>
+                                                            <td>{{row[1]}}</td>
+                                                            <td>{{row[2]}}</td>
+                                                            <td>{{row[3]}}</td>
+
+                                                            <td class="td-actions text-right">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal"
+                                                                        (click)="viewPdfFile(row[4], row[0], row[1])"
+                                                                        class="btn btn-info {{row[4]}}">
+                                                                    <i class="material-icons">visibility</i>
+
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!--        <ngx-extended-pdf-viewer [src]="pdfUploadsView" [zoom]="'page-actual'"-->
+                                        <!--                                 [filenameForDownload]="'STA3 UPLOAD'"></ngx-extended-pdf-viewer>-->
+                                    </div>
 
                                     <div class="tab-pane" id="link4">
                                         <h3>Inspection Report</h3>
@@ -1105,29 +1155,34 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         </thead>
 
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>{{inspectionReportDetailsDto?.refNo}}</td>
-                                                                                            <td>{{inspectionReportDetailsDto?.createdOn}}</td>
-                                                                                            <td style="padding: .75rem;
+                                                                                        <ng-container
+                                                                                                *ngIf="inspectionReportDetailsDto?.refNo !=null">
+                                                                                            <tr>
+
+                                                                                                <td>{{inspectionReportDetailsDto?.refNo}}</td>
+                                                                                                <td>{{formatFormDate(inspectionReportDetailsDto?.createdOn)}}</td>
+                                                                                                <td style="padding: .75rem;
                                                                                                               vertical-align: top;color: #0082f3;font-size: .875rem;
                                                                                                               font-weight: 400;">
-                                                                                                YES
-                                                                                            </td>
-                                                                                            <td style="padding: .75rem;
+                                                                                                    YES
+                                                                                                </td>
+                                                                                                <td style="padding: .75rem;
                                                                                                               vertical-align: top;color: #0082f3;font-size: .875rem;
                                                                                                               font-weight: 400;">
-                                                                                                FILLED
-                                                                                            </td>
-                                                                                            <td class="text-right">
+                                                                                                    FILLED
+                                                                                                </td>
+                                                                                                <td class="text-right">
 
-                                                                                                <a (click)="goToInspectionReportPage(inspectionReportDetailsDto?.id.toString())"
-                                                                                                   class="btn btn-info"
-                                                                                                   style="background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);width: 100%;">View</a>
+                                                                                                    <a (click)="goToInspectionReportPage(inspectionReportDetailsDto?.id.toString())"
+                                                                                                       class="btn btn-info"
+                                                                                                       style="background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);width: 100%;">View</a>
 
 
-                                                                                            </td>
+                                                                                                </td>
 
-                                                                                        </tr>
+                                                                                            </tr>
+                                                                                        </ng-container>
+
 
                                                                                         </tbody>
                                                                                     </table>
@@ -1158,7 +1213,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                 <div>
                                                                     <div class="text-center">
                                                                         <h5 class="text-dark" style="text-align: left;
-                                                                               margin-top: 20px;">Documents Attached Details</h5>
+                                                                               margin-top: 20px;">Documents Attached
+                                                                            Details</h5>
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
@@ -1173,20 +1229,26 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th><strong>File Name</strong></th>
-                                                                                            <th><strong>File Type</strong></th>
-                                                                                            <th><strong>Document Description</strong></th>
-                                                                                            <th><strong>Version Number</strong></th>
+                                                                                            <th><strong>File
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View Details</strong>
+                                                                                                <strong>View
+                                                                                                    Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr *ngFor="let scsDetails of allPermitDetails?.schemeOfSuperVisionList">
                                                                                             <td>{{scsDetails?.name}}</td>
-                                                                                            <td>{{scsDetails?.fileType }}</td>
-                                                                                            <td>{{scsDetails?.documentType}}</td>
+                                                                                            <td>{{scsDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(scsDetails?.createdOn)}}</td>
                                                                                             <td>{{scsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedFilesSaved(scsDetails)"
@@ -1228,9 +1290,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
-                                                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                                                        <a data-toggle="modal"
+                                                                           data-target="#allProcessModel"
                                                                            (click)="openModalAddDetails('addSSFDetails')"
-                                                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+                                                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD
+                                                                            SSF & BS NUMBER</a>
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
                                                                                 <div>
@@ -1243,14 +1307,21 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <tr>
 
                                                                                             <th><strong>No</strong></th>
-                                                                                            <th><strong>SSF No</strong></th>
-                                                                                            <th><strong>SSF Submission Date</strong></th>
-                                                                                            <th><strong>BS Number</strong></th>
-                                                                                            <th><strong>Product Name</strong></th>
-                                                                                            <th><strong>Product Brand</strong></th>
-                                                                                            <th><strong>Results Analysis</strong></th>
+                                                                                            <th><strong>SSF No</strong>
+                                                                                            </th>
+                                                                                            <th><strong>SSF Submission
+                                                                                                Date</strong></th>
+                                                                                            <th><strong>BS
+                                                                                                Number</strong></th>
+                                                                                            <th><strong>Product
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Product
+                                                                                                Brand</strong></th>
+                                                                                            <th><strong>Results
+                                                                                                Analysis</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View Details</strong>
+                                                                                                <strong>View
+                                                                                                    Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
@@ -1263,9 +1334,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                             <td>{{sffDetails?.brandName}}</td>
                                                                                             <td>{{sffDetails?.productDescription}}</td>
                                                                                             <td>
-                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks == null">PENDING ANALYSES</div>
-                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">NON-COMPLIANT</div>
-                                                                                                <div *ngIf="sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">COMPLIANT</div>
+                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks == null">
+                                                                                                    PENDING ANALYSES
+                                                                                                </div>
+                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">
+                                                                                                    NON-COMPLIANT
+                                                                                                </div>
+                                                                                                <div *ngIf="sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">
+                                                                                                    COMPLIANT
+                                                                                                </div>
                                                                                             </td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSSFLabResultsRecord(sffDetails)"
@@ -1317,27 +1394,38 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th><strong>Process Name</strong></th>
-                                                                                            <th><strong>Process By</strong></th>
-                                                                                            <th><strong>Process On</strong></th>
-                                                                                            <th><strong>Remarks By</strong></th>
-                                                                                            <th><strong>Status</strong></th>
+                                                                                            <th><strong>Process
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Process
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Process
+                                                                                                On</strong></th>
+                                                                                            <th><strong>Remarks
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Status</strong>
+                                                                                            </th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View Details</strong>
+                                                                                                <strong>View
+                                                                                                    Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr *ngFor="let remarksParam of allPermitDetails?.remarksDetailsList let i=index ">
-                                                                                            <td>{{i + 1}} </td>
                                                                                             <td>{{remarksParam?.processName}}</td>
                                                                                             <td>{{remarksParam?.processBy }}</td>
                                                                                             <td>{{remarksParam?.createdOn}}</td>
                                                                                             <td>{{remarksParam?.createdBy}}</td>
                                                                                             <td>
-                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == null">N/A</div>
-                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == 1">REJECTED/NON-COMPLIANT</div>
-                                                                                                <div *ngIf="remarksParam?.remarksStatus && remarksParam?.status == 1">APPROVED/COMPLIANT</div>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == null">
+                                                                                                    N/A
+                                                                                                </div>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == 1">
+                                                                                                    REJECTED/NON-COMPLIANT
+                                                                                                </div>
+                                                                                                <div *ngIf="remarksParam?.remarksStatus && remarksParam?.status == 1">
+                                                                                                    APPROVED/COMPLIANT
+                                                                                                </div>
                                                                                             </td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedRemarks(remarksParam)"
@@ -1389,20 +1477,26 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
-                                                                                            <th><strong>File Name</strong></th>
-                                                                                            <th><strong>File Type</strong></th>
-                                                                                            <th><strong>Document Description</strong></th>
-                                                                                            <th><strong>Version Number</strong></th>
+                                                                                            <th><strong>File
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Uploaded
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View Details</strong>
+                                                                                                <strong>View
+                                                                                                    Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr *ngFor="let docsDetails of allPermitDetails?.ordinaryFilesList">
                                                                                             <td>{{docsDetails?.name}}</td>
-                                                                                            <td>{{docsDetails?.fileType }}</td>
-                                                                                            <td>{{docsDetails?.documentType}}</td>
+                                                                                            <td>{{docsDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(docsDetails?.createdOn)}}</td>
                                                                                             <td>{{docsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedFilesSaved(docsDetails)"
@@ -1456,11 +1550,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th><strong>Permit Ref Number</strong></th>
-                                                                                            <th><strong>Permit Number</strong></th>
-                                                                                            <th><strong>Version Number</strong></th>
+                                                                                            <th><strong>Permit Ref
+                                                                                                Number</strong></th>
+                                                                                            <th><strong>Permit
+                                                                                                Number</strong></th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View Details</strong>
+                                                                                                <strong>View
+                                                                                                    Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
@@ -1606,9 +1704,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     <div class="card-body ">
                         <div>
                             <div>
-                                <a  *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
-                                    (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID?.toString())"
+                                <a *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+                                   (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID?.toString())"
                                    class="btn btn-kebs mat-raised-button mat-button-base">FMARK APPLICATION DETAILS</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.branchID !=null  && allPermitDetails?.inspectionInvoiceUpload !=null
+                                && allPermitDetails?.inspectionInvoiceUploaded !=null && allPermitDetails?.inspectionNeeded"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('viewInspectionInvoiceDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOADED INSPECTION INVOICE
+                                    DETAILS</a>
+
                             </div>
                         </div>
                     </div>
@@ -1619,222 +1725,373 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </div>
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'||role == 'QA_MANAGER_MODIFY'">
+                            <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID ||allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">
+                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('updateSection')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateSection')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('updateBrand')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateBrand')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('permitCompleteness')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && allPermitDetails?.permitDetails?.changesMadeStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('permitCompleteness')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-<!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-<!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-<!--                                   data-target="#allProcessModel"-->
-<!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                                    <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-<!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-<!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-<!--                                   data-target="#allProcessModel"-->
-<!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                                    <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-                                <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
                                    && !allPermitDetails?.permitDetails?.assignOfficerStatus "
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('assignOfficer')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
-                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('assignOfficer')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
+                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                   && allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-                                <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                    <!--                                <a data-toggle="modal"-->
+                                    <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                                    <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
+
+                                    <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+                                    <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null
-                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approveRejectInspectionReport')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null
-                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
-                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approveRejectRecommendation')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>
-
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                    && allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitQAMHOD')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
-
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
-                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                    && allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitQAMHOD')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
-                            </div>
-                            <di *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addStandardsDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
-
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#myModalUpload"
-                                   (click)="openModalAddDetails('uploadAttachments')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addStandardsDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
-
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                    && allPermitDetails?.permitDetails?.productStandards != null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('scheduleInspectionDate')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
-
-
-                                <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
-                                        (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
-                                        class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
-                                    REPORT</a>
-
-
-                                <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                   && !allPermitDetails?.permitDetails?.generateSchemeStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('uploadSSC')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
-                                    AND CONTROL</a>
-
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && allPermitDetails?.permitDetails?.generateSchemeStatus &&
-                                    !allPermitDetails?.permitDetails?.ssfCompletedStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addSSFDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
-
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
-                                   && allPermitDetails?.permitDetails?.compliantStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addRecommendationRemarks')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
-
-
-                                <!--                                <a data-toggle="modal"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                       (click)="openModalAddDetails('addRecommendationApproval')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
-
-<!--                                   <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-<!--                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"-->
-<!--                                      data-target="#uploadSSFModal"-->
-<!--                                   (click)="openModalAddDetails('uploadSSF')"-->
-<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
-
-                                <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
-                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
-                                         && allPermitDetails?.permitDetails?.compliantStatus"
+                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('addRecommendationRemarks')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
 
-                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                        && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && allPermitDetails?.permitDetails?.changesMadeStatus
+                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('addSSFDetails')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD  NEW SSF & BS NUMBER</a>
+                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
+                                </div>
+                                <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
 
                                     <a data-toggle="modal"
-                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                        && allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                       *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#myModalUpload"
+                                       (click)="openModalAddDetails('uploadAttachments')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('uploadSSC')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF SUPERVISION
-                                        AND CONTROL</a>
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
 
                                     <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                        && allPermitDetails?.permitDetails?.productStandards != null"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('resubmitApplication')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+                                       (click)="openModalAddDetails('scheduleInspectionDate')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
+
 
                                     <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                        && allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                    && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
                                        (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
                                        class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
                                         REPORT</a>
 
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                       && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('uploadSSC')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
+                                        AND CONTROL</a>
+
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addSSFDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
+                                       && allPermitDetails?.permitDetails?.compliantStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addRecommendationRemarks')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
+
+
+                                    <!--                                <a data-toggle="modal"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                       (click)="openModalAddDetails('addRecommendationApproval')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
+
+                                    <!--                                   <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"-->
+                                    <!--                                      data-target="#uploadSSFModal"-->
+                                    <!--                                   (click)="openModalAddDetails('uploadSSF')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
+
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
+                                             && allPermitDetails?.permitDetails?.compliantStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addRecommendationRemarks')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addSSFDetails')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
+                                            NUMBER</a>
+
+                                        <a data-toggle="modal"
+                                           *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('uploadSSC')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF
+                                            SUPERVISION
+                                            AND CONTROL</a>
+
+                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('resubmitApplication')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+
+                                        <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                            && allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                           (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
+                                            REPORT</a>
+
+                                    </div>
+
                                 </div>
-                                   
-                            </di>
 
-                            <div *ngIf="role == 'QA_PSC_MEMBERS_MODIFY'">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPSCMember')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT AWARDING</a>
+                                <div *ngIf="role == 'QA_PSC_MEMBERS_MODIFY'">
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPSCMember')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPSCMember')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+                                </div>
+
+                                <div *ngIf="role == 'QA_PCM_MODIFY'">
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        REVIEW</a>
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        REVIEW</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmAddAmountToInvoice')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
+                                       && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                     && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                   && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPSCMember')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT AWARDING</a>
+                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+                                </div>
                             </div>
+                            <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                <div *ngIf="role == 'QA_PCM_MODIFY'">
 
-                            <div *ngIf="role == 'QA_PCM_MODIFY'">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
-                                   && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPCM')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT AWARDING</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        REVIEW</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                   && allPermitDetails?.permitDetails?.pscMemberApprovalStatus && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPCM')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        REVIEW</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.batchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                      && !allPermitDetails?.permitDetails?.invoiceGenerated
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmAddAmountToInvoice')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.batchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                     && !allPermitDetails?.permitDetails?.invoiceGenerated
+                                     && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       (click)="onClickSavePcmSubmitPayment()"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SUBMIT FOR PAYMENT</a>
+                                </div>
+<!--                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('updateSection')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('updateBrand')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>-->
+
+<!--                                    <a data-toggle="modal"-->
+<!--                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                && allPermitDetails?.permitDetails?.changesMadeStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+
+<!--                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.assignOfficerStatus "-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.assignOfficerStatus "-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectInspectionReport')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>&ndash;&gt;-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectRecommendation')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>&ndash;&gt;-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.changesMadeStatus-->
+<!--                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>-->
+<!--                                </div>-->
                             </div>
                         </div>
 
@@ -1897,79 +2154,79 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                 <!-- SSF UPLOAD Modal -->
                 <div class="modal fade" id="uploadSSFModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                  aria-hidden="true">
-                 <div class="modal-dialog">
-                     <div class="modal-content">
-                         <div class="modal-header">
-                             <h4 class="modal-title">{{currDivLabel}}</h4>
-                             <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                 <i class="material-icons">clear</i>
-                             </button>
-                         </div>
-                         <div class="modal-body">
-                             <div>
-                                 <form [formGroup]="docSSFUploadForm" action="" class="form"
-                                       enctype="multipart/form-data" method="post">
-                                     <div class="form-body">
-                                         <div class="form-group">
-                                             <div>
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{currDivLabel}}</h4>
+                                <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <form [formGroup]="docSSFUploadForm" action="" class="form"
+                                          enctype="multipart/form-data" method="post">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
 
-                                                 <label for="files"><b>Description Of Attachment(s):</b></label>
-                                                 <mat-form-field class="example-full-width">
-                                                     <input formControlName="docSSFUpload" id="docSSFUpload"
-                                                            matInput name="docSSFUpload"
-                                                            placeholder="Please enter Description Of Attachment"
-                                                            type="text">
-                                                 </mat-form-field>
-                                                
-                                                 <label for="files"><b>Upload SSF Here</b></label>
-                                                 <form #demoForm="ngForm">
-                                                     <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
-                                                                  id="filesb"
-                                                                  accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
-                                                 </form>
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <div class="form-group">
-                                         <div>
-                                             <label><b>Select Compliance Status</b></label>
-                                             <mat-form-field id="complianceStatusSSF43">
-                                                 <mat-select placeholder="Please Select an option"
-                                                             name="resultsAnalysis">
-                                                     <mat-option [value]="true">Compliant</mat-option>
-                                                     <mat-option [value]="false">Non-Compliant</mat-option>
-                                                 </mat-select>
-                                             </mat-form-field>
-                                             <label><b>Please write, in detail, your feedback for the whole Lab
-                                                 results:</b></label>
-                                             <mat-form-field class="example-full-width">
+                                                    <label for="files"><b>Description Of Attachment(s):</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="docSSFUpload" id="docSSFUpload"
+                                                               matInput name="docSSFUpload"
+                                                               placeholder="Please enter Description Of Attachment"
+                                                               type="text">
+                                                    </mat-form-field>
+
+                                                    <label for="files"><b>Upload SSF Here</b></label>
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
+                                                                     id="filesb"
+                                                                     accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label><b>Select Compliance Status</b></label>
+                                                <mat-form-field id="complianceStatusSSF43">
+                                                    <mat-select placeholder="Please Select an option"
+                                                                name="resultsAnalysis">
+                                                        <mat-option [value]="true">Compliant</mat-option>
+                                                        <mat-option [value]="false">Non-Compliant</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <label><b>Please write, in detail, your feedback for the whole Lab
+                                                    results:</b></label>
+                                                <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksSSF43" matInput type="text"
                                                       name="complianceRemarks">
                                             </textarea>
-                                             </mat-form-field>
-                                         </div>
-                                     </div>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
 
-                                 </form>
-                             </div>
-                         </div>
-                         <div class="modal-footer">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
 
-                             <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
-                                 Close
-                             </button>
-                             <button *ngIf="(currDiv == 'uploadSSF')" mat-raised-button type="button"
-                                     class="btn btn-success"
-                                     (click)="onClickSaveUploadsSSF()"
-                                     data-dismiss="modal"
-                             >SUBMIT
-                             </button>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <!--  End SSF UPLOADS Modal -->
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    Close
+                                </button>
+                                <button *ngIf="(currDiv == 'uploadSSF')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveUploadsSSF()"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--  End SSF UPLOADS Modal -->
 
 
                 <!-- Dynamic Modal -->
@@ -2061,7 +2318,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </mat-form-field>
                                                     <label><b>Commodity Description:</b></label>
                                                     <mat-form-field class="example-full-width">
-                                                        <input formControlName="commodityDescription" id="commodityDescription"
+                                                        <input formControlName="commodityDescription"
+                                                               id="commodityDescription"
                                                                matInput name="commodityDescription"
                                                                placeholder="Please enter Commodity Description"
                                                                type="text">
@@ -2201,6 +2459,36 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'viewInspectionInvoiceDetails')">
+                                    <form [formGroup]="viewInspectionInvoiceDetailsForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Paid Date</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="paidDate" id="paidDate"
+                                                               matInput name="paidDate" disabled
+                                                               type="date">
+                                                    </mat-form-field>
+                                                    <label><b>End Date</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="endingDate" id="endingDate"
+                                                               matInput name="endingDate" disabled
+                                                               type="date">
+                                                    </mat-form-field>
+                                                    <label><b>End Date</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <a data-toggle="modal"
+                                                           (click)="viewPdfFile(allPermitDetails?.inspectionInvoiceUploaded.toString(), 'Inspection fees Invoice','application/pdf')"
+                                                           class="btn btn-kebs mat-raised-button mat-button-base">VIEW
+                                                            UPLOADED INSPECTION
+                                                            INVOICE DETAILS</a>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div *ngIf="(currDiv == 'scheduleInspectionDate')">
                                     <form [formGroup]="scheduleInspectionForm" class="form">
                                         <div class="form-body">
@@ -2217,6 +2505,37 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <mat-form-field class="example-full-width">
                                                     <textarea matInput type="text" formControlName="scheduleRemarks"
                                                               name="scheduleRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'pcmAddAmountToInvoice')">
+                                    <form [formGroup]="pcmAddAmountToInvoiceForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Description:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="itemDescName" id="itemDescName"
+                                                               matInput name="itemDescName"
+                                                               placeholder="Please enter Description"
+                                                               type="text">
+                                                    </mat-form-field>
+                                                    <label><b>Amount:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="itemAmount" id="itemAmount"
+                                                               matInput name="itemAmount"
+                                                               placeholder="Please enter Amount"
+                                                               type="text">
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail,
+                                                        your reason:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text" formControlName="description"
+                                                              name="description">
                                                     </textarea>
                                                     </mat-form-field>
                                                 </div>
@@ -2252,14 +2571,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label><b>Brand Name:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="brandName" id="brandName" matInput
-                                                               name="brandName" disabled ngModel="{{allPermitDetails?.permitDetails?.brandName}}"
+                                                               name="brandName" disabled
+                                                               ngModel="{{allPermitDetails?.permitDetails?.brandName}}"
                                                                placeholder="Please enter brand Name" type="text">
                                                     </mat-form-field>
                                                     <label><b>Product Description:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="productDescription"
                                                                id="productDescription" matInput
-                                                               name="productDescription" disabled ngModel="{{allPermitDetails?.permitDetails?.commodityDescription}}"
+                                                               name="productDescription" disabled
+                                                               ngModel="{{allPermitDetails?.permitDetails?.commodityDescription}}"
                                                                placeholder="Please enter product Description"
                                                                type="text">
                                                     </mat-form-field>
@@ -2314,8 +2635,9 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
-                                <div *ngIf="(currDiv == 'approvePermitQAMHOD')">
-                                    <form [formGroup]="approveRejectPermitForm" class="form">
+                                <div *ngIf="(currDiv == 'approvePermitQAMHODRecommendationInspectionReport')">
+                                    <form [formGroup]="approveRejectRecommendationInspectionReportPermitForm"
+                                          class="form">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
@@ -2328,8 +2650,29 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <mat-option [value]="false">DECLINE</mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
+                                                    <input id="inspectionReportID#" matInput type="text"
+                                                           formControlName="inspectionReportID"
+                                                           name="inspectionReportID"
+                                                           ngModel="{{allPermitDetails?.inspectionReportDetails?.id}}"
+                                                           [hidden]="true">
 
-                                                    <label><b>Add Remarks details:</b></label>
+                                                    <label><b>Add Supervisor Comments on Inspection report:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="supervisorComments"
+                                                              name="supervisorComments">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                    <label><b>Add Recommendation Remarks on recommendation by
+                                                        QAO:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="recommendationApprovalRemarks"
+                                                              name="recommendationApprovalRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Final Remarks:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                     <textarea matInput type="text"
                                                               formControlName="approvedRejectedRemarks"
@@ -2398,15 +2741,45 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'pcmReviewApproval')">
+                                    <form [formGroup]="approveRejectPermitReviewForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Status</b></label>
+                                                    <mat-form-field id="pcmReviewApprovalStatus">
+                                                        <mat-select formControlName="pcmReviewApprovalStatus"
+                                                                    name="pcmReviewApprovalStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Remarks details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="pcmReviewApprovalRemarks"
+                                                              name="pcmReviewApprovalRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div *ngIf="(currDiv == 'approveRejectInspectionReport')">
                                     <form [formGroup]="approveRejectInspectionReportForm" class="form">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
                                                     <input id="inspectionReportID#" matInput type="text"
-                                                           formControlName="inspectionReportID" name="inspectionReportID"
-                                                           ngModel="{{allPermitDetails?.inspectionReportDetails?.id}}" [hidden]="true">
-                                                    <label><b>Select  Status</b></label>
+                                                           formControlName="inspectionReportID"
+                                                           name="inspectionReportID"
+                                                           ngModel="{{allPermitDetails?.inspectionReportDetails?.id}}"
+                                                           [hidden]="true">
+                                                    <label><b>Select Status</b></label>
                                                     <mat-form-field id="approvedRejectedStatus">
                                                         <mat-select formControlName="approvedRejectedStatus"
                                                                     name="approvedRejectedStatus"
@@ -2502,24 +2875,27 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'approveRejectRecommendation')" mat-raised-button type="button"
+                                <button *ngIf="(currDiv == 'approveRejectRecommendation')" mat-raised-button
+                                        type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveRecommendationApprovalForm(recommendationApproveRejectForm.valid);"
                                         [disabled]="!recommendationApproveRejectForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'approveRejectInspectionReport')" mat-raised-button type="button"
+                                <button *ngIf="(currDiv == 'approveRejectInspectionReport')" mat-raised-button
+                                        type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveApproveRejectInspectionReportFormResults(approveRejectInspectionReportForm.valid);"
                                         [disabled]="!approveRejectInspectionReportForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'approvePermitQAMHOD')" mat-raised-button type="button"
+                                <button *ngIf="(currDiv == 'approvePermitQAMHODRecommendationInspectionReport')"
+                                        mat-raised-button type="button"
                                         class="btn btn-success"
-                                        (click)="onClickSaveApprovePermitQAMHOD(approveRejectPermitForm.valid);"
-                                        [disabled]="!approveRejectPermitForm.valid"
+                                        (click)="onClickSaveApprovePermitQAMHOD(approveRejectRecommendationInspectionReportPermitForm.valid);"
+                                        [disabled]="!approveRejectRecommendationInspectionReportPermitForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
@@ -2534,6 +2910,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         class="btn btn-success"
                                         (click)="onClickSaveApprovePermitPCM(approveRejectPermitForm.valid);"
                                         [disabled]="!approveRejectPermitForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'pcmReviewApproval')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveApprovePermitPCMReview(approveRejectPermitReviewForm.valid);"
+                                        [disabled]="!approveRejectPermitReviewForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
@@ -2558,6 +2941,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                <button *ngIf="(currDiv == 'pcmAddAmountToInvoice')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSavePcmAddAmountToInvoiceForm(pcmAddAmountToInvoiceForm.valid);"
+                                        [disabled]="!pcmAddAmountToInvoiceForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
                                 <button *ngIf="(currDiv == 'addSSFDetails')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveAddSSFDetails(ssfDetailsForm.valid);"
@@ -2571,7 +2961,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -5828,9 +6218,9 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                              class="list-text-accordion">NON-COMPLIANT
                                                         </div>
                                                     </div>
-<!--                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceRemarks == null">-->
-<!--                                                        <div *ngIf="!selectedLabResults?.ssfResultsList?.complianceStatus" class="list-text-accordion"></div>-->
-<!--                                                    </div>-->
+                                                    <!--                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceRemarks == null">-->
+                                                    <!--                                                        <div *ngIf="!selectedLabResults?.ssfResultsList?.complianceStatus" class="list-text-accordion"></div>-->
+                                                    <!--                                                    </div>-->
                                                 </li>
                                             </ul>
                                         </div>

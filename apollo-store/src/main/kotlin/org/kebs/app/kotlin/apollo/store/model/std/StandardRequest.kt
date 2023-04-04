@@ -96,8 +96,8 @@ class StandardRequest {
     var status: String? = null
 
 
-    @Transient
-    @JsonProperty("departmentName")
+    @Column(name = "DEPARTMENT_NAME")
+    @Basic
     var departmentName: String? = null
 
     @Column(name = "CREATED_BY")
@@ -138,6 +138,10 @@ class StandardRequest {
     @Column(name = "TC_SEC_ASSIGNED")
     @Basic
     var tcSecAssigned: String? = null
+
+    @Column(name = "TC_ASSIGNED")
+    @Basic
+    var tcAssigned: String? = null
 
     @Column(name = "NWI_STATUS")
     @Basic

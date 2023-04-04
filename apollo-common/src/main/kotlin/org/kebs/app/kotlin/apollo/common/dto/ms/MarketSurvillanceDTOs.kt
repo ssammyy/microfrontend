@@ -297,6 +297,8 @@ data class WorkPlanInspectionDto(
         var currentDate : Date? = null,
         var latestPreliminaryReport : Long? = null,
         var latestFinalPreliminaryReport : Long? = null,
+        var complaintReferenceNumber : String? = null,
+        var overAllCompliance : BigDecimal? = null,
 )
 
 data class FuelEntityDto(
@@ -624,7 +626,8 @@ data class InspectionInvestigationReportDto(
         var bsNumbersList: List<String>? = null,
         var version: Int? = null,
         var createdBy: String? = null,
-        var createdOn: Timestamp? = null
+        var createdOn: Timestamp? = null,
+        var changesMade: String? = null
 )
 
 data class KebsOfficersName (
@@ -775,6 +778,8 @@ data class SampleSubmissionDto(
         var productDescription: String? = null,
         var sourceProductEvidence: String? = null,
         var parametersList: List<SampleSubmissionItemsDto>? = null,
+        var dataReportID: Long?= null,
+        var nameOutlet: String?= null,
 )
 
 data class SampleSubmissionItemsDto(

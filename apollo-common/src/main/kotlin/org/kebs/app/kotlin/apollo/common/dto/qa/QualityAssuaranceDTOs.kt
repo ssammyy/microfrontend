@@ -123,8 +123,10 @@ data class AllInspectionDetailsApplyDto(
     var approvedRejectedStatus: Int? = null,
     var submittedInspectionReportStatus: Int? = null,
     var permitDetails: PermitDetailsDto? = null,
+    var inspectionReportDocs: List<FilesListDto>? = null
 
-    )
+
+)
 
 data class StandardizationMarkScheme(
     var id: Long? = null,
@@ -236,6 +238,20 @@ data class CompletenessApplyDto(
     var hofQamCompletenessRemarks: String? = null
 )
 
+data class AddExtraAmountApplyDto(
+    @NotNull(message = "Required itemDescName")
+    var itemDescName: String,
+    @NotNull(message = "Required itemAmount")
+    var itemAmount: BigDecimal,
+    var description: String? = null
+)
+
+data class ReviewCompletenessApplyDto(
+    @NotNull(message = "Required pcmReviewApprovalStatus Status")
+    var pcmReviewApprovalStatus: Boolean,
+    var pcmReviewApprovalRemarks: String? = null
+)
+
 data class RecommendationApplyDto(
     @NotNull(message = "Required recommendationApprovalStatus Status")
     var recommendationApprovalStatus: Boolean,
@@ -265,7 +281,9 @@ data class ApproveInspectionReportApplyDto(
     var approvedRejectedStatus: Boolean,
     @NotNull(message = "Required inspectionReportID Status")
     var inspectionReportID: Long,
-    var supervisorComments: String? = null
+    var supervisorComments: String? = null,
+    var approvedRejectedRemarks: String? = null,
+    var recommendationApprovalRemarks: String? = null
 )
 
 data class AssignOfficerApplyDto(
@@ -558,6 +576,12 @@ data class InvoiceDetailsDto(
     var invoiceDetailsList: List<InvoicePerDetailsDto>? = null,
 )
 
+data class InspectionInvoiceUploadedDto(
+    var uploadID: Long? = null,
+    var paidDate: Date? = null,
+    var endingDate: Date? = null
+)
+
 data class PermitUploads(
     var permitID: Long? = null,
     var manufactureNonStatus: Int,
@@ -656,6 +680,8 @@ data class FilesListDto(
     var fileType: String? = null,
     var documentType: String? = null,
     var versionNumber: Long? = null,
+    var createdBy: String? =null,
+    var createdOn: Timestamp? = null,
     var document: ByteArray? = null
 ) {
     override fun equals(other: Any?): Boolean {
@@ -714,6 +740,8 @@ data class PermitEntityDto(
     var versionNumber: Long? = null,
     var encryptedPermitId: String? = null,
     var encryptedUserId: String? = null,
+    var assignOfficer: String? = null,
+
 
     )
 
@@ -753,6 +781,10 @@ data class ReportPermitEntityDto(
     var email: String? = null,
     var pscApprovalDate: Timestamp? = null,
     var inspectionDate: Date? = null,
+    var kraPin: String? = null,
+    var entryNumber: String? = null,
+    var postalAddress: String? = null,
+    var postalCode: String? = null
 
 
     )
@@ -867,6 +899,7 @@ data class AllPermitDetailsDto(
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
     var schemeOfSuperVisionList: List<FilesListDto>? = null,
     var remarksDetailsList: List<RemarksAndStatusDto>? = null,
+    var inspectionInvoiceUpload: InspectionInvoiceUploadedDto? = null
 
     )
 

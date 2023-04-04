@@ -721,6 +721,42 @@ export class StdComStandardService {
     );
   }
 
+  public getStdRequirements(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_REQUIREMENTS_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getStdEditing(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_EDITING_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getStdEditDrafting(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_DRAFTING_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getStdEditProofreading(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_PROOF_READING_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getStdForApproval(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_APPROVAL_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getStdApproved(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_APPROVED_LIST);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
 
 
 }

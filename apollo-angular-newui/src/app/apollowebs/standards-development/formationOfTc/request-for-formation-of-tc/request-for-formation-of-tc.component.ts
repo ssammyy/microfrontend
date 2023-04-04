@@ -19,6 +19,10 @@ import {UserRegister} from "../../../../shared/models/user";
 import {MasterService} from "../../../../core/store/data/master/master.service";
 import {ActivatedRoute} from "@angular/router";
 import {formatDate} from "@angular/common";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {IDropdownSettings} from 'ng-multiselect-dropdown';
+import {LoggedInUser, selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -40,9 +44,20 @@ export class RequestForFormationOfTCComponent implements OnInit {
     public groupId: string = "draft";
     public type: string = "TCRelevantDocument";
 
+    public dropdownSettings: IDropdownSettings = {};
+    dropdownList: any[] = ['Government Lead Agency/Regulatory Authority', 'Manufacturers, producers or service providers',
+        'Major corporate consumers', 'University, Research and other Technical Institutions', 'Industry Association', 'Trade Association',
+        'Professional Body', 'Consumer Organization','Non-Governmental Organization (NGO)','Renown Professionals/experts',
+        'Renown Professionals/experts','Small and Medium Enterprises (SMEs)','SME trade associations '];
+
+    isoList: any[] = ['ISO TC 72', 'ISO TC73',  'ISO TC 70', 'ISO TC69'];
+
     tasks: JustificationForTc[] = [];
     displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
     displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
+
+
+
 
     dataSource!: MatTableDataSource<JustificationForTc>;
     dataSourceB!: MatTableDataSource<JustificationForTc>;
@@ -99,12 +114,18 @@ export class RequestForFormationOfTCComponent implements OnInit {
     dateFormat = "yyyy-MM-dd  hh:mm";
     language = "en";
 
+    roles: string[];
+    userLoggedInID: number;
+    userProfile: LoggedInUser;
+
+    approvedJustifications: JustificationForTc[] = [];
 
 
     constructor(private formationOfTcService: FormationOfTcService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
+                private store$: Store<any>,
                 private standardDevelopmentService: StandardDevelopmentService,
                 private masterService: MasterService,
                 private route: ActivatedRoute,
@@ -141,11 +162,26 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
 
     ngOnInit(): void {
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userLoggedInID = u.id;
+            this.userProfile = u;
+            return this.roles = u.roles;
+        });
 
         this.getAllHofJustifications(true);
         this.getAllHofJustificationsApproved()
         this.getAllHofJustificationsRejected()
         this.getDepartments();
+
+        this.dropdownSettings = {
+            singleSelection: false,
+            idField: 'id',
+            textField: 'name',
+            selectAllText: 'Select All',
+            unSelectAllText: 'UnSelect All',
+            itemsShowLimit: 3,
+            allowSearchFilter: true
+        };
 
         this.formationRequestFormGroup = this.formBuilder.group({
             dateOfPresentation: ['', Validators.required],
@@ -155,12 +191,14 @@ export class RequestForFormationOfTCComponent implements OnInit {
             subject: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            proposedRepresentation: ['', Validators.required],
+            proposedRepresentationArray: ['', Validators.required],
             targetDate: ['', Validators.required],
             programmeOfWork: ['', Validators.required],
             liaisonOrganization: ['', Validators.required],
             organization: ['', Validators.required],
             departmentId: ['', Validators.required],
+            proposedRepresentation: [''],
+
 
         });
 
@@ -184,6 +222,18 @@ export class RequestForFormationOfTCComponent implements OnInit {
         });
     }
 
+    onItemSelect(item: ListItem) {
+        // console.log(item);
+    }
+
+    onSelectAll(items: any) {
+        // console.log(items);
+    }
+
+    onSelectItem(item: ListItem) {
+        // console.log(item);
+    }
+
     public uploadProposalForTC(formDirective): void {
         this.isFormSubmitted = true;
 
@@ -192,6 +242,10 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
             this.loading = true;
             this.SpinnerService.show();
+            const arrayTest = this.formationRequestFormGroup.controls['proposedRepresentationArray'].value;
+            const myVar1 = arrayTest.toString()
+            this.formationRequestFormGroup.controls['proposedRepresentation'].setValue(myVar1);
+            console.log(this.formationRequestFormGroup.controls['proposedRepresentation'].value)
 
 
             this.formationOfTcService.uploadProposalForTC(this.formationRequestFormGroup.value).subscribe(
@@ -239,7 +293,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
             this.loading = true;
             this.SpinnerService.show();
-
 
             this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
                 (response) => {
@@ -446,9 +499,13 @@ export class RequestForFormationOfTCComponent implements OnInit {
         this.getDepartmentName(String(this.proposalRetrieved.departmentId))
         this.getAllDocs(String(this.proposalRetrieved.id))
         this.editFormationRequestFormGroup.controls['departmentId'].setValue(this.proposalRetrieved.departmentId);
-        this.getSelectedUser(proposal.hofId)
-        this.getSelectedSpc(proposal.spcId)
-        if (proposal.status == "7"||proposal.status == "6") {
+        // if(proposal.hofId!="null") {
+        //
+        //     this.getSelectedUser(proposal.hofId)
+        // }
+
+        // this.getSelectedSpc(proposal.spcId)
+        if (proposal.status == "7" || proposal.status == "6") {
             this.getSelectedSac(proposal.sacId)
 
         }
@@ -599,4 +656,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
     }
 
 
+    display = false;
+    update(){
+        this.display = true;
+    }
 }

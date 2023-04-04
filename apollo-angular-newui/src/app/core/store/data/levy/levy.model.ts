@@ -142,6 +142,8 @@ export class LevyFiltersDto {
     periodTo: Timestamp<any>;
     businessLines: number;
     region : number;
+    company : string;
+    kraPin : string;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -452,6 +454,7 @@ export interface DefaulterDetails{
 }
 export interface ManufactureDetailList {
     id: number;
+    exemptionStatus: number;
     name: string;
     kraPin: string;
     status: number;
@@ -646,6 +649,12 @@ export interface ManufacturingStatus {
 export interface OperationStatus {
     manufacturerStatus: number;
 }
+export interface NotificationForm {
+    responseMessage: string;
+    responseStatus: string;
+    responseButton: string;
+    responseMsg: string;
+}
 export interface NotificationStatus {
     responseMessage: number;
 }
@@ -739,3 +748,36 @@ export interface RejectedComDetails{
     status: number;
 }
 
+export interface ExemptionDto{
+    companyId: number;
+    exemptionStatus: number;
+}
+
+export interface QAPermitsDto{
+    id: number;
+    kraPin: string;
+    entryNumber: string;
+    name: string;
+    telephone: string;
+    companyEmail: string;
+    physicalAddress: string;
+    postalAddress: string;
+    town: string;
+    region: string;
+    productName: string;
+    issueDate: Timestamp<any>;
+    expiryDate: Timestamp<any>;
+}
+
+export interface LevySites{
+    id: number;
+    companyName: string;
+    entryNumber: string;
+    kraPin: string;
+    officerName: string;
+    dateOfVisit: Timestamp<any>;
+    purpose: string;
+    region: string;
+    businessLine: string;
+    otherBusinessNatureType: string;
+}

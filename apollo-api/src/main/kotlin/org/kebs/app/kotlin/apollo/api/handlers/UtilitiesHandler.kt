@@ -32,6 +32,19 @@ class UtilitiesHandler(
         }
     }
 
+    fun unHashString(req: ServerRequest): ServerResponse {
+        try {
+            val dto = req.body<HashListDto>()
+            val hashedString = dto.stringDetails?.let { commonDaoServices.UnhashString(it) }
+            hashedString?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No UNHashed String Found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun download(stream: ByteArrayOutputStream, fileName: String, httResponse: HttpServletResponse): Boolean {
         httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
         httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)

@@ -29,7 +29,13 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
 
 
     fun findBySdDocumentIdAndDocumentType(id:Long, documentType: String) :Collection<DatKebsSdStandardsEntity?>?
+
+
+
+    fun findBySdDocumentIdAndDocumentTypeAndDocumentTypeDef(id:Long, documentType: String,documentTypeDef: String) :Collection<DatKebsSdStandardsEntity?>?
     fun findBySdDocumentIdAndDocumentTypeDef(id: Long, documentTypeDef: String): DatKebsSdStandardsEntity
+
+
 
     //retrieve PD Drafts Doc
     @Query(
@@ -37,6 +43,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
         nativeQuery = true
     )
     fun findSDocumentId(@Param("sdDocumentId") sdDocumentId: Long): DatKebsSdStandardsEntity
+
 
 
 

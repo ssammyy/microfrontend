@@ -663,7 +663,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getUploadedDraft()
     }
 
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getComStdPublishing")
     @ResponseBody
     fun getComStdPublishing(): MutableList<ComStandard>
@@ -671,7 +671,51 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getComStdPublishing()
     }
 
-    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getStdRequirements")
+    @ResponseBody
+    fun getStdRequirements(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdRequirements()
+    }
+
+    //@PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getStdEditing")
+    @ResponseBody
+    fun getStdEditing(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdEditing()
+    }
+
+    @GetMapping("/company_standard/getStdEditDrafting")
+    @ResponseBody
+    fun getStdEditDrafting(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdEditDrafting()
+    }
+
+    @GetMapping("/company_standard/getStdEditProofreading")
+    @ResponseBody
+    fun getStdEditProofreading(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdEditProofreading()
+    }
+
+    @GetMapping("/company_standard/getStdForApproval")
+    @ResponseBody
+    fun getStdForApproval(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdForApproval()
+    }
+
+    @GetMapping("/company_standard/getStdApproved")
+    @ResponseBody
+    fun getStdApproved(): MutableList<ComStandard>
+    {
+        return comStandardService.getStdApproved()
+    }
+
+    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getAppStdPublishing")
     @ResponseBody
     fun getAppStdPublishing(): MutableList<ComStandard>

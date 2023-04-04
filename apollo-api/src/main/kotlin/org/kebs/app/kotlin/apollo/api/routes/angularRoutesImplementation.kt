@@ -537,10 +537,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
-                    POST(
-                        "/generate-difference-invoice",
-                        handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
-                    )
+                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
                     POST("/re-generate-invoice", handler::permitSubmitApplicationInvoiceReGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
@@ -577,6 +574,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
+                        POST("/batch-invoice-re-submit", handler::invoiceBatchReSubmitMigration)
                         POST("/batch-invoice-difference-submit", handler::invoiceBatchSubmitDifferenceMigration)
                         POST("/batch-invoice-add", handler::notSupported)
                         PUT("/batch-invoice-remove", handler::notSupported)
@@ -605,7 +603,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
                         GET("/batch-invoice-balance-details", handler::invoiceBatchDetailsBalanceMigration)
                         GET("/batch-invoice-pdf-details", handler::invoiceBatchDetailsPDFMigration)
-
                     }
                 }
                 "/invoice".nest {
@@ -627,6 +624,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "reports".nest {
                     GET("/allPermitsWithNoFmarkGenerated", handler::loadAllPermitsForReports)
                     GET("/allPermitsAwarded", handler::loadAllAwardedPermitsForReports)
+                    GET("/allPermitsAwardedSl", handler::loadAllAwardedPermitsForReportsSl)
+                    GET("/allPermitsAwardedSlFilter", handler::loadAllAwardedPermitsForReportsSlFilter)
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
                     GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
@@ -642,7 +641,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
-                    PUT("/permits-list-search", internalUserhandler::getAllMyTaskList)
+                    GET("/permits-list-psc", internalUserhandler::getAllMyTaskPSCList)
+
+                    PUT("/permits-list-search", internalUserhandler::putAllPermitSearchList)
                     GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
                     GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
                     GET("/permits-list-all", internalUserhandler::getAllPermitList)
@@ -655,6 +656,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/update-brand", internalUserhandler::updatePermitDetailsBrand)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
+                        POST("/permit-review", internalUserhandler::updatePermitDetailsReviewCompleteness)
+                        POST("/submit_for_payment", internalUserhandler::updatePermitDetailsSubmitForPayment)
+                        POST("/add-extra-amount", internalUserhandler::updatePermitDetailsAddExtraAmount)
                         POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
@@ -782,6 +786,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/list-new", handler::getAllComplaintNewList)
                 GET("/list-on-going", handler::getAllComplaintOnGoingList)
                 GET("/list-my-task", handler::getAllComplaintMyTaskList)
+                GET("/list-new-region", handler::getAllComplaintMyTaskListRegionChanged)
                 GET("/allocated-task-view", handler::getAllComplaintAllocatedTaskList)
                 GET("/pending-allocation-view", handler::getAllComplaintPendingAllocationList)
                 GET("/allocated-task-overDue-view", handler::getAllComplaintAllocatedOverDueTaskList)
@@ -849,7 +854,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/inspection".nest {
                     GET("/list", handler::getAllWorkPlanList)
                     GET("/list-completed", handler::getAllWorkPlanCompletedList)
-//                    GET("/list-new", handler::getAllWorkPlanNewList)
+                    GET("/list-same-activity", handler::getAllWorkPlanSameDateList)
                     GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
                     GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)
@@ -919,6 +924,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         PUT("/ssf-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusSend)
+                        PUT("/ssf-not-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusNotSend)
                         PUT(
                             "/final-ssf-compliance-status-save",
                             handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
@@ -997,12 +1003,12 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     @Bean
     fun KebsWebsiteApiRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/anonymous/kebsWebsite".nest {
-            GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
-            GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
-            GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
-            GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
-            GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
-            GET("/getAllCompanies", handler::getAllCompanies)
+//            GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
+//            GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
+//            GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
+//            GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
+//            GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
+//            GET("/getAllCompanies", handler::getAllCompanies)
 //          GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
             POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)

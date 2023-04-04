@@ -11,8 +11,6 @@ class NotificationResponseValue {
     var statusCode: String? = null
     var statusDescription: String? = null
     var billReferenceCode: String? = null
-
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss.SSSZ")
     var responseDate: Timestamp? = Timestamp.from(Instant.now())
 
 }

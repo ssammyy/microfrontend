@@ -93,59 +93,6 @@ class CallForTCApplication {
     var status: String? = null
 
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as CallForTCApplication
-        return id == that.id &&
-                dateOfPublishing == that.dateOfPublishing &&
-                tc == that.tc &&
-                tcId == that.tcId &&
 
-                title == that.title &&
-                expiryDate == that.expiryDate &&
-                description == that.description &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                status == that.status &&
-
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            dateOfPublishing,
-            tc,
-            tcId,
-            title,
-            expiryDate,
-            description,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            status,
-            deletedOn
-        )
-    }
 
 }

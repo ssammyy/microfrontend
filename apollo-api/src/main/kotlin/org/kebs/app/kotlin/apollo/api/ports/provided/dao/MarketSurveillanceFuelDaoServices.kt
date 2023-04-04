@@ -49,6 +49,7 @@ class MarketSurveillanceFuelDaoServices(
     private val fuelTeamsCountyRepo: IMsFuelTeamsCountyEntityRepository,
     private val processNameRepo: IMsProcessNamesRepository,
     private val limsServices: LimsServices,
+    private val dataReportRepo: IDataReportRepository,
     private val remarksRepo: IMsRemarksComplaintRepository,
     private val laboratoryRepo: ILaboratoryRepository,
     private val fuelRemediationInvoiceChargesRepo: IFuelRemediationChargesRepository,
@@ -159,7 +160,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileSaved.second.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
             )
 
-            runBlocking {
+
             managerPetroleumList
                 ?.forEach { mp->
                     val scheduleEmailDetails =  FuelScheduledDTO()
@@ -173,7 +174,7 @@ class MarketSurveillanceFuelDaoServices(
                     }
                     commonDaoServices.sendEmailWithUserEntity(mp, applicationMapProperties.mapMsFuelScheduleMPNotification, scheduleEmailDetails, map, fileSaved.first)
                 }
-            }
+
 
             val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             return mapFuelBatchListDto(fuelBatchList, map)
@@ -411,7 +412,7 @@ class MarketSurveillanceFuelDaoServices(
             refNumber = fileInspectionDetail.referenceNumber
             remediationDate= fileInspectionDetail.inspectionDateFrom
         }
-//        runBlocking {
+
 //            commonDaoServices.sendEmailWithUserEmail(
 //            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
 //            applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification,
@@ -422,7 +423,7 @@ class MarketSurveillanceFuelDaoServices(
 //            baseUrl = applicationMapProperties.baseUrlValue
 //            fullName = commonDaoServices.concatenateName(fileInspectionDetail.)
 //            refNumber = fileInspectionDetail.referenceNumber
-//        }
+
 //        commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, emailValuesStationOwner, map, fileSaved2.first)
         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
     }
@@ -473,9 +474,9 @@ class MarketSurveillanceFuelDaoServices(
                             commentRemarks = fileOfficerSaved.second.remarks
                             dateSubmitted = fileOfficerSaved.second.transactionDate
                         }
-                        runBlocking {
+
                             commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, dataValue, map, fileSaved2.first)
-                        }
+
                         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
 
                     }
@@ -989,7 +990,7 @@ class MarketSurveillanceFuelDaoServices(
 //                        )
 //
 //                        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-////                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
+////                        commonDaoServices.sendEmailWithUserEmail(
 //                            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
 //                            applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
 //                            dataValue,
@@ -997,7 +998,7 @@ class MarketSurveillanceFuelDaoServices(
 //                            savedSSfComplianceStatus.first,
 //                            fileContent.path
 //                        )
-//                        }
+//
 //                    }
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }else {
@@ -1067,7 +1068,7 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksSaved = fuelAddRemarksDetails(fileInspectionDetail.id,remarksDto, map, loggedInUser)
 
 
-//                runBlocking {
+
 //                    commonDaoServices.sendEmailWithUserEmail(
 //                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
 //                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
@@ -1075,7 +1076,7 @@ class MarketSurveillanceFuelDaoServices(
 //                    savedRemediationInvoice.first,
 //                    invoiceRemediationPDF(fileInspectionDetail.id).path
 //                )
-//                }
+
 
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
@@ -1110,7 +1111,7 @@ class MarketSurveillanceFuelDaoServices(
         }
         val fetched = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
 
-        runBlocking {
+
             commonDaoServices.sendEmailWithUserEmail(
                 fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                 applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
@@ -1127,7 +1128,6 @@ class MarketSurveillanceFuelDaoServices(
                 fetched.first,
                 commonDaoServices.convertMultipartFileToFile(docFile)?.path
             )
-        }
 
 //        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
     }
@@ -1199,14 +1199,14 @@ class MarketSurveillanceFuelDaoServices(
                     remediationDate = savedRemediation.second.dateOfRemediation
                 }
 
-                runBlocking {
+
                     commonDaoServices.sendEmailWithUserEmail(
                     fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     applicationMapProperties.mapMsFuelInspectionRemediationScheduleNotification,
                     emailValue,
                     map,
                     savedRemediation.first
-                )}
+                )
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
             else -> {
@@ -1885,6 +1885,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
 
             } else if (workPlanInspectionDetail != null) {
+                dataReportID = body.dataReportID
                 workPlanGeneratedID = workPlanInspectionDetail.id
                 fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             }
@@ -3653,7 +3654,9 @@ class MarketSurveillanceFuelDaoServices(
             data.bsNumber,
             data.productDescription,
             data.sourceProductEvidence,
-            data2
+            data2,
+            data.dataReportID,
+            dataReportRepo.findByIdOrNull(data.dataReportID?: -1L)?.outletName
         )
     }
 

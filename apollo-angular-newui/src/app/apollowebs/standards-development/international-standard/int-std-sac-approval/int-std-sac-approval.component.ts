@@ -37,6 +37,7 @@ export class IntStdSacApprovalComponent implements OnInit {
   public actionRequest: ISCheckRequirements | undefined;
   comStdRemarks: ComStdRemarks[] = [];
   loadingText: string;
+
   approve: string;
   reject: string;
     blob: Blob;
@@ -177,7 +178,6 @@ export class IntStdSacApprovalComponent implements OnInit {
 
       this.approveRequirementsFormGroup.patchValue(
           {
-            accentTo: this.approve,
             proposalId: this.actionRequest.proposalId,
             justificationId: this.actionRequest.justificationNo,
             draftId: this.actionRequest.id,
@@ -187,7 +187,8 @@ export class IntStdSacApprovalComponent implements OnInit {
               clause:this.actionRequest.clause,
               scope:this.actionRequest.scope,
               special:this.actionRequest.special,
-            standardNumber:this.actionRequest.isNumber
+            standardNumber:this.actionRequest.isNumber,
+              standardType:this.actionRequest.standardType
           }
       );
       this.rejectRequirementsFormGroup.patchValue(
@@ -292,10 +293,10 @@ export class IntStdSacApprovalComponent implements OnInit {
       this.approveRequirementsFormGroup.patchValue(
           {
               id: this.actionRequests.id,
-            accentTo: this.reject,
             requestId: this.actionRequests.requestId,
             draftId: this.actionRequests.draftId,
               standardNumber:this.actionRequests.comStdNumber,
+              standardType:this.actionRequests.standardType
           }
       );
     }

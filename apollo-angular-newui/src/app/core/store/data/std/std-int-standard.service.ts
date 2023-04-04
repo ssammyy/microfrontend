@@ -16,11 +16,11 @@ import {
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
     ISTcSecTASKS, IstProposalComment,
-    ListJustification,
+    ListJustification, NwaRequestList,
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
     ProposalComments,
-    StakeholderProposalComments, StandardBody, UsersEntity
+    StakeholderProposalComments, StakeHoldersFields, StandardBody, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -43,10 +43,17 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
-  public prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal,valueString: string[]): Observable<any> {
+    public getIntStandardProposals(): Observable<NwaRequestList[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_ADOPTION_PROPOSAL_REQUEST);
+        const params = new HttpParams();
+        return this.http.get<NwaRequestList[]>(url, {params}).pipe();
+    }
+
+  public prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal,stakeHoldersFields: StakeHoldersFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PREPARE_ADOPTION_PROPOSAL);
     const params = new HttpParams();
-    iSAdoptionProposal.addStakeholdersList=valueString
+      iSAdoptionProposal.addStakeholdersList=stakeHoldersFields
+    //iSAdoptionProposal.addStakeholdersList=valueString
     return this.http.post<ISAdoptionProposal>(url, iSAdoptionProposal, {params}).pipe(
         map(function (response: any) {
           return response;
@@ -361,10 +368,10 @@ export class StdIntStandardService {
     }
 
 
-    public submitDraftComments(comDraftComment: PredefinedSDCommentsFields[]): Observable<any> {
+    public submitDraftComments(comDraftComment: ProposalComments): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
         const params = new HttpParams();
-        return this.http.post<PredefinedSDCommentsFields[]>(url, comDraftComment, {params}).pipe(
+        return this.http.post<ProposalComments>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -374,10 +381,10 @@ export class StdIntStandardService {
         );
     }
 
-    public submitDraftComment(comDraftComment: PredefinedSDCommentsFields[]): Observable<any> {
+    public submitDraftComment(comDraftComment: ProposalComments): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENT);
         const params = new HttpParams();
-        return this.http.post<PredefinedSDCommentsFields[]>(url, comDraftComment, {params}).pipe(
+        return this.http.post<ProposalComments>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

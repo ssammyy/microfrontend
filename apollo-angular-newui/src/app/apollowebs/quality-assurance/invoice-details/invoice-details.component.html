@@ -44,10 +44,17 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="link10">
                                     <h3>Invoice Details</h3>
-                                    <button *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10"
+                                    <button *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10 && allBatchInvoiceDetails?.sageInvoiceNumber != null"
                                             (click)="reloadPage()" mat-raised-button=""
                                             class="btn btn-kebs mat-raised-button mat-button-base"><span
                                             class="mat-button-wrapper">CHECK PAYMENT MADE</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    <button *ngIf="allBatchInvoiceDetails?.batchDetails?.paidStatus != 10 && allBatchInvoiceDetails?.sageInvoiceNumber == null"
+                                            (click)="resubmitToSage()" mat-raised-button=""
+                                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                            class="mat-button-wrapper">RE-SUBMIT TO SAGE</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>

@@ -23,6 +23,7 @@ import {
 } from "../../../core/store/data/qa/qa.model";
 import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
+import {formatDate} from "@angular/common";
 
 declare const $: any;
 
@@ -37,6 +38,9 @@ export class InspectionReport implements OnInit {
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
     private permit_id: string;
     permitId: any;
+
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
@@ -88,7 +92,7 @@ export class InspectionReport implements OnInit {
     selectedPermitIdInspectionReport: number;
     cloned: boolean;
 
-    sta10FilesList: FilesListDto[] = [];
+    inspectionReportFilesList: FilesListDto[] = [];
     public uploadedFiles: FileList;
 
 
@@ -119,7 +123,7 @@ export class InspectionReport implements OnInit {
         });
 
         this.checkIfInspectionReportExists(this.permitId);
-        this.getInspectionReportsFullyFilled()
+        this.getInspectionReportsFullyFilled(this.permitId)
 
         this.technicalForm = this.formBuilder.group({
             id: [''],
@@ -468,9 +472,11 @@ export class InspectionReport implements OnInit {
     onClickUpdateStandardizationMarkScheme(valid: boolean) {
         if (valid) {
             this.loading = true
-            this.loadingText = "Updating Standardization Mark Scheme"
+
             this.SpinnerService.show();
             this.standardizationMarkSchemeFormGroup.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.standardizationMarkSchemeFormGroup.controls['id'].setValue(this.allInspectionReportDetails.technicalDetailsDto.id)
+
             this.internalService.updateInspectionReportStandardization(this.permitId, this.standardizationMarkSchemeFormGroup.value).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
@@ -507,6 +513,8 @@ export class InspectionReport implements OnInit {
 
             if (this.operationProcessAndControlsDetailsDtos.length > 0) {
                 this.SpinnerService.show();
+                this.loadingText = "Saving Operation Processes"
+
                 //(this.sta10Details.id.toString());
                 this.internalService.updateInspectionReportOperation(this.permitId, this.allInspectionReportDetails.id.toString(), this.operationProcessAndControlsDetailsDtos).subscribe(
                     (data) => {
@@ -678,10 +686,11 @@ export class InspectionReport implements OnInit {
 
 
     private checkIfInspectionReportExists(permitId: string) {
+        this.loading = true
+        this.loadingText = "Loading"
+        this.SpinnerService.show();
         if (permitId) {
-            this.loading = true
-            this.loadingText = "Loading"
-            this.SpinnerService.show();
+
 
             this.internalService.checkIfInspectionReportExists(this.permitId).subscribe(
                 (data: ApiResponseModel) => {
@@ -724,14 +733,13 @@ export class InspectionReport implements OnInit {
                 },
             );
         }
-        this.SpinnerService.hide()
-        this.loading = false
+
 
     }
 
 
-    private getInspectionReportsFullyFilled() {
-        this.internalService.getFullyFilledInspectionReport().subscribe(
+    private getInspectionReportsFullyFilled(permitId: string) {
+        this.internalService.getFullyFilledInspectionReport(permitId).subscribe(
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetailsToBeCloned = data?.data as InspectionReportToBeClonedDto[];
@@ -774,16 +782,55 @@ export class InspectionReport implements OnInit {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
 
-                    this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
-                    this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
-                    this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
-                    this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
-                    this.standardizationMarkSchemeFormGroup.patchValue(this.allInspectionReportDetails.standardizationMarkScheme);
-                    this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
-                    this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                    if (this.allInspectionReportDetails.technicalDetailsDto != null) {
+                        this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
+                    }
+                    if (this.allInspectionReportDetails.inspectionDetailsDto != null) {
+
+                        this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
+                    }
+                    if (this.allInspectionReportDetails.inspectionDetailsDtoB != null) {
+
+                        this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
+                    }
+                    if (this.allInspectionReportDetails.productLabelling != null) {
+
+                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
+                    }
+                    if (this.allInspectionReportDetails.standardizationMarkScheme != null) {
+
+                        this.standardizationMarkSchemeFormGroup.patchValue(this.allInspectionReportDetails.standardizationMarkScheme);
+                    }
+                    if (this.allInspectionReportDetails.operationProcessAndControls != null) {
+
+                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
+                    }
+                    if (this.allInspectionReportDetails.haccpImplementationDetails != null) {
+
+                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                    }
                     this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
 
                     this.technicalForm.controls['id'].setValue('')
+
+                    this.inspectionDetails.controls['id'].setValue('')
+                    this.inspectionDetails.controls['inspectionRecommendationId'].setValue('')
+
+                    this.inspectionDetailsB.controls['id'].setValue('')
+                    this.inspectionDetailsB.controls['inspectionRecommendationId'].setValue('')
+
+                    this.standardizationMarkSchemeFormGroup.controls['id'].setValue('')
+                    this.standardizationMarkSchemeFormGroup.controls['inspectionRecommendationId'].setValue('')
+
+                    this.haccpImplementationDetailsApplyFormGroup.controls['id'].setValue('')
+                    this.haccpImplementationDetailsApplyFormGroup.controls['inspectionRecommendationId'].setValue('')
+
+
+
+
+
+
+
 
                     this.SpinnerService.hide()
                     this.loading = false
@@ -802,7 +849,7 @@ export class InspectionReport implements OnInit {
     }
 
     onClickSaveInspectionReportDocs() {
-        if (this.sta10FilesList.length > 0) {
+        if (this.inspectionReportFilesList.length > 0) {
             if (this?.uploadedFiles) {
                 this.fileListSaveDetails();
             }
@@ -814,11 +861,12 @@ export class InspectionReport implements OnInit {
 
     fileListSaveDetails() {
         if (this.uploadedFiles.length > 0) {
+            this.loading = true
+            this.loadingText = "Uploading Documents"
             this.SpinnerService.show();
             const file = this.uploadedFiles;
             const formData = new FormData();
             formData.append('permitID', String(this.permitId));
-            formData.append('permitID', String(this.inspectionDetails));
             formData.append('inspectionReportId', this.allInspectionReportDetails.id.toString())
             formData.append('data', 'INSPECTION_REPORT'); //will be saved under varField1
             for (let i = 0; i < file.length; i++) {
@@ -826,8 +874,8 @@ export class InspectionReport implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.qaService.qaSaveInspectionReport(formData).subscribe(
-                (data: ApiResponseModel) => {
-                    if (data.responseCode === '00') {
+                (data: any) => {
+                    if (data.message=='Document Uploaded successful') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('Additional Documents Uploaded Successfully', () => {
                             // this.loadPermitDetails(data);
@@ -847,5 +895,7 @@ export class InspectionReport implements OnInit {
             this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
         }
     }
-
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
+    }
 }

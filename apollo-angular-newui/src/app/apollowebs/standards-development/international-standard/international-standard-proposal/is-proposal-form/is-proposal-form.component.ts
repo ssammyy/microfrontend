@@ -1,9 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {StdIntStandardService} from "../../../../../core/store/data/std/std-int-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {ISAdoptionProposal, UsersEntity} from "../../../../../core/store/data/std/std.model";
+import {
+    ComStdContactFields,
+    ISAdoptionProposal, NwaRequestList,
+    StakeHoldersFields,
+    UsersEntity
+} from "../../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {Router} from "@angular/router";
@@ -14,6 +19,7 @@ import {MatSelect} from "@angular/material/select";
 import {take, takeUntil} from "rxjs/operators";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {DataTableDirective} from "angular-datatables";
 
 declare const $: any;
 
@@ -23,6 +29,13 @@ declare const $: any;
   styleUrls: ['./is-proposal-form.component.css']
 })
 export class IsProposalFormComponent implements OnInit {
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    dtTrigger1: Subject<any> = new Subject<any>();
+    urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+
     fullname = '';
   public uploadedFiles: FileList;
   public isProposalFormGroup!: FormGroup;
@@ -30,8 +43,15 @@ export class IsProposalFormComponent implements OnInit {
     proposal_doc_name: string;
     public stakeholdersLists : UsersEntity[]=[] ;
     public dropdownSettings: IDropdownSettings = {};
-    dropdownList: any[] = [];
+    dropdownList: UsersEntity[] = [];
     loadingText='';
+    dataSaveResourcesRequired : StakeHoldersFields;
+    dataSaveResourcesRequiredList: StakeHoldersFields[]=[];
+    predefinedSDCommentsDataAdded: boolean = false;
+    submitted = false;
+    nwaRequestLists: NwaRequestList[]=[];
+    public actionRequests: NwaRequestList | undefined;
+
 
   constructor(
       private store$: Store<any>,
@@ -43,19 +63,27 @@ export class IsProposalFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      this.getIntStandardProposals();
       this.findStandardStakeholders();
-      this.proposal_doc_name='International Standard Adoption Proposal'
+      this.proposal_doc_name='Adoption Proposal'
     this.isProposalFormGroup = this.formBuilder.group({
-      proposal_doc_name: [],
-        uploadedBy: [],
-        tcSecName : ['', Validators.required],
-        circulationDate : ['', Validators.required],
-        closingDate : ['', Validators.required],
-        title : ['', Validators.required],
-        scope : ['', Validators.required],
-        iStandardNumber:[],
-        stakeholdersList:['', Validators.required],
-        addStakeholdersList:['', Validators.required]
+        proposal_doc_name: null,
+        uploadedBy: null,
+        tcSecName : null,
+        circulationDate : null,
+        closingDate : null,
+        title : null,
+        scope : null,
+        iStandardNumber:[null],
+        stakeholdersList:null,
+        stakeHolderName:null,
+        stakeHolderEmail:null,
+        stakeHolderPhone:null,
+        requestId:null,
+        adoptionProposalLink:['', [Validators.required, Validators.pattern(this.urlRegex)]],
+        departmentId:null,
+        departmentName:null,
+        //addStakeholdersList:['', Validators.required]
         // adoptionAcceptableAsPresented : ['', Validators.required],
         // reasonsForNotAcceptance : ['', Validators.required],
         // recommendations : ['', Validators.required],
@@ -91,6 +119,51 @@ export class IsProposalFormComponent implements OnInit {
         console.log(items);
     }
 
+    ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+        this.dtTrigger1.unsubscribe();
+    }
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger1.next();
+        });
+    }
+
+    public onOpenModal(nwaRequestList: NwaRequestList,mode:string): void{
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle','modal');
+        if (mode==='prepareJustification'){
+            this.actionRequests=nwaRequestList;
+            button.setAttribute('data-target','#prepareJustification');
+            this.isProposalFormGroup.patchValue(
+                {
+                    requestId: this.actionRequests.id,
+                    title: this.actionRequests.subject,
+                    scope: this.actionRequests.description,
+                    proposal_doc_name: this.proposal_doc_name,
+                    tcSecName: this.fullname,
+                    departmentId: this.actionRequests.departmentId,
+                    departmentName: this.actionRequests.departmentName
+                }
+            );
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+
 
 
 
@@ -115,18 +188,17 @@ export class IsProposalFormComponent implements OnInit {
 
   uploadProposal(): void {
     this.SpinnerService.show();
-    console.log(this.isProposalFormGroup.value);
-
+   // console.log(this.isProposalFormGroup.value);
     //const valueString=this.isProposalFormGroup.get("addStakeholdersList")
-    const valueString=this.isProposalFormGroup.get("addStakeholdersList").value.split(",")
-    this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value,valueString).subscribe(
+    //const valueString=this.isProposalFormGroup.get("addStakeholdersList").value.split(",")
+    this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
         (response) => {
           //console.log(response);
           this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, `Proposal Uploaded`);
-
-          this.onClickSaveUPLOADS(response.body.id)
+          //this.onClickSaveUPLOADS(response.body.id)
           this.isProposalFormGroup.reset();
+          this.getIntStandardProposals();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -134,6 +206,7 @@ export class IsProposalFormComponent implements OnInit {
           alert(error.message);
         }
     );
+    this.hideModalUploadDraft();
   }
 
     onClickSaveUPLOADS(comStdDraftID: string) {
@@ -245,6 +318,58 @@ export class IsProposalFormComponent implements OnInit {
                 alert(error.message);
             }
         );
+    }
+
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.isProposalFormGroup.value;
+        //console.log(this.dataSaveResourcesRequired);
+        // tslint:disable-next-line:max-line-length
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        //console.log(this.dataSaveResourcesRequiredList);
+        this.predefinedSDCommentsDataAdded= true;
+        //console.log(this.predefinedSDCommentsDataAdded);
+
+        this.isProposalFormGroup?.get('stakeHolderName')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderEmail')?.reset();
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveProposal() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.uploadProposal();
+        }
+    }
+
+    public getIntStandardProposals(): void {
+        this.loadingText = "Retrieving Requests...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.getIntStandardProposals().subscribe(
+            (response: NwaRequestList[]) => {
+                this.nwaRequestLists = response;
+                this.rerender();
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+    }
+    @ViewChild('closeModalUploadJustification') private closeModalUploadJustification: ElementRef | undefined;
+
+    public hideModalUploadDraft() {
+        this.closeModalUploadJustification?.nativeElement.click();
     }
 
 }

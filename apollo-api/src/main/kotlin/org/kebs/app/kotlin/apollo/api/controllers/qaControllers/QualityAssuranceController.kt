@@ -233,10 +233,9 @@ class QualityAssuranceController(
         )
 
 
-        val invoiceGenerated =
-            qaInvoiceCalculation.calculatePaymentOtherDetails(permitDetails, loggedInUser, invoiceDetails)
+        val invoiceGenerated = qaInvoiceCalculation.calculatePaymentOtherDetails(permitDetails, loggedInUser, invoiceDetails)
         //Calculate total amout to be paid after adding another detail to list
-        qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second, permitType, loggedInUser)
+        qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second.second, permitType, loggedInUser)
 
         //updating of Details in DB
         permitDetails.permitStatus = applicationMapProperties.mapQaStatusPPayment

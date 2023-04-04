@@ -10,12 +10,44 @@
     </div>
     <div class="main-content">
         <div class="container-fluid">
+            <div class="example-stretched-tabs mat-elevation-z4">
 
-            <mat-tab-group class="example-stretched-tabs mat-elevation-z4" mat-align-tabs="center">
-                <mat-tab label="Prepare NWI">
-                    <ng-template mat-tab-label>
-                        <span matBadge="{{secTasks.length}}" matBadgeOverlap="false">Prepare NWI</span>
-                    </ng-template>
+                <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center "
+                    role="tablist" style="border-bottom: 1px solid #ccc;">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" id="prepare-nwi"
+                           style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('Prepare NWI')" role="tablist">
+                            <i class="material-icons"></i> Prepare NWI
+                            <span class="badge badge-primary"
+                                  style="position: absolute; top: 0; right: 0;">{{secTasks.length}}</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="vote-on-nwis" style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('Votes On NWIs')" role="tablist">
+                            <i class="material-icons"></i>Votes On NWIs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="approved-nwis" style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('Approved NWIs')" role="tablist">
+                            <i class="material-icons"></i>Approved NWIs
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="rejected-nwis" style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('Rejected NWIs')" role="tablist">
+                            <i class="material-icons"></i>Rejected NWIs
+                        </a>
+                    </li>
+
+                </ul>
+
+                <div *ngIf="id == 'Prepare NWI'" class="w-100">
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -54,113 +86,19 @@
                                                 <td>{{secTask.subject}}</td>
                                                 <td>{{secTask.name}}</td>
 
-                                                <td><a (click)="onOpenModal(secTask,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">Add New work Item/Justification </a></td>
-
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Votes On NWIs">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header card-header-primary card-header-icon">
-                                    <div class="card-icon">
-                                        <i class="material-icons">assignment</i>
-                                    </div>
-                                    <h4 class="card-title">Tasks <small class="resolved-pill">{{secTasks.length}}
-                                        Tasks</small>
-                                    </h4>
-
-                                </div>
-                                <div class="card-body">
-                                    <div class="toolbar">
-
-                                    </div>
-
-
-                                    <div class="material-datatables">
-                                        <table class="table table-striped table-bordered table-hover" datatable
-                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2">
-                                            <thead>
-                                            <tr>
-                                                <th class="task">Proposal Title</th>
-                                                <th class="task">Total Votes</th>
-
-                                                <th class="task">Approved</th>
-                                                <th class="task">Not Approved</th>
-                                                <th class="action">Status</th>
-                                                <th class="action">Votes</th>
-
-                                                <th class="action">Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let secTask of nwiForVotes let i= index; ">
-
-                                                <td>{{secTask.nwiname}}</td>
-                                                <td>{{secTask.approved + secTask.notapproved }}</td>
-                                                <td>{{secTask.approved}}</td>
-                                                <td>{{secTask.notapproved}}</td>
                                                 <td>
-                                                    <ng-template
-                                                            [ngIf]=" secTask.status=='Upload Justification'">
-                                                        <span style=" font-size: 10px;"
-                                                              class="badge badge-info">
-                                                        Approved For Justification
-                                                        </span>
-                                                    </ng-template>
-                                                    <ng-template
-                                                            [ngIf]=" secTask.status=='Vote ON NWI'">
-                                                        <span style=" font-size: 10px;"
-                                                              class="badge badge-info">
-                                                        Voting Ongoing
-                                                        </span>
-                                                    </ng-template>
-                                                    <ng-template
-                                                            [ngIf]=" secTask.status=='NWI Rejected'">
-                                                        <span style=" font-size: 10px;"
-                                                              class="badge badge-danger">
-                                                        Rejected
-                                                        </span>
-                                                    </ng-template>
-
-
-                                                </td>
-
-                                                <td>
-
-                                                    <a (click)="onOpenModalVote(secTask,'viewVotes')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View Votes</a>
-                                                </td>
-                                                <td>
-                                                    <a (click)="onOpenModalVote(secTask,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View NWI</a>
-                                                    <br>
-
-                                                    <a *ngIf="secTask.status=='Vote ON NWI'"
-                                                       (click)="approveNwi(secTask.nwi_ID)"
+                                                    <a (click)="onOpenModalTask(secTask,'view')"
                                                        class="btn btn-success tooltips"
                                                        data-placement="top"
-                                                       data-original-title="Upload NWI">Approve/Reject Nwi</a>
+                                                       data-original-title="Upload NWI">View</a> <br>
 
+                                                    <a (click)="onOpenModal(secTask,'edit')"
+                                                       class="btn btn-info tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Upload NWI">Add New work
+                                                        Item/Justification </a>
 
                                                 </td>
-
 
                                             </tr>
                                             </tbody>
@@ -172,213 +110,300 @@
                             </div>
                         </div>
                     </div>
-                </mat-tab>
-                <mat-tab label="Approved NWIs">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header card-header-primary card-header-icon">
-                                    <div class="card-icon">
-                                        <i class="material-icons">assignment</i>
-                                    </div>
-                                    <h4 class="card-title">Approved <small
-                                            class="resolved-pill">{{approvedNwiS.length}}
-                                        New Work Items</small>
-                                    </h4>
 
-                                </div>
-                                <div class="card-body">
-                                    <div class="toolbar">
+                </div>
 
-                                    </div>
-                                    <div class="mat-elevation-z8">
-                                        <mat-form-field appearance="standard" style="width:20%; float: right">
-                                            <mat-label>Search</mat-label>
-                                            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-                                        </mat-form-field>
-                                        <table mat-table [dataSource]="dataSourceB" matSort style="width: 100%">
-
-                                            <!-- ID Column -->
-                                            <ng-container matColumnDef="proposalTitle">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposal Title</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposalTitle}} </td>
-                                            </ng-container>
-
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="scope">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Scope</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.scope}} </td>
-                                            </ng-container>
-
-                                            <!-- Name Column -->
-                                            <ng-container matColumnDef="nameOfProposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name Of Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.nameOfProposer}} </td>
-                                            </ng-container>
-
-                                            <!-- Fruit Column -->
-                                            <ng-container matColumnDef="referenceNumber">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference No</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="actions">
-                                                <th mat-header-cell *matHeaderCellDef> Actions</th>
-
-                                                <td mat-cell *matCellDef="let row">
-                                                    <a (click)="onOpenModalViewNwi(row.id,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View NWI</a>
-                                                </td>
-                                            </ng-container>
-
-                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                                            <!-- Row shown when there is no matching data. -->
-                                            <tr class="mat-row" *matNoDataRow>
-                                                <td class="mat-cell" colspan="4">No data matching the filter
-                                                    "{{input.value}}"
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
-                                                       aria-label="Select page of users"></mat-paginator>
-                                    </div>
+                <div *ngIf="id == 'Votes On NWIs'" class="w-100">
+                    <app-votes-on-nwis></app-votes-on-nwis>
 
 
-                                </div>
+                </div>
+
+
+                <div *ngIf="id == 'Approved NWIs'" class="w-100">
+                    <app-approved-nwis></app-approved-nwis>
+
+                </div>
+
+                <div *ngIf="id == 'Rejected NWIs'" class="w-100">
+                    <app-rejected-nwis></app-rejected-nwis>
+
+                </div>
+
+                <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
+                     aria-labelledby="viewRequestModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"
+                                    id="viewRequestModalLabel">{{actionRequest?.name}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Rejected NWIs">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header card-header-primary card-header-icon">
-                                    <div class="card-icon">
-                                        <i class="material-icons">assignment</i>
-                                    </div>
-                                    <h4 class="card-title">Rejected <small
-                                            class="resolved-pill">{{rejectedNwiS.length}}
-                                        New Work Items</small>
-                                    </h4>
-
-                                </div>
-                                <div class="card-body">
-                                    <div class="toolbar">
-
-                                    </div>
-                                    <div class="mat-elevation-z8">
-                                        <mat-form-field appearance="standard" style="width:20%; float: right">
-                                            <mat-label>Search</mat-label>
-                                            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-                                        </mat-form-field>
-                                        <table mat-table [dataSource]="dataSource" matSort style="width: 100%">
-
-                                            <!-- ID Column -->
-                                            <ng-container matColumnDef="proposalTitle">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposal Title</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposalTitle}} </td>
-                                            </ng-container>
-
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="scope">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Scope</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.scope}} </td>
-                                            </ng-container>
-
-                                            <!-- Name Column -->
-                                            <ng-container matColumnDef="nameOfProposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name Of Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.nameOfProposer}} </td>
-                                            </ng-container>
-
-                                            <!-- Fruit Column -->
-                                            <ng-container matColumnDef="referenceNumber">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference No</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="actions">
-                                                <th mat-header-cell *matHeaderCellDef> Actions</th>
-
-                                                <td mat-cell *matCellDef="let row">
-                                                    <a (click)="onOpenModalViewNwi(row.id,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View NWI</a>
-                                                </td>
-                                            </ng-container>
-
-                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                                            <!-- Row shown when there is no matching data. -->
-                                            <tr class="mat-row" *matNoDataRow>
-                                                <td class="mat-cell" colspan="4">No data matching the filter
-                                                    "{{input.value}}"
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
-                                                       aria-label="Select page of users"></mat-paginator>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </mat-tab>
-
-            </mat-tab-group>
-            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"
-                 aria-labelledby="updateExampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabelB">Proposal for
-                                New Work
-                                Item</h5>
-                            <button type="button" class="close" data-dismiss="modal"
-                                    aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form #editForm="ngForm" (ngSubmit)="saveNwi(editForm)" [formGroup]="stdNwiFormGroup">
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Enter Proposal title:</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'proposalTitle')">
-                                            <input type="text"
-                                                   matInput
-                                                   ngModel="{{nwiRequest?.subject}}"
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">Standard Request Details</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Organisation: " + actionRequest?.organisationName}}</li>
 
-                                                   id="proposalTitle"
-                                                   placeholder="Indicate subject matter of the proposed new standard"
-                                                   (ngModelChange)="textValidationType($event)"
-                                                   formControlName="proposalTitle">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'proposalTitle')"
-                                                    errorMsg="Please Enter Proposal Title">
-                                            </app-field-error-display>
-                                        </mat-form-field>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Name: " + actionRequest?.name}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Phone: " + actionRequest?.phone}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Section: " + actionRequest?.departmentName}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Subject: " + actionRequest?.subject}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Description: " + actionRequest?.description}}</li>
+                                            <li style="background: lightgray" class="list-group-item">Potential To
+                                                Contribute To Economic Efficiency :
+                                                <ngb-rating [max]="5"
+                                                            *ngIf="actionRequest?.economicEfficiency!=null"
+                                                            [(rate)]="actionRequest.economicEfficiency"
+                                                            [readonly]="false"></ngb-rating>
+                                            </li>
+                                            <li style="background: lightgray" class="list-group-item">Potential To
+                                                Safeguard Health And Safety :
+                                                <ngb-rating [max]="5"
+                                                            *ngIf="actionRequest?.healthSafety!=null"
+                                                            [(rate)]="actionRequest.healthSafety"
+                                                            [readonly]="false"></ngb-rating>
+                                            </li>
+                                            <li style="background: lightgray" class="list-group-item">Potential To
+                                                Preserve The Environment :
+                                                <ngb-rating [max]="5"
+                                                            *ngIf="actionRequest?.environment!=null"
+                                                            [(rate)]="actionRequest.environment"
+                                                            [readonly]="false"></ngb-rating>
+                                            </li>
+                                            <li style="background: lightgray" class="list-group-item">Potential To
+                                                Facilitate The Local Exchange Of Products And
+                                                Industrial Integration :
+                                                <ngb-rating [max]="5"
+                                                            *ngIf="actionRequest?.integration!=null"
+                                                            [(rate)]="actionRequest.integration"
+                                                            [readonly]="false"></ngb-rating>
+                                            </li>
+                                            <li style="background: lightgray" class="list-group-item">Potential To
+                                                Facilitate Access To Export Markets :
+                                                <ngb-rating [max]="5"
+                                                            *ngIf="actionRequest?.exportMarkets!=null"
+                                                            [(rate)]="actionRequest.exportMarkets"
+                                                            [readonly]="false"></ngb-rating>
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Level Of Standard: " + actionRequest?.levelOfStandard}}</li>
 
+                                            <li style="background: lightgray"
+                                                class="list-group-item">Desired
+                                                Output: {{actionRequest?.desiredOutput}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">Additional Information:
 
+                                            </li>
+                                            <li style="background: lightgray">
+                                                <div class="material-datatables table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover"
+                                                           datatable>
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="task">Document Name</th>
+                                                            <th class="task">Action</th>
+
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let doc of docs let i= index; ">
+
+                                                            <td>{{doc.name}}</td>
+                                                            <td>
+                                                                <button class="btn btn-info tooltips"
+                                                                        style="width: inherit"
+                                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                        data-placement="top"
+                                                                ><i
+                                                                        class="fa fa-eye"></i> View
+                                                                </button>
+                                                            </td>
+
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </li>
+
+                                        </ul>
                                     </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Scope</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'scope')">
+                                </div>
+
+                                <br>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">Review Details</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item"><b>TC SEC Assigned:</b>{{ actionRequest?.tcSecAssigned}}</li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">
+                                                <b>Decision: </b>{{actionRequest?.desiredResult}}</li>
+
+                                            <div *ngIf="actionRequest?.reason != null">
+                                                <li style="background: lightgray"
+                                                    class="list-group-item"><b>Comment: </b>{{actionRequest?.reason}}
+                                                </li>
+                                            </div>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item"><b>Reviewed
+                                                By: </b>{{actionRequest?.reviewedBy}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item"><b>Review
+                                                Date: </b>{{formatFormDate(actionRequest?.reviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeModalC
+                                        (click)="hideModelC()"
+                                        data-dismiss="modal">Close
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"
+                     aria-labelledby="updateExampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateExampleModalLabelB">Proposal for
+                                    New Work
+                                    Item</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form #editForm="ngForm" (ngSubmit)="saveNwi(editForm)" [formGroup]="stdNwiFormGroup">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Name of proposer</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    class="form-control one-column-input" readonly
+                                                    ngModel="{{nwiRequest?.name}}"
+                                                    value="{{nwiRequest?.name}}"
+                                                    name="nameOfProposer"
+                                                    formControlName="nameOfProposer"
+                                                    type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Organization</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    readonly
+                                                    ngModel="{{nwiRequest?.organisationName}}"
+                                                    value="{{nwiRequest?.organisationName}}"
+                                                    formControlName="organization"
+                                                    name="organization"
+                                                    type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!--                                    <div class="form-group col-6">-->
+                                        <!--                                        <label><b>Date of presentation</b></label>-->
+                                        <!--                                        <mat-form-field class="example-full-width has-label"-->
+                                        <!--                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'dateOfPresentation')">-->
+                                        <!--                                            <input type="date"-->
+                                        <!--                                                   matInput-->
+                                        <!--                                                   id="dateOfPresentation"-->
+                                        <!--                                                   placeholder="Presentation Date"-->
+                                        <!--                                                   formControlName="dateOfPresentation">-->
+                                        <!--                                            <app-field-error-display-->
+                                        <!--                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'dateOfPresentation')"-->
+                                        <!--                                                    errorMsg="Please Enter Presentation Date">-->
+                                        <!--                                            </app-field-error-display>-->
+                                        <!--                                        </mat-form-field>-->
+                                        <!--                                    </div>-->
+                                        <div class="form-group col-6">
+                                            <label><b>Sector</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    formControlName="nameOfTC"
+                                                    class="form-control one-column-input" readonly
+                                                    ngModel="{{nwiRequest?.departmentName}}"
+                                                    value="{{nwiRequest?.departmentName}}"
+                                                    placeholder="" name="nameOfTC"
+                                                    type="text">
+                                        </div>
+
+                                        <div class="form-group col-6">
+                                            <label><b>Reference Number given by
+                                                Secretariat</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    class="form-control one-column-input" readonly
+                                                    ngModel="{{nwiRequest?.requestNumber}}"
+                                                    value="{{nwiRequest?.requestNumber}}"
+
+                                                    formControlName="referenceNumber"
+                                                    placeholder="" name="referenceNumber"
+                                                    type="text">
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Enter Proposal title:</b></label>
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'proposalTitle')">
+                                                <input type="text"
+                                                       matInput
+                                                       ngModel="{{nwiRequest?.subject}}"
+
+                                                       id="proposalTitle"
+                                                       placeholder="Indicate subject matter of the proposed new standard"
+                                                       (ngModelChange)="textValidationType($event)"
+                                                       formControlName="proposalTitle">
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'proposalTitle')"
+                                                        errorMsg="Please Enter Proposal Title">
+                                                </app-field-error-display>
+                                            </mat-form-field>
+
+
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Scope</b></label>
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'scope')">
                                             <textarea type="text"
                                                       matInput
                                                       id="scope"
@@ -387,23 +412,23 @@
                                                       placeholder="Give a clear indication of the coverage of the proposed new standard"
                                                       (ngModelChange)="textValidationType($event)"
                                                       formControlName="scope"></textarea>
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'scope')"
-                                                    errorMsg="Please Enter Scope">
-                                            </app-field-error-display>
-                                        </mat-form-field>
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'scope')"
+                                                        errorMsg="Please Enter Scope">
+                                                </app-field-error-display>
+                                            </mat-form-field>
 
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="form-group col-12">
+                                    <div class="row">
+                                        <div class="form-group col-12">
 
-                                        <label><b>Purpose & application</b><span
-                                                data-toggle="tooltip"
-                                                data-placement="right"
-                                                class="badge badge-success"
-                                                title="The justification information should be based on the following, inter alia:
+                                            <label><b>Purpose & application</b><span
+                                                    data-toggle="tooltip"
+                                                    data-placement="right"
+                                                    class="badge badge-success"
+                                                    title="The justification information should be based on the following, inter alia:
 (i) Importance of economic field
 (ii) Degree of economic benefit
 (iii) Importance as export item
@@ -414,62 +439,61 @@
 (viii) Volume of production or operation
 (x) Ease of adoption and implementation
 (xi) Transfer of technology">i</span></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'purpose')">
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'purpose')">
                                             <textarea type="text"
                                                       matInput
                                                       id="purpose"
                                                       placeholder="Give specific aims and reasons for the standard and main interests to benefit from the standard. Mention any relevant problems in the industry or technology."
                                                       (ngModelChange)="textValidationType($event)"
                                                       formControlName="purpose"></textarea>
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'purpose')"
-                                                    errorMsg="Please Enter Purpose">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row col-12">
-                                        <div class="form-group col-12">
-                                            <label><b>Upload annex for Purpose &
-                                                application(optional)</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedFiles"
-                                                             name="uploadedFiles" fileslimit="2"
-                                                             accept=".pdf, .doc, .docx"></file-upload>
-                                                <input class="form-control one-column-input"
-                                                       ngModel="TSCSEC Annex Upload"
-                                                       name="DocDescription" type="hidden">
-                                            </form>
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'purpose')"
+                                                        errorMsg="Please Enter Purpose">
+                                                </app-field-error-display>
+                                            </mat-form-field>
                                         </div>
                                     </div>
 
-
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Target Date</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="targetDate"
-                                                   placeholder="Target Date"
-                                                   formControlName="targetDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"
-                                                    errorMsg="Please Enter Target Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-
+                                    <div class="row">
+                                        <!--                                    <div class="row col-12">-->
+                                        <!--                                        <div class="form-group col-12">-->
+                                        <!--                                            <label><b>Upload annex for Purpose &-->
+                                        <!--                                                application(optional)</b></label>-->
+                                        <!--                                            <form #demoForm="ngForm">-->
+                                        <!--                                                <file-upload [(ngModel)]="uploadedFiles"-->
+                                        <!--                                                             name="uploadedFiles" fileslimit="2"-->
+                                        <!--                                                             accept=".pdf, .doc, .docx"></file-upload>-->
+                                        <!--                                                <input class="form-control one-column-input"-->
+                                        <!--                                                       ngModel="TSCSEC Annex Upload"-->
+                                        <!--                                                       name="DocDescription" type="hidden">-->
+                                        <!--                                            </form>-->
+                                        <!--                                        </div>-->
+                                        <!--                                    </div>-->
 
                                     </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Similar Standards/Subject of
-                                            Standardization</b></label>
-                                        <ng-select style="" placeholder="Please Select an option"
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Target Date</b></label>
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
+                                                <input type="date"
+                                                       matInput
+                                                       id="targetDate"
+                                                       placeholder="Target Date"
+                                                       formControlName="targetDate">
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"
+                                                        errorMsg="Please Enter Target Date">
+                                                </app-field-error-display>
+                                            </mat-form-field>
+
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Similar Standards/Subject of
+                                                Standardization</b></label>
+                                            <ng-select style="" placeholder="Please Select an option"
                                                        formControlName="similarStandards"
                                                        id="similarStandards" name="similarStandards">
                                                 <ng-option
@@ -477,412 +501,203 @@
                                                         [value]="app.standardTitle + app.standardNumber">{{app.standardTitle}} {{app.standardNumber}} </ng-option>
                                             </ng-select>
 
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row col-12">
-                                        <div class="form-group col-12">
-                                            <label><b>Upload All Relevant Documents</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedFilesB"
-                                                             name="uploadedFilesB"
-                                                             accept=".pdf, .doc, .docx"></file-upload>
-                                                <input class="form-control one-column-input"
-                                                       ngModel="RelevantDocumentsNWI Upload"
-                                                       name="DocDescription" type="hidden">
-                                            </form>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <!--                                    <div class="row col-12">-->
+                                        <!--                                        <div class="form-group col-12">-->
+                                        <!--                                            <label><b>Upload All Relevant Documents</b></label>-->
+                                        <!--                                            <form #demoForm="ngForm">-->
+                                        <!--                                                <file-upload [(ngModel)]="uploadedFilesB"-->
+                                        <!--                                                             name="uploadedFilesB"-->
+                                        <!--                                                             accept=".pdf, .doc, .docx"></file-upload>-->
+                                        <!--                                                <input class="form-control one-column-input"-->
+                                        <!--                                                       ngModel="RelevantDocumentsNWI Upload"-->
+                                        <!--                                                       name="DocDescription" type="hidden">-->
+                                        <!--                                            </form>-->
+                                        <!--                                        </div>-->
+                                        <!--                                    </div>-->
 
-                                    <div class="form-group col-6">
-                                        <label><b>Liaison Organization/or interested parties</b></label>
+<!--                                        <div class="form-group col-6" style="display: none">-->
+<!--                                            <label><b>Liaison Organization/or interested parties </b></label>-->
 
-                                        <ng-multiselect-dropdown
-                                                [placeholder]="'Select Liaison Organization'"
-                                                [settings]="dropdownSettings"
-                                                [data]="dropdownList"
-                                                (onSelect)="onItemSelect($event)"
-                                                (onSelectAll)="onSelectAll($event)"
-                                                [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
-                                                formControlName="liaisonOrganisationData"
-                                                name="liaisonOrganisationData">
-                                        </ng-multiselect-dropdown>
-                                        <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
-                                              style="color: red;">Liaison Organization is required </span>
+<!--                                            <ng-multiselect-dropdown-->
+<!--                                                    [placeholder]="'Select Liaison Organization'"-->
+<!--                                                    [settings]="dropdownSettings"-->
+<!--                                                    [data]="dropdownList"-->
+<!--                                                    (onSelect)="onItemSelect($event)"-->
+<!--                                                    (onSelectAll)="onSelectAll($event)"-->
+<!--                                                    [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required-->
+<!--                                                 && formStdRequest?.liaisonOrganisationData?.touched"-->
+<!--                                                    formControlName="liaisonOrganisationData"-->
+<!--                                                    name="liaisonOrganisationData">-->
+<!--                                            </ng-multiselect-dropdown>-->
+<!--                                            <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required-->
+<!--                                        && formStdRequest?.liaisonOrganisationData?.touched"-->
+<!--                                                  style="color: red;">Liaison Organization is required </span>-->
 
+<!--                                        </div>-->
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row col-12">
-                                        <div class="form-group col-12">
-                                            <label><b>Upload Any Reference Documents(Optional)</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedFilesC"
-                                                             name="uploadedFilesC"
-                                                             accept=".pdf, .doc, .docx"></file-upload>
-                                                <input class="form-control one-column-input"
-                                                       ngModel="ReferenceDocumentsNWI Upload"
-                                                       name="DocDescription" type="hidden">
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h5><b>Preparatory Work</b></h5>
-                                <div class="row">
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="one-column-input"
-                                                formControlName="draftAttached" value="0"
-                                                id="defaultCheck1" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            A draft is attached
-                                        </label>
-
-                                    </div>
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class=" one-column-input"
-                                                formControlName="outlineAttached"
-                                                id="defaultCheck2" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck2">
-                                            An outline is attached
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="one-column-input"
-                                                formControlName="draftOutlineImpossible"
-                                                id="defaultCheck3" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck3">
-                                            It is not possible to attach either a draft or
-                                            outline
-                                        </label>
-                                    </div>
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class=" one-column-input"
-                                                formControlName="outlineSentLater"
-                                                id="defaultCheck4" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck4">
-                                            An outline will be sent later
-                                        </label>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Enter Name of proposer</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input" readonly
-                                                ngModel="{{nwiRequest?.name}}"
-                                                value="{{nwiRequest?.name}}"
-                                                name="nameOfProposer"
-                                                formControlName="nameOfProposer"
-                                                type="text">
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Organization</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                readonly
-                                                ngModel="{{nwiRequest?.organisationName}}"
-                                                value="{{nwiRequest?.organisationName}}"
-                                                formControlName="organization"
-                                                name="organization"
-                                                type="text">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Date of Circulation</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="circulationDate"
-                                                   placeholder="Circulation Date"
-                                                   formControlName="circulationDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')"
-                                                    errorMsg="Please Enter Circulation Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Closing Date</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="closingDate"
-                                                   placeholder="Closing Date"
-                                                   formControlName="closingDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')"
-                                                    errorMsg="Please Enter Closing Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Date of presentation</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'dateOfPresentation')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="dateOfPresentation"
-                                                   placeholder="Presentation Date"
-                                                   formControlName="dateOfPresentation">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'dateOfPresentation')"
-                                                    errorMsg="Please Enter Presentation Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Name of TC</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                formControlName="nameOfTC"
-                                                class="form-control one-column-input" readonly
-                                                ngModel="{{nwiRequest?.departmentName}}"
-                                                value="{{nwiRequest?.departmentName}}"
-                                                placeholder="" name="nameOfTC"
-                                                type="text">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="form-group col-6">
-                                        <label><b>Reference Number given by
-                                            Secretariat</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input" readonly
-                                                ngModel="{{nwiRequest?.requestNumber}}"
-                                                value="{{nwiRequest?.requestNumber}}"
-
-                                                formControlName="referenceNumber"
-                                                placeholder="" name="referenceNumber"
-                                                type="text">
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <input
-                                            aria-describedby="inputGroup-sizing-sm"
-                                            aria-label="Small"
-                                            class="form-control one-column-input" hidden
-                                            type="text"
-                                            ngModel="{{nwiRequest?.id}}"
-                                            formControlName="standardId" value="{{nwiRequest?.id}}">
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" #closeModal
-                                        (click)="hideModel()" data-dismiss="modal">Close
-                                </button>
-                                <button class="btn btn-info tooltips" type="submit">SUBMIT</button>
-
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                 aria-labelledby="updateExampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabelC">NEW WORK
-                                ITEM</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class=" col-12">
-                                    <ul class="list-group">
-                                        <li class="list-group-item active">New Work Item Details</li>
-
-                                        <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
-
-
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Name of TC: " + nwiActionRequest?.nameOfTC}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
-                                        </div>
-
-                                        <br><br>
-                                        <li style="background: lightgray">
-                                            <div class="material-datatables">
-                                                <table class="table table-striped table-bordered table-hover"
-                                                       datatable
-                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger5">
-                                                    <thead>
-                                                    <tr>
-                                                        <th class="task">Document Name</th>
-                                                        <th class="task">Descritpion</th>
-
-                                                        <th class="task">Action</th>
-
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr *ngFor="let doc of docs let i= index; ">
-
-                                                        <td>{{doc.name}}</td>
-                                                        <td>{{doc.description}}</td>
-
-                                                        <td>
-                                                            <button class="btn btn-info tooltips"
-                                                                    style="width: inherit"
-                                                                    (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                                    data-placement="top"
-                                                            ><i
-                                                                    class="fa fa-eye"></i> View
-                                                            </button>
-                                                        </td>
-
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                                    <div class="row">
+                                        <div class="row col-12">
+                                            <div class="form-group col-12">
+                                                <label><b>Upload Any Reference Documents(Optional)</b></label>
+                                                <form #demoForm="ngForm">
+                                                    <file-upload [(ngModel)]="uploadedFilesC"
+                                                                 name="uploadedFilesC"
+                                                                 accept=".pdf, .doc, .docx"></file-upload>
+                                                    <input class="form-control one-column-input"
+                                                           ngModel="ReferenceDocumentsNWI Upload"
+                                                           name="DocDescription" type="hidden">
+                                                </form>
                                             </div>
+                                        </div>
+                                    </div>
 
-                                        </li>
+                                    <!--                                <h5><b>Preparatory Work</b></h5>-->
+                                    <!--                                <div class="row">-->
+                                    <!--                                    <div class="form-check col-6">-->
+                                    <!--                                        <input-->
+                                    <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                    <!--                                                aria-label="Small"-->
+                                    <!--                                                class="one-column-input"-->
+                                    <!--                                                formControlName="draftAttached" value="0"-->
+                                    <!--                                                id="defaultCheck1" type="checkbox">-->
+                                    <!--                                        <label class="form-check-label" for="defaultCheck1">-->
+                                    <!--                                            A draft is attached-->
+                                    <!--                                        </label>-->
 
-                                    </ul>
-                                </div>
-                            </div>
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="form-check col-6">-->
+                                    <!--                                        <input-->
+                                    <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                    <!--                                                aria-label="Small"-->
+                                    <!--                                                class=" one-column-input"-->
+                                    <!--                                                formControlName="outlineAttached"-->
+                                    <!--                                                id="defaultCheck2" type="checkbox">-->
+                                    <!--                                        <label class="form-check-label" for="defaultCheck2">-->
+                                    <!--                                            An outline is attached-->
+                                    <!--                                        </label>-->
+                                    <!--                                    </div>-->
+                                    <!--                                </div>-->
+                                    <!--                                <div class="row">-->
+                                    <!--                                    <div class="form-check col-6">-->
+                                    <!--                                        <input-->
+                                    <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                    <!--                                                aria-label="Small"-->
+                                    <!--                                                class="one-column-input"-->
+                                    <!--                                                formControlName="draftOutlineImpossible"-->
+                                    <!--                                                id="defaultCheck3" type="checkbox">-->
+                                    <!--                                        <label class="form-check-label" for="defaultCheck3">-->
+                                    <!--                                            It is not possible to attach either a draft or-->
+                                    <!--                                            outline-->
+                                    <!--                                        </label>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="form-check col-6">-->
+                                    <!--                                        <input-->
+                                    <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                    <!--                                                aria-label="Small"-->
+                                    <!--                                                class=" one-column-input"-->
+                                    <!--                                                formControlName="outlineSentLater"-->
+                                    <!--                                                id="defaultCheck4" type="checkbox">-->
+                                    <!--                                        <label class="form-check-label" for="defaultCheck4">-->
+                                    <!--                                            An outline will be sent later-->
+                                    <!--                                        </label>-->
+                                    <!--                                    </div>-->
 
-                            <br>
+                                    <!--                                </div>-->
 
-                        </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Date of Circulation</b></label>
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
+                                                <input type="date"
+                                                       matInput id="circulationDate"
+                                                       placeholder="Circulation Date"
+                                                       formControlName="circulationDate">
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')"
+                                                        errorMsg="Please Enter Circulation Date"></app-field-error-display>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Closing Date</b></label>
+                                            <mat-form-field class="example-full-width has-label"
+                                                            [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
+                                                <input type="date"
+                                                       readonly
+                                                       matInput id="closingDate"
+                                                       placeholder="Closing Date"
+                                                       formControlName="closingDate">
+                                                <app-field-error-display
+                                                        [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')"
+                                                        errorMsg="Please Enter Closing Date"></app-field-error-display>
+                                            </mat-form-field>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" #closeModal
-                                    (click)="hideModel()"
-                                    data-dismiss="modal">Close
-                            </button>
+                                        </div>
+                                    </div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade " id="viewVotes" tabindex="-1" role="dialog"
-                 aria-labelledby="updateExampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabelD">View Votes</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row col-12">
-                                <div class="form-group col-12">
-                                    <label><b>Votes</b></label>
-                                    <div class="material-datatables">
-                                        <table class="table table-striped table-bordered table-hover"
-                                               datatable
-                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
-                                            <thead>
-                                            <tr>
-                                                <th class="id">No</th>
-                                                <th class="action">Vote By</th>
-                                                <th class="action">Decision</th>
-                                                <th class="action">Comment</th>
+                                    <br>
+                                    <label><b>Attached Information</b></label>
+                                    <div class="row" style="background: lightgray">
 
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let voteRetrievedS of voteRetrieved let i= index; ">
-                                                <td>{{i + 1}}</td>
-                                                <td>{{voteRetrievedS.vote_By}}</td>
-                                                <td>
-                                                    <ng-template
-                                                            [ngIf]=" voteRetrievedS.decision=='true'">
-                                                        Approved
-                                                    </ng-template>
-                                                    <ng-template
-                                                            [ngIf]=" voteRetrievedS.decision=='false'">
-                                                        Disapproved
-                                                    </ng-template>
+                                        <div class="material-datatables table-responsive">
+                                            <table class="table table-striped table-bordered table-hover"
+                                                   datatable
+                                                   [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger4">
+                                                <thead>
+                                                <tr>
+                                                    <th class="task">Document Name</th>
+                                                    <th class="task">Action</th>
 
-                                                </td>
-                                                <td>{{voteRetrievedS.reason}}</td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let doc of docs let i= index; ">
 
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                    <td>{{doc.name}}</td>
+                                                    <td>
+                                                        <button class="btn btn-info tooltips"
+                                                                style="width: inherit"
+                                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                data-placement="top"
+                                                        ><i
+                                                                class="fa fa-eye"></i> View
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input" hidden
+                                                type="text"
+                                                ngModel="{{nwiRequest?.id}}"
+                                                formControlName="standardId" value="{{nwiRequest?.id}}">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    (click)="hideModel()" data-dismiss="modal">Close
-                            </button>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" #closeModal
+                                            (click)="hideModel()" data-dismiss="modal">Close
+                                    </button>
+                                    <button class="btn btn-info tooltips" type="submit">SUBMIT</button>
+
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+
             </div>
 
         </div>

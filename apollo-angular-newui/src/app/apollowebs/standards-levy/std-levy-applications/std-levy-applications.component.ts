@@ -56,6 +56,7 @@ export class StdLevyApplicationsComponent implements OnInit {
   public assignCompanyTaskFormGroup!: FormGroup;
   public assignCompanyTask1FormGroup!: FormGroup;
   public assignCompanyTask2FormGroup!: FormGroup;
+  public changeStatusFormGroup!: FormGroup;
 
   public editCompanyFormGroup!: FormGroup;
   public editedCompanyFormGroup!: FormGroup;
@@ -66,6 +67,7 @@ export class StdLevyApplicationsComponent implements OnInit {
   isShowEditForm=true;
   isShowEditedForm=true;
   isShowSLForm=true;
+  isShowLevyForm=true;
 
   toggleDisplayAssignForm() {
     this.isShowAssignForm = !this.isShowAssignForm;
@@ -73,6 +75,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign2Form= true;
     this.isShowEditForm=true;
     this.isShowSLForm=true;
+    this.isShowLevyForm=true;
   }
   toggleDisplayAssignTo1Form() {
     this.isShowAssign1Form = !this.isShowAssign1Form;
@@ -80,6 +83,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign2Form= true;
     this.isShowEditForm=true;
     this.isShowSLForm=true;
+    this.isShowLevyForm=true;
   }
   toggleDisplayAssignTo2Form() {
     this.isShowAssign2Form = !this.isShowAssign2Form;
@@ -87,6 +91,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign1Form= true;
     this.isShowEditForm=true;
     this.isShowSLForm=true;
+    this.isShowLevyForm=true;
 
   }
   toggleDisplayEditForm() {
@@ -96,6 +101,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign1Form= true;
     this.isShowAssign2Form= true;
     this.isShowSLForm= true;
+    this.isShowLevyForm= true;
   }
 
 
@@ -119,6 +125,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign1Form = true;
     this.isShowAssign2Form = true;
     this.isShowSLForm = true;
+    this.isShowLevyForm = true;
   }
   toggleDisplaySLForm(manufactureId: number) {
     this.loadingText = "Loading ...."
@@ -142,6 +149,18 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowAssign1Form = true;
     this.isShowAssign2Form = true;
     this.isShowEditedForm = true;
+    this.isShowLevyForm = true;
+
+  }
+
+  toggleDisplayLevyForm() {
+    this.isShowLevyForm = !this.isShowLevyForm;
+    this.isShowEditForm = true;
+    this.isShowAssignForm = true;
+    this.isShowAssign1Form = true;
+    this.isShowAssign2Form = true;
+    this.isShowEditedForm = true;
+    this.isShowSLForm = true;
 
   }
 
@@ -224,6 +243,12 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.editedCompanyFormGroup = this.formBuilder.group({
       postalAddress: [],
       physicalAddress: [],
+      physicalAddressEdit: [],
+      postalAddressEdit: [],
+      ownershipEdit: [],
+      yearlyTurnoverEdit: [],
+      companyTelephoneEdit: [],
+      companyEmailEdit: [],
       companyId: [],
       ownership: [],
       userType:[],
@@ -305,6 +330,10 @@ export class StdLevyApplicationsComponent implements OnInit {
       typeOfManufacture:[],
       otherBusinessNatureType:[]
 
+    });
+    this.changeStatusFormGroup = this.formBuilder.group({
+      exemptionStatus: [],
+      companyId: [],
     });
     this.assignCompanyTask2FormGroup = this.formBuilder.group({
       manufacturerEntity: [],
@@ -694,6 +723,27 @@ console.log(this.assignCompanyTaskFormGroup.value);
       this.dtTrigger1.next();
       this.dtTrigger2.next();
     });
+
+  }
+
+  changeLevyStatus(): void {
+    this.loadingText = "Changing Status ...."
+    this.SpinnerService.show();
+    this.levyService.changeLevyStatus(this.changeStatusFormGroup.value).subscribe(
+        (response ) => {
+          console.log(response);
+          this.getManufacturerList();
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Status Updated`);
+
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModel();
 
   }
 

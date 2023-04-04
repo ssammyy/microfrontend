@@ -10,6 +10,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -27,8 +28,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.collections.set
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue as ProcessInstanceResponseValue1
 
 @Service
 class MembershipToTCService(
@@ -48,6 +47,8 @@ class MembershipToTCService(
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val usersRepo: IUserRepository,
+    private val draftDocumentService: DraftDocumentService,
+
 
     ) {
 
@@ -130,7 +131,7 @@ class MembershipToTCService(
 
     fun getCallForApplications(): List<TechnicalCommittee> {
 
-        return  technicalCommitteeRepository.findAllByAdvertisingStatus("1")
+        return technicalCommitteeRepository.findAllByAdvertisingStatus("1")
 
     }
 
@@ -143,18 +144,67 @@ class MembershipToTCService(
         return taskDetails
     }
 
-    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue1 {
-        val variable: MutableMap<String, Any> = HashMap()
+    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue {
         membershipTCApplication.dateOfApplication = Timestamp(System.currentTimeMillis())
+        val u: TechnicalCommittee = technicalCommitteeRepository.findById(membershipTCApplication.tcId!!).orElse(null);
+        val encryptedId = BCryptPasswordEncoder().encode(membershipTCApplication.tcId.toString())
+        membershipTCApplication.varField10 = encryptedId
+        membershipTCApplication.technicalCommittee = u.title
         membershipTCRepository.save(membershipTCApplication)
-        println("Applicant has uploaded application")
 
-        variable["id"] = membershipTCApplication.id
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceResponseValue1(
-            membershipTCApplication.id, processInstance.id, processInstance.isEnded,
-            membershipTCApplication.technicalCommittee ?: throw NullValueNotAllowedException("ID is required")
+        notifications.sendEmail(
+            membershipTCApplication.email!!,
+            "Technical Committee",
+            "Hello " + membershipTCApplication.nomineeName!! + ",\n We have received your application For The Following Technical Committee: " + u.title!! + "\n Please Wait for Further Verification."
         )
+
+        val link =
+            "${applicationMapProperties.baseUrlQRValue}authorizerApproveApplication?applicationID=${encryptedId}"
+
+        notifications.sendEmail(
+            membershipTCApplication.authorizingPersonEmail!!,
+            "Technical Committee",
+            "Hello " + membershipTCApplication.authorizingPerson!! + ",\n We have received an application by " + membershipTCApplication.nomineeName + " For The Following Technical Committee: " + u.title!! + "\n" +
+                    " Please Click On The Following Link To Verify That " + membershipTCApplication.nomineeName + " is a member of your organisation. "
+                    + "\n " + link +
+                    "\n\n\n\n\n\n"
+        )
+
+        return ProcessInstanceResponseValue(
+            membershipTCApplication.id,
+            "Complete",
+            true,
+            membershipTCApplication.nomineeName ?: throw NullValueNotAllowedException("ID is required")
+        )
+
+    }
+
+    fun approveUserApplication(
+        applicationID: String
+    ): ResponseEntity<String> {
+
+        val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
+        return if (u != null) {
+            if (u.approvedByOrganization != null) {
+                ResponseEntity.ok("This Link Has Already Been Used");
+
+            } else {
+                u.approvedByOrganization = "APPROVED"
+                membershipTCRepository.save(u)
+                //send email
+                notifications.sendEmail(
+                    u.email!!,
+                    "Technical Committee Application Approved",
+                    "Hello " + u.nomineeName!! + ",\n Your Application Has Been Approved .\n Please Wait for Further Communication."
+                )
+                ResponseEntity.ok("Saved");
+
+            }
+
+        } else {
+            throw ExpectedDataNotFound("This is not approved for approval")
+        }
+
 
     }
 
@@ -175,20 +225,51 @@ class MembershipToTCService(
 
     }
 
+    fun rejectApplicantRecommendation(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val variable: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "0" //application rejected
+        u.comments_by_hof = membershipTCApplication.comments_by_hof
+        u.hofId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+
+    }
+
     //SPC
     fun getRecommendationsFromHOF(): List<MembershipTCApplication> {
 
         return membershipTCRepository.findByStatus("1")
     }
 
+    fun getAllApplications(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findAll()
+    }
+
+    fun getRejectedFromHOF(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("0")
+    }
+
 
     fun completeSPCReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
         u.status = "2"
         u.commentsBySpc = membershipTCApplication.commentsBySpc
         u.spcId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+
+    }
+
+    fun resubmitReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        u.status = "2"
+        u.commentsBySpc = membershipTCApplication.commentsBySpc
+        u.spcId = loggedInUser.id.toString()
+        u.resubmission = "1"
         membershipTCRepository.save(u)
 
     }
@@ -243,13 +324,25 @@ class MembershipToTCService(
             "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
         val messageBody =
             " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
-                    "${u.technicalCommittee}. Please click on the following link to confirm appointment  \n " +
+                    "${u.technicalCommittee}. Please find attached the Terms Of Reference. Also please click on the following link to confirm appointment  \n " +
                     link +
                     "\n\n\n\n\n\n"
 
-        val messageBody2 = "<a href='${link}'>Next</a>"
+        u.email?.let {
 
-        u.email?.let { notifications.sendEmail(it, "Technical Committee Appointment  Letter", messageBody) }
+            val fileName = "static/tor.pdf"
+            val classLoader = javaClass.classLoader
+            val fileUrl = classLoader.getResource(fileName)
+            val filePath = fileUrl?.path ?: throw IllegalArgumentException("File not found: $fileName")
+
+
+            notifications.sendEmail(
+                it,
+                "Technical Committee Appointment  Letter",
+                messageBody,
+                filePath
+            )
+        }
         u.status = "5" // approved and appointment letter email has been sent by HOD
         u.varField10 = encryptedId
 
@@ -492,6 +585,13 @@ class MembershipToTCService(
         return sdNwaUploadsEntityRepository.save(uploads)
     }
 
+    fun getUserCv(
+        standardId: Long,
+        documentType: String,
+        documentTypeDef: String
+    ): Collection<DatKebsSdStandardsEntity?>? {
 
+        return draftDocumentService.findUserCv(standardId, documentType, documentTypeDef)
+    }
 
 }

@@ -353,10 +353,11 @@ class NwaPDraftAction(
 }
 data class ISAdoptionProposalDto(
     var proposal_doc_name: String?=null,
-    var circulationDate: String?=null,
+    var circulationDate: Timestamp,
     var closingDate: String?=null,
     var tcSecName: String?=null,
     var title: String?=null,
+    var requestId: Long?=null,
     var scope: String?=null,
     var iStandardNumber: String?=null,
     var adoptionAcceptableAsPresented: String?=null,
@@ -366,10 +367,23 @@ data class ISAdoptionProposalDto(
     var positionOfRespondent: String?=null,
     var nameOfOrganization: String?=null,
     var dateOfApplication: String?=null,
+    var adoptionProposalLink: String?=null,
     var uploadedBy: String?=null,
     var stakeholdersList: MutableList<NamesList>?=null,
-    var addStakeholdersList: List<String>?=null,
+    //var addStakeholdersList: List<String>?=null,
+    var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
+    var departmentId: Long?=null,
+    var departmentName: String?=null
 
+){
+
+}
+
+data class IStakeholderDTO(
+
+    var stakeHolderEmail: String?=null,
+    var stakeHolderName: String?=null,
+    var stakeHolderPhone: String?=null
 ){
 
 }
@@ -420,7 +434,7 @@ data class ISAdoptionProposalComments(
 }
 
 data class ISProposalJustification(
-   var  meetingDate: String?=null,
+    var meetingDate: String?=null,
     var slNumber: String?=null,
     var edition: String?=null,
     var department: String?=null,
@@ -433,7 +447,12 @@ data class ISProposalJustification(
     var tcAcceptanceDate: String?=null,
     var proposalId: Long?=null,
     var draftId: Long?=null,
-    var issuesAddressed: String?
+    var issuesAddressed: String?=null,
+    var title: String?=null,
+    var referenceMaterial: String?=null,
+    var tcSecName: String?=null
+
+
 ){
 
 }

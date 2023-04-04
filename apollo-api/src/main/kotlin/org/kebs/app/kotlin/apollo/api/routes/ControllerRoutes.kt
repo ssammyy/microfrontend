@@ -225,6 +225,7 @@ class ControllerRoutes {
     fun utilitiesRoute(handler: UtilitiesHandler) = router {
         "/api/utilities".nest {
             POST("/hash", handler::hashString)
+            POST("/unHash", handler::unHashString)
         }
     }
 

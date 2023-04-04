@@ -101,6 +101,14 @@ export class StdJustificationComponent implements OnInit {
 
     }
 
+    
+    id: any = 'Pending Justification';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        console.log(this.id);
+    }
+
     get formStdTSec(): any {
         return this.stdTSecFormGroup.controls;
     }

@@ -20,6 +20,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -36,6 +37,7 @@ class InspectionReportDaoServices(
     private val qaInspectionTechnicalRepo: IQaInspectionTechnicalRepository,
     private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
     private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
+    private val qaUploadsRepo: IQaUploadsRepository,
 
     private val qaDaoServices: QADaoServices,
 
@@ -94,17 +96,13 @@ class InspectionReportDaoServices(
 
     }
 
-    fun getFullyFilledInspectionReport(): ApiResponseModel {
-        val qaInspectionReportRecommendation =
-            qaInspectionReportRecommendationRepo.findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
+    fun getFullyFilledInspectionReport(permitID: Long): ApiResponseModel {
+        val permit = qaDaoServices.findPermitBYID(permitID)
 
-                )
+        val qaInspectionReportRecommendation =
+            qaInspectionReportRecommendationRepo.getInspectionReportsForCompany(permit.companyId!!)
+
+
         val map = commonDaoServices.serviceMapDetails(appId)
         return if (qaInspectionReportRecommendation != null) {
             val response = listInspectionReports(qaInspectionReportRecommendation, map)
@@ -471,11 +469,11 @@ class InspectionReportDaoServices(
 
             inspection = qaInspectionProductLabelRepo.save(inspection)
 
-            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+//            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
             sr.names = "Inspection Details Save file"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
+            sr.responseMessage = "Success"
             sr.status = map.successStatus
             sr = serviceRequestsRepository.save(sr)
             sr.processingEndDate = Timestamp.from(Instant.now())
@@ -660,12 +658,12 @@ class InspectionReportDaoServices(
             }
 
             inspection = qaInspectionOPCRepo.save(inspection)
-
-            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+//
+//            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
             sr.names = "Inspection Details Save file"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
+            sr.responseMessage = "Success"
             sr.status = map.successStatus
             sr = serviceRequestsRepository.save(sr)
             sr.processingEndDate = Timestamp.from(Instant.now())
@@ -967,7 +965,14 @@ class InspectionReportDaoServices(
             inspectionReport.submittedInspectionReportStatus,
 
             inspectionReport.permitId?.let { qaDaoServices.findPermitBYID(it) }
-                ?.let { qaDaoServices.permitDetails(it, map) }
+                ?.let { qaDaoServices.permitDetails(it, map) },
+
+            listFilesDto(
+                findByPermitIdAndInspectionReportId(
+                    inspectionReport.permitId ?: throw Exception("MISSING PERMIT ID"),
+                    inspectionReport.id ?: throw Exception("MISSING INSPECTION REPORT ID")
+                )
+            )
 
 
         )
@@ -1077,7 +1082,7 @@ class InspectionReportDaoServices(
         inspectionId: Long,
     ): List<QaInspectionProductLabelEntity>? {
 
-        qaInspectionProductLabelRepo.findTopByInspectionRecommendationId(inspectionId)
+        qaInspectionProductLabelRepo.findAllByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null
@@ -1138,7 +1143,7 @@ class InspectionReportDaoServices(
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long
     ): List<QaInspectionOpcEntity>? {
-        qaInspectionOPCRepo.findTopByInspectionRecommendationId(inspectionId)
+        qaInspectionOPCRepo.findAllByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null
@@ -1223,12 +1228,66 @@ class InspectionReportDaoServices(
                 i.refNo,
                 i.permitId,
                 permitRefNumber = i.permitRefNumber,
-                tradeMark = i.permitId?.let { qaDaoServices.findPermitBYID(it).tradeMark }
+                tradeMark = i.permitId?.let { qaDaoServices.findPermitBYID(it).commodityDescription } +" "+ i.permitId?.let {
+                    qaDaoServices.findPermitBYID(
+                        it
+                    ).tradeMark
+                }
 
 
             )
         }
     }
 
+    fun findByPermitIdAndInspectionReportId(
+        permitID: Long,
+        inspectionReportId: Long
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndInspectionReportId(permitID, inspectionReportId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found!")
+    }
+
+
+    fun uploadInspectionReportDocs(
+        uploads: QaUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        permitRefNUMBER: String,
+        inspectionId: Long,
+
+        user: UsersEntity
+    ): QaUploadsEntity {
+
+        with(uploads) {
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            document = docFile.bytes
+            permitRefNumber = permitRefNUMBER
+            inspectionReportId = inspectionId
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return qaUploadsRepo.save(uploads)
+    }
+
+    fun listFilesDto(fileList: List<QaUploadsEntity>): List<FilesListDto> {
+        return fileList.map { f ->
+            FilesListDto(
+                f.id,
+                f.name,
+                f.fileType,
+                f.documentType,
+                f.versionNumber,
+                f.createdBy,
+                f.createdOn,
+                f.document,
+            )
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.stereotype.Service
@@ -20,9 +21,10 @@ class NEPDomesticNotificationService(
     private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val notificationReceivedRepository: NotificationReceivedRepository,
-    private val nepNotificationRepository: NEPNotificationRepository
+    private val nepNotificationRepository: NEPNotificationRepository,
+    private val applicationMapProperties: ApplicationMapProperties
 ) {
-
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     var PROCESS_DEFINITION_KEY: String = "NEPDomesticNotification"
     val requesterId: String = "requesterId"
     val TASK_CANDIDATE_GROUP_NEP = "SD_NEP_OFFICER"

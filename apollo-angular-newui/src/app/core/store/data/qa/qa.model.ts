@@ -99,6 +99,9 @@ export class MyTasksPermitEntityDto {
     versionNumber: bigint;
     encryptedPermitId: string;
     encryptedUserId: string;
+
+    assignOfficer: string;
+
 }
 
 export class ReportsPermitEntityDto {
@@ -135,6 +138,9 @@ export class ReportsPermitEntityDto {
     email: string;
     inspectionDate: Date;
     pscApprovalDate: Date;
+    kraPin: string;
+    entryNumber: string;
+    postalAddress: string;
 
 
 }
@@ -383,6 +389,11 @@ export class FilesListDto {
     fileType: string;
     documentType: string;
     versionNumber: number;
+
+    createdBy: string;
+
+    createdOn: string;
+
     document: Blob;
 }
 
@@ -424,6 +435,7 @@ export class CompanyUpgradeStatusDto {
     upgradeType: boolean;
     updateDetailsStatus: boolean;
     inspectionFeeRequerd: boolean;
+    firmType: string;
 }
 
 export class AllPermitDetailsDto {
@@ -454,6 +466,7 @@ export class AllPermitDetailsDto {
     inspectionReportDetails: InspectionReportDetailsDto;
     schemeOfSuperVisionList: FilesListDto[];
     remarksDetailsList: RemarksAndStatusDto[];
+    inspectionInvoiceUpload: InspectionInvoiceUploadedDto;
 
 }
 
@@ -492,7 +505,13 @@ export class InspectionReportDetailsDto {
     id: bigint;
     refNo: string;
     submittedInspectionReportStatus: string;
-    createdOn: Date;
+    createdOn: String;
+}
+
+export class InspectionInvoiceUploadedDto {
+    uploadID: number;
+    paidDate: Date;
+    endingDate: Date;
 }
 
 export class StgInvoiceBalanceDto {
@@ -698,6 +717,9 @@ export class AllInspectionDetailsApplyDto {
     submittedInspectionReportStatus: Date;
 
     permitDetails: PermitEntityDto;
+
+    inspectionReportDocs: FilesListDto[];
+
 }
 
 

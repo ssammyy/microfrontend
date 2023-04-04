@@ -1037,54 +1037,145 @@ import {
     PermitDetailsAdminComponent
 } from './apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component';
 import {RfcFragmentComponent} from './apollowebs/pvoc/documents/rfc-fragment/rfc-fragment.component';
-import { InspectionReport } from './apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report';
-import { IntStdListComponent } from './apollowebs/standards-development/international-standard/int-std-list/int-std-list.component';
-import { NspStatusComponent } from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
-import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
-import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
-import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
-import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
-import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
-import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
-import { StandardsReceivedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
-import { StandardsEditedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
-import { StandardsProofreadComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
-import { StandardsTypesetComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
-import { WeeklyReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
-import { DraughsmanReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
-import { SpcReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
-import { PublishingEnquiriestComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
-import { StandardsPrintedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
-import { InformationRequestRegisterComponent } from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
-import { PublicationOrderingRegisterComponent } from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
-import { SalesStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
-import { SaleForeignStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
-import { KenyaStandardRequsitionFormComponent } from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
-import { MembershipSubcriptionSchemeComponent } from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
-import { CatalogueReportComponent } from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
-import { DisseminationPublicationComponent } from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
-import { IcsAllocationComponent } from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
-import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
-import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
-import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
-import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
-import { NwaViewJustificationComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component';
-import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
-import { NwaEditPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
-import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
-import { NwaEditingDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component';
-import { SchemeMemberShipReviewAllApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-member-ship-review-all-applications/scheme-member-ship-review-all-applications.component';
-import { SchemeMembershipReviewAssignedApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review-assigned-applications/scheme-membership-review-assigned-applications.component';
-import { NepViewEnquiriesComponent } from './apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component';
-import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
-import { NationalEnquiryPointReferalComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component';
-import { NationalEnquiryPointResponseComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component';
-import { SmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-ongoing/smark-ongoing.component';
-import { SmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-expired/smark-expired.component';
-import { SmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-awarded/smark-awarded.component';
-import { SmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-all-applications/smark-all-applications.component';
-import { NationalEnquiryReviewDraftComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-review-draft/national-enquiry-review-draft.component';
-import { NepNotificationViewComponent
+import {InspectionReport} from './apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report';
+import {
+    IntStdListComponent
+} from './apollowebs/standards-development/international-standard/int-std-list/int-std-list.component';
+import {
+    NspStatusComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
+import {
+    NonePerformingProjectsComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
+import {
+    DelayedProjectsComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
+import {
+    StandardsApprovalCommitteeComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
+import {
+    TcMemberApplicationComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
+import {
+    DepartmentalWeeklyReportComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
+import {
+    IndividualWeeklyReportComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
+import {
+    StandardsReceivedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
+import {
+    StandardsEditedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
+import {
+    StandardsProofreadComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
+import {
+    StandardsTypesetComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
+import {
+    WeeklyReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
+import {
+    DraughsmanReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
+import {
+    SpcReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
+import {
+    PublishingEnquiriestComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
+import {
+    StandardsPrintedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
+import {
+    InformationRequestRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
+import {
+    PublicationOrderingRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
+import {
+    SalesStandardRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
+import {
+    SaleForeignStandardRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
+import {
+    KenyaStandardRequsitionFormComponent
+} from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
+import {
+    MembershipSubcriptionSchemeComponent
+} from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
+import {
+    CatalogueReportComponent
+} from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
+import {
+    DisseminationPublicationComponent
+} from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
+import {
+    IcsAllocationComponent
+} from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
+import {
+    SdPaymentsComponent
+} from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
+import {
+    DomesticNotificationComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
+import {
+    EnquariesHandledReportComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
+import {
+    StandardWorkProgrammeBulletinComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
+import {
+    NwaViewJustificationComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component';
+import {
+    NwaPreliminaryDraftComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import {
+    NwaEditPreliminaryDraftComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
+import {
+    NwaViewPreliminaryComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
+import {
+    NwaEditingDraftComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component';
+import {
+    SchemeMemberShipReviewAllApplicationsComponent
+} from './apollowebs/standards-development/schemeMembership/scheme-member-ship-review-all-applications/scheme-member-ship-review-all-applications.component';
+import {
+    SchemeMembershipReviewAssignedApplicationsComponent
+} from './apollowebs/standards-development/schemeMembership/scheme-membership-review-assigned-applications/scheme-membership-review-assigned-applications.component';
+import {
+    NepViewEnquiriesComponent
+} from './apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component';
+import {QaSlReportsComponent} from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
+import {
+    NationalEnquiryPointReferalComponent
+} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component';
+import {
+    NationalEnquiryPointResponseComponent
+} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component';
+import {
+    SmarkOngoingComponent
+} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-ongoing/smark-ongoing.component';
+import {
+    SmarkExpiredComponent
+} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-expired/smark-expired.component';
+import {
+    SmarkAwardedComponent
+} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-awarded/smark-awarded.component';
+import {
+    SmarkAllApplicationsComponent
+} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-all-applications/smark-all-applications.component';
+import {
+    NationalEnquiryReviewDraftComponent
+} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-review-draft/national-enquiry-review-draft.component';
+import {
+    NepNotificationViewComponent
 } from './apollowebs/standards-development/national-enquiry-point/nep-notification-view/nep-notification-view.component';
 import {
     MgrNepNotificationViewComponent
@@ -1092,24 +1183,75 @@ import {
 import {
     NepUploadNotificationComponent
 } from './apollowebs/standards-development/national-enquiry-point/nep-upload-notification/nep-upload-notification.component';
-import { ReviewStandardPublicationComponent } from './apollowebs/standards-development/sicStdPublication/review-standard-publication/review-standard-publication.component';
-import { ReviewStandardPublicationSicComponent } from './apollowebs/standards-development/sicStdPublication/review-standard-publication-sic/review-standard-publication-sic.component';
-import { SourceForStandardComponent } from './apollowebs/standards-development/sicStdPublication/source-for-standard/source-for-standard.component';
-import { DisseminateStandardComponent } from './apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component';
-import { EmployerApproveComponent } from './apollowebs/standards-development/sicStdPublication/employer-approve/employer-approve.component';
-import { StandardLevyHistoricalPaymentsComponent } from './apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component';
+import {
+    ReviewStandardPublicationComponent
+} from './apollowebs/standards-development/sicStdPublication/review-standard-publication/review-standard-publication.component';
+import {
+    ReviewStandardPublicationSicComponent
+} from './apollowebs/standards-development/sicStdPublication/review-standard-publication-sic/review-standard-publication-sic.component';
+import {
+    SourceForStandardComponent
+} from './apollowebs/standards-development/sicStdPublication/source-for-standard/source-for-standard.component';
+import {
+    DisseminateStandardComponent
+} from './apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component';
+import {
+    EmployerApproveComponent
+} from './apollowebs/standards-development/sicStdPublication/employer-approve/employer-approve.component';
+import {
+    StandardLevyHistoricalPaymentsComponent
+} from './apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component';
 import {
     RequestForStandardComponent
 } from "./apollowebs/standards-development/sicStdPublication/request-for-standard/request-for-standard.component";
-import { NepUploadedNotificationComponent } from './apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component';
-import { DmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-ongoing/dmark-ongoing.component';
-import { DmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-all-applications/dmark-all-applications.component';
-import { DmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-awarded/dmark-awarded.component';
-import { DmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-expired/dmark-expired.component';
-import { FmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-expired/fmark-expired.component';
-import { FmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-awarded/fmark-awarded.component';
-import { FmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-all-applications/fmark-all-applications.component';
-import { FmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-ongoing/fmark-ongoing.component';
+import {
+    NepUploadedNotificationComponent
+} from './apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component';
+import {
+    DmarkOngoingComponent
+} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-ongoing/dmark-ongoing.component';
+import {
+    DmarkAllApplicationsComponent
+} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-all-applications/dmark-all-applications.component';
+import {
+    DmarkAwardedComponent
+} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-awarded/dmark-awarded.component';
+import {
+    DmarkExpiredComponent
+} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-expired/dmark-expired.component';
+import {
+    FmarkExpiredComponent
+} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-expired/fmark-expired.component';
+import {
+    FmarkAwardedComponent
+} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-awarded/fmark-awarded.component';
+import {
+    FmarkAllApplicationsComponent
+} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-all-applications/fmark-all-applications.component';
+import {
+    FmarkOngoingComponent
+} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-ongoing/fmark-ongoing.component';
+import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
+import {RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings} from "ng-recaptcha";
+import {ApiEndpointService} from "./core/services/endpoints/api-endpoint.service";
+import { StandardsLevyQaPermitsComponent } from './apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component';
+import { ApprovedForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/approved-for-nwi/approved-for-nwi.component';
+import { RejectedForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/rejected-for-nwi/rejected-for-nwi.component';
+import { VotesOnNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/votes-on-nwis/votes-on-nwis.component';
+import { ApprovedNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/approved-nwis/approved-nwis.component';
+import { RejectedNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/rejected-nwis/rejected-nwis.component';
+import { ApprovedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/approved-justification/approved-justification.component';
+import { RejectedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-justification/rejected-justification.component';
+import { RejectedWithAmendmentsComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-with-amendments/rejected-with-amendments.component';
+import { StandardsLevySitesComponent } from './apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component';
+import { IntStdApproveChangesComponent } from './apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component';
+import { OnholdForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/onhold-for-nwi/onhold-for-nwi.component';
+import { AllApplicationsComponent } from './apollowebs/standards-development/membershipToTc/review-application/all-applications/all-applications.component';
+import { PscTasksComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/psc-tasks/psc-tasks.component';
+import { PscDmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/psc-dmark-tasks/psc-dmark-tasks.component';
+import { PscFmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/psc-fmark-tasks/psc-fmark-tasks.component';
+import { ReviewApplicationsRejectedSacComponent } from './apollowebs/standards-development/membershipToTc/review-applications-rejected-sac/review-applications-rejected-sac.component';
+import { TcMemberAllVotesComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/tc-member-all-votes/tc-member-all-votes.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1184,9 +1326,21 @@ import { FmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/fmark-
         MatSortModule,
         MatPaginatorModule,
         MatCardModule,
+        NgxIntlTelInputModule,
+        RecaptchaFormsModule,
+        RecaptchaModule,
+        RecaptchaFormsModule,
+
 
         // NgxDocViewerModule
     ],
+    providers: [DatePipe, MatNativeDateModule,
+        {
+            provide: RECAPTCHA_SETTINGS,
+            useValue: {siteKey: ApiEndpointService.QA_SITE_VERIFICATION.siteKey} as RecaptchaSettings,
+        },
+    ],
+
     declarations: [
         AppComponent,
         AdminLayoutComponent,
@@ -1703,12 +1857,29 @@ import { FmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/fmark-
         FmarkAwardedComponent,
         FmarkAllApplicationsComponent,
         FmarkOngoingComponent,
-
-      
+        StandardsLevyQaPermitsComponent,
+        ApprovedForNwiComponent,
+        RejectedForNwiComponent,
+        VotesOnNwisComponent,
+        ApprovedNwisComponent,
+        RejectedNwisComponent,
+        ApprovedJustificationComponent,
+        RejectedJustificationComponent,
+        RejectedWithAmendmentsComponent,
+        StandardsLevySitesComponent,
+        IntStdApproveChangesComponent,
+        OnholdForNwiComponent,
+        AllApplicationsComponent,
+        PscTasksComponent,
+        PscDmarkTasksComponent,
+        PscFmarkTasksComponent,
+        ReviewApplicationsRejectedSacComponent,
+        TcMemberAllVotesComponent,
 
     ],
     entryComponents: [LoaderComponent],
-    providers: [DatePipe, MatNativeDateModule],
+    // providers: [DatePipe, MatNativeDateModule],
+
     bootstrap: [AppComponent],
 })
 export class AppModule {

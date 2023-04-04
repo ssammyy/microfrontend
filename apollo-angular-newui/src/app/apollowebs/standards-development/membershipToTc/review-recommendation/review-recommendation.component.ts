@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Document, ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
@@ -7,6 +7,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-review-recommendation',
@@ -30,7 +31,16 @@ export class ReviewRecommendationComponent implements OnInit {
     display = 'none'; //default Variable
 
 
-    constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+
+    dtOptionsB: DataTables.Settings = {};
+    dtTrigger2: Subject<any> = new Subject<any>();
+
+    docs !: Document[];
+
+
+    constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService, private router: Router,
                 private SpinnerService: NgxSpinnerService) {
     }
 
@@ -65,6 +75,15 @@ export class ReviewRecommendationComponent implements OnInit {
         )
     }
 
+    id: any = 'Review Applications';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Review Applications") {
+            this.reloadCurrentRoute()
+        }
+    }
+
     public onOpenModal(task: ReviewApplicationTask): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -74,6 +93,7 @@ export class ReviewRecommendationComponent implements OnInit {
         console.log(task.taskId);
         this.actionRequest = task;
         button.setAttribute('data-target', '#decisionModal');
+        this.getAllDocs(String(this.actionRequest.id))
 
         // @ts-ignore
         container.appendChild(button);
@@ -139,12 +159,46 @@ export class ReviewRecommendationComponent implements OnInit {
 
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.download = fileName;
-                link.click();
+                window.open(downloadURL, fileName);
                 // this.pdfUploadsView = dataPdf;
             },
         );
+    }
+
+    public getAllDocs(applicationId: string): void {
+        this.membershipToTcService.getUserCV(applicationId, "UPLOADS", "ApplicantCV").subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger2.next();
+
+
+        });
+
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 }

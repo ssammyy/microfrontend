@@ -297,4 +297,9 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "UPGRADE_TYPE")
     @Basic
     var upgradeType: Int? = 0
+
+    @Column(name = "EXEMPTION_STATUS")
+    @Basic
+    var exemptionStatus: Long? = 0
+
 }

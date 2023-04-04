@@ -2,6 +2,8 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
+  ComStdCommitteeRemarks,
+  ComStdRemarks,
   InternationalStandardsComments,
   ISCheckRequirements,
   StakeholderProposalComments
@@ -14,6 +16,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
   selector: 'app-int-std-check-requirements',
@@ -26,22 +30,44 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
+  comStdRemarks: ComStdRemarks[] = [];
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
+  comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
+  public actionRequests: ISCheckRequirements | undefined;
   public actionRequest: ISCheckRequirements | undefined;
-  loadingText: string;
   approve: string;
   reject: string;
+  isShowRemarksTabs= true;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
+  isShowCommentsTabs= true;
+  isShowMainTab= true;
+  isShowMainTabs= true;
+  public uploadDraftStandardFormGroup!: FormGroup;
   public approveRequirementsFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
+  public editDraughtFormGroup!: FormGroup;
+  public draughtFormGroup!: FormGroup;
+  public proofReadFormGroup!: FormGroup;
+  documentDTOs: DocumentDTO[] = [];
+  fullname = '';
+  blob: Blob;
+  public uploadedFiles:  FileList;
+  public uploadedFile:  FileList;
+  public uploadDrafts:  FileList;
+  public uploadProofReads:  FileList;
+  public uploadStandardFile:  FileList;
+  loadingText: string;
+
   constructor(
       private store$: Store<any>,
       private router: Router,
       private stdIntStandardService:StdIntStandardService,
       private standardDevelopmentService : StandardDevelopmentService,
+      private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private formBuilder: FormBuilder
@@ -50,14 +76,35 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   ngOnInit(): void {
     this.approve='Yes';
     this.reject='No';
-    this.getUploadedDraft();
+    this.getStdRequirements();
     this.approveRequirementsFormGroup = this.formBuilder.group({
-      comments: ['', Validators.required],
-      accentTo: [],
-        justificationId:[],
-      proposalId:[],
-        draftId:[]
-
+      id:[],
+      comments:null,
+      accentTo:null,
+      requestId:null,
+      draftId:null,
+      title:null,
+      standardNumber:null,
+      scope:null,
+      normativeReference:null,
+      symbolsAbbreviatedTerms:null,
+      clause:null,
+      special:null,
+      uploadDate:null,
+      preparedBy:null,
+      documentType:null,
+      departmentId:null,
+      subject:null,
+      description:null,
+      contactOneFullName:null,
+      contactOneTelephone:null,
+      contactOneEmail:null,
+      standardType:null,
+      companyName:[],
+      companyPhone:[],
+      docName:[],
+      draughting:[],
+      requestNumber:[],
     });
 
     this.rejectRequirementsFormGroup = this.formBuilder.group({
@@ -81,10 +128,10 @@ export class IntStdCheckRequirementsComponent implements OnInit {
 
   }
 
-  public getUploadedDraft(): void {
+  public getStdRequirements(): void {
     this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getUploadedDraft().subscribe(
+    this.stdComStandardService.getStdRequirements().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
           console.log(this.isCheckRequirements)
@@ -134,32 +181,37 @@ export class IntStdCheckRequirementsComponent implements OnInit {
     this.isShowRemarksTab= true;
 
   }
-  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
+  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.documentDTOs = response;
+          this.SpinnerService.hide();
+          //console.log(this.documentDTOs)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          //console.log(error.message);
+        }
+    );
     if (mode==='checkRequirementsMet'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#checkRequirementsMet');
 
       this.approveRequirementsFormGroup.patchValue(
           {
-            accentTo: this.approve,
-            proposalId: this.actionRequest.proposalId,
-              justificationId: this.actionRequest.justificationNo,
-              draftId: this.actionRequest.id
+
+            requestId: this.actionRequests.requestId,
+            id: this.actionRequests.id,
+            draftId: this.actionRequests.draftId,
+            standardType: this.actionRequests.standardType
           }
       );
-      this.rejectRequirementsFormGroup.patchValue(
-          {
-            accentTo: this.reject,
-            proposalId: this.actionRequest.proposalId,
-              justificationId: this.actionRequest.justificationNo,
-              draftId: this.actionRequest.id
-          }
-      );
+
     }
     // @ts-ignore
     container.appendChild(button);
@@ -186,13 +238,40 @@ export class IntStdCheckRequirementsComponent implements OnInit {
     });
   }
 
-  approveHopJustification(): void {
+
+  toggleDisplayMainTab(){
+    this.isShowMainTab = !this.isShowMainTab;
+    this.isShowRemarksTab= true;
+    this.isShowCommentsTab= true;
+    this.isShowMainTabs= true;
+  }
+  displayDraftComments(draftID: number){
+    //this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdComStandardService.getDraftComments(draftID).subscribe(
+        (response: ComStdCommitteeRemarks[]) => {
+          this.comStdCommitteeRemarks = response;
+          this.SpinnerService.hide();
+          // console.log(this.comStdCommitteeRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowRemarksTab = !this.isShowRemarksTab;
+    this.isShowCommentsTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
+  }
+  approveRequirements(): void {
     this.loadingText = "Approving Draft...";
     this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnHopJustification(this.approveRequirementsFormGroup.value).subscribe(
+    this.stdComStandardService.checkRequirements(this.approveRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getUploadedDraft();
+          this.getStdRequirements();
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Approved`);
         },
@@ -204,23 +283,28 @@ export class IntStdCheckRequirementsComponent implements OnInit {
     );
     this.hideModalRequirements();
   }
-
-  rejectHopJustification(): void {
-    this.loadingText = "Rejecting Draft...";
+  viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnHopJustification(this.rejectRequirementsFormGroup.value).subscribe(
-        (response ) => {
-          //console.log(response);
-          this.getUploadedDraft();
+    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+        (dataPdf: any) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Rejected`);
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Try Again`);
+          this.showToasterError('Error', `Error Processing Request`);
           console.log(error.message);
+          this.getStdRequirements();
+          //alert(error.message);
         }
     );
-    this.hideModalRequirements();
   }
 }

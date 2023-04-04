@@ -43,9 +43,13 @@ class MembershipToTCController(
     //***************************************************** submit justification for formation of TC ***************************//
     @PostMapping("/membershipToTC/submitCallForApplication")
     @ResponseBody
-    fun submitCallsForTCMembers(@RequestBody callForTCApplication: CallForTCApplication): ServerResponse{
+    fun submitCallsForTCMembers(@RequestBody callForTCApplication: CallForTCApplication): ServerResponse {
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
-        return ServerResponse(HttpStatus.OK,"Successfully submitted call for applications",membershipToTCService.submitCallsForTCMembers(callForTCApplication))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully submitted call for applications",
+            membershipToTCService.submitCallsForTCMembers(callForTCApplication)
+        )
     }
 
     @GetMapping("anonymous/membershipToTC/getCallForApplications")
@@ -56,15 +60,32 @@ class MembershipToTCController(
 
     @PostMapping("/membershipToTC/process")
     @ResponseBody
-    fun checkState( @RequestBody id: ID): ServerResponse {
-        return ServerResponse(HttpStatus.OK,"Successfully returned process history",membershipToTCService.checkProcessHistory(id))
+    fun checkState(@RequestBody id: ID): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully returned process history",
+            membershipToTCService.checkProcessHistory(id)
+        )
     }
 
 
     @PostMapping("anonymous/membershipToTC/submitTCMemberApplication")
     @ResponseBody
-    fun submitTCMemberApplication(@RequestBody membershipTCApplication: MembershipTCApplication): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully application to be TC Member",membershipToTCService.submitTCMemberApplication(membershipTCApplication))
+    fun submitTCMemberApplication(@RequestBody membershipTCApplication: MembershipTCApplication): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully application to be TC Member",
+            membershipToTCService.submitTCMemberApplication(membershipTCApplication)
+        )
+    }
+
+    @GetMapping("/anonymous/membershipToTC/approveUserApplication")
+    fun getApprovalUserApplication(
+        response: ServerResponse,
+        @RequestParam("applicationID") applicationID: String
+    ): ResponseEntity<String> {
+        return membershipToTCService.approveUserApplication(applicationID)
+
     }
 
     @GetMapping("/membershipToTC/getApplicationsForReview")
@@ -85,10 +106,35 @@ class MembershipToTCController(
         )
     }
 
+    @PostMapping("/membershipToTC/rejectApplicantRecommendation")
+    @ResponseBody
+    fun rejectApplicantRecommendation(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Rejected application for membership to TC",
+            membershipToTCService.rejectApplicantRecommendation(membershipTCApplication, tCApplicationId)
+        )
+    }
+
     @GetMapping("/membershipToTC/getRecommendationsFromHOF")
     fun getRecommendationsFromHOF(): List<MembershipTCApplication> {
         return membershipToTCService.getRecommendationsFromHOF()
     }
+
+    @GetMapping("/membershipToTC/getAllApplications")
+    fun getAllApplications(): List<MembershipTCApplication> {
+        return membershipToTCService.getAllApplications()
+    }
+
+
+    @GetMapping("/membershipToTC/getRejectedFromHOF")
+    fun getRejectedFromHOF(): List<MembershipTCApplication> {
+        return membershipToTCService.getRejectedFromHOF()
+    }
+
 
     @PostMapping("/membershipToTC/completeSPCReview")
     @ResponseBody
@@ -97,6 +143,15 @@ class MembershipToTCController(
         @RequestParam("tCApplicationId") tCApplicationId: Long,
     ) {
         return membershipToTCService.completeSPCReview(membershipTCApplication, tCApplicationId);
+    }
+
+    @PostMapping("/membershipToTC/resubmitReview")
+    @ResponseBody
+    fun resubmitReview(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ) {
+        return membershipToTCService.resubmitReview(membershipTCApplication, tCApplicationId);
     }
 
     @GetMapping("/membershipToTC/getRecommendationsFromSPC")
@@ -281,8 +336,9 @@ class MembershipToTCController(
         @RequestParam("draftStandardId") diDocumentId: Long,
         @RequestParam("doctype") doctype: String
     ) {
-        val fileUploaded = draftDocumentService.findUploadedDIFileBYIdAndByType(diDocumentId, doctype)
-        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        val fileUploaded = draftDocumentService.findFile(diDocumentId)
+        println(fileUploaded)
+        val fileDoc = fileUploaded.let { commonDaoServices.mapClass(it) }
         response.contentType = "application/pdf"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
@@ -294,6 +350,19 @@ class MembershipToTCController(
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+
+    }
+
+
+    @GetMapping("/membershipToTC/getUserCv")
+    fun getUserCv(
+        @RequestParam("requestId") requestId: Long,
+        @RequestParam("documentType") documentType: String,
+        @RequestParam("documentTypeDef") documentTypeDef: String,
+
+
+        ): Collection<DatKebsSdStandardsEntity?>? {
+        return membershipToTCService.getUserCv(requestId, documentType, documentTypeDef)
     }
 
 

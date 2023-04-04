@@ -45,6 +45,12 @@ export class ApiEndpointService {
         DI_DEPARTMENT_ID: 2,
     };
 
+    public static QA_SITE_VERIFICATION =
+        {
+            siteKey:"6Lesl_kkAAAAACshhuu57Xagl-v0o1W3k85tZPeY",
+            secretKey:"6Lesl_kkAAAAAOupAgV8ep-PhzQLJkhVFfc-uSqI"
+        }
+
 
     public static MS_APPLICATION_MAP_PROPERTIES = {
         epraRoles: ['EPRA'],
@@ -287,6 +293,8 @@ export class ApiEndpointService {
 
         PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
+        PERMIT_REPORTS_ALL_AWARDED_SL: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwardedSl`,
+        PERMIT_REPORTS_ALL_AWARDED_SL_FILTER: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwardedSlFilter`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
         PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
         PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,
@@ -316,6 +324,7 @@ export class ApiEndpointService {
 
 
         INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-submit`,
+        INVOICE_CONSOLIDATED_RE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-re-submit`,
         INVOICE_CONSOLIDATE_DIFFERENCE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-difference-submit`,
         INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-add`,
         INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-remove`,
@@ -412,6 +421,7 @@ export class ApiEndpointService {
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
+        IST_VIEW_ADOPTION_PROPOSAL_REQUEST: `${ApiEndpointService.SD_IST_CONTEXT}/getIntStandardProposals`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_PD: `${ApiEndpointService.SD_IST_CONTEXT}/draft-file-upload`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
@@ -548,6 +558,12 @@ export class ApiEndpointService {
         ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
         ICT_CONTACT_DETAILS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyContactDetails`,
         ICT_COMMITTEE_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCommitteeList`,
+        ICT_REQUIREMENTS_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdRequirements`,
+        ICT_STD_EDITING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditing`,
+        ICT_STD_DRAFTING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditDrafting`,
+        ICT_STD_PROOF_READING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditProofreading`,
+        ICT_STD_APPROVAL_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdForApproval`,
+        ICT_STD_APPROVED_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdApproved`,
 
 
         // SD SYSTEMIC REVIEW
@@ -740,6 +756,11 @@ export class ApiEndpointService {
         STD_LEVY_HISTORICAL_PAYMENTS: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPayments`,
         STD_LEVY_HISTORICAL_PAYMENTS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPaymentsFilter`,
         STD_LEVY_HISTORICAL_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentStatus`,
+        STD_LEVY_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/updateExemptionStatus`,
+        STD_LEVY_AWARDED_PERMITS: `${ApiEndpointService.STL_CONTEXT}/getPermitsAwardedApplications`,
+        STD_LEVY_AWARDED_PERMITS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getPermitsApplicationsFilters`,
+        STD_LEVY_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisits`,
+        STD_LEVY_SITE_VISITS_FILTERS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisitsFilter`,
 
 
     };
@@ -755,6 +776,9 @@ export class ApiEndpointService {
         LOAD_COMPLETE_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-complete`,
         LOAD_ALL_PERMIT_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-all`,
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
+
+        LOAD_MY_TASK_LIST_PSC: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-psc`,
+
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
         UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,
         RESUBMIT_APPLICATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/resubmit-details`,
@@ -766,10 +790,13 @@ export class ApiEndpointService {
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
         ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
+        ADD_EXTRA_AMOUNT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-extra-amount`,
+        SUBMIT_FOR_PAYMENT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/submit_for_payment`,
         APPROVE_REJECT_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-inspection-report`,
         APPROVE_REJECT_PERMIT_QAM_HOD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/qam-approve-reject-permit`,
         APPROVE_REJECT_PERMIT_PSC_MEMBER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/psc-approve-reject-permit`,
         APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PCM_REVIEW: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/permit-review`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
         GET_FULLY_FILLED_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getFullyFilledInspectionReport`,
@@ -798,7 +825,7 @@ export class ApiEndpointService {
         SAVE_PDF_LAB_RESULT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-pdf-selected`,
         SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
-        UPLOAD_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/uploadInspectionReport`,
+        UPLOAD_INSPECTION_REPORT: `${ApiEndpointService.QA_CONTEXT}/permit/upload/inspection-report`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
 
     };
@@ -921,6 +948,7 @@ export class ApiEndpointService {
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
         COMPLETED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-completed`,
         NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
+        REGION_CHANGED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new-region`,
         MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
         PENDING_ALLOCATION_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/pending-allocation-view`,
         ALLOCATED_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/allocated-task-view`,
@@ -956,6 +984,7 @@ export class ApiEndpointService {
         CLOSE_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/close`,
         ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list`,
         COMPLETED_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-completed`,
+        SAME_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-same-activity`,
         NEW_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-new`,
         MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-my-task`,
         ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-on-going`,
@@ -1002,6 +1031,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_SEND_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-send-result-saved`,
+        INSPECTION_SCHEDULED_NOT_SEND_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-not-send-result-saved`,
         INSPECTION_SCHEDULED_ADD_FINAL_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
         INSPECTION_SCHEDULED_UPDATE_HOF_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report-hod-hof-director`,

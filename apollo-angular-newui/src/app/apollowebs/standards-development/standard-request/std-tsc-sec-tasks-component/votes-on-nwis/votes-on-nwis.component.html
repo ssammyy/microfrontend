@@ -1,0 +1,280 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <h4 class="card-title">Tasks <small class="resolved-pill">{{secTasks.length}}
+                    Tasks</small>
+                </h4>
+
+            </div>
+            <div class="card-body">
+                <div class="toolbar">
+
+                </div>
+
+
+                <div class="material-datatables">
+                    <table class="table table-striped table-bordered table-hover" datatable
+                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2">
+                        <thead>
+                        <tr>
+                            <th class="task">Proposal Title</th>
+                            <th class="task">Total Votes</th>
+
+                            <th class="task">Approved</th>
+                            <th class="task">Not Approved</th>
+                            <th class="action">Status</th>
+                            <th class="action">Votes</th>
+
+                            <th class="action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let secTask of nwiForVotes let i= index; ">
+
+                            <td>{{secTask.nwiname}}</td>
+                            <td>{{secTask.approved + secTask.notapproved }}</td>
+                            <td>{{secTask.approved}}</td>
+                            <td>{{secTask.notapproved}}</td>
+                            <td>
+                                <ng-template
+                                        [ngIf]=" secTask.status=='Upload Justification'">
+                                    <span style=" font-size: 10px;"
+                                          class="badge badge-info">
+                                    Approved For Justification
+                                    </span>
+                                </ng-template>
+                                <ng-template
+                                        [ngIf]=" secTask.status=='Vote ON NWI'">
+                                    <span style=" font-size: 10px;"
+                                          class="badge badge-info">
+                                    Voting Ongoing
+                                    </span>
+                                </ng-template>
+                                <ng-template
+                                        [ngIf]=" secTask.status=='NWI Rejected'">
+                                    <span style=" font-size: 10px;"
+                                          class="badge badge-danger">
+                                    Rejected
+                                    </span>
+                                </ng-template>
+
+
+                            </td>
+
+                            <td>
+
+                                <a (click)="onOpenModalVote(secTask,'viewVotes')"
+                                   class="btn btn-info tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">View Votes</a>
+                            </td>
+                            <td>
+                                <a (click)="onOpenModalVote(secTask,'edit')"
+                                   class="btn btn-info tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">View NWI</a>
+                                <br>
+
+                                <a *ngIf="secTask.status=='Vote ON NWI'"
+                                   (click)="approveNwi(secTask.nwi_ID)"
+                                   class="btn btn-success tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">Approve/Reject Nwi</a>
+
+
+                            </td>
+
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
+aria-labelledby="updateExampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-lg modal-xl" role="document">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="updateExampleModalLabelC">NEW WORK
+            ITEM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class=" col-12">
+                <ul class="list-group">
+                    <li class="list-group-item active">New Work Item Details</li>
+
+                    <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
+
+
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
+                    </div>
+
+                    <br><br>
+                    <li style="background: lightgray">
+                        <div class="material-datatables">
+                            <table class="table table-striped table-bordered table-hover"
+                                   datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger5">
+                                <thead>
+                                <tr>
+                                    <th class="task">Document Name</th>
+                                    <th class="task">Descritpion</th>
+
+                                    <th class="task">Action</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let doc of docs let i= index; ">
+
+                                    <td>{{doc.name}}</td>
+                                    <td>{{doc.description}}</td>
+
+                                    <td>
+                                        <button class="btn btn-info tooltips"
+                                                style="width: inherit"
+                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                data-placement="top"
+                                        ><i
+                                                class="fa fa-eye"></i> View
+                                        </button>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <br>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" #closeModal
+                (click)="hideModel()"
+                data-dismiss="modal">Close
+        </button>
+
+    </div>
+</div>
+</div>
+</div>
+
+
+<div class="modal fade " id="viewVotes" tabindex="-1" role="dialog"
+aria-labelledby="updateExampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="updateExampleModalLabelD">View Votes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row col-12">
+            <div class="form-group col-12">
+                <label><b>Votes</b></label>
+                <div class="material-datatables">
+                    <table class="table table-striped table-bordered table-hover"
+                           datatable
+                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                        <thead>
+                        <tr>
+                            <th class="id">No</th>
+                            <th class="action">Vote By</th>
+                            <th class="action">Decision</th>
+                            <th class="action">Comment</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let voteRetrievedS of voteRetrieved let i= index; ">
+                            <td>{{i + 1}}</td>
+                            <td>{{voteRetrievedS.vote_By}}</td>
+                            <td>
+                                <ng-template
+                                        [ngIf]=" voteRetrievedS.decision=='true'">
+                                    Approved
+                                </ng-template>
+                                <ng-template
+                                        [ngIf]=" voteRetrievedS.decision=='false'">
+                                    Disapproved
+                                </ng-template>
+
+                            </td>
+                            <td>{{voteRetrievedS.reason}}</td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+                (click)="hideModel()" data-dismiss="modal">Close
+        </button>
+    </div>
+</div>
+</div>
+</div>
+

@@ -36,6 +36,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
   tasks: ProposalComments[] = [];
+    selectedOption = '';
   isAdoptionProposals: ISAdoptionProposal[]=[];
     dataSaveResourcesRequired: PredefinedSDCommentsFields;
     dataSaveResourcesRequiredList: PredefinedSDCommentsFields[] = [];
@@ -71,26 +72,21 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
       //console.log(this.proposalId);
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
-          commentTitle:null,
-          scope:null,
-          clause:null,
-          proposalID:null,
-          standardNumber:null,
-          commentDocumentType:null,
-          recommendations:null,
-          nameOfRespondent:null,
-          positionOfRespondent:null,
-          nameOfOrganization:null,
-          preparedDate:null,
-          paragraph:null,
-          typeOfComment:null,
-          comment:null,
-          proposedChange:null,
-          observation:null,
-          emailOfRespondent:null,
-          phoneOfRespondent:null,
-          draftID: null,
-          requestID:null
+          commentDocumentType: null,
+          circulationDate: null,
+          closingDate: null,
+          standardNumber: null,
+          commentTitle: null,
+          scope: null,
+          reasons: null,
+          recommendations: null,
+          nameOfRespondent: null,
+          positionOfRespondent: null,
+          nameOfOrganization: null,
+          requestId: null,
+          draftId: null,
+          adoptionAcceptableAsPresented:null
+
 
       });
 
@@ -179,26 +175,28 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     if (mode==='comment'){
       this.actionRequest=isAdoptionProposal;
       button.setAttribute('data-target','#commentModal');
-        this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-            (response: DocumentDTO[]) => {
-                this.documentDTOs = response;
-                this.SpinnerService.hide();
-                //console.log(this.documentDTOs)
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                //console.log(error.message);
-            }
-        );
+        // this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        //     (response: DocumentDTO[]) => {
+        //         this.documentDTOs = response;
+        //         this.SpinnerService.hide();
+        //         //console.log(this.documentDTOs)
+        //     },
+        //     (error: HttpErrorResponse) => {
+        //         this.SpinnerService.hide();
+        //         //console.log(error.message);
+        //     }
+        // );
         this.uploadCommentsFormGroup.patchValue(
             {
                 commentTitle: this.actionRequest.title,
-                requestID: this.actionRequest.id,
-                draftID: this.actionRequest.draftId,
+                circulationDate:this.actionRequest.circulationDate,
+                closingDate: this.actionRequest.closingDate,
+                title:this.actionRequest.title,
+                scope:this.actionRequest.scope,
+                requestId: this.actionRequest.id,
+                draftId: this.actionRequest.draftId,
                 commentDocumentType: this.actionRequest.docName,
-                uploadDate: this.actionRequest.preparedDate,
-                standardNumber: this.actionRequest.standardNumber,
-                preparedDate: this.actionRequest.preparedDate
+                standardNumber: this.actionRequest.standardNumber
 
             }
         );
@@ -212,7 +210,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
         // console.log(this.uploadCommentsFormGroup.value);
-        this.stdIntStandardService.submitDraftComments(this.dataSaveResourcesRequiredList).subscribe(
+        this.stdIntStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
             (response ) => {
                // console.log(response);
                 this.SpinnerService.hide();
@@ -311,6 +309,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
             this.dtTrigger.next();
             this.dtTrigger1.next();
         });
+    }
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
     }
 
 

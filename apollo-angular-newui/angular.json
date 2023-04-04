@@ -51,8 +51,8 @@
               "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
               "src/assets/scss/material-dashboard.scss",
               "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
-              "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css"
-
+              "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+              "./node_modules/intl-tel-input/build/css/intlTelInput.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",

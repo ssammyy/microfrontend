@@ -15,8 +15,11 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -62,10 +65,13 @@ class IntStandardService(
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
     private val iStdStakeHoldersRepository: IStdStakeHoldersRepository,
     private val sdWorkshopStdRepository: SDWorkshopStdRepository,
-    private val standardRequestRepository: StandardRequestRepository
+    private val standardRequestRepository: StandardRequestRepository,
+    private val usersRepo: IUserRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
 
 
     ) {
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
     val gson = Gson()
     //deploy bpmn file
@@ -92,22 +98,34 @@ class IntStandardService(
         return gson.fromJson(officersName, userListType)
     }
 
+    fun getIntStandardProposals(): MutableList<StandardRequest>
+    {
+        return standardRequestRepository.getIntStandardProposals()
+    }
+
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal, stakeholders: MutableList<NamesList>?) : ComStdDraft
+    fun prepareAdoptionProposal(isAdoptionProposalDto: ISAdoptionProposalDto) : ComStdDraft
     {
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
         val datePrepared=commonDaoServices.getTimestamp()
-        iSAdoptionProposal.proposal_doc_name=iSAdoptionProposal.proposal_doc_name
-        iSAdoptionProposal.circulationDate=iSAdoptionProposal.circulationDate
-        iSAdoptionProposal.closingDate=iSAdoptionProposal.circulationDate
-        iSAdoptionProposal.tcSecName=iSAdoptionProposal.tcSecName
-        iSAdoptionProposal.title=iSAdoptionProposal.title
-        iSAdoptionProposal.scope=iSAdoptionProposal.scope
-        iSAdoptionProposal.iStandardNumber=iSAdoptionProposal.iStandardNumber
+        var  iSAdoptionProposal = ISAdoptionProposal();
+        val circulationDate=isAdoptionProposalDto.circulationDate
+        iSAdoptionProposal.proposal_doc_name=isAdoptionProposalDto.proposal_doc_name
+        iSAdoptionProposal.circulationDate=isAdoptionProposalDto.circulationDate
+        val closingDate: Timestamp = Timestamp.valueOf(circulationDate.toLocalDateTime().plusDays(30))
+        iSAdoptionProposal.closingDate=closingDate
+        iSAdoptionProposal.tcSecName=loggedInUser.firstName  +  loggedInUser.lastName
+        iSAdoptionProposal.tcSecEmail=loggedInUser.email
+        iSAdoptionProposal.title=isAdoptionProposalDto.title
+        iSAdoptionProposal.scope=isAdoptionProposalDto.scope
+        iSAdoptionProposal.iStandardNumber=isAdoptionProposalDto.iStandardNumber
+        iSAdoptionProposal.requestId=isAdoptionProposalDto.requestId
+        iSAdoptionProposal.adoptionProposalLink=isAdoptionProposalDto.adoptionProposalLink
 
-        iSAdoptionProposal.uploadedBy=iSAdoptionProposal.uploadedBy
+        iSAdoptionProposal.uploadedBy=isAdoptionProposalDto.uploadedBy
         iSAdoptionProposal.preparedDate = datePrepared
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
@@ -120,35 +138,37 @@ class IntStandardService(
 
         val cs = ComStdDraft()
         cs.draftNumber = getDRNumber()
-        cs.title= iSAdoptionProposal.title
+        cs.title= isAdoptionProposalDto.title
         cs.deadlineDate=deadline
         cs.proposalId=proposalId
-        cs.comStdNumber=iSAdoptionProposal.iStandardNumber
-        cs.scope=iSAdoptionProposal.scope
+        cs.requestId=isAdoptionProposalDto.requestId
+        cs.comStdNumber=isAdoptionProposalDto.iStandardNumber
+        cs.scope=isAdoptionProposalDto.scope
         cs.companyName="KEBS"
         cs.contactOneEmail=loggedInUser.email
         cs.contactOneFullName=loggedInUser.firstName + loggedInUser.lastName
         cs.contactOneTelephone=loggedInUser.cellphone
         cs.status = 0
         cs.uploadDate=datePrepared
+        cs.departmentId=isAdoptionProposalDto.departmentId
+        cs.departmentName=isAdoptionProposalDto.departmentName
         cs.standardType="International Standard"
 
-
         val draftId=comStdDraftRepository.save(cs)
-
         val draftNumber=draftId.id
-
         //iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isPropComments/$draftNumber";
-        stakeholders?.forEach { s ->
+        val targetUrl = "${callUrl}/isPropComments";
+        val stakeholdersOne= isAdoptionProposalDto.stakeholdersList
+        stakeholdersOne?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
             val user = s.name
+            val userId=usersRepo.getUserId(s.email)
 
             val shs = IStandardStakeHolders()
             shs.name=user
@@ -156,33 +176,49 @@ class IntStandardService(
             shs.draftId=draftNumber
             shs.dateOfCreation=Timestamp(System.currentTimeMillis())
             shs.telephone="NA"
+            shs.userId=userId
             iStdStakeHoldersRepository.save(shs)
 
-            val messageBody= "Dear $user,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
+            val messageBody= "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
-        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftNumber";
-        if (listTwo != null) {
-            for (recipient in listTwo) {
-                val user = "Stake Holder"
-                val sh = IStandardStakeHolders()
-                sh.name = user
-                sh.email = recipient
-                sh.draftId = draftNumber
-                sh.dateOfCreation=Timestamp(System.currentTimeMillis())
-                sh.telephone="NA"
+        val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber";
+//                val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(targetUrl2) }
+        val stakeholdersTwo = isAdoptionProposalDto.addStakeholdersList
+        stakeholdersTwo?.forEach { t ->
+            val sub = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+            val rec = t.stakeHolderEmail
+            val userN = t.stakeHolderName
+            val phoneNumber = t.stakeHolderPhone
 
-                iStdStakeHoldersRepository.save(sh)
+            val st = IStandardStakeHolders()
+            st.name=userN
+            st.email=rec
+            st.draftId=draftNumber
+            st.dateOfCreation=Timestamp(System.currentTimeMillis())
+            st.telephone=phoneNumber
+            iStdStakeHoldersRepository.save(st)
 
-                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-                val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
-                notifications.sendEmail(recipient, subject, messageBody)
+            val messageBody= "Dear $userN,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
+            if (rec != null) {
+                notifications.sendEmail(rec, sub, messageBody)
+            }
+
+        }
+
+        standardRequestRepository.findByIdOrNull(isAdoptionProposalDto.requestId)?.let { standard ->
+
+            with(standard) {
+                status = "Adoption Proposal Prepared"
 
             }
-        }
+            standardRequestRepository.save(standard)
+        }?: throw Exception("REQUEST NOT FOUND")
+
 
      return draftId
 
@@ -249,40 +285,86 @@ class IntStandardService(
     }
 
     //Submit Adoption Proposal comments
-    fun submitDraftComments(comDraft: List<IntDraftCommentDto>){
+
+
+//    fun submitDraftComments(comDraft: List<IntDraftCommentDto>){
+//        val variables: MutableMap<String, Any> = HashMap()
+//        var  comDraftCommentsSaved = ComDraftComments();
+//        comDraft.forEach { com->
+//           val  comDraftComments = ComDraftComments();
+//            comDraftComments.uploadDate=com.preparedDate
+//            comDraftComments.emailOfRespondent=com.emailOfRespondent
+//            comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+//            comDraftComments.observation=com.observation
+//            comDraftComments.draftComment=com.comment
+//            comDraftComments.commentTitle=com.commentTitle
+//            comDraftComments.commentDocumentType=com.commentDocumentType
+//            comDraftComments.comClause=com.clause
+//            comDraftComments.comParagraph=com.paragraph
+//            comDraftComments.typeOfComment=com.typeOfComment
+//            comDraftComments.proposedChange=com.proposedChange
+//            comDraftComments.requestID=com.requestID
+//            comDraftComments.draftID=com.draftID
+//            comDraftComments.nameOfRespondent=com.nameOfRespondent
+//            comDraftComments.nameOfOrganization=com.nameOfOrganization
+//            comDraftComments.scope=com.scope
+//            comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+//            comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+//
+//            val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftID)
+//            comStdDraftRepository.findByIdOrNull(com.draftID)?.let { comStdDraft ->
+//                with(comStdDraft) {
+//                    commentCount= commentNumber+1
+//
+//                }
+//                comStdDraftRepository.save(comStdDraft)
+//            }?: throw Exception("REQUEST NOT FOUND")
+//
+//        }
+//
+//        println("Comment Submitted")
+//    }
+
+    fun submitDraftComments(com: ProposalCommentsDto){
         val variables: MutableMap<String, Any> = HashMap()
         var  comDraftCommentsSaved = ComDraftComments();
-        comDraft.forEach { com->
-           val  comDraftComments = ComDraftComments();
-            comDraftComments.uploadDate=com.preparedDate
-            comDraftComments.emailOfRespondent=com.emailOfRespondent
-            comDraftComments.phoneOfRespondent=com.phoneOfRespondent
-            comDraftComments.observation=com.observation
-            comDraftComments.draftComment=com.comment
-            comDraftComments.commentTitle=com.commentTitle
-            comDraftComments.commentDocumentType=com.commentDocumentType
-            comDraftComments.comClause=com.clause
-            comDraftComments.comParagraph=com.paragraph
-            comDraftComments.typeOfComment=com.typeOfComment
-            comDraftComments.proposedChange=com.proposedChange
-            comDraftComments.requestID=com.requestID
-            comDraftComments.draftID=com.draftID
+
+            val  comDraftComments = ComDraftComments();
+            comDraftComments.reason=com.reasons
+            comDraftComments.recommendations=com.recommendations
+            comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
+            comDraftComments.requestID=com.requestId
+            comDraftComments.draftID=com.draftId
             comDraftComments.nameOfRespondent=com.nameOfRespondent
             comDraftComments.nameOfOrganization=com.nameOfOrganization
-            comDraftComments.scope=com.scope
             comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
             comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+            val adoptDecision=com.adoptionAcceptableAsPresented
+            var newAdopt: Long
+            var newNotAdopt: Long
 
-            val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftID)
-            comStdDraftRepository.findByIdOrNull(com.draftID)?.let { comStdDraft ->
+            val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+            val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+            val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+            if(adoptDecision=="Yes"){
+                 newAdopt=adoptNumber+1
+                newNotAdopt=notAdoptNumber
+
+            }else{
+                newAdopt=adoptNumber
+                newNotAdopt=notAdoptNumber+1
+            }
+            comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
                 with(comStdDraft) {
                     commentCount= commentNumber+1
+                    adopt= newAdopt
+                    notAdopt= newNotAdopt
 
                 }
                 comStdDraftRepository.save(comStdDraft)
             }?: throw Exception("REQUEST NOT FOUND")
 
-        }
+
 
         println("Comment Submitted")
     }
@@ -385,7 +467,7 @@ class IntStandardService(
 //                val gson = Gson()
 //              KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
 
-        if (commentNumber>0){
+       // if (commentNumber>0){
             if (decision == "Yes") {
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                     with(comStdDraft) {
@@ -413,9 +495,9 @@ class IntStandardService(
 
             }
 
-        }else{
-            response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
-        }
+      //  }else{
+      //      response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
+      //  }
 
         return ResponseMsg(response)
     }
@@ -450,7 +532,6 @@ class IntStandardService(
         justification.issuesAddressed=isProposalJustification.issuesAddressed
         justification.tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
         justification.department=isProposalJustification.department
-        justification.status=isProposalJustification.toString()
         justification.proposalId=isProposalJustification.proposalId
         justification.draftId=isProposalJustification.draftId
         justification.scope=isProposalJustification.scope
@@ -458,6 +539,9 @@ class IntStandardService(
         justification.intendedUsers=isProposalJustification.intendedUsers
         justification.circulationDate=isProposalJustification.circulationDate
         justification.closingDate=isProposalJustification.closingDate
+        justification.tcSec_id=isProposalJustification.tcSecName
+        justification.title=isProposalJustification.title
+        justification.referenceMaterial=isProposalJustification.referenceMaterial
         justification.status= 0.toString()
 
         justification.submissionDate = Timestamp(System.currentTimeMillis())
@@ -481,14 +565,14 @@ class IntStandardService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
           //  val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
             val subject = "Justification"
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been prepared."
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
@@ -633,14 +717,14 @@ class IntStandardService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
             val subject = "Standard"
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded."
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
         return draftStandard
@@ -726,7 +810,7 @@ class IntStandardService(
                 val subject = "International Standard"
                 val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, International Standard Adoption Proposal has been approved for publishing."
                 if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
+                   // notifications.sendEmail(recipient, subject, messageBody)
                 }
             }
             isJustificationDecision.assignedTo= companyStandardRepository.getHopId()
@@ -899,10 +983,10 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedDraft()
     }
 
-    fun editStandardDraft(isDraftDto: ISDraftDto) : ISUploadStandard {
+    fun editStandardDraft(isDraftDto: ISDraftDto) : CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val standard= ISUploadStandard()
+        val standard= CompanyStandard()
 
 
         val draught=isDraftDto.draughting
@@ -1085,14 +1169,14 @@ class IntStandardService(
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
-                val targetUrl = "https://kimsint.kebs.org/$url";
+                val targetUrl = "${callUrl}/$url";
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
                     val recipient= item.getUserEmail()
                     val subject = "New Standard"
                     val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
                     if (recipient != null) {
-                        notifications.sendEmail(recipient, subject, messageBody)
+                       // notifications.sendEmail(recipient, subject, messageBody)
                     }
                 }
             }?: throw Exception("DRAFT NOT FOUND")
@@ -1149,14 +1233,14 @@ class IntStandardService(
                     companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
                     var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
-                    val targetUrl = "https://kimsint.kebs.org/";
+                    val targetUrl = "${callUrl}/";
                     userList.forEach { item->
                         //val recipient="stephenmuganda@gmail.com"
                         val recipient= item.getEmail()
                         val subject = "New International Standard"+ standard.standardNumber
                         val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
                         if (recipient != null) {
-                            notifications.sendEmail(recipient, subject, messageBody)
+                           // notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
 

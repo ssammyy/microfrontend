@@ -152,6 +152,11 @@ class StandardRequestController(
         return standardRequestService.getTechnicalCommitteeName(tcId?.toLong())
     }
 
+    @GetMapping("/anonymous/standard/getAllTcsForApplication")
+    fun getAllTcsForApplication(): List<DataHolder> {
+        return standardRequestService.getAllTcs()
+    }
+
     /*@GetMapping("/getTechnicalCommittee")
     @ResponseBody
     fun getTechnicalCommittee(): ServerResponse
@@ -542,6 +547,11 @@ class StandardRequestController(
     @GetMapping("standard/getAllRejectedStdsForNwi")
     fun getAllRejectedStdsForNwi(): List<StandardsDto> {
         return standardRequestService.getAllRejectedStandardRequestsToPrepareNWI()
+    }
+
+    @GetMapping("standard/getAllOnHoldStdsForNwi")
+    fun getAllOnHoldStdsForNwi(): List<StandardsDto> {
+        return standardRequestService.getAllOnHoldStandardRequestsToPrepareNWI()
     }
 
     @PostMapping("standard/deleteDepartment")

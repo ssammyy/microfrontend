@@ -79,6 +79,8 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -791,21 +793,30 @@ class RegistrationDaoServices(
         var kraPin= cp.kraPin
         var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
         allRequests = allRequests.plus(1)
-        var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
-        if (entryNumbers==null){
+        val genNumber= String.format("%06d", allRequests)
+        var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+        // this will convert any number sequence into 6 character.
+        val entry= "${prefixText}${genNumber}"
+
+        //var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
+       // if (entryNumbers==null){
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
-            sm.entryNumber=allRequests
+            sm.entryCount=allRequests
+            sm.entryNumbers=allRequests
+            sm.entryNumber=entry
+
 
             stdLevyEntryNoDataMigrationEntityRepository.save(sm)
-        }
-        entryNumbers = entryNumbers ?: allRequests
+       // }
+       // entryNumbers = (entryNumbers ?: entry) as Long?
 
 
         with(cp) {
-            entryNumber = entryNumbers.toString()
+            entryNumber = entry
             modifiedBy = commonDaoServices.concatenateName(u)
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -1089,11 +1100,14 @@ class RegistrationDaoServices(
         var add = stdLevyNotificationForm
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
        val countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         val toCheckSl: Long = 0
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
         //println("SL FORM ID$countOfSlForm");
         if (countOfSlForm == toCheckSl) {
             val eNumber = getEntryNumber(map, loggedInUser)
@@ -1104,8 +1118,8 @@ class RegistrationDaoServices(
             if (resultFound!=null){
                 val kraResponseCode = resultFound
 
-                val gson = Gson()
-                KotlinLogging.logger { }.info { "Response from API" + gson.toJson(kraResponseCode) }
+//                val gson = Gson()
+//                KotlinLogging.logger { }.info { "Response from API" + gson.toJson(kraResponseCode) }
                 when (kraResponseCode.responseResponseCode) {
                     "90000" -> {
 
@@ -1138,13 +1152,16 @@ class RegistrationDaoServices(
                                 }
 
                                 companyProfileRepo.save(entity)
-                                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                                    ?.let {stgLevyEntryNumber->
-                                        with(stgLevyEntryNumber){
-                                            manufacturerId = eNumber.entryNumber
-                                        }
-
-                                        stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+//                                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+//                                    ?.let {stgLevyEntryNumber->
+//                                        with(stgLevyEntryNumber){
+//                                            manufacturerId = eNumber.entryNumber
+//                                        }
+//
+//                                        stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+//
+//                                    }
+//                                    ?: throw Exception("Company ID Was not Found")
 
                                         val payload = "${eNumber.name} ${eNumber.registrationNumber}"
                                         val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
@@ -1156,8 +1173,7 @@ class RegistrationDaoServices(
                                             payload
                                         )
 
-                                    }
-                                    ?: throw Exception("Company ID Was not Found")
+
                                 stdLevyNotificationFormDTO.companyProfileID?.let {
                                     sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
                                         it, commonDaoServices.getUserName(loggedInUser), map)
@@ -1174,43 +1190,65 @@ class RegistrationDaoServices(
                         sm.message = "You have Successfully Registered, Email Has been sent with Entry Number "
 
                         slFormResponse="Entry number is ${eNumber.entryNumber}, Check your E-mail for registration details"
+                        responseStatus="success"
+                        responseButton="btn btn-success form-wizard-next-btn"
+                        response="Saved"
 
                     }
                     "90001" -> {
                         slFormResponse="Form not saved..Form data is in the wrong format"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90002" -> {
                         slFormResponse="Form not saved..KRA Pin used is invalid"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90003" -> {
                         slFormResponse="Form not saved..Invalid User access credentials"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     "90004" -> {
                         slFormResponse="Form not saved..Invalid User ID and Password"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
 
 
                     }
                     else -> {
                         slFormResponse="Form not saved..Kindly try again"
+                        responseStatus="error"
+                        responseButton="btn btn-danger form-wizard-next-btn"
+                        response="Not Saved"
                     }
                 }
                 //return NotificationForm(stdLevyNotificationForm.id,eNumber.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
-                return NotificationForm(slFormResponse)
+                return NotificationForm(slFormResponse,responseStatus,responseButton,response)
 
 
             }else{
                 throw ExpectedDataNotFound("Error has occurred, Try again")
             }
+
         }
         else{
             slFormResponse="Operation is not allowed..Form Has Already been Filled.."
-            return NotificationForm(slFormResponse)
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Saved"
+            return NotificationForm(slFormResponse,responseStatus,responseButton,response)
         }
 
 //        if (countOfSlForm != null) {

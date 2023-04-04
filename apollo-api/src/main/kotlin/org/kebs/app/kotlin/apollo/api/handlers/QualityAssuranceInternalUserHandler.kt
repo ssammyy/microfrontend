@@ -33,10 +33,14 @@ import org.kebs.app.kotlin.apollo.common.dto.ms.ComplaintViewSearchValues
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.stereotype.Component
+import org.springframework.ui.Model
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.badRequest
@@ -69,9 +73,22 @@ class QualityAssuranceInternalUserHandler(
     fun getAllMyTaskList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
             qaDaoServices.findLoggedInUserTask(page, permitTypeID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun getAllMyTaskPSCList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            qaDaoServices.findLoggedInUserTaskPSC(page, permitTypeID)
                 .let {
                     ok().body(it)
                 }
@@ -274,6 +291,74 @@ class QualityAssuranceInternalUserHandler(
         }
     }
 
+    fun updatePermitDetailsAddExtraAmount(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+            val body = req.body<AddExtraAmountApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, AddExtraAmountApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitAddExtraAmount(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsReviewCompleteness(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+            val body = req.body<ReviewCompletenessApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ReviewCompletenessApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitReviewCompletenessDetails(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsSubmitForPayment(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            qaDaoServices.updatePermitSubmitForPayment(permitID, )
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun updatePermitDetailsDifferenceStatusActivate(req: ServerRequest): ServerResponse {
         return try {
             val permitID =
@@ -458,8 +543,11 @@ class QualityAssuranceInternalUserHandler(
     }
     fun getFullyFilledInspectionReport(req: ServerRequest): ServerResponse {
         return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
-            inspectionReportDaoServices.getFullyFilledInspectionReport()
+
+            inspectionReportDaoServices.getFullyFilledInspectionReport(permitID)
                 .let {
                     ok().body(it)
                 }
@@ -997,8 +1085,8 @@ class QualityAssuranceInternalUserHandler(
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
-            val body = req.body<ApproveRejectPermitApplyDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
+            val body = req.body<ApproveInspectionReportApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveInspectionReportApplyDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

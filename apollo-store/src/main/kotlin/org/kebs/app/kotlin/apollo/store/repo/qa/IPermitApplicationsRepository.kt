@@ -2,7 +2,9 @@ package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.jetbrains.annotations.Nullable
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.std.PermitsAwarded
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.domain.Specification
@@ -16,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Repository
-interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
+interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long>,
+    JpaSpecificationExecutor<PermitApplicationsEntity> {
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
 
@@ -68,6 +71,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userTaskId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
+
+    fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(
+        userTaskId: Long,
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
 
     fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitTypeAndPermitStatus(
@@ -145,7 +153,9 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType " +
+                "AND pr.SECTION_ID = :sectionID AND B.REGION = :region " +
+                "ORDER BY pr.ID DESC FETCH FIRST 20 ROWS ONLY",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
@@ -167,7 +177,9 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_AWARD_STATUS = :permitAwardStatus AND pr.PERMIT_TYPE = :permitType  AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_AWARD_STATUS = :permitAwardStatus " +
+                "AND pr.PERMIT_TYPE = :permitType  AND pr.SECTION_ID = :sectionID AND B.REGION = :region " +
+                "ORDER BY pr.ID DESC FETCH FIRST 20 ROWS ONLY",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatusAndSectionId(
@@ -179,7 +191,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, " +
+                "DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskID(
@@ -210,7 +223,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
                 "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID " +
-                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitTypeAndSectionId(
@@ -224,7 +237,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
                 "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.SECTION_ID = :sectionID " +
-                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndSectionId(
@@ -281,9 +294,17 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long, permitAwardStatus: Int
     ): List<PermitApplicationsEntity>?
 
+    fun findByPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
+        permitType: Long, permitAwardStatus: Int, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
+
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
     ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
+        permitType: Long, paidStatus: Int, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int, companyId: Long, invoiceGenerated: Int
@@ -351,6 +372,13 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         fmarkGenerated: Int
     ): List<PermitApplicationsEntity>?
 
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndFmarkGeneratedAndSendApplication(
+        userId: Long,
+        permitType: Long,
+        fmarkGenerated: Int,
+        sendApplication: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPaidStatus(
         userId: Long,
         permitType: Long,
@@ -363,6 +391,51 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
         permitType: Long,
+        permitAwardStatus: Int,
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c.ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
+                "c.PHYSICAL_ADDRESS as physicalAddress,c.POSTAL_ADDRESS as postalAddress,s.TOWN as town,r.REGION as region,t.PRODUCT_NAME as productName,t.DATE_OF_ISSUE as issueDate," +
+                "t.DATE_OF_EXPIRY as expiryDate FROM DAT_KEBS_PERMIT_TRANSACTION t LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON t.ATTACHED_PLANT_ID=c.ID " +
+                "LEFT JOIN CFG_KEBS_TOWNS s ON c.TOWN=s.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION =r.ID" +
+                " WHERE t.OLD_PERMIT_STATUS IS NULL AND t.PERMIT_AWARD_STATUS=1  ",
+        nativeQuery = true
+    )
+    fun getPermitsAwardedApplications(
+    ): List<PermitsAwarded>
+
+    @Query(
+        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c.ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
+                "c.PHYSICAL_ADDRESS as physicalAddress,c.POSTAL_ADDRESS as postalAddress,s.TOWN as town,r.REGION as region,t.PRODUCT_NAME as productName,t.DATE_OF_ISSUE as issueDate," +
+                "t.DATE_OF_EXPIRY as expiryDate FROM DAT_KEBS_PERMIT_TRANSACTION t LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON t.ATTACHED_PLANT_ID=c.ID " +
+                "LEFT JOIN CFG_KEBS_TOWNS s ON c.TOWN=s.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION =r.ID" +
+                " WHERE t.OLD_PERMIT_STATUS IS NULL AND t.PERMIT_AWARD_STATUS=1 AND (:startDate is null or t.DATE_OF_ISSUE >=TO_DATE(:startDate)) and " +
+                "(:endDate is null or t.DATE_OF_ISSUE <=TO_DATE(:endDate)) and" +
+                " (:region is null or c.REGION =TO_NUMBER(:region)) ",
+        nativeQuery = true
+    )
+    fun getPermitsApplicationsFilters(
+        @Param("startDate") startDate: java.sql.Date?,
+        @Param("endDate") endDate: java.sql.Date?,
+        @Param("region") region: Long?
+    ): List<PermitsAwarded>
+
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION" +
+                " WHERE (:startDate is null or DATE_OF_ISSUE >=TO_DATE(:startDate)) and " +
+                "(:endDate is null or DATE_OF_ISSUE <=TO_DATE(:endDate)) and" +
+                " (:region is null or  REGION LIKE  '%'||TO_CHAR(:region)||'%') and PERMIT_AWARD_STATUS=:permitAwardStatus ",
+        nativeQuery = true
+    )
+    fun getPermitsApplicationsFilter(
+        @Param("startDate") startDate: java.sql.Date?,
+        @Param("endDate") endDate: java.sql.Date?,
+        @Param("region") region: String?,
+        permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>
+
+    fun findByOldPermitStatusIsNullAndPermitAwardStatus(
         permitAwardStatus: Int,
     ): List<PermitApplicationsEntity>?
 
@@ -422,6 +495,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
+        userId: Long,
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
+
     fun findByPermitTypeAndOldPermitStatusIsNull(
         permitType: Long
     ): List<PermitApplicationsEntity>?
@@ -432,6 +510,13 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userTaskId: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        qaoId: Long,
+        permitType: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
+
     fun findByQaoIdAndOldPermitStatusIsNullAndUserTaskId(
         qaoId: Long,
         userTaskId: Long
@@ -441,6 +526,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
+
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         permitType: Long
@@ -457,11 +547,23 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
+        userId: Long,
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
+
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
         assessorId: Long,
         permitType: Long,
         userTaskId: Long
     ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        assessorId: Long,
+        permitType: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByAssessorIdAndOldPermitStatusIsNullAndUserTaskId(
         assessorId: Long,
@@ -472,6 +574,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(
         userId: Long,
@@ -754,6 +861,8 @@ interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long
 @Repository
 interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMasterDetailsEntity, Long> {
     fun findByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findTopByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
+
     fun findByPermitIdAndVarField10(permitId: Long, varField10: String): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(
         batchInvoiceNo: Long
@@ -968,6 +1077,21 @@ interface IQaInspectionReportRecommendationRepository :
     ): QaInspectionReportRecommendationEntity?
 
 
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
+                "(\n" +
+                " t1.PERSONNEL_NAME,t1.QUALIFICATION_INSTITUTION,t1.DATE_OF_EMPLOYMENT,t1.STATUS,t1.STA10_ID\n" +
+                ")\n" +
+                "SELECT   t2.PERSONNEL_NAME,t2.QUALIFICATION_INSTITUTION,t2.DATE_OF_EMPLOYMENT,t2.STATUS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_PERSONNEL_INCHARGE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true
+    )
+    fun updatePersonnel(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
+
+
     fun findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
         submittedInspectionReportStatus: Int,
         filledQpsmsStatus: Int,
@@ -976,6 +1100,15 @@ interface IQaInspectionReportRecommendationRepository :
         filledOpcStatus: Int,
         filledHaccpImplementationStatus: Int
     ): List<QaInspectionReportRecommendationEntity>?
+
+
+
+    @Query(
+        value = "SELECT a.*, b.COMPANY_ID From DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION a INNER JOIN DAT_KEBS_PERMIT_TRANSACTION b on a.PERMIT_ID = b.id WHERE b.COMPANY_ID=:companyId and a.SUBMITTED_INSPECTION_REPORT_STATUS =1 and a.FILLED_QPSMS_STATUS =1 and a.FILLED_INSPECTION_TESTING_STATUS=1 and a.FILLED_OPC_STATUS =1 and a.FILLED_HACCP_IMPLEMENTATION_STATUS=1", nativeQuery = true
+    )
+    fun getInspectionReportsForCompany(
+        @Param("companyId") companyId: Long,
+    ):  List<QaInspectionReportRecommendationEntity>?
 
     fun findByIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionReportRecommendationEntity?
 
@@ -994,6 +1127,9 @@ interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpc
 
     fun findTopByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionOpcEntity>?
 
+    fun findAllByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionOpcEntity>?
+
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionOpcEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionOpcEntity>?
 }
@@ -1009,6 +1145,8 @@ interface IQaInspectionProductLabelEntityRepository : HazelcastRepository<QaInsp
 
     fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
     fun findTopByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
+
+    fun findAllByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
 
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionProductLabelEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionProductLabelEntity>?
@@ -1208,6 +1346,12 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
         permitRefNumber: String,
         permitId: Long,
         sscStatus: Int
+    ): List<QaUploadsEntity>?
+
+
+    fun findByPermitIdAndInspectionReportId(
+        permitId: Long,
+        inspectionReportId: Long
     ): List<QaUploadsEntity>?
 
     fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(

@@ -26,6 +26,8 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.sql.Date
 
@@ -105,6 +107,77 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     fun findAllByMsProcessEndedStatus(msProcessEndedStatus: Int): List<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatusAndComplaintIdIsNotNull(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+
+
+    @Query(
+        value = "SELECT other_workplans.* from\n" +
+                " (\n" +
+                "     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID\n" +
+                "     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b\n" +
+                "     WHERE a.id=b.work_plan_id\n" +
+                "       --AND a.id<>\n" +
+                "       AND a.WORKPLAN_YEAR_ID =:workPlanYearId" +
+                "       AND a.OFFICER_ID <>:officerID\n" +
+                "       AND a.APPROVED_STATUS=1\n" +
+                "       AND a.onsite_end_status!=1\n" +
+                "       AND a.COMPLAINT_ID IS NULL\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')\n" +
+                " )other_workplans,\n" +
+                " (\n" +
+                "     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID\n" +
+                "     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,\n" +
+                "          DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b\n" +
+                "     WHERE a.id=b.work_plan_id\n" +
+                "       AND a.OFFICER_ID =:officerID\n" +
+                "     --AND a.id=1347\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')\n" +
+                " )lookup\n" +
+                "WHERE lookup.county_id=other_workplans.county_id\n" +
+                "  AND lookup.towns_id=other_workplans.towns_id\n" +
+                "  AND trunc(lookup.time_activity_date)=trunc(other_workplans.time_activity_date)\n",
+        nativeQuery = true
+    )
+    fun getWorkPlanWithSameDetails(
+        @Param("workPlanYearId") workPlanYearId: Long,
+        @Param("officerID") officerID: Long
+    ): List<MsWorkPlanGeneratedEntity>?
+
+    @Query(
+        value = "SELECT other_workplans.* from\n" +
+                " (\n" +
+                "     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID\n" +
+                "     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b\n" +
+                "     WHERE a.id=b.work_plan_id\n" +
+                "       --AND a.id<>\n" +
+                "       AND a.WORKPLAN_YEAR_ID =:workPlanYearId" +
+                "       AND a.OFFICER_ID <>:officerID\n" +
+                "       AND a.APPROVED_STATUS=1\n" +
+                "       AND a.onsite_end_status!=1\n" +
+                "       AND a.COMPLAINT_ID IS NOT NULL\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')\n" +
+                " )other_workplans,\n" +
+                " (\n" +
+                "     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID\n" +
+                "     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,\n" +
+                "          DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b\n" +
+                "     WHERE a.id=b.work_plan_id\n" +
+                "       AND a.OFFICER_ID =:officerID\n" +
+                "     --AND a.id=1347\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')\n" +
+                "     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')\n" +
+                " )lookup\n" +
+                "WHERE lookup.county_id=other_workplans.county_id\n" +
+                "  AND lookup.towns_id=other_workplans.towns_id\n" +
+                "  AND trunc(lookup.time_activity_date)=trunc(other_workplans.time_activity_date)\n",
+        nativeQuery = true
+    )
+    fun getWorkPlanComplaintWithSameDetails(
+        @Param("workPlanYearId") workPlanYearId: Long,
+        @Param("officerID") officerID: Long
+    ): List<MsWorkPlanGeneratedEntity>?
 
     fun findAllByWorkPlanYearIdAndTimeActivityDateAndApprovedStatus(
         workPlanYearId: Long,
