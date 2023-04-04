@@ -2928,6 +2928,16 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
     this.selectedSFFDetails = data;
+    let refStandards = data?.referencesStandards;
+    let arrayOfStandards = refStandards.split(";")
+    this.standardsArray = [];
+    for (let arrayOfStandard of arrayOfStandards){
+      let trimmedStandard = arrayOfStandard.trim();
+      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+        this.standardsArray.push(trimmedStandard);
+      }
+    }
+    this.standardsInput.nativeElement.value = '';
     const paramDetails = data.parametersList;
     this.dataSaveSampleSubmitParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
@@ -4229,7 +4239,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     for (let selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
-        standardsArrayControl.setValue(selectedStandard + "; ");
+          standardsArrayControl.setValue(valueInControl+ ';'+ selectedStandard + '; ');
       }
     }
 
