@@ -169,7 +169,7 @@ export const ROUTES: RouteInfo[] = [
     //     privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
     //     collapse: 'reports',
     //     children: [
-    //         {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+    //         {path: 'reports/all_application/s', title: 'All Applications', ab: 'AP'},
     //         {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
     //         {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
     //         {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},

@@ -270,6 +270,10 @@ class InvoicePaymentService(
             val consignmentDocument = daoServices.findCDWithUuid(cdUuid)
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
+            if (demandNote.varField5.isNullOrEmpty()) {
+                demandNote.varField5 =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
@@ -336,7 +340,11 @@ class InvoicePaymentService(
                 response.responseCode = ResponseCodes.INVALID_CODE
                 response.responseCode = "Demand note is already posted"
                 return response
+            } else if (demandNote.varField5.isNullOrEmpty()) {
+                demandNote.varField5 =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             }
+
             // Try to add transaction to current bill or generate batch payment
             demandNote.demandNoteNumber?.let {
                 KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")

@@ -14,7 +14,6 @@ import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository

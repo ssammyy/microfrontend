@@ -153,7 +153,7 @@ class PostInvoiceToSageServices(
 
             val headerBody = Header().apply {
                 serviceName = config.account
-                messageID = "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                messageID = demandNote.varField5.orEmpty()
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
 
@@ -192,7 +192,7 @@ class PostInvoiceToSageServices(
             demandNote.varField3 = response.second?.response?.responseDate?.toString()
             // update response
             with(demandNote) {
-                varField5 = response.second?.header?.messageID
+//                varField5 = response.second?.header?.messageID
                 varField6 = response.second?.header?.statusCode?.toString()
                 varField7 = response.second?.header?.statusDescription
                 postingReference = response.second?.response?.demandNoteNo?.toUpperCase()
@@ -214,7 +214,7 @@ class PostInvoiceToSageServices(
 
             val headerBody = Header().apply {
                 serviceName = config.account
-                messageID = "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                messageID = billPayment.varField1.orEmpty()
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
 
@@ -249,7 +249,7 @@ class PostInvoiceToSageServices(
             billPayment.varField3 = response.second?.response?.responseDate?.toString()
             // update response
             with(billPayment) {
-                varField1 = response.second?.header?.messageID
+//                varField1 = response.second?.header?.messageID
                 varField2 = response.second?.header?.statusCode?.toString()
                 varField3 = response.second?.header?.statusDescription
                 paymentRequestReference = response.second?.response?.demandNoteNo?.toUpperCase()
