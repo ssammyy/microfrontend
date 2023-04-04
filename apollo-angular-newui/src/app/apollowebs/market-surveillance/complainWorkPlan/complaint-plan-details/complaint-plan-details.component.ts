@@ -3340,13 +3340,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               this.msService.saveWorkPlanFiles(formData).subscribe(
                   (data: any) => {
                     this.workPlanInspection = data;
-                    console.log("Appeal Files both success/unsuccessful uploaded successfully")
+                    console.log("Appeal Files both success/unsuccessful uploaded successfully");
+                      this.closePopUpsModal5();
                     //this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
                   },
                   error => {
                     //this.SpinnerService.hide();
                     console.log(error);
                     console.log("Files were not uploaded.. check error above");
+                      this.closePopUpsModal5();
                     //this.msService.showError('AN ERROR OCCURRED');
                   },
               );
