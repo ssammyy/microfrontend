@@ -30,6 +30,7 @@ import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
@@ -46,6 +47,8 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -97,6 +100,9 @@ class QualityAssuranceHandler(
 
     ) {
 
+    @Lazy
+    @Autowired
+    lateinit var postInvoiceToSageServices: PostInvoiceToSageServices
 
     var employeeUserTypeId = 5L
 
@@ -4262,6 +4268,90 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceBatchReSubmitMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val batchID = req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
+//            val dto = req.body<NewBatchInvoiceDto>()
+//            val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
+//            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            //Create invoice consolidation list
+//            val detailsSaved = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto)
+
+//            find Permit Id
+//            val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
+
+            //Pass invoice Dto to Sage
+//            val permitType = qaDaoServices.findPermitType(permitTypeID ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+//            if (detailsSaved.first.varField10 == "true") {
+                //Add created invoice consolidated id to my batch id to be submitted
+//                val batchInvoiceDetails = detailsSaved.second
+//                val newBatchInvoiceDto = NewBatchInvoiceDto()
+//                newBatchInvoiceDto.isWithHolding = dto.isWithHolding
+//                with(newBatchInvoiceDto) {
+//                    batchID = batchInvoiceDetails.first?.id
+//                        ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+//                }
+//                KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+//                KotlinLogging.logger { }.info("Withholding Status = ${newBatchInvoiceDto.isWithHolding}")
+//
+//                //submit to staging invoices
+//                val batchInvoice = qaDaoServices.permitMultipleInvoiceSubmitInvoice(
+//                    map,
+//                    loggedInUser,
+//                    newBatchInvoiceDto,
+//                    batchInvoiceDetails.second
+//                ).second
+
+            val invoiceBatchID = invoiceDaoService.findInvoiceBatchDetails(batchInvoiceDetails.invoiceBatchNumberId!!)
+            val stgPayment = invoiceDaoService.findInvoiceStgReconciliationDetails(
+                invoiceBatchID.batchNumber ?: throw Exception("MISSING BATCH NUMBER")
+            )
+
+            val manufactureDetails = commonDaoServices.findCompanyProfileWithID(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"))
+            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+            with(myAccountDetails) {
+//                reveneCode = paymentRevenueCode.revenueCode
+//                revenueDesc = paymentRevenueCode.revenueDescription
+                accountName = manufactureDetails.name
+                accountNumber = manufactureDetails.kraPin
+                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+//                region = commonDaoServices.findRegionNameByRegionID(attachedPermitPlantDetails.region!!)
+//                isWithHolding = isWithHoldingVariable
+
+            }
+
+            stgPayment.varField10?.let {
+                qaDaoServices.mapSageInvoiceDetailsListDto(it)?.let {
+                    postInvoiceToSageServices.postInvoiceTransactionToSageQa(
+                        stgPayment.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),
+                        myAccountDetails, loggedInUser.userName!!, map,
+                        it
+                    )
+                }
+            }
+
+                qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
+                    return ok().body(it)
+                }
+//            } else {
+//                return badRequest().body(detailsSaved.first.responseMessage ?: "UNKNOWN_ERROR")
+//            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

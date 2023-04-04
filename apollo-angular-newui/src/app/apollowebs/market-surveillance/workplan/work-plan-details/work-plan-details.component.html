@@ -1778,42 +1778,42 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
-                        <form [formGroup]="approvePreliminaryForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label><b>Select Status</b></label>
-                                        <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
-                                                        formControlName="approvalStatus"  name="approvalStatus" >
-                                                <mat-option [value]="true">YES</mat-option>
-                                                <mat-option [value]="false">NO</mat-option>
+<!--                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">-->
+<!--                        <form [formGroup]="approvePreliminaryForm" class="form">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label><b>Select Status</b></label>-->
+<!--                                        <mat-form-field>-->
+<!--                                            <mat-select placeholder="Please Select an option"-->
+<!--                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"-->
+<!--                                                        formControlName="approvalStatus"  name="approvalStatus" >-->
+<!--                                                <mat-option [value]="true">YES</mat-option>-->
+<!--                                                <mat-option [value]="false">NO</mat-option>-->
 
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <div>
-                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
-                                                             id="appealFiles"
-                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
-                                                </file-upload>
-                                            </form>
-                                        </div>
-                                        <label ><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <div>-->
+<!--                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>-->
+<!--                                            <form #demoForm="ngForm">-->
+<!--                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"-->
+<!--                                                             id="appealSuccessfulOrUnsuccessfulFiles"-->
+<!--                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">-->
+<!--                                                </file-upload>-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                        <label ><b>Please write, in detail, your feedback:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea matInput type="text"-->
+<!--                                                      formControlName="remarks"-->
+<!--                                                      name="remarks" required>-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                     <div *ngIf="(currDiv == 'approveFinalPreliminaryHOF')">
                         <form [formGroup]="approvePreliminaryForm" class="form">
                             <div class="form-body">
@@ -6214,41 +6214,43 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
-                            <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
-                                        <datalist id="SSFValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
-                                        </datalist>
+                            <div *ngIf="addLabParamStatus">
+                                <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the SSF to clone</b></label>
+                                            <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
+                                            <datalist id="SSFValueToCloneList">
+                                                <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
+                                            </datalist>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
-                                        </button>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
-                                        <datalist id="availableDataReports">
-                                            <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
-                                        </datalist>
+                                <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the Data Report</b></label>
+                                            <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
+                                            <datalist id="availableDataReports">
+                                                <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                            </datalist>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                 class="btn btn-outline-success" type="button" >SELECT DATA REPORT
-                                        </button>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" type="button" >SELECT DATA REPORT
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -7335,7 +7337,7 @@
                                                   (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
                                                   data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
+                                                class="mat-button-wrapper">WAS APPEAL SUCCESSFUL ?</span>
 
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -7896,39 +7898,39 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
-                        <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <h3>Choose who to send email notifications to:</h3>
-                                <div class="form-group">
-                                    <div>
-<!--                                        <div >-->
-<!--                                            <label for="failedParameters"><b>Failed Parameters</b></label>-->
-<!--                                            <mat-form-field class="example-full-width">-->
-<!--                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"-->
-<!--                                                      >-->
-<!--                                            </mat-form-field>-->
-<!--                                        </div>-->
+<!--                    <div *ngIf="(currDiv == 'ssfSendResultsStatus')">-->
+<!--                        <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">-->
+<!--                            <div class="form-body">-->
+<!--                                <h3>Choose who to send email notifications to:</h3>-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--&lt;!&ndash;                                        <div >&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <label for="failedParameters"><b>Failed Parameters</b></label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <mat-form-field class="example-full-width">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                      >&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </mat-form-field>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
 
-                                        <label for="outLetEmail"><b>OutLet Email</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"
-                                                   >
-                                        </mat-form-field>
-                                        <label for="manufactureEmail"><b>Manufacturer's Email</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"
-                                                   >
-                                        </mat-form-field>
-                                        <label for="complainantEmail"><b>Complainant Email</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="complainantEmail" matInput type="text" placeholder="Please Enter complainant Email" formControlName="complainantEmail" name="complainantEmail">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                                        <label for="outLetEmail"><b>OutLet Email</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"-->
+<!--                                                   >-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="manufactureEmail"><b>Manufacturer's Email</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"-->
+<!--                                                   >-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="complainantEmail"><b>Complainant Email</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="complainantEmail" matInput type="text" placeholder="Please Enter complainant Email" formControlName="complainantEmail" name="complainantEmail">-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                 </div>
                 <div class="modal-footer">
 
@@ -8161,7 +8163,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">
+<!--                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">-->
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
                                                 <file-upload [(ngModel)]="uploadedAppealNotSuccesFiles" name="uploadedAppealNotSuccesFiles"
@@ -8169,7 +8171,7 @@
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
-                                        </div>
+<!--                                        </div>-->
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"

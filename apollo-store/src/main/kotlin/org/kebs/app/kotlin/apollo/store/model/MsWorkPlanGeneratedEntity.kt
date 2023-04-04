@@ -624,6 +624,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var dataReportDocId: Long? = null
 
+    @Column(name = "CLIENT_APPEAL_DOCUMENT_ID")
+    @Basic
+    var clientAppealDocID: Long? = null
+
+    @Column(name = "SUCCESSFUL_UNSUCCESSFUL_APPEAL_DOCUMENT_ID")
+    @Basic
+    var successfulOrUnsuccessfulAppealDocID: Long? = null
+
     @Column(name = "DESTRUCTION_NOTIFICATION_DOC_ID")
     @Basic
     var destructionNotificationDocId: Long? = null

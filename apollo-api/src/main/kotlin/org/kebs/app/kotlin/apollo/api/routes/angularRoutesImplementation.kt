@@ -574,6 +574,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
+                        POST("/batch-invoice-re-submit", handler::invoiceBatchReSubmitMigration)
                         POST("/batch-invoice-difference-submit", handler::invoiceBatchSubmitDifferenceMigration)
                         POST("/batch-invoice-add", handler::notSupported)
                         PUT("/batch-invoice-remove", handler::notSupported)
@@ -656,6 +657,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/update-brand", internalUserhandler::updatePermitDetailsBrand)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
                         POST("/permit-review", internalUserhandler::updatePermitDetailsReviewCompleteness)
+                        POST("/submit_for_payment", internalUserhandler::updatePermitDetailsSubmitForPayment)
                         POST("/add-extra-amount", internalUserhandler::updatePermitDetailsAddExtraAmount)
                         POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
@@ -852,7 +854,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/inspection".nest {
                     GET("/list", handler::getAllWorkPlanList)
                     GET("/list-completed", handler::getAllWorkPlanCompletedList)
-//                    GET("/list-new", handler::getAllWorkPlanNewList)
+                    GET("/list-same-activity", handler::getAllWorkPlanSameDateList)
                     GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
                     GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)

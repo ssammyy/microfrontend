@@ -2514,7 +2514,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
       this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
       // this.selectedRecommendationName = ;
-      if (this.selectedRecommendationID == 61){
+      if (this.selectedRecommendationID == 61) {
           this.showOther = true;
       }
 
@@ -2530,21 +2530,21 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   }
 
-  onTabClicked(event){
+  onTabClicked(event) {
     const selectedTab = event.tab;
-    //console.log(selectedTab.textLabel);
-    if (selectedTab.textLabel == 16){
-      //console.log("Data Report Tab clicked");
+    // console.log(selectedTab.textLabel);
+    if (selectedTab.textLabel == 16) {
+      // console.log("Data Report Tab clicked");
       this.calculateAverageCompliance();
     }
   }
 
 
   onClickAddDataRecommendationDetails() {
-    if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
+    if (this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61) {
       const userRecommendation = this.otherFinalRecommendation?.get('otherRecommendationName')?.value;
       this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(userRecommendation);
-    }else if(this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid){
+    } else if (this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid) {
       this.msService.showWarning('Please type in a recommendation or select another recommendation');
     }
 
@@ -3248,23 +3248,15 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealed(valid: boolean) {
 
-
-    const file = this.uploadedAppealNotSuccesFiles;
-    if (file === undefined) {
-      if (valid) {
-        this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
-            // tslint:disable-next-line:max-line-length
-            'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
-              this.saveClientAppealed(valid);
-            });
-      }
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure you want to add the details?', 'You won\'t be able to update the details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and change the details/files before saving', 'SUCCESS', () => {
+            this.saveClientAppealed(valid);
+          });
     }
-
-    if (file.length > 0) {
-        this.saveAppealFilesResults('CLIENT_APPEAL_DOCUMENT');
-    }
-
   }
+
 
   saveAppealFilesResults(docName: string) {
     this.SpinnerService.show();
@@ -3280,7 +3272,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5(); });
         },
         error => {
           this.SpinnerService.hide();
@@ -3304,7 +3296,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5(); });
         },
         error => {
           this.SpinnerService.hide();
@@ -3338,8 +3330,42 @@ export class WorkPlanDetailsComponent implements OnInit {
             window.$('#finalRecommendationView').modal('hide');
             window.$('body').removeClass('modal-open');
             window.$('.modal-backdrop').remove();
-            this.msService.showSuccess('Client appeal status,Saved Test successfully',
-                () => {this.viewRecommendationRecord(this.selectedProductRecommendation)});
+            const appealFiles = this.uploadedAppealNotSuccesFiles;
+            if (appealFiles?.length > 0) {
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+              if (this.dataSaveApprovePreliminary?.approvalStatus){
+                formData.append('docTypeName', 'CLIENT_APPEAL_DOCUMENT');
+              }else{
+                formData.append('docTypeName', 'CLIENT_DID_NOT_APPEAL_DOCUMENT');
+              }
+              for (let i = 0; i < appealFiles.length; i++) {
+                formData.append('docFile', appealFiles[i], appealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log('Appeal Files uploaded successfully');
+                    window.$('#myModal5').modal('hide');
+                    window.$('body').removeClass('modal-open');
+                    window.$('.modal-backdrop').remove();
+                    window.$('#finalRecommendationView').modal('hide');
+                    window.$('body').removeClass('modal-open');
+                    window.$('.modal-backdrop').remove();
+                    // this.closePopUpsModal5();
+                    // this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    console.log(error);
+                    console.log('Appeal files not uploaded.. above error');
+                    this.closePopUpsModal5();
+                  },
+              );
+            }
+
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILE(S) SAVED SUCCESSFULLY',
+                () => {this.viewRecommendationRecord(this.selectedProductRecommendation); });
           },
           error => {
             this.SpinnerService.hide();
@@ -3351,9 +3377,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
-    if (this.uploadedSuccessfulAppealFiles.length > 0) {
-      this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
-    }
+    // if (this.uploadedSuccessfulAppealFiles.length > 0) {
+    //   this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+    // }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
@@ -3378,8 +3404,31 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.approvePreliminaryForm.reset();
             this.recommendationDetailsLoad();
+            const successfulAppealFiles = this.uploadedSuccessfulAppealFiles;
+            if (successfulAppealFiles?.length > 0) {
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+              formData.append('docTypeName', 'SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+              for (let i = 0; i < successfulAppealFiles.length; i++) {
+                formData.append('docFile', successfulAppealFiles[i], successfulAppealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log('Appeal Files both success/unsuccessful uploaded successfully');
+                    // this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    // this.SpinnerService.hide();
+                    console.log(error);
+                    console.log('Files were not uploaded.. check error above');
+                    // this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
+            }
             this.SpinnerService.hide();
-            this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILES(S) SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -4095,7 +4144,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             window.$('body').removeClass('modal-open');
             window.$('.modal-backdrop').remove();
             this.SpinnerService.hide();
-            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.viewRecommendationRecord(this.selectedProductRecommendation)});
+            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.viewRecommendationRecord(this.selectedProductRecommendation); });
           },
           error => {
             this.SpinnerService.hide();
@@ -4447,8 +4496,8 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
     this.submitted = true;
-    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ){
-      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(" ");
+    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ) {
+      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(' ');
     }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -4470,7 +4519,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickNotSendSSFLabResultsComplianceStatus(valid: boolean) {
+  onClickNotSendSSFLabResultsComplianceStatus() {
     this.submitted = true;
     // if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your do not want to Send the Details?', 'You won\'t be able to revert back after submission!',
@@ -4804,7 +4853,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.viewSeizedProductsFileSaved(event.data);
         break;
       case 'downloadRecord':
-        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
+        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, 'application/pdf');
         break;
     }
   }
@@ -5724,14 +5773,14 @@ export class WorkPlanDetailsComponent implements OnInit {
     let sumOfCompliance = 0;
     for (let i = 0; i < dataReportData?.length; i++) {
       sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
-      //console.log(i + " " + dataReportData[i].totalComplianceScore);
-      //console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
+      // console.log(i + " " + dataReportData[i].totalComplianceScore);
+      // console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
-    //console.log("FInished Sum: "+ sumOfCompliance);
-    //console.log("length "+ dataReportData?.length);
-    //console.log("average before: "+ this.averageCompliance);
+    // console.log("FInished Sum: "+ sumOfCompliance);
+    // console.log("length "+ dataReportData?.length);
+    // console.log("average before: "+ this.averageCompliance);
     this.averageCompliance = sumOfCompliance / dataReportData?.length;
-    //console.log("average after: "+ this.averageCompliance);
+    // console.log("average after: "+ this.averageCompliance);
   }
 
   viewFile(fileUploaded: File) {
