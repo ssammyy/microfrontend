@@ -105,6 +105,10 @@ class MSJSONControllers(
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         clientAppealDocID = fileDocSaved!!.id
                     }
+                    "CLIENT_DID_NOT_APPEAL_DOCUMENT" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        clientAppealDocID = fileDocSaved!!.id
+                    }
                     "SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         successfulOrUnsuccessfulAppealDocID = fileDocSaved!!.id
@@ -726,6 +730,51 @@ class MSJSONControllers(
             pdfReportStream.close()
         }
     }
+
+//    @RequestMapping(value = ["/report/initial-report"], method = [RequestMethod.GET])
+//    @Throws(Exception::class)
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun msSampleSubmissionPDF(
+//        response: HttpServletResponse,
+//        @RequestParam(value = "ssfID") ssfID: Long
+//    ) {
+//        val map = hashMapOf<String, Any>()
+//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
+//
+//        val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
+//
+//        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+//
+//        if (user != null) {
+//            val mySignature: ByteArray?
+//            val image: ByteArrayInputStream?
+//            println("UserID is" + user.id)
+//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+//            if (signatureFromDb != null) {
+//                mySignature= signatureFromDb.signature
+//                image = ByteArrayInputStream(mySignature)
+//                map["signaturePath"] = image
+//
+//            }
+//        }
+////        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+//
+//        val pdfReportStream = reportsDaoService.extractReport(
+//            map,
+//            applicationMapProperties.mapMSSampleSubmissionPath,
+//            ssfFile
+//        )
+//
+//        response.contentType = "text/html"
+//        response.contentType = "application/pdf"
+//        response.setHeader("Content-Length", pdfReportStream.size().toString())
+//        response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
+//        response.outputStream.let { responseOutputStream ->
+//            responseOutputStream.write(pdfReportStream.toByteArray())
+//            responseOutputStream.close()
+//            pdfReportStream.close()
+//        }
+//    }
 
 
 

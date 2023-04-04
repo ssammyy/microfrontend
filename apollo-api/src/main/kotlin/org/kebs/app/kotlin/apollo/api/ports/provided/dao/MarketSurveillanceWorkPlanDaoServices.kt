@@ -982,6 +982,51 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorPlanInspectionAllSameDateLists(
+        batchReferenceNo: String,
+        complaintStatus: Boolean,
+        page: PageRequest
+    ): WorkPlanScheduleListDetailsDto {
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val createdWorkPlan: WorkPlanCreatedEntity?
+        val workPlanList: List<MsWorkPlanGeneratedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_IO_READ"
+                        || authority.authority == "MS_HOD_READ"
+                        || authority.authority == "MS_HOF_READ"
+                        || authority.authority == "MS_DIRECTOR_READ"
+                        || authority.authority == "MS_RM_READ"
+            } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = when {
+                    complaintStatus -> {
+                        generateWorkPlanRepo.getWorkPlanComplaintWithSameDetails(
+                            createdWorkPlan.id,
+                            loggedInUser.id!!
+                        )
+                    }
+                    else -> {
+                        generateWorkPlanRepo.getWorkPlanWithSameDetails(
+                            createdWorkPlan.id,
+                            loggedInUser.id!!
+                        )
+                    }
+                }
+
+
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return mapWorkPlanInspectionListDto(workPlanList, mapWorkPlanBatchDetailsDto(createdWorkPlan, map))
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getAllWorPlanInspectionAllNotCompletedLists(
         batchReferenceNo: String,
         complaintStatus: Boolean,

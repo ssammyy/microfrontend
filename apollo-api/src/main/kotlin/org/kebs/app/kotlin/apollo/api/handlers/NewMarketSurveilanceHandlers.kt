@@ -2110,6 +2110,22 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+     fun getAllWorkPlanSameDateList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllSameDateLists(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllWorkPlanMyTaskList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)

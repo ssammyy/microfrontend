@@ -6214,41 +6214,43 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
-                            <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
-                                        <datalist id="SSFValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
-                                        </datalist>
+                            <div *ngIf="addLabParamStatus">
+                                <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the SSF to clone</b></label>
+                                            <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
+                                            <datalist id="SSFValueToCloneList">
+                                                <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
+                                            </datalist>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
-                                        </button>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
-                                        <datalist id="availableDataReports">
-                                            <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
-                                        </datalist>
+                                <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the Data Report</b></label>
+                                            <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
+                                            <datalist id="availableDataReports">
+                                                <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                            </datalist>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                 class="btn btn-outline-success" type="button" >SELECT DATA REPORT
-                                        </button>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" type="button" >SELECT DATA REPORT
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -8161,7 +8163,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">
+<!--                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">-->
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
                                                 <file-upload [(ngModel)]="uploadedAppealNotSuccesFiles" name="uploadedAppealNotSuccesFiles"
@@ -8169,7 +8171,7 @@
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
-                                        </div>
+<!--                                        </div>-->
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"

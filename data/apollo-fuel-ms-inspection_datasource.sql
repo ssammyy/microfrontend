@@ -1207,6 +1207,35 @@ WHERE b.UCR_NUMBER = 'UCR202204149558'
 ORDER BY a.ID DESC;
 
 
+SELECT other_workplans.* from
+ (
+     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID
+     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b
+     WHERE a.id=b.work_plan_id
+       --AND a.id<>
+       AND a.WORKPLAN_YEAR_ID =:workPlanYearId
+       AND a.OFFICER_ID <>:officerID
+       AND a.APPROVED_STATUS=1
+       AND a.onsite_end_status!=1
+       AND a.COMPLAINT_ID IS NOT NULL
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')
+ )other_workplans,
+ (
+     SELECT a.*,b.COUNTY_ID,b.TOWNS_ID
+     FROM DAT_KEBS_MS_WORKPLAN_GENARATED a,
+          DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b
+     WHERE a.id=b.work_plan_id
+       AND a.OFFICER_ID =:officerID
+     --AND a.id=1347
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')>=to_date('2023-03-01','yyyy-mm-dd')
+     --AND to_date(to_char(a.time_activity_date,'yyyy-mm-dd'),'yyyy-mm-dd')<to_date('2023-03-02','yyyy-mm-dd')
+ )lookup
+WHERE lookup.county_id=other_workplans.county_id
+  AND lookup.towns_id=other_workplans.towns_id
+  AND trunc(lookup.time_activity_date)=trunc(other_workplans.time_activity_date)
+
+
 
 
 
