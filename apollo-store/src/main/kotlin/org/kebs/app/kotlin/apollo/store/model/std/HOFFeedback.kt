@@ -20,9 +20,15 @@ class HOFFeedback {
     @Basic
     var isTc: String? = null
 
+    @Column(name = "TC_ID")
+    @Basic
+    var tcId: String? = null
+
     @Column(name = "IS_TC_SEC")
     @Basic
     var isTcSec: String? = null
+
+
 
     @Column(name = "SD_OUTPUT")
     @Basic

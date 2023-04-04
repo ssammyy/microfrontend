@@ -1,8 +1,14 @@
 import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {Document, HOFFeedback, StandardRequestB, TaskData} from "../../../../core/store/data/std/request_std.model";
+import {
+    DataHolder,
+    Document,
+    HOFFeedback,
+    StandardRequestB,
+    TaskData
+} from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {ReplaySubject, Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -30,6 +36,8 @@ export class StandardTaskComponent implements OnInit {
 
 
     onApproveApplication: boolean = false;
+    tcSecAvailabilty: boolean = false;
+
     // data source for the radio buttons:
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
         'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
@@ -79,6 +87,13 @@ export class StandardTaskComponent implements OnInit {
 
     public taskData: TaskData | undefined;
 
+    @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
+    public technicalCommitteeFilterCtrl: FormControl = new FormControl();
+    public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
+
+    public tcs: DataHolder[] = [];
+
+
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
@@ -102,8 +117,8 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
-
         this.getOnHoldTasks();
+        this.getTechnicalCommittee();
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -112,16 +127,16 @@ export class StandardTaskComponent implements OnInit {
         });
         this.stdHOFReview = this.formBuilder.group({
             isTcSec: ['', Validators.required],
-            isTc: ['', Validators.required],
-            sdOutput: ['', Validators.required],
+            isTc: [''],
+            sdOutput: [''],
             id: ['', Validators.required],
             sdRequestID: ['', Validators.required],
             sdResult: ['', Validators.required],
             reason: [''],
+            tcId: [''],
+
 
         });
-
-
     }
 
     id: any = 'Pending Review';
@@ -132,15 +147,9 @@ export class StandardTaskComponent implements OnInit {
             this.reloadCurrentRoute()
         }
     }
-
-
     ngAfterViewInit(): void {
-
-
         this.sdOutput = this.selectSeason;
         this.sdResult = this.selectDesiredResult;
-
-
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
@@ -207,13 +216,14 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public onReviewTask(): void {
-
+        this.SpinnerService.show();
         if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review' || this.stdHOFReview.controls['sdResult'].value == 'On Hold') {
             if (this.stdHOFReview.controls['reason'].value != '') {
                 this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
                     (response) => {
                         this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                         this.SpinnerService.hide();
+                        this.getOnHoldTasks();
                         this.getHOFTasks();
 
                         this.stdHOFReview.reset();
@@ -227,33 +237,57 @@ export class StandardTaskComponent implements OnInit {
                 )
             } else {
                 this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
+                this.SpinnerService.hide();
+
 
             }
         } else {
-
             if (this.stdHOFReview.valid) {
-                this.SpinnerService.show();
+                //check if tc sec availability has been selected
+                if (this.stdHOFReview.controls['isTcSec'].value != '') {
+                    if (this.stdHOFReview.controls['isTcSec'].value == '1') {
+                        if (this.stdHOFReview.controls['tcId'].value != '') {
+                            if (this.stdHOFReview.controls['isTc'].value != '') {
+                                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
+                                    (response) => {
+                                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
+                                        this.SpinnerService.hide();
+                                        this.getOnHoldTasks();
+                                        this.getHOFTasks();
+                                        this.stdHOFReview.reset();
+                                        this.hideModel()
+                                    },
+                                    (error: HttpErrorResponse) => {
+                                        alert(error.message);
+                                        this.SpinnerService.hide();
 
-                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                    (response) => {
-                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                        this.SpinnerService.hide();
-                        this.getHOFTasks();
+                                    }
+                                )
+                            } else {
+                                this.showToasterError("Error", `Please Select A Technical Committee Secretary`);
+                                this.SpinnerService.hide();
 
-                        this.stdHOFReview.reset();
-                        this.hideModel()
-                    },
-                    (error: HttpErrorResponse) => {
-                        alert(error.message);
-                        this.SpinnerService.hide();
+                            }
+                        } else {
+                            this.showToasterError("Error", `Please Select A Technical Committee`);
+                            this.SpinnerService.hide();
 
+                        }
                     }
-                )
+                } else {
+                    this.showToasterError("Error", `Please Select Whether A TC SEC Is Available Or Not.`);
+                    this.SpinnerService.hide();
+
+                }
+
             } else {
-                this.showToasterError("Error", `Please Fill In All The Fields.`);
+                this.showToasterError("Error", `Please Fill In The Necessary  Fields.`);
+                this.SpinnerService.hide();
+
 
             }
         }
+
     }
 
     public updateDepartment(): void {
@@ -426,12 +460,29 @@ export class StandardTaskComponent implements OnInit {
         }
 
     }
+    onTcSecAvailability($event: MatRadioChange) {
+        this.tcSecAvailabilty = $event.value === '1';
+
+    }
 
     reloadCurrentRoute() {
         let currentUrl = this.router.url;
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
             this.router.navigate([currentUrl]);
         });
+    }
+
+    public getTechnicalCommittee(): void {
+        this.standardDevelopmentService.getAllTcsForApplication().subscribe(
+            (response: DataHolder[]) => {
+                this.tcs = response;
+                this.filteredTcs.next(this.tcs);
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
     }
 
 
