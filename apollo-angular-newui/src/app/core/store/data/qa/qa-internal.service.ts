@@ -53,7 +53,7 @@ export class QaInternalService {
     public loadMyPscTasksByPermitType(permitTypeID: number): Observable<ApiResponseModel> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_MY_TASK_LIST_PSC);
         const params = new HttpParams()
-            .set('permitTypeID', String(permitTypeID))
+            .set('permitTypeID', String(permitTypeID));
         return this.http.get<ApiResponseModel>(url, {params}).pipe(
             map(function (response: ApiResponseModel) {
                 return response;

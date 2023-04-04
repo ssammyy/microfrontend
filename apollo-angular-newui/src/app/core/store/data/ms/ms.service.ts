@@ -1161,6 +1161,9 @@ export class MsService {
             case 'completed':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.COMPLETED_WORK_PLAN_LIST);
                 break;
+            case 'same-with-others':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.SAME_WORK_PLAN_LIST);
+                break;
         }
 
         const params = new HttpParams()

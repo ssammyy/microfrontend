@@ -39,7 +39,7 @@ import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {DataTableDirective} from 'angular-datatables';
 import {StandardsDto} from '../../../core/store/data/master/master.model';
-import {formatDate} from "@angular/common";
+import {formatDate} from '@angular/common';
 
 
 @Component({
@@ -93,8 +93,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
 
-    dateFormat = "MMM dd yyyy";
-    language = "en";
+    dateFormat = 'MMM dd yyyy';
+    language = 'en';
     pdfSources: any;
     SelectedSectionId;
     pdfInvoiceBreakDownSources: any;
@@ -183,6 +183,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
+    DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
     inspectionReportDetailsDto: InspectionReportDetailsDto;
@@ -869,7 +870,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             }
         }
 
-        if(divVal==='viewInspectionInvoiceDetails'){
+        if (divVal === 'viewInspectionInvoiceDetails') {
             this.viewInspectionInvoiceDetailsForm.patchValue(this.allPermitDetails?.inspectionInvoiceUpload);
         }
 
@@ -941,9 +942,31 @@ export class PermitDetailsAdminComponent implements OnInit {
         if (this.allPermitDetails?.permitDetails?.permitTypeID === this.SMarkTypeID) {
             this.allSTA10Details = this.allPermitDetails.sta10DTO;
             this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+            const qaSta10ID = this.allSTA10Details.sta10FirmDetails.id;
+            this.qaService.viewSTA10PersonnelDetails(String(qaSta10ID)).subscribe(
+                (data10Personal: STA10PersonnelDto[]) => {
+                    this.sta10PersonnelDetails = data10Personal;
+                },
+            );
+            this.qaService.viewSTA10ProductsManufactureDetails(String(qaSta10ID)).subscribe(
+                (data10ProductsManufacture: STA10ProductsManufactureDto) => {
+                    this.sta10ProductsManufactureDetail = data10ProductsManufacture;
+                },
+            );
+            this.qaService.viewSTA10RawMaterialsDetails(String(qaSta10ID)).subscribe(
+                (data10RawMaterialsDetails: STA10RawMaterialsDto[]) => {
+                    this.sta10RawMaterialsDetails = data10RawMaterialsDetails;
+                },
+            );
+            // this.qaService.viewSTA10RawMaterialsDetails(String(qaSta10ID)).subscribe(
+            //     (data10RawMaterialsDetails: STA10RawMaterialsDto[]) => {
+            //         this.sta10RawMaterialsDetails = data10RawMaterialsDetails;
+            //     },
+            // );
+
+            // this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+            // this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+            // this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
             this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
             this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
             this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
@@ -1047,21 +1070,44 @@ export class PermitDetailsAdminComponent implements OnInit {
                 }
             }
 
-            this.tableData12 = {
-                headerRow: ['Item', 'Details/Fee'],
-                dataRows: [
-                    ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                    ['Inspection Fee', `KSH ${inspectionFee}`],
-                    ['FMARK Permit', `KSH ${fMarkFee}`],
-                    ['SMARK Permit', `KSH ${permitFee}`],
-                    // ['Description', this.allPermitDetails.invoiceDetails.description],
-                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
-                    ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                    ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
-                    ['Paid STATUS', paidStatus],
+            if (this.allPermitDetails?.permitDetails?.permitTypeID === this.DMarkTypeID) {
+                const formattedArrayInvoiceDetails = [];
+                formattedArrayInvoiceDetails.push(['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef]);
 
-                ],
-            };
+                for (let h = 0; h < invoiceDetailsList.length; h++) {
+                    if (invoiceDetailsList[h].permitStatus === true) {
+                        permitFee = invoiceDetailsList[h].itemAmount;
+                        formattedArrayInvoiceDetails.push(['DMARK Permit', `KSH ${permitFee}`]);
+                    } else {
+                        formattedArrayInvoiceDetails.push([invoiceDetailsList[h].itemDescName, `KSH ${invoiceDetailsList[h].itemAmount}`]);
+                    }
+                }
+                // tslint:disable-next-line:max-line-length
+                formattedArrayInvoiceDetails.push(['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`]);
+                formattedArrayInvoiceDetails.push(['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`]);
+                formattedArrayInvoiceDetails.push(['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]);
+                this.tableData12 = {
+                    headerRow: ['Item', 'Details/Fee'],
+                    dataRows: formattedArrayInvoiceDetails,
+                };
+            } else {
+                this.tableData12 = {
+                    headerRow: ['Item', 'Details/Fee'],
+                    dataRows: [
+                        ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
+                        ['Inspection Fee', `KSH ${inspectionFee}`],
+                        ['FMARK Permit', `KSH ${fMarkFee}`],
+                        ['SMARK Permit', `KSH ${permitFee}`],
+                        // ['Description', this.allPermitDetails.invoiceDetails.description],
+                        ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
+                        ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
+                        ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
+                        ['Paid STATUS', paidStatus],
+
+                    ],
+                };
+            }
+
 
             this.tableData10 = {
                 headerRow: ['Item', 'Details/Fee'],
@@ -1480,6 +1526,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     //             (data1: ApiResponseModel) => {
     //                 if (data1.responseCode === '00') {
     //                     // tslint:disable-next-line:max-line-length
+    // tslint:disable-next-line:max-line-length
     //                     const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
     //                     const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
     //                     this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
@@ -1683,6 +1730,37 @@ export class PermitDetailsAdminComponent implements OnInit {
                 },
             );
         }
+    }
+
+    onClickSavePcmSubmitPayment() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'SUBMIT \' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SavePcmSubmitForPayment();
+            });
+    }
+
+    SavePcmSubmitForPayment() {
+        // if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPcmSubmitForPayment(this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT SUBMITTED FOR PAYMENT', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        // }
     }
 
     onClickSaveAddSSFDetails(valid: boolean) {

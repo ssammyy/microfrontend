@@ -124,6 +124,10 @@
                                         [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
                                     COMPLETED
                                 </button>
+                                <button type="button" (click)="toggleStatus('same-with-others')"
+                                        [className]="activeStatus == 'same-with-others' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    SAME WITH OTHERS
+                                </button>
                                 <!--                                <button type="button" (click)="toggleStatus('new-workPlan')"-->
                                 <!--                                        [className]="activeStatus == 'new-workPlan' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">-->
                                 <!--                                    NEW WORK-PLAN-->

@@ -234,6 +234,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesOnly: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedAppealFiles: FileList;
+  uploadedAppealNotSuccesFiles: FileList;
   uploadedFinalRemarksFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
@@ -1679,6 +1680,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     endDate: new Date(Date.now()),
   };
 
+  public selectClientAppealedStatus: string;
+
 
 
   constructor(
@@ -2511,7 +2514,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
       this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
       // this.selectedRecommendationName = ;
-      if (this.selectedRecommendationID == 61){
+      if (this.selectedRecommendationID == 61) {
           this.showOther = true;
       }
 
@@ -2527,13 +2530,22 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   }
 
+  onTabClicked(event) {
+    const selectedTab = event.tab;
+    // console.log(selectedTab.textLabel);
+    if (selectedTab.textLabel == 16) {
+      // console.log("Data Report Tab clicked");
+      this.calculateAverageCompliance();
+    }
+  }
+
 
   onClickAddDataRecommendationDetails() {
-    if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
+    if (this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61) {
       const userRecommendation = this.otherFinalRecommendation?.get('otherRecommendationName')?.value;
       this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(userRecommendation);
-    }else if(this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid){
-      this.msService.showWarning("Please type in a recommendation or select another recommendation");
+    } else if (this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid) {
+      this.msService.showWarning('Please type in a recommendation or select another recommendation');
     }
 
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
@@ -2615,13 +2627,13 @@ export class WorkPlanDetailsComponent implements OnInit {
       'approveFinalPreliminaryDirector', 'startOnsiteActivities'];
 
     // tslint:disable-next-line:max-line-length
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
+    const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
+      'ADD BS NUMBER', 'APPROVE/DECLINE PROGRESS REPORT', 'APPROVE/DECLINE PROGRESS REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-      , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2635,6 +2647,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       // this.seizureForm.reset();
       this.seizureForm.enable();
       this.addSeizureProductsStatus = true;
+    }
+
+    if (divVal === 'dataReportDetails') {
+      this.addProductsStatus = true;
     }
 
     if (divVal === 'finalLabComplianceStatus') {
@@ -2736,6 +2752,15 @@ export class WorkPlanDetailsComponent implements OnInit {
       for (let prod = 0; prod < this.workPlanInspection?.sampleSubmitted.length; prod++) {
         this.dataSaveBsNumber.push(this.workPlanInspection?.sampleSubmitted[prod].bsNumber);
       }
+    }
+  }
+
+  updateSelectedStatus() {
+    const valueSelected = this.approvePreliminaryForm?.get('approvalStatus')?.value;
+    if (valueSelected) {
+      this.selectClientAppealedStatus = 'Accept';
+    } else {
+      this.selectClientAppealedStatus = 'Reject';
     }
   }
 
@@ -2893,6 +2918,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     }, 500);
   }
 
+  closePopUpsModal4() {
+    window.$('#dataReportModalUCR').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#dataReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#dataReportModal').modal('show');
+    }, 500);
+  }
+
   closePopUpsModal2() {
     window.$('#myModal2').modal('hide');
     window.$('body').removeClass('modal-open');
@@ -2903,6 +2941,19 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     setTimeout(function() {
       window.$('#sampleLabResultsModal').modal('show');
+    }, 500);
+  }
+
+  closePopUpsModal5() {
+    window.$('#myModal5').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#finalRecommendationView').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#finalRecommendationView').modal('show');
     }, 500);
   }
 
@@ -3136,7 +3187,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3197,21 +3248,19 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealed(valid: boolean) {
 
-    if (this.uploadedAppealFiles.length > 0) {
-        this.saveAppealFilesResults('CLIENT_APPEAL_DOCUMENT');
-    }
     if (valid) {
-      this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
+      this.msService.showSuccessWith2Message('Are you sure you want to add the details?', 'You won\'t be able to update the details after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
+          'You can go back and change the details/files before saving', 'SUCCESS', () => {
             this.saveClientAppealed(valid);
           });
     }
   }
 
+
   saveAppealFilesResults(docName: string) {
     this.SpinnerService.show();
-    const appealFiles = this.uploadedAppealFiles;
+    const appealFiles = this.uploadedAppealNotSuccesFiles;
     const formData = new FormData();
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
     formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
@@ -3223,7 +3272,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5(); });
         },
         error => {
           this.SpinnerService.hide();
@@ -3247,7 +3296,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.SpinnerService.hide();
-          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5(); });
         },
         error => {
           this.SpinnerService.hide();
@@ -3272,8 +3321,51 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            // tslint:disable-next-line:max-line-length
+            this.selectedProductRecommendation = this.workPlanInspection.productList.find(lab => lab.referenceNo === this.selectedProductRecommendation.referenceNo);
             this.recommendationDetailsLoad();
-            this.msService.showSuccess('Client appeal status,Saved successfully');
+            window.$('#myModal5').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#finalRecommendationView').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            const appealFiles = this.uploadedAppealNotSuccesFiles;
+            if (appealFiles?.length > 0) {
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+              if (this.dataSaveApprovePreliminary?.approvalStatus){
+                formData.append('docTypeName', 'CLIENT_APPEAL_DOCUMENT');
+              }else{
+                formData.append('docTypeName', 'CLIENT_DID_NOT_APPEAL_DOCUMENT');
+              }
+              for (let i = 0; i < appealFiles.length; i++) {
+                formData.append('docFile', appealFiles[i], appealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log('Appeal Files uploaded successfully');
+                    window.$('#myModal5').modal('hide');
+                    window.$('body').removeClass('modal-open');
+                    window.$('.modal-backdrop').remove();
+                    window.$('#finalRecommendationView').modal('hide');
+                    window.$('body').removeClass('modal-open');
+                    window.$('.modal-backdrop').remove();
+                    // this.closePopUpsModal5();
+                    // this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    console.log(error);
+                    console.log('Appeal files not uploaded.. above error');
+                    this.closePopUpsModal5();
+                  },
+              );
+            }
+
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILE(S) SAVED SUCCESSFULLY',
+                () => {this.viewRecommendationRecord(this.selectedProductRecommendation); });
           },
           error => {
             this.SpinnerService.hide();
@@ -3285,9 +3377,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
-    if (this.uploadedSuccessfulAppealFiles.length > 0) {
-      this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
-    }
+    // if (this.uploadedSuccessfulAppealFiles.length > 0) {
+    //   this.saveSuccessfulAppealFilesResults('SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+    // }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
@@ -3312,8 +3404,31 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.approvePreliminaryForm.reset();
             this.recommendationDetailsLoad();
+            const successfulAppealFiles = this.uploadedSuccessfulAppealFiles;
+            if (successfulAppealFiles?.length > 0) {
+              const formData = new FormData();
+              formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+              formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+              formData.append('docTypeName', 'SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT');
+              for (let i = 0; i < successfulAppealFiles.length; i++) {
+                formData.append('docFile', successfulAppealFiles[i], successfulAppealFiles[i].name);
+              }
+              this.msService.saveWorkPlanFiles(formData).subscribe(
+                  (data: any) => {
+                    this.workPlanInspection = data;
+                    console.log('Appeal Files both success/unsuccessful uploaded successfully');
+                    // this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.closePopUpsModal5();});
+                  },
+                  error => {
+                    // this.SpinnerService.hide();
+                    console.log(error);
+                    console.log('Files were not uploaded.. check error above');
+                    // this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
+            }
             this.SpinnerService.hide();
-            this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
+            this.msService.showSuccess('CLIENT APPEAL STATUS AND FILES(S) SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3443,7 +3558,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -4020,8 +4135,16 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.uploadDestructionReportFiles = null;
             console.log(data);
             this.recommendationDetailsLoad();
+            this.selectedProductRecommendation = this.workPlanInspection.productList.find(lab => lab.referenceNo === this.selectedProductRecommendation.referenceNo);
+            this.recommendationDetailsLoad();
+            window.$('#myModal5').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#finalRecommendationView').modal('hide');
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
             this.SpinnerService.hide();
-            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY', () => {this.viewRecommendationRecord(this.selectedProductRecommendation); });
           },
           error => {
             this.SpinnerService.hide();
@@ -4249,6 +4372,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
+      this.dataSaveSampleSubmitBSNumber.ssfID = this.ssfSelectedID;
       this.msService.msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
@@ -4372,8 +4496,8 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
     this.submitted = true;
-    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ){
-      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(" ");
+    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ) {
+      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(' ');
     }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -4395,7 +4519,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickNotSendSSFLabResultsComplianceStatus(valid: boolean) {
+  onClickNotSendSSFLabResultsComplianceStatus() {
     this.submitted = true;
     // if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your do not want to Send the Details?', 'You won\'t be able to revert back after submission!',
@@ -4729,7 +4853,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.viewSeizedProductsFileSaved(event.data);
         break;
       case 'downloadRecord':
-        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
+        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, 'application/pdf');
         break;
     }
   }
@@ -4817,7 +4941,7 @@ export class WorkPlanDetailsComponent implements OnInit {
               this.currDiv = 'verificationUCRDetails';
               // this.verificationPermitForm.disabled;
 
-              window.$('#myModal3').modal('show');
+              window.$('#dataReportModalUCR').modal('show');
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
             error => {
@@ -5091,7 +5215,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     } else if (file === undefined && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showError('Kindly Add An Attachment');
     } else if (file?.length > 0 && this.dataSaveSeizureDeclarationList.length === 0) {
-      this.msService.showError('Kindly Add Products that have been Seizure');
+      this.msService.showError('Kindly Add Products that have been Seized');
     }
   }
 
@@ -5326,7 +5450,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'ADD PRELIMINARY REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+          'You can click the \'ADD PROGRESS REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.savePreliminaryReport();
           });
     }
@@ -5349,7 +5473,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -5633,8 +5757,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
     this.seizureForm?.get('docID').setValue(null);
+    this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
+
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
     }
@@ -5643,16 +5769,18 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   calculateAverageCompliance() {
-    console.log('Function called');
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
-    for (let i = 1; i < dataReportData?.length; i++) {
-      sumOfCompliance += dataReportData[i].totalComplianceScore;
+    for (let i = 0; i < dataReportData?.length; i++) {
+      sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      // console.log(i + " " + dataReportData[i].totalComplianceScore);
+      // console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
+    // console.log("FInished Sum: "+ sumOfCompliance);
+    // console.log("length "+ dataReportData?.length);
+    // console.log("average before: "+ this.averageCompliance);
     this.averageCompliance = sumOfCompliance / dataReportData?.length;
-    if (isNaN(this.averageCompliance)) {
-      console.log('The average compliance is nan' + this.averageCompliance);
-    }
+    // console.log("average after: "+ this.averageCompliance);
   }
 
   viewFile(fileUploaded: File) {

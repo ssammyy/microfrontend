@@ -324,6 +324,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.re_generation_invoice}")
     val mapQaStatusPManufactureReGenerateInvoice: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pendingAddExtraCharges}")
+    val mapQaStatusPendingAddExtraCharges: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_scheduling_visit}")
     val mapQaStatusPShedulvisit: Long = 0L
 
@@ -666,6 +669,10 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.remediation.invoice.path}")
     val mapMSFuelInvoiceRemediationPath: String = ""
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sd.tor.path}")
+    val mapSdTorPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
     val mapMSSampleCollectionPath: String = ""

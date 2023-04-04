@@ -2,19 +2,21 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {Document, ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
+import {UserRegister} from "../../../../shared/models/user";
 import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ActivatedRoute} from "@angular/router";
+import {MasterService} from "../../../../core/store/data/master/master.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
-import {Router} from "@angular/router";
 
 @Component({
-    selector: 'app-review-recommendation',
-    templateUrl: './review-recommendation.component.html',
-    styleUrls: ['./review-recommendation.component.css']
+    selector: 'app-review-applications-rejected-sac',
+    templateUrl: './review-applications-rejected-sac.component.html',
+    styleUrls: ['./review-applications-rejected-sac.component.css']
 })
-export class ReviewRecommendationComponent implements OnInit {
+export class ReviewApplicationsRejectedSacComponent implements OnInit {
 
     p = 1;
     p2 = 1;
@@ -24,64 +26,47 @@ export class ReviewRecommendationComponent implements OnInit {
     public uploadedFiles: FileList;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
     isDtInitialized: boolean = false
     blob: Blob;
     display = 'none'; //default Variable
-
-
-    @ViewChildren(DataTableDirective)
-    dtElements: QueryList<DataTableDirective>;
-
-    dtOptionsB: DataTables.Settings = {};
-    dtTrigger2: Subject<any> = new Subject<any>();
-
+    loading = false;
     docs !: Document[];
+    dtOptionsB: DataTables.Settings = {};
+
+    dtTrigger2: Subject<any> = new Subject<any>();
+    public userDetails!: UserRegister;
 
 
-    constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService, private router: Router,
+    constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
+                private route: ActivatedRoute,
+                private masterService: MasterService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
-        this.getApplicationsForReview();
+        this.getApplicationsRejectedBySpc();
 
     }
 
-
-    public getApplicationsForReview(): void {
+    public getApplicationsRejectedBySpc(): void {
+        this.loading = true
         this.loadingText = "Retrieving Applications Please Wait ...."
         this.SpinnerService.show();
-        this.membershipToTcService.getHOFRecommendation().subscribe(
+        this.membershipToTcService.getRejectedFromSPC().subscribe(
             (response: ReviewApplicationTask[]) => {
                 console.log(response);
                 this.tcTasks = response;
+                this.rerender()
+
                 this.SpinnerService.hide();
-                if (this.isDtInitialized) {
-                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                        dtInstance.destroy();
-                        this.dtTrigger.next();
-                    });
-                } else {
-                    this.isDtInitialized = true
-                    this.dtTrigger.next();
-                }
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
                 alert(error.message);
             }
         )
-    }
-
-    id: any = 'Review Applications';
-
-    tabChange(ids: any) {
-        this.id = ids;
-        if (this.id == "Review Applications") {
-            this.reloadCurrentRoute()
-        }
     }
 
     public onOpenModal(task: ReviewApplicationTask): void {
@@ -94,6 +79,9 @@ export class ReviewRecommendationComponent implements OnInit {
         this.actionRequest = task;
         button.setAttribute('data-target', '#decisionModal');
         this.getAllDocs(String(this.actionRequest.id))
+        if (task.sacId != null) {
+            this.getSelectedUser(task.sacId)
+        }
 
         // @ts-ignore
         container.appendChild(button);
@@ -117,38 +105,6 @@ export class ReviewRecommendationComponent implements OnInit {
 
     }
 
-    showToasterSuccess(title: string, message: string) {
-        this.notifyService.showSuccess(message, title)
-
-    }
-
-    public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): void {
-
-        if (reviewApplicationTask.commentsBySpc === "") {
-            this.showToasterError("Error", `Please Enter Your Recommendation.`);
-
-        } else {
-            this.SpinnerService.show();
-            this.loadingText = "Sending Recommendation";
-            this.membershipToTcService.completeReview(reviewApplicationTask, tCApplicationId).subscribe(
-                (response) => {
-                    console.log(response);
-                    this.getApplicationsForReview();
-                    this.SpinnerService.hide();
-                    this.notifyService.showSuccess("Success", 'Your Recommendation Has Been Sent To The SAC Secretary')
-
-                },
-                (error: HttpErrorResponse) => {
-                    alert(error.message);
-                }
-            )
-
-            this.hideModel();
-            this.clearForm();
-        }
-
-    }
-
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
@@ -165,6 +121,29 @@ export class ReviewRecommendationComponent implements OnInit {
         );
     }
 
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+
+
+        });
+
+    }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger.unsubscribe();
+
+
+    }
+
     public getAllDocs(applicationId: string): void {
         this.membershipToTcService.getUserCV(applicationId, "UPLOADS", "ApplicantCV").subscribe(
             (response: Document[]) => {
@@ -179,26 +158,43 @@ export class ReviewRecommendationComponent implements OnInit {
         );
     }
 
-    rerender(): void {
-        this.dtElements.forEach((dtElement: DataTableDirective) => {
-            if (dtElement.dtInstance)
-                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                });
-        });
-        setTimeout(() => {
-            this.dtTrigger.next();
-            this.dtTrigger2.next();
-
+    private getSelectedUser(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.userDetails = data;
+                }
+            );
 
         });
+    }
+
+    public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): void {
+
+        if (reviewApplicationTask.commentsBySpc === "") {
+            this.showToasterError("Error", `Please Enter Your Reason For Resubmission.`);
+
+        } else {
+            this.SpinnerService.show();
+            this.loadingText = "Sending Recommendation";
+            this.membershipToTcService.resubmitReview(reviewApplicationTask, tCApplicationId).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.getApplicationsRejectedBySpc();
+                    this.SpinnerService.hide();
+                    this.notifyService.showSuccess("Success", 'Your Recommendation Has Been Sent To The SAC Secretary')
+
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+
+            this.hideModel();
+            this.clearForm();
+        }
 
     }
 
-    reloadCurrentRoute() {
-        let currentUrl = this.router.url;
-        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-            this.router.navigate([currentUrl]);
-        });
-    }
+
 }

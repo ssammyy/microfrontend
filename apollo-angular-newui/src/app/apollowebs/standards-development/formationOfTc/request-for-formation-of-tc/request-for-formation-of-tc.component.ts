@@ -50,6 +50,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
         'Professional Body', 'Consumer Organization','Non-Governmental Organization (NGO)','Renown Professionals/experts',
         'Renown Professionals/experts','Small and Medium Enterprises (SMEs)','SME trade associations '];
 
+    isoList: any[] = ['ISO TC 72', 'ISO TC73',  'ISO TC 70', 'ISO TC69'];
+
     tasks: JustificationForTc[] = [];
     displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
     displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
@@ -226,6 +228,10 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     onSelectAll(items: any) {
         // console.log(items);
+    }
+
+    onSelectItem(item: ListItem) {
+        // console.log(item);
     }
 
     public uploadProposalForTC(formDirective): void {
@@ -650,4 +656,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
     }
 
 
+    display = false;
+    update(){
+        this.display = true;
+    }
 }

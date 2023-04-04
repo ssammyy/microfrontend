@@ -178,15 +178,15 @@ export class CompaniesList implements OnInit {
                 this.msService.showError('AN ERROR OCCURRED');
             },
         );
-        this.qaService.loadFirmPermitList().subscribe(
-            (dataFirmType: FirmTypeEntityDto[]) => {
-                this.loadedFirmType = dataFirmType;
-            },
-            error => {
-                console.log(error);
-                this.qaService.showError('AN ERROR OCCURRED');
-            },
-        );
+        // this.qaService.loadFirmPermitList().subscribe(
+        //     (dataFirmType: FirmTypeEntityDto[]) => {
+        //         this.loadedFirmType = dataFirmType;
+        //     },
+        //     error => {
+        //         console.log(error);
+        //         this.qaService.showError('AN ERROR OCCURRED');
+        //     },
+        // );
         this.qaService.loadFirmPermitList().subscribe(
             (dataFirmType: FirmTypeEntityDto[]) => {
                 this.loadedFirmType = dataFirmType;

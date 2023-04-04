@@ -240,6 +240,7 @@ class InvoiceDaoService(
             status = map.inactiveStatus
             createdOn = commonDaoServices.getTimestamp()
             createdBy = user
+            varField10 = userArrayDetails?.let { commonDaoServices.convertClassToJson(it) }
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 

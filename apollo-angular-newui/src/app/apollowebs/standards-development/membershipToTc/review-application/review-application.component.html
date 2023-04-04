@@ -71,31 +71,31 @@
                                             </ngx-spinner>
                                         </ng-template>
                                         <div *ngIf="displayUsers; else loading">
-                                        <table class="table table-striped table-bordered table-hover" datatable
-                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                            <thead>
-                                            <tr>
-                                                <th class="id">ID</th>
-                                                <th class="task">Task</th>
-                                                <th class="task">TC</th>
-                                                <th class="task">Applicant Name</th>
-                                                <th class="action">Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let tcTask of tcTasks  let i= index;">
-                                                <td>{{i + 1}}</td>
-                                                <td>Review Application</td>
-                                                <td>{{tcTask.technicalCommittee}}</td>
-                                                <td>{{tcTask.nomineeName}}</td>
-                                                <td><a type="button" (click)="onOpenModal(tcTask)"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top" data-original-title="View Application">View
-                                                    Application</a></td>
+                                            <table class="table table-striped table-bordered table-hover" datatable
+                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                                <thead>
+                                                <tr>
+                                                    <th class="id">ID</th>
+                                                    <th class="task">Task</th>
+                                                    <th class="task">TC</th>
+                                                    <th class="task">Applicant Name</th>
+                                                    <th class="action">Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let tcTask of tcTasks  let i= index;">
+                                                    <td>{{i + 1}}</td>
+                                                    <td>Review Application</td>
+                                                    <td>{{tcTask.technicalCommittee}}</td>
+                                                    <td>{{tcTask.nomineeName}}</td>
+                                                    <td><a type="button" (click)="onOpenModal(tcTask)"
+                                                           class="btn btn-info tooltips"
+                                                           data-placement="top" data-original-title="View Application">View
+                                                        Application</a></td>
 
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -117,7 +117,8 @@
                             <div class="modal-header">
                                 <h5 class="modal-title"
                                     id="viewRequestModalLabel">{{actionRequest?.nomineeName}}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                        #closeViewModal>
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -127,33 +128,44 @@
                                         <ul class="list-group">
                                             <li class="list-group-item active">Application Details</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Technical Committee: " + actionRequest?.technicalCommittee}}</li>
+                                                class="list-group-item"><strong>Technical
+                                                Committee: </strong>{{actionRequest?.technicalCommittee}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Organisation Classification: " + actionRequest?.organization}}</li>
+                                                class="list-group-item"><strong>Organisation
+                                                Classification: </strong>{{actionRequest?.organisationClassification}}
+                                            </li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Organisation Name: " + actionRequest?.organization}}</li>
+                                                class="list-group-item"><strong>Organisation
+                                                Name:</strong> {{actionRequest?.organisationName}}</li>
 
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Nominee: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item">
+                                                <strong>Nominee: </strong> {{actionRequest?.nomineeName}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Position Held: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item"><strong>Position
+                                                Held: </strong> {{actionRequest?.position}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Postal Address: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item"><strong>Postal
+                                                Address: </strong> {{actionRequest?.postalAddress}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Phone: " + actionRequest?.mobileNumber}}</li>
+                                                class="list-group-item">
+                                                <strong>Phone: </strong> {{actionRequest?.mobileNumber}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                                class="list-group-item">
+                                                <strong>Email: </strong> {{actionRequest?.email}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Authorising Person: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item"><strong>Authorising
+                                                Person: </strong> {{actionRequest?.authorizingPerson}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Authorising Person Position: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item"><strong>Authorising Person
+                                                Position: </strong>{{actionRequest?.authorizingPersonPosition}}</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Authorising Person Email: " + actionRequest?.nomineeName}}</li>
+                                                class="list-group-item"><strong>Authorising Person
+                                                Email: </strong> {{actionRequest?.authorizingPersonEmail}}</li>
 
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Qualifications: " + actionRequest?.nomineeName}}</li>
-
-
+                                                class="list-group-item">
+                                                <strong>Qualifications:</strong> {{actionRequest?.qualification}}</li>
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">Curriculum Vitae:
@@ -178,7 +190,8 @@
                                                             <td>
                                                                 <button class="btn btn-info tooltips"
                                                                         style="width: inherit"
-                                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                        (click)="
+                                                                        viewPdfFile( doc.id,doc?.name, 'application/pdf')"
                                                                         data-placement="top"
                                                                 ><i
                                                                         class="fa fa-eye"></i> View
@@ -197,8 +210,44 @@
                                 </div>
 
                                 <br>
+
                                 <div class="row">
                                     <div class=" col-12">
+                                        <div class="card ">
+                                            <div class="card-header card-header-rose card-header-text">
+                                                <div class="card-text">
+                                                    <h4 class="card-title">Review Applicant Request</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-body ">
+                                                <div class="row">
+                                                    <form #editForm="ngForm" class="form">
+                                                        <div class="row">
+                                                            <div class=" col-12">
+                                                                <label><b>Provide reason for the decision</b></label>
+                                                                <textarea
+                                                                        aria-describedby="inputGroup-sizing-sm" ngModel
+                                                                        id="comments_by_hof"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="comments_by_hof"
+                                                                        placeholder=" " type="text" required></textarea>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <button class="btn btn-info"
+                                                                (click)="decisionOnApplications(editForm.value,actionRequest?.id)">
+                                                            Approve
+                                                        </button>
+                                                        <button class="btn btn-danger"
+                                                                (click)="rejectApplications(editForm.value,actionRequest?.id)">
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -207,8 +256,7 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" #closeModalC
-
+                                <button type="button" class="btn btn-secondary"
                                         data-dismiss="modal">Close
                                 </button>
 

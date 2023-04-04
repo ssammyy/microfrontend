@@ -5,6 +5,8 @@ import {QaService} from '../../../core/store/data/qa/qa.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import swal from 'sweetalert2';
+import {HttpErrorResponse} from '@angular/common/http';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 declare interface DataTable {
     headerRow: string[];
@@ -37,7 +39,8 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private store$: Store<any>,
-        private qaService: QaService
+        private qaService: QaService,
+        private SpinnerService: NgxSpinnerService,
     ) {
     }
 
@@ -103,6 +106,27 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
     reloadPage() {
         location.reload();
+    }
+
+    resubmitToSage() {
+        this.qaService.reSubmitInvoiceConsolidatedDetails(this.batchID).subscribe(
+            (data) => {
+                console.log(data);
+                this.SpinnerService.hide();
+                swal.fire({
+                    title: 'INVOICE RE-SUBMITTED SUCCESSFULLY!, PROCEED TO PAY',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success',
+                });
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.SpinnerService.hide();
+            },
+        );
     }
 
     public stkPush(): void {

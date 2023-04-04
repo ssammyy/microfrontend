@@ -370,7 +370,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                         formattedArrayInvoiceDetails.push(['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]);
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
-                            dataRows: formattedArrayInvoiceDetails
+                            dataRows: formattedArrayInvoiceDetails,
                         };
                     }
                 },

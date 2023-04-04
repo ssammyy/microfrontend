@@ -1715,12 +1715,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPLOADED INSPECTION INVOICE
                                     DETAILS</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.branchID !=null  && allPermitDetails?.inspectionInvoiceUpload !=null
-                                && allPermitDetails?.inspectionInvoiceUploaded !=null && allPermitDetails?.inspectionNeeded"
-                                   (click)="viewPdfFile(allPermitDetails?.inspectionInvoiceUploaded.toString(), 'Inspection fees Invoice','application/pdf')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">VIEW UPLOADED INSPECTION
-                                    INVOICE DETAILS</a>
-
                             </div>
                         </div>
                     </div>
@@ -1730,253 +1724,374 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
-                        <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
+                        <div *ngFor="let role of roles">
+                            <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID ||allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">
+                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
 
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('updateSection')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateSection')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('updateBrand')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateBrand')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
 
-                            <a data-toggle="modal"
-                               *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('permitCompleteness')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && allPermitDetails?.permitDetails?.changesMadeStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('permitCompleteness')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                            <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-                            <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-                            <!--                                   data-target="#allProcessModel"-->
-                            <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                                    <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-                            <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-                            <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
-                            <!--                                   data-target="#allProcessModel"-->
-                            <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
-                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+                                    <!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
-                            <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
                                    && !allPermitDetails?.permitDetails?.assignOfficerStatus "
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('assignOfficer')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
                                    && allPermitDetails?.permitDetails?.hofQamCompletenessStatus
                                    && allPermitDetails?.permitDetails?.assignOfficerStatus "
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('assignOfficer')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-                            <!--                                <a data-toggle="modal"-->
-                            <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                            <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                            <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
-                            <!--                                   data-target="#allProcessModel"-->
-                            <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
-                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
+                                    <!--                                <a data-toggle="modal"-->
+                                    <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                                    <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
 
-                            <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                            <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                            <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
-                            <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
-                            <!--                                   data-target="#allProcessModel"-->
-                            <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
-                            <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
+                                    <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+                                    <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
 
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null
                                    && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
-
-                            <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
-                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                    && allPermitDetails?.permitDetails?.recommendationApprovalStatus"
-                               data-target="#allProcessModel"
-                               (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
-                               class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
-                        </div>
-                        <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addStandardsDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
-
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
-                                   data-target="#myModalUpload"
-                                   (click)="openModalAddDetails('uploadAttachments')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addStandardsDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
-
-                                <a data-toggle="modal"
-                                   *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                    && allPermitDetails?.permitDetails?.productStandards != null"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('scheduleInspectionDate')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
-
-
-                                <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
-                                   (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
-                                    REPORT</a>
-
-
-                                <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                   && !allPermitDetails?.permitDetails?.generateSchemeStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('uploadSSC')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
-                                    AND CONTROL</a>
-
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && allPermitDetails?.permitDetails?.generateSchemeStatus &&
-                                    !allPermitDetails?.permitDetails?.ssfCompletedStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addSSFDetails')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
-
-
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
-                                   && allPermitDetails?.permitDetails?.compliantStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('addRecommendationRemarks')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
-
-
-                                <!--                                <a data-toggle="modal"-->
-                                <!--                                   data-target="#allProcessModel"-->
-                                <!--                                       (click)="openModalAddDetails('addRecommendationApproval')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
-
-                                <!--                                   <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                <!--                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"-->
-                                <!--                                      data-target="#uploadSSFModal"-->
-                                <!--                                   (click)="openModalAddDetails('uploadSSF')"-->
-                                <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
-
-                                <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
-                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
-                                         && allPermitDetails?.permitDetails?.compliantStatus"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('addRecommendationRemarks')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
 
-                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                        && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && allPermitDetails?.permitDetails?.changesMadeStatus
+                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
                                        data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('addSSFDetails')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
-                                        NUMBER</a>
+                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
+                                </div>
+                                <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
 
                                     <a data-toggle="modal"
-                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                        && allPermitDetails?.permitDetails?.generateSchemeStatus"
-                                       data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('uploadSSC')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF
-                                        SUPERVISION
-                                        AND CONTROL</a>
+                                       *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#myModalUpload"
+                                       (click)="openModalAddDetails('uploadAttachments')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
 
-                                    <a data-toggle="modal" data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('resubmitApplication')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                        && allPermitDetails?.permitDetails?.productStandards != null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('scheduleInspectionDate')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
+
 
                                     <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
-                                        && allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                    && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
                                        (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
                                        class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
                                         REPORT</a>
 
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                       && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('uploadSSC')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
+                                        AND CONTROL</a>
+
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addSSFDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
+                                       && allPermitDetails?.permitDetails?.compliantStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addRecommendationRemarks')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
+
+
+                                    <!--                                <a data-toggle="modal"-->
+                                    <!--                                   data-target="#allProcessModel"-->
+                                    <!--                                       (click)="openModalAddDetails('addRecommendationApproval')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
+
+                                    <!--                                   <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+                                    <!--                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"-->
+                                    <!--                                      data-target="#uploadSSFModal"-->
+                                    <!--                                   (click)="openModalAddDetails('uploadSSF')"-->
+                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
+
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
+                                             && allPermitDetails?.permitDetails?.compliantStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addRecommendationRemarks')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addSSFDetails')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
+                                            NUMBER</a>
+
+                                        <a data-toggle="modal"
+                                           *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('uploadSSC')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF
+                                            SUPERVISION
+                                            AND CONTROL</a>
+
+                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('resubmitApplication')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+
+                                        <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                            && allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                           (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
+                                            REPORT</a>
+
+                                    </div>
+
                                 </div>
 
-                            </div>
+                                <div *ngIf="role == 'QA_PSC_MEMBERS_MODIFY'">
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPSCMember')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
 
-                            <div *ngIf="role == 'QA_PSC_MEMBERS_MODIFY'">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPSCMember')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
-                                    AWARDING</a>
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPSCMember')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+                                </div>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                <div *ngIf="role == 'QA_PCM_MODIFY'">
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        REVIEW</a>
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        REVIEW</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmAddAmountToInvoice')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
+                                       && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                     && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                   && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPSCMember')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
-                                    AWARDING</a>
+                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+                                </div>
                             </div>
+                            <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                <div *ngIf="role == 'QA_PCM_MODIFY'">
 
-                            <div *ngIf="role == 'QA_PCM_MODIFY'">
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        REVIEW</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
-                                    REVIEW</a>
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmReviewApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        REVIEW</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
-                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                   && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
-                                    REVIEW</a>
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.batchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                      && !allPermitDetails?.permitDetails?.invoiceGenerated
+                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('pcmAddAmountToInvoice')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
-                                 && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
-                                   && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('pcmAddAmountToInvoice')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
+                                     && allPermitDetails?.batchID ==null && !allPermitDetails?.permitDetails?.paidStatus
+                                     && !allPermitDetails?.permitDetails?.invoiceGenerated
+                                     && allPermitDetails?.permitDetails?.sendForPcmReview"
+                                       (click)="onClickSavePcmSubmitPayment()"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SUBMIT FOR PAYMENT</a>
+                                </div>
+<!--                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">-->
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                    && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                   && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
-                                   && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPCM')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
-                                    AWARDING</a>
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('updateSection')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>-->
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                   && allPermitDetails?.permitDetails?.pscMemberApprovalStatus && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
-                                   data-target="#allProcessModel"
-                                   (click)="openModalAddDetails('approvePermitPCM')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
-                                    AWARDING</a>
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('updateBrand')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>-->
+
+<!--                                    <a data-toggle="modal"-->
+<!--                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                && allPermitDetails?.permitDetails?.changesMadeStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+
+<!--                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.assignOfficerStatus "-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.assignOfficerStatus "-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectInspectionReport')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>&ndash;&gt;-->
+
+<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectRecommendation')"&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>&ndash;&gt;-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>-->
+
+<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
+<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                   && allPermitDetails?.permitDetails?.changesMadeStatus-->
+<!--                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
+<!--                                       data-target="#allProcessModel"-->
+<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
+<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>-->
+<!--                                </div>-->
                             </div>
                         </div>
 
@@ -2800,7 +2915,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 </button>
                                 <button *ngIf="(currDiv == 'pcmReviewApproval')" mat-raised-button type="button"
                                         class="btn btn-success"
-                                        (click)="onClickSaveApprovePermitPCM(approveRejectPermitReviewForm.valid);"
+                                        (click)="onClickSaveApprovePermitPCMReview(approveRejectPermitReviewForm.valid);"
                                         [disabled]="!approveRejectPermitReviewForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
@@ -2828,7 +2943,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 </button>
                                 <button *ngIf="(currDiv == 'pcmAddAmountToInvoice')" mat-raised-button type="button"
                                         class="btn btn-success"
-                                        (click)="onClickSaveScheduleInspectionForm(pcmAddAmountToInvoiceForm.valid);"
+                                        (click)="onClickSavePcmAddAmountToInvoiceForm(pcmAddAmountToInvoiceForm.valid);"
                                         [disabled]="!pcmAddAmountToInvoiceForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
