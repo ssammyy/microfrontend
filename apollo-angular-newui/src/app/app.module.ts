@@ -1252,6 +1252,7 @@ import { PscDmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/dmark
 import { PscFmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/psc-fmark-tasks/psc-fmark-tasks.component';
 import { ReviewApplicationsRejectedSacComponent } from './apollowebs/standards-development/membershipToTc/review-applications-rejected-sac/review-applications-rejected-sac.component';
 import { TcMemberAllVotesComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/tc-member-all-votes/tc-member-all-votes.component';
+import { TrackRequestComponent } from './apollowebs/standards-development/standard-request/track-request/track-request.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1875,6 +1876,7 @@ import { TcMemberAllVotesComponent } from './apollowebs/standards-development/st
         PscFmarkTasksComponent,
         ReviewApplicationsRejectedSacComponent,
         TcMemberAllVotesComponent,
+        TrackRequestComponent,
 
     ],
     entryComponents: [LoaderComponent],

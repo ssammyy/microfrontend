@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.std
 
 import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.print.attribute.standard.DateTimeAtCreation
@@ -61,6 +62,20 @@ data class StandardsDto(
     var modifiedOn: Timestamp? = null,
     var deletedOn: Timestamp? = null,
     var deleteBy: String? = null,
+
+
+    )
+
+data class VotesDto(
+    var id: Long? = null,
+    var decision: String? = null,
+    var reason: String? = null,
+    var dateVoteWasCast: Timestamp? = null,
+    var nwiId: Long? = null,
+    var proposalTitle: String? = null,
+    var closingDate: String? = null,
+    var standardId: Long? = null,
+    var requestNumber: String? = null,
 
 
     )

@@ -54,6 +54,10 @@ export class StdTcTasksComponent implements OnInit {
     stdHOFReview: FormGroup;
     selectedNwi: string;
 
+    loading = false;
+    loadingText: string;
+
+    displayUsers: boolean = false;
 
     public actionRequest: NWIsForVoting | undefined;
 
@@ -95,18 +99,37 @@ export class StdTcTasksComponent implements OnInit {
     }
 
     public getTCTasks(): void {
-        this.standardDevelopmentService.getAllNwisForVoting().subscribe(
+        this.loading = true
+        this.loadingText = "Retrieving NWIs Please Wait ...."
+        this.SpinnerService.show();
+        this.standardDevelopmentService.getAllNwisLoggedInUserToVoteFor().subscribe(
             (response: NWIsForVoting[]) => {
-                console.log(response);
                 this.tcTasks = response;
                 this.rerender()
+                this.loading = false
+                this.displayUsers = true;
+                this.SpinnerService.hide();
 
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
+                this.displayUsers = true;
+                this.SpinnerService.hide();
+
             }
         )
+    }
+
+    id: any = 'Pending Vote';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Pending Vote") {
+            this.standardDevelopmentService.reloadCurrentRoute()
+        }
+        // console.log(this.id);
     }
 
     public onOpenModal(task: NWIsForVoting, mode: string): void {
@@ -146,12 +169,8 @@ export class StdTcTasksComponent implements OnInit {
     }
 
     public onReviewTask(): void {
-
-
         if (this.stdHOFReview.get('decision').value) {
-
             this.SpinnerService.show();
-
             this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
                 (response) => {
                     if (response.body == "You Have Already Voted") {
@@ -173,7 +192,7 @@ export class StdTcTasksComponent implements OnInit {
                 }
             )
         } else {
-            if(this.stdHOFReview.get('reason').value != null){
+            if (this.stdHOFReview.get('reason').value != null) {
                 this.SpinnerService.show();
 
                 this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
@@ -196,8 +215,7 @@ export class StdTcTasksComponent implements OnInit {
 
                     },
                 );
-             }
-            else{
+            } else {
                 this.showToasterError("Error", `Please give a reason for rejection.`);
             }
 

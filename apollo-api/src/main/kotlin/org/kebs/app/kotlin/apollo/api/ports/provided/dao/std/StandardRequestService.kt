@@ -1,13 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-//import com.apollo.standardsdevelopment.models.*
-//import com.apollo.standardsdevelopment.repositories.*
-//import com.beust.klaxon.Klaxon
 
 //import com.google.gson.stream.JsonReader
 
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -35,7 +30,6 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
 
@@ -436,6 +430,12 @@ class StandardRequestService(
         return standardNWIRepository.findAllByStatus("Vote ON NWI")
     }
 
+    fun getAllNwisLoggedInUserToVoteFor(): List<StandardNWI> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return standardNWIRepository.getPendingVoting(loggedInUser.id!!)
+    }
+
+
     fun getAllTcSecLoggedInNwiSUnderVote(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -524,13 +524,48 @@ class StandardRequestService(
 
             }
     }
-
-
-    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+    fun reVoteOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        voteOnNWI.userId = loggedInUser.id!!
 
-        return loggedInUser.id?.let { voteOnNWIRepository.findByUserIdAndStatus(it, 1) }!!
+
+        val u: VoteOnNWI = voteOnNWIRepository.findById(voteOnNWI.id).orElse(null)
+
+        u.decision = voteOnNWI.decision
+        u.createdOn = Timestamp(System.currentTimeMillis())
+        u.modifiedOn = Timestamp(System.currentTimeMillis())
+        u.reason = voteOnNWI.reason
+
+        voteOnNWIRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Voted", "You Vote Has Been Changed"
+        )
+
     }
+
+
+    fun getUserLoggedInBallots(): List<VotesDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val voteOnNWI: List<VoteOnNWI> =
+            voteOnNWIRepository.findByUserIdAndStatusOrderByIdDesc(loggedInUser.id!!, 1)
+        return voteOnNWI.map { p ->
+            VotesDto(
+                p.id,
+                p.decision,
+                p.reason,
+                p.createdOn,
+                p.nwiId,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.proposalTitle,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.closingDate,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.standardId,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.standardId?.let {
+                    standardRequestRepository.findByIdOrNull(it)?.requestNumber
+                },
+            )
+        }
+    }
+
 
     fun getAllVotesTally(): List<NwiVotesTally> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -963,7 +998,7 @@ class StandardRequestService(
     }
 
     //delete technicalCommittee
-    fun deleteTechnicalCommitee(technicalCommitteeId: Long) {
+    fun deleteTechnicalCommittee(technicalCommitteeId: Long) {
         findTechnicalCommitteeById(technicalCommitteeId)
     }
 

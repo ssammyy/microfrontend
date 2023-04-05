@@ -867,6 +867,9 @@ import {
 import {
     IntStdApproveChangesComponent
 } from "./apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component";
+import {
+    TrackRequestComponent
+} from "./apollowebs/standards-development/standard-request/track-request/track-request.component";
 
 export const routes: Routes = [
     {
@@ -2121,6 +2124,12 @@ export const routes: Routes = [
         // Review Standard Requests
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}],
+    },
+
+    {
+        // Track Standard Requests
+        path: 'ms-track', component: AdminLayoutComponent,
+        children: [{path: '', component: TrackRequestComponent}],
     },
     {
         // Prepare New Work Item
