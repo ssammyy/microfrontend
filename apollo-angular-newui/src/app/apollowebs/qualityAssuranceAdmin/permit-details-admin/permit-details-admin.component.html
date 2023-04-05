@@ -1775,13 +1775,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('assignOfficer')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-                                    <!--                                <a data-toggle="modal"-->
-                                    <!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                    <!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                                    <!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
-                                    <!--                                   data-target="#allProcessModel"-->
-                                    <!--                                   (click)="openModalAddDetails('approveRejectInspectionReport')"-->
-                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
+<!--                                                                    <a data-toggle="modal"-->
+<!--                                                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
+<!--                                                                       && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
+<!--                                                                       && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
+<!--                                                                       data-target="#allProcessModel"-->
+<!--                                                                       (click)="openModalAddDetails('approveRejectInspectionReport')"-->
+<!--                                                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
 
                                     <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
                                     <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
@@ -2043,6 +2043,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('assignOfficer')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approveRejectInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                        && allPermitDetails?.permitDetails?.compliantStatus
