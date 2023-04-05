@@ -41,7 +41,6 @@
 	<field name="recommendations" class="java.lang.String"/>
 	<field name="statusActivity" class="java.lang.String"/>
 	<field name="finalRemarkHod" class="java.lang.String"/>
-	<field name="findings" class="java.lang.String"/>
 	<field name="kebsInspectors" class="java.lang.String"/>
 	<field name="varField1" class="java.lang.String"/>
 	<field name="createdOn" class="java.lang.String"/>

@@ -723,7 +723,7 @@ class MSJSONControllers(
         response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; Field-Report-${fieldReport[0].reportReference}.pdf;")
+        response.addHeader("Content-Dispostion", "inline; Initial-Report-${fieldReport[0].reportReference}.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()
@@ -731,50 +731,78 @@ class MSJSONControllers(
         }
     }
 
-//    @RequestMapping(value = ["/report/initial-report"], method = [RequestMethod.GET])
-//    @Throws(Exception::class)
-//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-//    fun msSampleSubmissionPDF(
-//        response: HttpServletResponse,
-//        @RequestParam(value = "ssfID") ssfID: Long
-//    ) {
-//        val map = hashMapOf<String, Any>()
-//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
-//
-//        val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
-//
-//        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
-//
-//        if (user != null) {
-//            val mySignature: ByteArray?
-//            val image: ByteArrayInputStream?
-//            println("UserID is" + user.id)
-//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
-//            if (signatureFromDb != null) {
-//                mySignature= signatureFromDb.signature
-//                image = ByteArrayInputStream(mySignature)
-//                map["signaturePath"] = image
-//
-//            }
-//        }
-////        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
-//
-//        val pdfReportStream = reportsDaoService.extractReport(
-//            map,
-//            applicationMapProperties.mapMSSampleSubmissionPath,
-//            ssfFile
-//        )
-//
-//        response.contentType = "text/html"
-//        response.contentType = "application/pdf"
-//        response.setHeader("Content-Length", pdfReportStream.size().toString())
-//        response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
-//        response.outputStream.let { responseOutputStream ->
-//            responseOutputStream.write(pdfReportStream.toByteArray())
-//            responseOutputStream.close()
-//            pdfReportStream.close()
-//        }
-//    }
+    @RequestMapping(value = ["/report/ms-progress-report"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msProgressReportPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
+        map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
+//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        var progressReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val user = progressReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+        var officersList = progressReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        var officersNames:String? = null
+        var numberTest = 1
+        officersList?.forEach { of->
+            officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
+            numberTest++
+        }
+
+        progressReport[0].kebsInspectors = officersNames
+        progressReport[0].reportClassification?.uppercase()
+
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["signaturePath"] = image
+
+            }
+        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+        var pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+        when (progressReport[0].reportClassification) {
+            "TOP SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+            }
+            "SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathSecret
+            }
+            "CONFIDENTIAL" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathConfidential
+            }
+            "RESTRICTED" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathRestricted
+            }
+        }
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            pathFileToSelect,
+            progressReport
+        )
+
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Progress-Report-${progressReport[0].reportReference}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
 
 
 

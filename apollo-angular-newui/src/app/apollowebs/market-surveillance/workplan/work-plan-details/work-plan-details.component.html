@@ -555,6 +555,11 @@
                                             <br>
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Report Classification</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.inspectionInvestigationDto?.reportClassification}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Report reference</div>
                                                     <div class="list-text-accordion">
                                                         {{workPlanInspection?.inspectionInvestigationDto?.reportReference}}</div>
@@ -776,6 +781,7 @@
                                             </ul>
                                             <button mat-raised-button type="button"  class="btn btn-success"
                                                     (click)="viewFieldReportPdfFile(workPlanInspection?.id, workPlanInspection?.inspectionInvestigationDto?.reportReference,'application/pdf')">Download</button>
+
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -7412,6 +7418,11 @@
                     <div class="panel">
                         <br>
                         <ul class="w-list-unstyled">
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Report Classification</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportClassification}}</div>
+                            </li>
                             <li class="list-item-accordion">
                                 <div class="list-title-accordion">Report reference</div>
                                 <div class="list-text-accordion">

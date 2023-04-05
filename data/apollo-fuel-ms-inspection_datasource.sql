@@ -595,7 +595,7 @@ SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,
        nvl(samp.invoice_number,'N/A') AS invoice_number,
        nvl(samp.disposal,'N/A') AS disposal,
        nvl(samp.remarks,'N/A') AS remarks,
-       nvl(samp.countryOfOrigin,'N/A') AS country_of_origin,
+       nvl(samp.country_of_origin,'N/A') AS country_of_origin,
        nvl(TO_CHAR(samp.sample_collection_number),'N/A') AS sample_collection_number,
        nvl(samp.bs_number,'N/A') AS bs_number,
        nvl(samp.COC_NUMBER,'N/A') AS COC_NUMBER,
@@ -639,14 +639,14 @@ SELECT  nvl(TO_CHAR(rep.MS_WORKPLAN_GENERATED_ID),'N/A') AS MS_WORKPLAN_GENERATE
         nvl(rep.RECOMMENDATIONS,'N/A') AS RECOMMENDATIONS,
         nvl(rep.STATUS_ACTIVITY,'N/A') AS STATUS_ACTIVITY,
         nvl(rep.FINAL_REMARK_HOD,'N/A') AS FINAL_REMARK_HOD,
-        nvl(rep.FINDINGS,'N/A') AS FINDINGS,
         nvl(rep.KEBS_INSPECTORS,'N/A') AS KEBS_INSPECTORS,
         nvl(rep.VAR_FIELD_1,'N/A') AS VAR_FIELD_1,
         nvl(TO_CHAR(TRUNC(rep.CREATED_ON),'DD/MM/YYYY'),'N/A') AS CREATED_ON,
         nvl(rep.CREATED_BY,'N/A') AS CREATED_BY,
         nvl(rep.MODIFIED_BY,'N/A') AS MODIFIED_BY,
         nvl(TO_CHAR(TRUNC(rep.MODIFIED_ON),'DD/MM/YYYY'),'N/A') AS MODIFIED_ON,
-        nvl(rep.REPORT_CLASSIFICATION,'N/A') AS REPORT_CLASSIFICATION
+        nvl(rep.REPORT_CLASSIFICATION,'N/A') AS REPORT_CLASSIFICATION,
+        nvl(rep.CHANGES_MADE,'N/A') AS CHANGES_MADE
 FROM DAT_KEBS_MS_INSPECTION_INVESTIGATION_REPORT rep;
 /
 

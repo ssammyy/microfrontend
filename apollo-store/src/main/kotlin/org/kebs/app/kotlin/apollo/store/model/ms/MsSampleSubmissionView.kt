@@ -137,7 +137,7 @@ class MsSampleSubmissionView : Serializable {
 
     @Column(name = "SAMPLE_COLLECTION_DATE")
     @Basic
-    var sampleCollectionDate: Date? = null
+    var sampleCollectionDate: String? = null
 
     @Column(name = "LB_ID_TRADE_MARK")
     @Basic
