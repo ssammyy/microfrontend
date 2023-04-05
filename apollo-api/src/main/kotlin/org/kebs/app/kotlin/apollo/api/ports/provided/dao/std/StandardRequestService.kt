@@ -675,6 +675,13 @@ class StandardRequestService(
             loggedInUser.id.toString()
         )
     }
+    fun getAllMyJustifications(): List<StandardJustification> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardJustificationRepository.findByTcSecretary(
+            loggedInUser.id.toString()
+        )
+    }
 
     fun getApprovedJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
