@@ -334,6 +334,7 @@ class InvoicePaymentService(
         val response = ApiResponseModel()
         KotlinLogging.logger { }.info("INVOICE GENERATION: $demandNoteId")
         try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             if (demandNote.postingStatus == 1) {

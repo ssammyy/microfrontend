@@ -675,7 +675,7 @@ class PostInvoiceToSageServices(
                                             ?.let {
                                                 result.responseDate = Timestamp.from(Instant.now())
                                                 result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
-                                                result.message = "THE RECIPE ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
+                                                result.message = "THE RECIEPT ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
                                                 return result
                                             }?: kotlin.run {
                                                 if (record.transactionId != null) {

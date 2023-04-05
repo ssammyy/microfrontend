@@ -707,7 +707,7 @@ export class AllInspectionDetailsApplyDto {
     inspectionDetailsDtoB: InspectionDetailsDtoB;
     productLabelling: ProductLabellingDto[];
 
-    standardizationMarkScheme: StandardizationMarkSchemeDto
+    standardizationMarkScheme: StandardizationMarkSchemeDto;
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;

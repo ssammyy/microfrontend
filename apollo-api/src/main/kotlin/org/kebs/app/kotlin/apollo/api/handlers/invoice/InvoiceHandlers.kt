@@ -511,12 +511,12 @@ class InvoiceHandlers(
                         onValidationErrors(errors)
                     }
                 }
-                ?: throw InvalidValueException("No Body found")
 
         } catch (e: Exception) {
             val result = CallbackResponses()
             KotlinLogging.logger { }.debug(e.message, e)
             KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.error("Payment Callback failed:", e)
             result.message = "Request failed please try again later"
             result.status = ResponseCodes.EXCEPTION_STATUS
             return ServerResponse.ok().body(result)
