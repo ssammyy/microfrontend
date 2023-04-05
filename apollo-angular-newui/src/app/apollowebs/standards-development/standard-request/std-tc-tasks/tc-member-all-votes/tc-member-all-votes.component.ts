@@ -1,23 +1,23 @@
 import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Document, NWIsForVoting, StdTCDecision, VoteOnNWI} from "../../../../core/store/data/std/request_std.model";
-import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
+import {StandardDevelopmentService} from "../../../../../core/store/data/std/standard-development.service";
+import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {selectUserInfo, UserEntityService} from "../../../../core/store";
-import {Store} from "@ngrx/store";
-import {formatDate} from "@angular/common";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {CommitteeService} from "../../../../core/store/data/std/committee.service";
+import {CommitteeService} from "../../../../../core/store/data/std/committee.service";
+import {Document, NwiItem, VoteOnNWI, VotesDto} from "../../../../../core/store/data/std/request_std.model";
+import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import {formatDate} from "@angular/common";
+import {Subject} from "rxjs";
+import {Store} from "@ngrx/store";
+import {selectUserInfo, UserEntityService} from "../../../../../core/store";
 
 @Component({
-    selector: 'app-std-tc-tasks',
-    templateUrl: './std-tc-tasks.component.html',
-    styleUrls: ['./std-tc-tasks.component.css']
+    selector: 'app-tc-member-all-votes',
+    templateUrl: './tc-member-all-votes.component.html',
+    styleUrls: ['./tc-member-all-votes.component.css']
 })
-export class StdTcTasksComponent implements OnInit {
+export class TcMemberAllVotesComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
@@ -36,7 +36,7 @@ export class StdTcTasksComponent implements OnInit {
     dateFormat = "yyyy-MM-dd";
     language = "en";
 
-    public tcTasks: NWIsForVoting[] = [];
+    public tcTasks: VotesDto[] = [];
     // selected item
     decision: string;
     @Input() selectSeason: string;
@@ -44,22 +44,20 @@ export class StdTcTasksComponent implements OnInit {
     ps: any;
     userId: number = Number('');
 
-    public stdTCDecisions: StdTCDecision[] = [];
     public formActionRequest: VoteOnNWI | undefined;
 
-    public itemId: string = "";
-    public filePurposeAnnex: string = "FilePurposeAnnex";
-    public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
+    public itemId: number;
 
     stdHOFReview: FormGroup;
     selectedNwi: string;
 
     loading = false;
     loadingText: string;
-
+    public actionRequest: VotesDto | undefined;
     displayUsers: boolean = false;
 
-    public actionRequest: NWIsForVoting | undefined;
+    public nwiItem!: NwiItem[];
+    public canReVote: boolean = false;
 
     constructor(
         private standardDevelopmentService: StandardDevelopmentService,
@@ -93,6 +91,8 @@ export class StdTcTasksComponent implements OnInit {
             decision: ['', Validators.required],
             nwiId: ['', Validators.required],
             reason: [''],
+            id: ['', Validators.required],
+
 
         });
 
@@ -100,17 +100,15 @@ export class StdTcTasksComponent implements OnInit {
 
     public getTCTasks(): void {
         this.loading = true
-        this.loadingText = "Retrieving NWIs Please Wait ...."
+        this.loadingText = "Retrieving Votes Please Wait ...."
         this.SpinnerService.show();
-        this.standardDevelopmentService.getAllNwisLoggedInUserToVoteFor().subscribe(
-            (response: NWIsForVoting[]) => {
+        this.standardDevelopmentService.retrieveVote().subscribe(
+            (response: VotesDto[]) => {
                 this.tcTasks = response;
                 this.rerender()
                 this.loading = false
                 this.displayUsers = true;
                 this.SpinnerService.hide();
-
-
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -122,17 +120,7 @@ export class StdTcTasksComponent implements OnInit {
         )
     }
 
-    id: any = 'Pending Vote';
-
-    tabChange(ids: any) {
-        this.id = ids;
-        if (this.id == "Pending Vote") {
-            this.standardDevelopmentService.reloadCurrentRoute()
-        }
-        // console.log(this.id);
-    }
-
-    public onOpenModal(task: NWIsForVoting, mode: string): void {
+    public onOpenModal(task: VotesDto, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
@@ -145,9 +133,11 @@ export class StdTcTasksComponent implements OnInit {
             this.stdHOFReview.reset();
 
             this.actionRequest = task;
-            this.selectedNwi = this.actionRequest.id
+            this.getSpecificNwi(String(this.actionRequest.nwiId))
+
+            this.selectedNwi = String(this.actionRequest.nwiId)
             this.stdHOFReview.controls.nwiId.setValue(this.selectedNwi);
-            this.getAllDocs(String(this.actionRequest.id))
+            this.getAllDocs(String(this.actionRequest.nwiId))
 
             button.setAttribute('data-target', '#voteDecisionModal');
         }
@@ -170,17 +160,12 @@ export class StdTcTasksComponent implements OnInit {
 
     public onReviewTask(): void {
         if (this.stdHOFReview.get('decision').value) {
+            this.loading = true
             this.SpinnerService.show();
-            this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
+            this.standardDevelopmentService.revoteOnNWI(this.stdHOFReview.value).subscribe(
                 (response) => {
-                    if (response.body == "You Have Already Voted") {
-                        this.showToasterError("Error", response.body);
-
-                    } else {
-                        this.showToasterSuccess(response.httpStatus, response.body);
-                    }
+                    this.showToasterSuccess(response.httpStatus, response.body);
                     this.SpinnerService.hide();
-
                     this.getTCTasks();
                     this.stdHOFReview.reset();
                     this.hideModel()
@@ -193,18 +178,14 @@ export class StdTcTasksComponent implements OnInit {
             )
         } else {
             if (this.stdHOFReview.get('reason').value != null) {
+                this.loading = true
                 this.SpinnerService.show();
 
-                this.standardDevelopmentService.decisionOnNWI(this.stdHOFReview.value).subscribe(
+                this.standardDevelopmentService.revoteOnNWI(this.stdHOFReview.value).subscribe(
                     (response) => {
-                        if (response.body == "You Have Already Voted") {
-                            this.showToasterError("Error", response.body);
 
-                        } else {
-                            this.showToasterSuccess(response.httpStatus, response.body);
-                        }
+                        this.showToasterSuccess(response.httpStatus, response.body);
                         this.SpinnerService.hide();
-
                         this.getTCTasks();
                         this.stdHOFReview.reset();
                         this.hideModel()
@@ -296,5 +277,31 @@ export class StdTcTasksComponent implements OnInit {
                 // this.pdfUploadsView = dataPdf;
             },
         );
+    }
+
+    public getSpecificNwi(nwiId: string): void {
+        this.standardDevelopmentService.getNwiById(nwiId).subscribe(
+            (response: NwiItem[]) => {
+                this.nwiItem = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    checkIfClosingDateExceeded(closingDate: string) {
+        let todayDate = new Date();
+        const y = new Date(closingDate);
+        console.log(y)
+        console.log(todayDate)
+        if (todayDate > y) {
+            this.showToasterError("Error", `Voting Window Closed.`);
+        } else {
+            this.canReVote = true;
+        }
+
+
     }
 }

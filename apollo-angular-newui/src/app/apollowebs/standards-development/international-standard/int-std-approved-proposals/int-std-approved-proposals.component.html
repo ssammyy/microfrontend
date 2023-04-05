@@ -344,7 +344,8 @@
                                                                                     <div class="form-group col-6">
                                                                                         <label>Department/Sector</label>
                                                                                         <select class="form-control" formControlName="department" name="department" required   >
-                                                                                            <option value="{{actionRequest?.departmentId}}">{{actionRequest?.departmentName}}</option>
+                                                                                            <option value="" disabled>Choose a Category</option>
+                                                                                            <option value="{{actionRequest?.departmentId}}" [selected]>{{actionRequest?.departmentName}}</option>
                                                                                             <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
                                                                                         </select>
                                                                                     </div>
@@ -424,13 +425,13 @@
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Circulation Date</b><span style="font-size: xx-small; color: red;"></span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.circulationDate}}" formControlName="circulationDate" name="circulationDate"
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}" formControlName="circulationDate" name="circulationDate"
                                                                                                 placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Closing Date</b><span style="font-size: xx-small; color: red;"></span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.closingDate}}" formControlName="closingDate" name="closingDate"
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}" formControlName="closingDate" name="closingDate"
                                                                                                 placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">

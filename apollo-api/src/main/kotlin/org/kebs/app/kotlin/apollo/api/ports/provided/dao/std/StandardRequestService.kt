@@ -1,13 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-//import com.apollo.standardsdevelopment.models.*
-//import com.apollo.standardsdevelopment.repositories.*
-//import com.beust.klaxon.Klaxon
 
 //import com.google.gson.stream.JsonReader
 
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -22,7 +17,6 @@ import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -36,7 +30,6 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
 
@@ -214,23 +207,30 @@ class StandardRequestService(
                 .orElseThrow { RuntimeException("No Standard Request found") }
         }
         if (standardRequestToUpdate != null) {
-            if (hofFeedback.sdResult == "Approve For Review") {
-                standardRequestToUpdate.status = "Assigned To TC Sec"
-                standardRequestToUpdate.process = hofFeedback.sdOutput
-                standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
-                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+            when (hofFeedback.sdResult) {
+                "Approve For Review" -> {
+                    standardRequestToUpdate.status = "Assigned To TC Sec"
+                    standardRequestToUpdate.process = hofFeedback.sdOutput
+                    standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
+                    standardRequestToUpdate.tcAssigned = hofFeedback.tcId
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
 
-            } else if (hofFeedback.sdResult == "Reject For Review") {
-                standardRequestToUpdate.status = "Rejected For Review"
-                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                }
 
-            } else if (hofFeedback.sdResult == "On Hold") {
-                standardRequestToUpdate.status = "On Hold"
-                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                "Reject For Review" -> {
+                    standardRequestToUpdate.status = "Rejected For Review"
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
 
+                }
+
+                "On Hold" -> {
+                    standardRequestToUpdate.status = "On Hold"
+                    standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                    standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+
+                }
             }
             standardRequestRepository.save(standardRequestToUpdate)
         }
@@ -389,17 +389,17 @@ class StandardRequestService(
     fun uploadNWI(standardNWI: StandardNWI): ProcessInstanceResponseValue {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var allOrganization = ""
-        val klaxon = Klaxon()
-        JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
-            reader.beginArray {
-                while (reader.hasNext()) {
-                    val liaisonOrganization = klaxon.parse<LiaisonOrganization>(reader)
-                    println(liaisonOrganization?.name)
-                    allOrganization += liaisonOrganization?.name + ","
-                }
-            }
-        }
-        standardNWI.liaisonOrganisation = allOrganization
+//        val klaxon = Klaxon()
+//        JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
+//            reader.beginArray {
+//                while (reader.hasNext()) {
+//                    val liaisonOrganization = klaxon.parse<LiaisonOrganization>(reader)
+//                    println(liaisonOrganization?.name)
+//                    allOrganization += liaisonOrganization?.name + ","
+//                }
+//            }
+//        }
+//        standardNWI.liaisonOrganisation = allOrganization
 
         val standardRequestToUpdate = standardNWI.standardId?.let {
             standardRequestRepository.findById(it)
@@ -429,6 +429,12 @@ class StandardRequestService(
     fun getAllNwiSUnderVote(): List<StandardNWI> {
         return standardNWIRepository.findAllByStatus("Vote ON NWI")
     }
+
+    fun getAllNwisLoggedInUserToVoteFor(): List<StandardNWI> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return standardNWIRepository.getPendingVoting(loggedInUser.id!!)
+    }
+
 
     fun getAllTcSecLoggedInNwiSUnderVote(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -518,13 +524,48 @@ class StandardRequestService(
 
             }
     }
-
-
-    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+    fun reVoteOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        voteOnNWI.userId = loggedInUser.id!!
 
-        return loggedInUser.id?.let { voteOnNWIRepository.findByUserIdAndStatus(it, 1) }!!
+
+        val u: VoteOnNWI = voteOnNWIRepository.findById(voteOnNWI.id).orElse(null)
+
+        u.decision = voteOnNWI.decision
+        u.createdOn = Timestamp(System.currentTimeMillis())
+        u.modifiedOn = Timestamp(System.currentTimeMillis())
+        u.reason = voteOnNWI.reason
+
+        voteOnNWIRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Voted", "You Vote Has Been Changed"
+        )
+
     }
+
+
+    fun getUserLoggedInBallots(): List<VotesDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val voteOnNWI: List<VoteOnNWI> =
+            voteOnNWIRepository.findByUserIdAndStatusOrderByIdDesc(loggedInUser.id!!, 1)
+        return voteOnNWI.map { p ->
+            VotesDto(
+                p.id,
+                p.decision,
+                p.reason,
+                p.createdOn,
+                p.nwiId,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.proposalTitle,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.closingDate,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.standardId,
+                standardNWIRepository.findByIdOrNull(p.nwiId)?.standardId?.let {
+                    standardRequestRepository.findByIdOrNull(it)?.requestNumber
+                },
+            )
+        }
+    }
+
 
     fun getAllVotesTally(): List<NwiVotesTally> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -957,7 +998,7 @@ class StandardRequestService(
     }
 
     //delete technicalCommittee
-    fun deleteTechnicalCommitee(technicalCommitteeId: Long) {
+    fun deleteTechnicalCommittee(technicalCommitteeId: Long) {
         findTechnicalCommitteeById(technicalCommitteeId)
     }
 
@@ -1041,7 +1082,7 @@ class StandardRequestService(
     }
 
     fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {
-        hofFeedbackRepository.findTopBySdRequestID(sdRequestNumber).let {
+        hofFeedbackRepository.findTopBySdRequestIDOrderByIdDesc(sdRequestNumber).let {
             return it
         }
     }
@@ -1060,7 +1101,7 @@ class StandardRequestService(
     }
 
     fun returnDepartmentName(departmentId: Long): String? {
-        val department= departmentRepository.findById(departmentId)
+        val department = departmentRepository.findById(departmentId)
 
         return if (department.isEmpty) {
             "Not Assigned"

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 interface VoteOnNWIRepository : JpaRepository<VoteOnNWI, Long> {
 
     fun findByUserIdAndNwiIdAndStatus(userId: Long, NwiId: Long, status: Long): VoteOnNWI?
-    fun findByUserIdAndStatus(userId: Long, status: Long): List<VoteOnNWI>
+    fun findByUserIdAndStatusOrderByIdDesc(userId: Long, status: Long): List<VoteOnNWI>
 
     @Query(
         "SELECT t.ID AS NWIId,t.DECISION, t.ORGANIZATION,t.POSITION, t.STATUS, d.PROPOSAL_TITLE, cast(t.CREATED_ON as varchar(200)) AS CREATED_ON ,t.REASON,(DKUV.FIRST_NAME || ' ' || dku.LAST_NAME) AS VOTE_BY, t.USER_ID FROM SD_VOTE_ON_NWI t Join SD_NWI d ON t.NWI_ID = d.ID join DAT_KEBS_USERS DKU on t.USER_ID = DKU.ID join DAT_KEBS_USERS DKUV on t.USER_ID = DKUV.ID WHERE t.STATUS = 1  and t.NWI_ID=:nwiId ORDER BY t.ID DESC",
@@ -24,5 +24,9 @@ interface VoteOnNWIRepository : JpaRepository<VoteOnNWI, Long> {
         nativeQuery = true
     )
     fun getVotesTally(@Param("tc_sec_id") tcSecId: String): List<NwiVotesTally>
+
+
+
+
 
 }
