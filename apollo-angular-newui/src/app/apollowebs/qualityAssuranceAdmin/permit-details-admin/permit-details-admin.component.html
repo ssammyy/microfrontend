@@ -14,7 +14,7 @@
             <div class="col-lg-9">
                 <div class="card ">
                     <div class="card-header ">
-                        <h4 class="card-title">SMark Permit
+                        <h4 class="card-title">{{allPermitDetails?.permitDetails?.permitTypeName}} Permit
                         </h4>
                     </div>
                     <div class="card-body ">
@@ -1726,7 +1726,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
                             <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID ||allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">
-                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
+                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')|| roles.includes('QA_MANAGER_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
                                        data-target="#allProcessModel"
@@ -1933,29 +1933,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 <div *ngIf="role == 'QA_PCM_MODIFY'">
 
-                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
-                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                       data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('pcmReviewApproval')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
-                                        REVIEW</a>
-
-                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
-                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                       data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('pcmReviewApproval')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
-                                        REVIEW</a>
-
-                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
-                                     && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
-                                       && allPermitDetails?.permitDetails?.sendForPcmReview"
-                                       data-target="#allProcessModel"
-                                       (click)="openModalAddDetails('pcmAddAmountToInvoice')"
-                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD AMOUNT TO INVOICE</a>
-
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                        && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
@@ -2008,90 +1985,211 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                      && allPermitDetails?.permitDetails?.sendForPcmReview"
                                        (click)="onClickSavePcmSubmitPayment()"
                                        class="btn btn-kebs mat-raised-button mat-button-base">SUBMIT FOR PAYMENT</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pacDecisionStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                        AWARDING</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pacDecisionStatus
+                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                    && allPermitDetails?.permitDetails?.changesMadeStatus
+                                     && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approvePermitPCM')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                        AWARDING</a>
                                 </div>
-<!--                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">-->
+                                <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')">
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('updateSection')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>-->
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateSection')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('updateBrand')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>-->
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('updateBrand')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
 
-<!--                                    <a data-toggle="modal"-->
-<!--                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                       && allPermitDetails?.permitDetails?.paidStatus
+                                       && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-<!--                                && allPermitDetails?.permitDetails?.changesMadeStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('permitCompleteness')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && allPermitDetails?.permitDetails?.paidStatus
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('permitCompleteness')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                   && !allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('permitCompleteness')"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>&ndash;&gt;-->
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus
+                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                   && allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignOfficer')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-<!--                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
-<!--                                   && !allPermitDetails?.permitDetails?.assignOfficerStatus "-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>-->
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                       && allPermitDetails?.permitDetails?.compliantStatus
+                                       && !allPermitDetails?.permitDetails?.justificationReportApproved
+                                       && allPermitDetails?.permitDetails?.justificationReportStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approveRejectJustification')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Approve/Reject Justification for Diamond Mark Assessment</a>
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus-->
-<!--                                   && allPermitDetails?.permitDetails?.hofQamCompletenessStatus-->
-<!--                                   && allPermitDetails?.permitDetails?.assignOfficerStatus "-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('assignOfficer')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>-->
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.justificationReportApproved
+                                   && !allPermitDetails?.permitDetails?.assignAssessorStatus "
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('assignAssessor')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Assign Assessor</a>
 
-<!--                                    &lt;!&ndash;                                <a data-toggle="modal"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectInspectionReport')"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>&ndash;&gt;-->
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.assessmentScheduledStatus
+                                       && !allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('hodApprovalAssessmentReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Approve/Reject Assessment Report</a>
 
-<!--                                    &lt;!&ndash;                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   data-target="#allProcessModel"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   (click)="openModalAddDetails('approveRejectRecommendation')"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>&ndash;&gt;-->
+                                </div>
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
-<!--                                   && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
-<!--                                   && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-<!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>-->
+                                <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
 
-<!--                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus-->
-<!--                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
-<!--                                   && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
-<!--                                   && allPermitDetails?.permitDetails?.changesMadeStatus-->
-<!--                                    && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
-<!--                                       data-target="#allProcessModel"-->
-<!--                                       (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"-->
-<!--                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>-->
-<!--                                </div>-->
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
+                                       data-target="#myModalUpload"
+                                       (click)="openModalAddDetails('uploadAttachments')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addStandardsDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                        && allPermitDetails?.permitDetails?.productStandards != null"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('scheduleInspectionDate')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
+
+
+                                    <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                    && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                       (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
+                                        REPORT</a>
+
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                       && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('uploadSSC')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
+                                        AND CONTROL</a>
+
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addSSFDetails')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.compliantStatus
+                                       && !allPermitDetails?.permitDetails?.justificationReportStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('uploadJustificationReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
+
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
+                                             && allPermitDetails?.permitDetails?.compliantStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addRecommendationRemarks')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('addSSFDetails')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
+                                            NUMBER</a>
+
+                                        <a data-toggle="modal"
+                                           *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('uploadSSC')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF
+                                            SUPERVISION
+                                            AND CONTROL</a>
+
+                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('resubmitApplication')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+
+                                        <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
+                                            && allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                           (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
+                                            REPORT</a>
+
+                                    </div>
+
+                                </div>
+
+                                <div *ngIf="role == 'QA_ASSESSORS_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.leadAssessorId">
+                                    <a data-toggle="modal"
+                                       *ngIf="!allPermitDetails?.permitDetails?.assessmentScheduledStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('scheduleAssessmentDate')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE ASSESSMENT</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.assessmentScheduledStatus
+                                       && !allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('uploadAssessmentReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ASSESSMENT REPORT</a>
+
+                                </div>
+
+                                <div *ngIf="role == 'QA_PAC_SECRETARY_MODIFY'">
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodApproveAssessmentStatus
+                                       && !allPermitDetails?.permitDetails?.pacDecisionStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('dmarkApplicationApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/DEFER PERMIT AWARDING</a>
+
+                                    <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pacDecisionStatus
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('dmarkApplicationApproval')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/DEFER PERMIT AWARDING</a>
+                                </div>
                             </div>
                         </div>
 
@@ -2459,6 +2557,42 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'assignAssessor')">
+                                    <form [formGroup]="assignAssessorForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Lead Assessor</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Please Select an option"
+                                                                    formControlName="leadAssessorId"
+                                                                    id="leadAssessorId" name="leadAssessorId">
+                                                            <mat-option
+                                                                    *ngFor="let app of allPermitDetails?.assessorList"
+                                                                    [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label><b>Select Assessor</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Please Select an option"
+                                                                    formControlName="assessorId"
+                                                                    id="assessorId" name="assessorId">
+                                                            <mat-option
+                                                                    *ngFor="let app of allPermitDetails?.assessorList"
+                                                                    [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback :</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text" formControlName="assignRemarks"
+                                                              name="assignRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div *ngIf="(currDiv == 'viewInspectionInvoiceDetails')">
                                     <form [formGroup]="viewInspectionInvoiceDetailsForm" class="form">
                                         <div class="form-body">
@@ -2490,6 +2624,29 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     </form>
                                 </div>
                                 <div *ngIf="(currDiv == 'scheduleInspectionDate')">
+                                    <form [formGroup]="scheduleInspectionForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Inspection Date:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="inspectionDate" id="inspectionDate"
+                                                               matInput name="inspectionDate"
+                                                               placeholder="Please enter Inspection Date"
+                                                               type="date">
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback :</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text" formControlName="scheduleRemarks"
+                                                              name="scheduleRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'scheduleAssessmentDate')">
                                     <form [formGroup]="scheduleInspectionForm" class="form">
                                         <div class="form-body">
                                             <div class="form-group">
@@ -2650,7 +2807,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <mat-option [value]="false">DECLINE</mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
-                                                    <input id="inspectionReportID#" matInput type="text"
+                                                    <input matInput type="text"
                                                            formControlName="inspectionReportID"
                                                            name="inspectionReportID"
                                                            ngModel="{{allPermitDetails?.inspectionReportDetails?.id}}"
@@ -2720,6 +2877,90 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                 <div>
                                                     <label><b>Select Status</b></label>
                                                     <mat-form-field id="approvedRejectedStatus2">
+                                                        <mat-select formControlName="approvedRejectedStatus"
+                                                                    name="approvedRejectedStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Remarks details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="approvedRejectedRemarks"
+                                                              name="approvedRejectedRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'dmarkApplicationApproval')">
+                                    <form [formGroup]="approveRejectPermitForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Status</b></label>
+                                                    <mat-form-field id="approvedRejectedStatus2">
+                                                        <mat-select formControlName="approvedRejectedStatus"
+                                                                    name="approvedRejectedStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Remarks details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="approvedRejectedRemarks"
+                                                              name="approvedRejectedRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'approveRejectJustification')">
+                                    <form [formGroup]="approveRejectPermitForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Status</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select formControlName="approvedRejectedStatus"
+                                                                    name="approvedRejectedStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Remarks details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text"
+                                                              formControlName="approvedRejectedRemarks"
+                                                              name="approvedRejectedRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'hodApprovalAssessmentReport')">
+                                    <form [formGroup]="approveRejectPermitForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Status</b></label>
+                                                    <mat-form-field>
                                                         <mat-select formControlName="approvedRejectedStatus"
                                                                     name="approvedRejectedStatus"
                                                                     placeholder="Please Select an option">
@@ -2820,6 +3061,42 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+
+                                <div *ngIf="(currDiv == 'uploadAssessmentReport')">
+                                    <form action="" class="form" enctype="multipart/form-data" method="post">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label for="files"><b>Upload Document Here</b></label>
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedFilesAssessmentReport" name="files"
+                                                                     id="files8d8"
+                                                                     [fileslimit]="1"
+                                                                     accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div *ngIf="(currDiv == 'uploadJustificationReport')">
+                                    <form action="" class="form" enctype="multipart/form-data" method="post">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label for="files"><b>Upload Document Here</b></label>
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedFilesJustification" name="files"
+                                                                     id="files8d6"
+                                                                     [fileslimit]="1"
+                                                                     accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -2875,6 +3152,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                <button *ngIf="(currDiv == 'assignAssessor')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveAssignAssessorForm(assignAssessorForm.valid);"
+                                        [disabled]="!assignAssessorForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
                                 <button *ngIf="(currDiv == 'approveRejectRecommendation')" mat-raised-button
                                         type="button"
                                         class="btn btn-success"
@@ -2913,6 +3197,27 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                <button *ngIf="(currDiv == 'dmarkApplicationApproval')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveApprovePermitPAC(approveRejectPermitForm.valid);"
+                                        [disabled]="!approveRejectPermitForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'approveRejectJustification')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveApprovePermitJustification(approveRejectPermitForm.valid);"
+                                        [disabled]="!approveRejectPermitForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'hodApprovalAssessmentReport')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveApprovePermitAssessmentReport(approveRejectPermitForm.valid);"
+                                        [disabled]="!approveRejectPermitForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
                                 <button *ngIf="(currDiv == 'pcmReviewApproval')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveApprovePermitPCMReview(approveRejectPermitReviewForm.valid);"
@@ -2941,6 +3246,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                <button *ngIf="(currDiv == 'scheduleAssessmentDate')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveScheduleAssessmentForm(scheduleInspectionForm.valid);"
+                                        [disabled]="!scheduleInspectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
                                 <button *ngIf="(currDiv == 'pcmAddAmountToInvoice')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSavePcmAddAmountToInvoiceForm(pcmAddAmountToInvoiceForm.valid);"
@@ -2958,6 +3270,18 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 <button *ngIf="(currDiv == 'uploadSSC')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveSSCForm()"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'uploadJustificationReport')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveJustificationReportForm()"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'uploadAssessmentReport')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveAssessmentReportForm()"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

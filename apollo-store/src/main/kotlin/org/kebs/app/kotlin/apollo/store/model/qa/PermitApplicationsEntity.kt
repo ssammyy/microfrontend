@@ -161,6 +161,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var justificationReportStatus: Int? = null
 
+    @Column(name = "JUSTIFICATION_REPORT_APPROVED")
+    @Basic
+    var justificationReportApproved: Int? = null
+
     @Column(name = "OLD_PERMIT_STATUS")
     @Basic
     var oldPermitStatus: Int? = null

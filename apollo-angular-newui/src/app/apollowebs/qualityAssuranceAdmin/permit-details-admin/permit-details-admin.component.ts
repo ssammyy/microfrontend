@@ -75,6 +75,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     uploadedFilesOnly: FileList;
     uploadedSsfFilesOnly: FileList;
     uploadedFilesScheme: FileList;
+    uploadedFilesAssessmentReport: FileList;
+    uploadedFilesJustification: FileList;
     public actionRequest: PermitEntityDetails | undefined;
 
     dtOptions: DataTables.Settings = {};
@@ -127,6 +129,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     updateBrandForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
+    assignAssessorForm: FormGroup;
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
     pcmAddAmountToInvoiceForm: FormGroup;
@@ -487,8 +490,15 @@ export class PermitDetailsAdminComponent implements OnInit {
             hofQamCompletenessStatus: ['', Validators.required],
             hofQamCompletenessRemarks: ['', Validators.required],
         });
+
         this.assignOfficerForm = this.formBuilder.group({
             assignOfficerID: ['', Validators.required],
+            assignRemarks: null,
+        });
+
+        this.assignAssessorForm = this.formBuilder.group({
+            leadAssessorId: ['', Validators.required],
+            assessorId: ['', Validators.required],
             assignRemarks: null,
         });
 
@@ -856,13 +866,13 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['viewInspectionInvoiceDetails', 'updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
+        const arrHead = ['viewInspectionInvoiceDetails', 'updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleAssessmentDate', 'scheduleInspectionDate', 'uploadSSC', 'uploadJustificationReport', 'uploadAttachments',
             'pcmAddAmountToInvoice', 'pcmReviewApproval', 'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
-            'approvePermitQAMHOD', 'approvePermitQAMHODRecommendationInspectionReport', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
+            'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'approveRejectJustification', 'approvePermitQAMHOD', 'approvePermitQAMHODRecommendationInspectionReport', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
 
-        const arrHeadSave = ['Uploaded Inspection Invoice Details', 'Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
+        const arrHeadSave = ['Uploaded Inspection Invoice Details', 'Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Assessment', 'Set The Date of Inspection', 'Upload scheme of supervision', 'Upload Justification for diamond mark assessment', 'UPLOAD ATTACHMENTS',
             'ADD AMOUNT TO GENERATED INVOICE', 'APPROVE / REJECT PERMIT REVIEW BY PCM', 'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
-            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT (PERMIT,RECOMMENDATION,GENERATED INSPECTION REPORT) BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
+            'APPROVE/DEFER PERMIT BY PAC', 'APPROVE/REJECT ASSESSMENT REPORT BY RM/HOD', 'APPROVE/REJECT JUSTIFICATION FOR DIAMOND MARK ASSESSMENT BY RM/HOD', 'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT (PERMIT,RECOMMENDATION,GENERATED INSPECTION REPORT) BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -1394,6 +1404,99 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveApprovePermitPAC(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT PERMIT AWARDING\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitPAC(valid);
+            });
+    }
+
+    SaveApprovePermitPAC(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitPAC(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveApprovePermitAssessmentReport(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT ASSESSMENT REPORT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitAssessmentReport(valid);
+            });
+    }
+
+    SaveApprovePermitAssessmentReport(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitAssessmentReport(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('ASSESSMENT REPORT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveApprovePermitJustification(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT JUSTIFICATION FOR DIAMOND MARK ASSESSMENT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitJustification(valid);
+            });
+    }
+
+    SaveApprovePermitJustification(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitJustification(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('JUSTIFICATION FOR DIAMOND MARK ASSESSMENT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
     onClickSaveApprovePermitPCMReview(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -1553,6 +1656,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
+    onClickSaveAssignAssessorForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'Assign Assessor\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveAssignAssessorForm(valid);
+            });
+    }
+
     onClickSaveRecommendationApprovalForm(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -1569,6 +1680,29 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    SaveAssignAssessorForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaAssignAssessor(this.assignAssessorForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('LEAD ASSESSOR AND ASSESSOR ASSIGNED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1686,6 +1820,37 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('INSPECTION DATE ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveScheduleAssessmentForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'SCHEDULE ASSESSMENT DATE\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveScheduleAssessmentForm(valid);
+            });
+    }
+
+    SaveScheduleAssessmentForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaScheduleAssessment(this.scheduleInspectionForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('ASSESSMENT DATE ADDED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1889,6 +2054,90 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+    onClickSaveJustificationReportForm() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveJustificationReportForm();
+            });
+    }
+
+
+    saveJustificationReportForm() {
+        if (this.uploadedFilesJustification.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesJustification;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('data', 'JUSTIFICATION_REPORT_DMARK_ASSESSMENT');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveJustificationReport(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('JUSTIFICATION REPORT DMARK ASSESSMENT UPLOADED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+    onClickSaveAssessmentReportForm() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD ASSESSMENT REPORT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveAssessmentReportForm();
+            });
+    }
+
+
+    saveAssessmentReportForm() {
+        if (this.uploadedFilesAssessmentReport.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesAssessmentReport;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('data', 'FACTORY_ASSESSMENT_REPORT');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveAssessmentReport(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('FACTORY ASSESSMENT REPORT UPLOADED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {

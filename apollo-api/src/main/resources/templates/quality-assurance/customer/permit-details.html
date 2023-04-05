@@ -1262,7 +1262,10 @@
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.resubmitApplicationStatus != 10}"
+                                            <a th:if="${permitDetails?.compliantStatus == 1
+                                            and permitDetails?.justificationReportStatus == 10
+                                            and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1
+                                            and permitDetails?.resubmitApplicationStatus != 10}"
                                                onclick="popUpFunction('approveRejectJustification');"
                                                style="color: white" class="filter-link">Approve/Reject Justification
                                                 for Diamond Mark Assessment</a>
@@ -1456,8 +1459,7 @@
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == 1 and permitDetails?.hodApproveAssessmentStatus == null}"
                                                style="color: white"
                                                onclick="popUpUploadFunction('uploadAssessmetReport');"
-                                               class="filter-link">UPLOAD
-                                                ASSESSMENT REPORT</a>
+                                               class="filter-link">UPLOAD ASSESSMENT REPORT</a>
 
                                             <a th:if="${permitDetails?.resubmitApplicationStatus == 1 and permitDetails?.hodApproveAssessmentStatus == 0}"
                                                style="color: white"

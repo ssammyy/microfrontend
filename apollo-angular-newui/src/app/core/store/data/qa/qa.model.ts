@@ -331,6 +331,12 @@ export class PermitEntityDetails {
     pcmApprovalStatus: boolean;
     paidStatus: boolean;
     changesMadeStatus: boolean;
+    justificationReportStatus: boolean;
+    justificationReportApproved: boolean;
+    assignAssessorStatus: boolean;
+    hodApproveAssessmentStatus: boolean;
+    pacDecisionStatus: boolean;
+    leadAssessorId: number;
 }
 
 
@@ -467,7 +473,7 @@ export class AllPermitDetailsDto {
     schemeOfSuperVisionList: FilesListDto[];
     remarksDetailsList: RemarksAndStatusDto[];
     inspectionInvoiceUpload: InspectionInvoiceUploadedDto;
-
+    assessorList: UserEntityDto[];
 }
 
 

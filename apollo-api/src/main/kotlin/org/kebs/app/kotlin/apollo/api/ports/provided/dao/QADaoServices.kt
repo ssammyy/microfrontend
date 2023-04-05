@@ -1827,7 +1827,7 @@ class QADaoServices(
             with(permit) {
                 when {
                     body.approvedRejectedStatus -> {
-                        justificationReportStatus = 1
+                        justificationReportApproved = 1
                         resubmitApplicationStatus = 0
                         changesMadeStatus = 0
 //                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
@@ -1835,7 +1835,7 @@ class QADaoServices(
                     }
 
                     else -> {
-                        justificationReportStatus = 0
+                        justificationReportApproved = 0
                         resubmitApplicationStatus = 1
                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         permitStatus = applicationMapProperties.mapQaStatusRejectedJustCationReport
@@ -1852,7 +1852,7 @@ class QADaoServices(
                     permitAddRemarksDetails(
                         permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.justificationReportRemarks,
-                        permit.justificationReportStatus,
+                        permit.justificationReportApproved,
                         "HOD",
                         "APPROVE/REJECT JUSTIFICATION REPORT",
                         map,
@@ -5536,6 +5536,12 @@ class QADaoServices(
             pcmApprovalStatus = permit.pcmApprovalStatus == 1
             paidStatus = permit.paidStatus == 10
             changesMadeStatus = permit.changesMadeStatus == 1
+            justificationReportStatus = permit.justificationReportStatus == 1
+            justificationReportApproved = permit.justificationReportApproved == 1
+            assignAssessorStatus = permit.assignAssessorStatus == 1
+            hodApproveAssessmentStatus = permit.hodApproveAssessmentStatus == 1
+            pacDecisionStatus = permit.pacDecisionStatus == 1
+            leadAssessorId = permit.leadAssessorId
         }
         return p
     }
@@ -5777,6 +5783,14 @@ class QADaoServices(
                 permit.id ?: throw Exception("MISSING PERMIT ID")
             ).let { listRemarksDto(it) },
             inspectionInvoiceUpload,
+            commonDaoServices.userListDto(
+                findOfficersList(
+                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
+                    permit,
+                    map,
+                    applicationMapProperties.mapQAUserAssessorRoleId
+                )
+            )
         )
     }
 
