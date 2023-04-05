@@ -479,7 +479,12 @@ class BillingService(
                 accountNumber = corporate.get().corporateIdentifier
                 currency = properties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
+            if (bill.varField1.isNullOrEmpty()) {
+                bill.varField1 =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            }
             this.billPaymentRepository.save(bill)
+
             this.invoiceDaoService.postBillToSage(bill, "system", map, corporate.get())
         }
         return true
