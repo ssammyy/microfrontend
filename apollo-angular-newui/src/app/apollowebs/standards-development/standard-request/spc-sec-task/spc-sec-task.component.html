@@ -64,7 +64,7 @@
                                             <br>
                                             <a (click)="onOpenModal(tcTask,'rejectWithAmendments')" type="button"
                                                class="btn btn-danger tooltips" data-placement="top"
-                                               data-original-title="Reject With Amendments">Differed</a>
+                                               data-original-title="Reject With Amendments">Differ</a>
                                             <br>
 
                                             <a (click)="onOpenModal(tcTask,'reject')" type="button"
@@ -108,7 +108,8 @@
                                                                 class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
-                                                            <li  style="background: lightgray" class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
+                                                            <li style="background: lightgray"
+                                                                class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
                                                             <li style="background: lightgray"
@@ -223,8 +224,9 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">SPC JUSTIFICATION</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 class="modal-title" id="updateExampleModalLabelC">SPC JUSTIFICATION</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                                    #closeViewModalC>
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -244,7 +246,7 @@
                                             <input hidden ngModel="{{actionRequest?.id}}" name="justificationId">
                                             <input hidden ngModel="Approved" name="decision">
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeViewModal
+                                                <button type="button" class="btn btn-secondary" #closeViewModalC
                                                         (click)="hideModelC()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-success"
@@ -261,8 +263,9 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">SPC JUSTIFICATION</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 class="modal-title" id="updateExampleModalLabelD">SPC JUSTIFICATION</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                                    #closeViewModalD>
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -271,7 +274,7 @@
 
                                                 <div class="row">
                                                     <div class=" col-12">
-                                                        <label><b>Provide amendments for rejecting</b></label>
+                                                        <label><b>Provide amendments</b></label>
                                                         <textarea
                                                                 aria-describedby="inputGroup-sizing-sm" ngModel
                                                                 name="reason" aria-label="Small"
@@ -285,13 +288,12 @@
                                             <input hidden ngModel="{{actionRequest?.id}}" name="justificationId">
                                             <input hidden ngModel="Rejected With Amendments" name="decision">
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeViewModal
+                                                <button type="button" class="btn btn-secondary" #closeViewModalD
                                                         (click)="hideModelD()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-danger"
                                                         (click)="decisionOnJustification(editFormRejectWithAmendments.value)">
-                                                    Reject With
-                                                    Amendments
+                                                    Differ
                                                 </button>
                                             </div>
                                         </form>

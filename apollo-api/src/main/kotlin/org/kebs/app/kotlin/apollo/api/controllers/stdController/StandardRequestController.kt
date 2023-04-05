@@ -307,6 +307,12 @@ class StandardRequestController(
         return standardRequestService.getApprovedJustifications()
     }
 
+    @GetMapping("standard/getAllMyJustifications")
+    fun getAllMyJustifications(): List<StandardJustification> {
+        return standardRequestService.getAllMyJustifications()
+    }
+
+
     @GetMapping("standard/getRejectedJustifications")
     fun getRejectedJustifications(): List<StandardJustification> {
         return standardRequestService.getRejectedJustifications()
@@ -589,7 +595,8 @@ class StandardRequestController(
 
         var docDescription: String;
 
-        val application = standardRequestRepository.findByIdOrNull(requestId) ?: throw Exception("APPLICATION DOES NOT EXIST")
+        val application =
+            standardRequestRepository.findByIdOrNull(requestId) ?: throw Exception("APPLICATION DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()

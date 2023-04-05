@@ -419,6 +419,10 @@ export class StandardDevelopmentService {
         return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getJustificationsPendingDecision')
     }
 
+    public getAllMyJustifications(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getAllMyJustifications')
+    }
+
 
     public getApprovedJustifications(): Observable<StdJustification[]> {
         return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getApprovedJustifications')
