@@ -941,6 +941,8 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.permitTypeName = 'Standardization';
         } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
             this.permitTypeName = 'Fortification';
+        } else if (this.allPermitDetails.permitDetails.permitTypeID === this.DMarkTypeID) {
+            this.permitTypeName = 'Diamond';
         }
 
         // tslint:disable-next-line:max-line-length

@@ -1724,7 +1724,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
-                        <div *ngFor="let role of roles">
+<!--                        <div *ngFor="let role of roles">-->
                             <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID ||allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">
                                 <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')|| roles.includes('QA_MANAGER_MODIFY')">
 
@@ -1809,7 +1809,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
                                 </div>
-                                <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                <div *ngIf="roles.includes('QA_OFFICER_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('addStandardsDetails')"
@@ -1913,7 +1913,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="role == 'QA_PSC_MEMBERS_MODIFY'">
+                                <div *ngIf="roles.includes('QA_PSC_MEMBERS_MODIFY')">
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                        && !allPermitDetails?.permitDetails?.pscMemberApprovalStatus"
@@ -1931,7 +1931,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         AWARDING</a>
                                 </div>
 
-                                <div *ngIf="role == 'QA_PCM_MODIFY'">
+                                <div *ngIf="roles.includes('QA_PCM_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
@@ -1952,7 +1952,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 </div>
                             </div>
                             <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
-                                <div *ngIf="role == 'QA_PCM_MODIFY'">
+                                <div *ngIf="roles.includes('QA_PCM_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
@@ -2073,7 +2073,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                <div *ngIf="roles.includes('QA_OFFICER_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('addStandardsDetails')"
@@ -2165,7 +2165,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="role == 'QA_ASSESSORS_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.leadAssessorId">
+                                <div *ngIf="roles.includes('QA_ASSESSORS_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.leadAssessorId">
                                     <a data-toggle="modal"
                                        *ngIf="!allPermitDetails?.permitDetails?.assessmentScheduledStatus"
                                        data-target="#allProcessModel"
@@ -2181,7 +2181,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="role == 'QA_PAC_SECRETARY_MODIFY'">
+                                <div *ngIf="roles.includes('QA_PAC_SECRETARY_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodApproveAssessmentStatus
                                        && !allPermitDetails?.permitDetails?.pacDecisionStatus"
@@ -2198,7 +2198,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/DEFER PERMIT AWARDING</a>
                                 </div>
                             </div>
-                        </div>
+<!--                        </div>-->
 
                     </div>
                 </div>
@@ -6557,8 +6557,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                         <div class="col-md-3 p-0">
                                             <b>Action:</b>
-                                            <div *ngFor="let role of roles">
-                                                <button *ngIf="role == 'QA_OFFICER_MODIFY' && allPermitDetails?.permitDetails?.ssfCompletedStatus
+<!--                                            <div *ngFor="let role of roles">-->
+                                                <button *ngIf="roles.includes('QA_OFFICER_MODIFY') && allPermitDetails?.permitDetails?.ssfCompletedStatus
                                                 && !selectedLabResults?.ssfResultsList?.complianceStatus && !selectedLabResults?.ssfResultsList?.analysisDone
                                                 && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID && selectedLabResults?.savedPDFFiles?.length != 0"
                                                         (click)="openModalAddDetails('ssfAddComplianceStatus')"
@@ -6569,7 +6569,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                            </div>
+<!--                                            </div>-->
                                             <br>
                                         </div>
                                     </div>
@@ -6583,8 +6583,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </div>
                                     <div *ngIf="selectedLabResults?.parametersListTested.length!=0">
-                                        <div *ngFor="let role of roles">
-                                            <div *ngIf="role == 'QA_OFFICER_MODIFY' && selectedLabResults?.ssfResultsList?.analysisDone == false"
+<!--                                        <div *ngFor="let role of roles">-->
+                                            <div *ngIf="roles.includes('QA_OFFICER_MODIFY') && selectedLabResults?.ssfResultsList?.analysisDone == false"
                                                  class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results PDF Found</label>
@@ -6596,7 +6596,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     ></ng2-smart-table>
                                                 </div>
                                             </div>
-                                        </div>
+<!--                                        </div>-->
                                         <div class="form-row">
                                             <div class="col-md-12 mb-3">
                                                 <label style="color: #0082f3">Lab Results PDF SAVED</label>

@@ -408,7 +408,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-assessment-report")
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_ASSESSORS_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadAssessmentReport(
         @RequestParam("permitID") permitID: Long,

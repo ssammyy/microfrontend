@@ -937,8 +937,8 @@ class QADaoServices(
                 qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second.second, permitType, loggedInUser)
 
                 with(permit) {
-                    userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
-                    permitStatus = applicationMapProperties.mapQaStatusPPayment
+//                    userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+//                    permitStatus = applicationMapProperties.mapQaStatusPPayment
                 }
 
                 //updating of Details in DB
@@ -1312,7 +1312,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_ASSESSORS_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitScheduleAssessmentVisitDetails(
         permitID: Long,
@@ -2120,7 +2120,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_PAC_SECRETARY_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitApproveRejectPermitPACDetails(
         permitID: Long,
