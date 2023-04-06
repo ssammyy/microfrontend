@@ -2137,6 +2137,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                        && allPermitDetails?.permitDetails?.compliantStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                        && !allPermitDetails?.permitDetails?.justificationReportApproved
                                        && allPermitDetails?.permitDetails?.justificationReportStatus"
                                        data-target="#allProcessModel"
@@ -2144,7 +2145,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        class="btn btn-kebs mat-raised-button mat-button-base">Approve/Reject Justification for Diamond Mark Assessment</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.justificationReportApproved
-                                   && !allPermitDetails?.permitDetails?.assignAssessorStatus "
+                                        && !allPermitDetails?.permitDetails?.assignAssessorStatus "
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('assignAssessor')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Assign Assessor</a>
@@ -2301,6 +2302,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 <div *ngIf="roles.includes('QA_PAC_SECRETARY_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodApproveAssessmentStatus
+                                        && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                        && !allPermitDetails?.permitDetails?.pacDecisionStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('dmarkApplicationApproval')"
