@@ -141,6 +141,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var assessmentScheduledStatus: Int? = null
 
+    @Column(name = "ASSESSMENT_REPORT_ADDED_STATUS")
+    @Basic
+    var assessmentReportAddedStatus: Int? = null
+
     @Column(name = "GENERATE_SCHEME_STATUS")
     @Basic
     var generateSchemeStatus: Int? = null

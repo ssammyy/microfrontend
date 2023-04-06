@@ -66,6 +66,11 @@
                                             <i class="material-icons">assignment_turned_in</i>Scheme Of Supervision
                                         </a>
                                     </li>
+                                    <li class="nav-item" *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                        <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>ASSESSMENT REPORT
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link6" role="tablist">
                                             <i class="material-icons">message</i> SSF and Lab Results
@@ -242,34 +247,40 @@
                                                     <table class="table">
                                                         <tbody>
                                                         <tr>
-                                                            <td><strong>
-                                                                Assigned officer:</strong></td>
+                                                            <td><strong>Assigned officer:</strong></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignOfficer}}</td>
-
                                                         </tr>
+                                                        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                                            <tr>
+                                                                <td><strong>Assigned Lead Assessor:</strong></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignLeadAssessor}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Assigned Assessor:</strong></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignAssessor}}</td>
+                                                            </tr>
+                                                        </div>
                                                         <tr>
-                                                            <td><strong>
-                                                                Division:</strong></td>
+                                                            <td><strong>Division:</strong></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.divisionValue}}</td>
-
                                                         </tr>
                                                         <tr>
-                                                            <td><strong>
-                                                                Section:</strong></td>
+                                                            <td><strong>Section:</strong></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;
 text-justify: inter-word;">{{allPermitDetails?.permitDetails?.sectionValue}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><strong>
-                                                                Status:</strong></td>
-
-
+                                                            <td><strong>Status:</strong></td>
                                                         </tr>
                                                         <tr>
                                                             <ng-template
@@ -1274,6 +1285,79 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
 
                                     </div>
+                                    <div class="tab-pane" id="link15" *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                        <h3>ASSESSMENT REPORT</h3>
+                                        <br>
+                                        <div class="material-datatables">
+                                            <section class="wizard-section">
+                                                <div class="row no-gutters">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                                        <div class="form-wizard">
+                                                            <div>
+                                                                <div>
+                                                                    <div class="text-center">
+                                                                        <h5 class="text-dark" style="text-align: left;
+                                                                               margin-top: 20px;">Documents Attached
+                                                                            Details</h5>
+
+                                                                    </div>
+                                                                    <div class="card-body" style="margin-top: 20px;">
+                                                                        <div class="material-datatables">
+                                                                            <div class="table-responsive">
+                                                                                <div>
+                                                                                    <table class=" table table-bordered table-hover table-striped"
+                                                                                           datatable
+                                                                                           [dtOptions]="dtOptionsAssessment"
+                                                                                           [dtTrigger]="dtTriggerAssessment"
+                                                                                    >
+                                                                                        <thead style="text-align: left;">
+                                                                                        <tr>
+
+                                                                                            <th><strong>File
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
+                                                                                            <th class="text-center">
+                                                                                                <strong>View
+                                                                                                    Details</strong>
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr *ngFor="let assessmentDetails of allPermitDetails?.assessmentVisionList">
+                                                                                            <td>{{assessmentDetails?.name}}</td>
+                                                                                            <td>{{assessmentDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(assessmentDetails?.createdOn)}}</td>
+                                                                                            <td>{{assessmentDetails?.versionNumber}}</td>
+                                                                                            <td class="text-right">
+                                                                                                <a (click)="viewSavedFilesSaved(assessmentDetails)"
+                                                                                                   class="btn btn-info"
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
                                     <div class="tab-pane" id="link6">
                                         <h3>SSF and Lab Results</h3>
                                         <div class="material-datatables">
@@ -2066,10 +2150,21 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        class="btn btn-kebs mat-raised-button mat-button-base">Assign Assessor</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.assessmentScheduledStatus
+                                       && allPermitDetails?.permitDetails?.assessmentReportAddedStatus
+                                       && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                        && !allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('hodApprovalAssessmentReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Approve/Reject Assessment Report</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.assessmentScheduledStatus
+                                       && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && allPermitDetails?.permitDetails?.assessmentReportAddedStatus
+                                       && !allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('hodApprovalAssessmentReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Approve/Reject Assessment Report</a>
 
                                 </div>
 
@@ -2143,6 +2238,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                             NUMBER</a>
 
                                         <a data-toggle="modal"
+                                           *ngIf="allPermitDetails?.permitDetails?.compliantStatus
+                                       && allPermitDetails?.permitDetails?.justificationReportStatus"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('uploadJustificationReport')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
+
+                                        <a data-toggle="modal"
                                            *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
                                             && allPermitDetails?.permitDetails?.generateSchemeStatus"
                                            data-target="#allProcessModel"
@@ -2151,15 +2253,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                             SUPERVISION
                                             AND CONTROL</a>
 
-                                        <a data-toggle="modal" data-target="#allProcessModel"
-                                           (click)="openModalAddDetails('resubmitApplication')"
-                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
-
                                         <a *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus
                                             && allPermitDetails?.permitDetails?.inspectionReportGenerated"
                                            (click)="generateInspectionReport(allPermitDetails.permitDetails.id.toString())"
                                            class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
                                             REPORT</a>
+
+                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('resubmitApplication')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
 
                                     </div>
 
@@ -2174,10 +2276,25 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                     <a data-toggle="modal"
                                        *ngIf="allPermitDetails?.permitDetails?.assessmentScheduledStatus
+                                       && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && !allPermitDetails?.permitDetails?.assessmentReportAddedStatus
                                        && !allPermitDetails?.permitDetails?.hodApproveAssessmentStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('uploadAssessmentReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ASSESSMENT REPORT</a>
+
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+
+                                        <a data-toggle="modal"
+                                           data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('uploadAssessmentReport')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ASSESSMENT REPORT</a>
+
+                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                           (click)="openModalAddDetails('resubmitApplication')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">RE-SUBMIT APPLICATION</a>
+
+                                    </div>
 
                                 </div>
 

@@ -1348,6 +1348,12 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
         sscStatus: Int
     ): List<QaUploadsEntity>?
 
+    fun findByPermitRefNumberAndPermitIdAndAssessmentReportStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        assessmentReportStatus: Int
+    ): List<QaUploadsEntity>?
+
 
     fun findByPermitIdAndInspectionReportId(
         permitId: Long,

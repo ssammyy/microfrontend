@@ -135,11 +135,7 @@ class QualityAssuranceJSONControllers(
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             var versionNumber: Long = 1
-            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                map.activeStatus
-            ).size.toLong().plus(versionNumber)
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), map.activeStatus).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
@@ -424,7 +420,8 @@ class QualityAssuranceJSONControllers(
             val permitType =
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            val versionNumber: Long = 1
+            var versionNumber: Long = 1
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), map.activeStatus).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
@@ -449,7 +446,11 @@ class QualityAssuranceJSONControllers(
 //            val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
 
             with(permit) {
-                assessmentScheduledStatus = 1
+                assessmentReportAddedStatus = if(assessmentReportAddedStatus==10){
+                    10
+                }else{
+                    1
+                }
 //                assessmentReportRemarks = 1
 //                jus = fileDocList[0]
 //                hodId = hodDetails?.id

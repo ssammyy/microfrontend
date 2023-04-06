@@ -86,6 +86,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtTriggerRemarks: Subject<any> = new Subject<any>();
     dtOptionsSCS: DataTables.Settings = {};
     dtTriggerSCS: Subject<any> = new Subject<any>();
+    dtOptionsAssessment: DataTables.Settings = {};
+    dtTriggerAssessment: Subject<any> = new Subject<any>();
     dtOptionsVersion: DataTables.Settings = {};
     dtTriggerVersion: Subject<any> = new Subject<any>();
     dtOptionsDOCS: DataTables.Settings = {};

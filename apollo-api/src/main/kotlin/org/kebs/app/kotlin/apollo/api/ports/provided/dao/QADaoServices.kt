@@ -759,7 +759,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitResubmitDetails(
         permitID: Long,
@@ -775,19 +775,26 @@ class QADaoServices(
                 when (permitType.id) {
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
                         userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
                     }
 
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
                         userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
                     }
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
                         userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        if(assessmentReportAddedStatus==10){
+                            assessmentReportAddedStatus = 1
+                            permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                        }else{
+                            permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+                        }
                     }
                 }
                 resubmitRemarks = body.resubmitRemarks
                 changesMadeStatus = 1
-                permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
             }
 
             //updating of Details in DB
@@ -1898,6 +1905,7 @@ class QADaoServices(
 
                     else -> {
                         hodApproveAssessmentStatus = 0
+                        assessmentReportAddedStatus = 10
                         resubmitApplicationStatus = 1
                         userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
                         permitStatus = applicationMapProperties.mapQaStatusRejectedAssessmentReport
@@ -4830,6 +4838,16 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(
+        permitRefNumber: String,
+        permitID: Long,
+        status: Int
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndPermitIdAndAssessmentReportStatus(permitRefNumber, permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+    }
+
     fun findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
         status: Int,
@@ -5542,6 +5560,15 @@ class QADaoServices(
             hodApproveAssessmentStatus = permit.hodApproveAssessmentStatus == 1
             pacDecisionStatus = permit.pacDecisionStatus == 1
             leadAssessorId = permit.leadAssessorId
+            when (permit.assignAssessorStatus) {
+                map.activeStatus -> {
+                    assignAssessor = commonDaoServices.concatenateName(
+                        commonDaoServices.findUserByID(
+                            permit.leadAssessorId ?: throw Exception("INVALID ASSESSOR ID")
+                        )
+                    )
+                }
+            }
         }
         return p
     }
@@ -5783,14 +5810,8 @@ class QADaoServices(
                 permit.id ?: throw Exception("MISSING PERMIT ID")
             ).let { listRemarksDto(it) },
             inspectionInvoiceUpload,
-            commonDaoServices.userListDto(
-                findOfficersList(
-                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
-                    permit,
-                    map,
-                    applicationMapProperties.mapQAUserAssessorRoleId
-                )
-            )
+            commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserAssessorRoleId)),
+            findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
         )
     }
 
