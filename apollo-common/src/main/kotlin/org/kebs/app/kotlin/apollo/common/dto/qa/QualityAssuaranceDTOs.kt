@@ -875,6 +875,7 @@ data class PermitDetailsDto(
     var pacDecisionStatus: Boolean? = null,
     var assessmentReportAddedStatus: Boolean? = null,
     var leadAssessorId: Long? = null,
+    var userTaskId: Long? = null,
     var assignLeadAssessor: String? = null,
 
     )
@@ -910,6 +911,7 @@ data class AllPermitDetailsDto(
     var inspectionInvoiceUpload: InspectionInvoiceUploadedDto? = null,
     var assessorList: List<UserEntityDto>? = null,
     var assessmentVisionList: List<FilesListDto>? = null,
+    var justificationVisionList: List<FilesListDto>? = null,
 
     )
 

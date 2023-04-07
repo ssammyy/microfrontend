@@ -338,6 +338,7 @@ export class PermitEntityDetails {
     pacDecisionStatus: boolean;
     assessmentReportAddedStatus: boolean;
     leadAssessorId: number;
+    userTaskId: number;
     assignLeadAssessor: string;
 }
 
@@ -477,6 +478,7 @@ export class AllPermitDetailsDto {
     inspectionInvoiceUpload: InspectionInvoiceUploadedDto;
     assessorList: UserEntityDto[];
     assessmentVisionList: FilesListDto[];
+    justificationVisionList: FilesListDto[];
 }
 
 

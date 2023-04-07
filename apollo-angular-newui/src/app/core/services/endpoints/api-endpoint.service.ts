@@ -344,8 +344,8 @@ export class ApiEndpointService {
         // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 
         PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
-        PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm-details`,
-        PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view-details`,
+        PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm_details`,
+        PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view_details`,
 
 
         PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,

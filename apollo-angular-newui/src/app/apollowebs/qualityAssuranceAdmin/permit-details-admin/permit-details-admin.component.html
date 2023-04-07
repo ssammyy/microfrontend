@@ -71,6 +71,11 @@
                                             <i class="material-icons">assignment_turned_in</i>ASSESSMENT REPORT
                                         </a>
                                     </li>
+                                    <li class="nav-item" *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                        <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>JUSTIFICATION REPORT
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link6" role="tablist">
                                             <i class="material-icons">message</i> SSF and Lab Results
@@ -1358,6 +1363,79 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
 
                                     </div>
+                                    <div class="tab-pane" id="link16" *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                        <h3>JUSTIFICATION REPORT</h3>
+                                        <br>
+                                        <div class="material-datatables">
+                                            <section class="wizard-section">
+                                                <div class="row no-gutters">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                                        <div class="form-wizard">
+                                                            <div>
+                                                                <div>
+                                                                    <div class="text-center">
+                                                                        <h5 class="text-dark" style="text-align: left;
+                                                                               margin-top: 20px;">Documents Attached
+                                                                            Details</h5>
+
+                                                                    </div>
+                                                                    <div class="card-body" style="margin-top: 20px;">
+                                                                        <div class="material-datatables">
+                                                                            <div class="table-responsive">
+                                                                                <div>
+                                                                                    <table class=" table table-bordered table-hover table-striped"
+                                                                                           datatable
+                                                                                           [dtOptions]="dtOptionsJustification"
+                                                                                           [dtTrigger]="dtTriggerJustification"
+                                                                                    >
+                                                                                        <thead style="text-align: left;">
+                                                                                        <tr>
+
+                                                                                            <th><strong>File
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
+                                                                                            <th class="text-center">
+                                                                                                <strong>View
+                                                                                                    Details</strong>
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr *ngFor="let assessmentDetails of allPermitDetails?.justificationVisionList">
+                                                                                            <td>{{assessmentDetails?.name}}</td>
+                                                                                            <td>{{assessmentDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(assessmentDetails?.createdOn)}}</td>
+                                                                                            <td>{{assessmentDetails?.versionNumber}}</td>
+                                                                                            <td class="text-right">
+                                                                                                <a (click)="viewSavedFilesSaved(assessmentDetails)"
+                                                                                                   class="btn btn-info"
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
                                     <div class="tab-pane" id="link6">
                                         <h3>SSF and Lab Results</h3>
                                         <div class="material-datatables">
@@ -1960,7 +2038,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     <!--                                   (click)="openModalAddDetails('uploadSSF')"-->
                                     <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
 
-                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus && allPermitDetails?.permitDetails?.userTaskId == 2 ">
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
                                              && allPermitDetails?.permitDetails?.compliantStatus"
                                            data-target="#allProcessModel"
@@ -2130,10 +2208,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                     <a data-toggle="modal"
                                        *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"
+                                       && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('approveRejectInspectionReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>
+
+                                    <a data-toggle="modal"
+                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                        && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approveRejectInspectionReport')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                        && allPermitDetails?.permitDetails?.compliantStatus
@@ -2143,6 +2231,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('approveRejectJustification')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Approve/Reject Justification for Diamond Mark Assessment</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
+                                       && allPermitDetails?.permitDetails?.compliantStatus
+                                        && allPermitDetails?.permitDetails?.changesMadeStatus
+                                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                       && !allPermitDetails?.permitDetails?.justificationReportApproved
+                                       && allPermitDetails?.permitDetails?.justificationReportStatus"
+                                       data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('approveRejectJustification')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">Re-Approve/Reject Justification for Diamond Mark Assessment</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.justificationReportApproved
                                         && !allPermitDetails?.permitDetails?.assignAssessorStatus "
@@ -2169,7 +2267,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="roles.includes('QA_OFFICER_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                <div *ngIf="roles.includes('QA_OFFICER_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID && allPermitDetails?.permitDetails?.userTaskId == 2">
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('addStandardsDetails')"

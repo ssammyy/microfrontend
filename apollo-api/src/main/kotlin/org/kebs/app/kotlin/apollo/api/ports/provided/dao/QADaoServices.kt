@@ -5560,6 +5560,7 @@ class QADaoServices(
             hodApproveAssessmentStatus = permit.hodApproveAssessmentStatus == 1
             pacDecisionStatus = permit.pacDecisionStatus == 1
             leadAssessorId = permit.leadAssessorId
+            userTaskId = permit.userTaskId
             when (permit.assignAssessorStatus) {
                 map.activeStatus -> {
                     assignAssessor = commonDaoServices.concatenateName(
@@ -5812,6 +5813,7 @@ class QADaoServices(
             inspectionInvoiceUpload,
             commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserAssessorRoleId)),
             findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), 1, permit.id ?: throw Exception("MISSING PERMIT ID"), ).let { listFilesDto(it) },
         )
     }
 

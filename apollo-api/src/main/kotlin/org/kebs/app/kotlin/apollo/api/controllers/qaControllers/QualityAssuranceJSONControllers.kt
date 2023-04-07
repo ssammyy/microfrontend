@@ -347,7 +347,11 @@ class QualityAssuranceJSONControllers(
             val permitType =
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            val versionNumber: Long = 1
+            var versionNumber: Long = 1
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                map.activeStatus, permit.id ?: throw Exception("INVALID PERMIT ID"),
+            ).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
