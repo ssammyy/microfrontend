@@ -66,6 +66,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.math.BigDecimal
 import java.sql.Date
 import java.text.SimpleDateFormat
 
@@ -2775,25 +2776,41 @@ class QualityAssuranceHandler(
             if (permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark) {
                 val invoiceCreated = qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
 
-                //Update Permit Details
-                with(permit) {
-                    paidStatus = 0
-                    sendApplication = map.activeStatus
-                    endOfProductionStatus = map.inactiveStatus
-                    invoiceDifferenceGenerated = 1
-                    varField10 = map.activeStatus.toString()
-                    varField9 = 2.toString()
-                    permitStatus = applicationMapProperties.mapQaStatusPPayment
-                }
-                permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
+                if(invoiceCreated.first.varField10=="true"){
+                    if(invoiceCreated.second?.totalAmount == BigDecimal.ZERO){
+                        with(permit){
+                            invoiceDifferenceGenerated = 1
+                            varField10 = map.activeStatus.toString()
+                            varField9 = 2.toString()
+                            paidStatus = map.initStatus
+                            sendApplication = map.activeStatus
+                            permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                            userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        }
+                    }else{
+                    //Update Permit Details
+                        with(permit) {
+                        paidStatus = 0
+                        sendApplication = map.activeStatus
+                        endOfProductionStatus = map.inactiveStatus
+                        invoiceDifferenceGenerated = 1
+                        varField10 = map.activeStatus.toString()
+                        varField9 = 2.toString()
+                        permitStatus = applicationMapProperties.mapQaStatusPPayment
+                    }
+                    }
+                    permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-                qaDaoServices.mapAllPermitDetailsTogether(
-                    permit,
-                    null,
-                    null,
-                    map
-                ).let {
-                    return ok().body(it)
+                    qaDaoServices.mapAllPermitDetailsTogether(
+                        permit,
+                        null,
+                        null,
+                        map
+                    ).let {
+                        return ok().body(it)
+                    }
+                }else {
+                    return badRequest().body(invoiceCreated.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
             } else {
                 throw Exception("YOUR CANNOT GENERATE ANOTHER INVOICE  FROM PERMIT TYPE ${permitType.descriptions}")
@@ -4067,7 +4084,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
+            var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
             val pmOldPermitSmark = qaDaoServices.findPermitBYID(permitID)
             if (pmOldPermitSmark.fmarkGenerated == 1) {
                 val findFmarkRenew = qaDaoServices.findFmarkWithSmarkId(permitID).fmarkId
@@ -4081,6 +4098,12 @@ class QualityAssuranceHandler(
                     myRenewedPermitFmark.second,
                     loggedInUser
                 )
+
+                with(myRenewedPermit.second){
+                    fmarkGenerated = 1
+//                    fmarkGeneratedID = myRenewedPermitFmark.second.id
+                }
+                myRenewedPermit= qaDaoServices.permitUpdateDetails(myRenewedPermit.second, map, loggedInUser)
             }
 
 

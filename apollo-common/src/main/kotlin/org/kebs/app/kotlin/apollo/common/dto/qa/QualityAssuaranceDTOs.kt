@@ -877,6 +877,7 @@ data class PermitDetailsDto(
     var leadAssessorId: Long? = null,
     var userTaskId: Long? = null,
     var assignLeadAssessor: String? = null,
+    var labResultsOutsideAddedStatus: Boolean? = null,
 
     )
 
@@ -912,6 +913,7 @@ data class AllPermitDetailsDto(
     var assessorList: List<UserEntityDto>? = null,
     var assessmentVisionList: List<FilesListDto>? = null,
     var justificationVisionList: List<FilesListDto>? = null,
+    var labResultsExternalVisionList: List<FilesListDto>? = null,
 
     )
 

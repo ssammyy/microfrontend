@@ -71,6 +71,11 @@
                                             <i class="material-icons">assignment_turned_in</i>ASSESSMENT REPORT
                                         </a>
                                     </li>
+                                    <li class="nav-item" *ngIf="allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus">
+                                        <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>EXTERNAL LAB RESULTS REPORT
+                                        </a>
+                                    </li>
                                     <li class="nav-item" *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
                                         <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>JUSTIFICATION REPORT
@@ -257,7 +262,7 @@
                                                         <tr>
                                                             <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.assignOfficer}}</td>
                                                         </tr>
-                                                        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
+                                                        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID && allPermitDetails?.permitDetails?.assignAssessorStatus">
                                                             <tr>
                                                                 <td><strong>Assigned Lead Assessor:</strong></td>
                                                             </tr>
@@ -1436,6 +1441,79 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
 
                                     </div>
+                                    <div class="tab-pane" id="link17" *ngIf="allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus">
+                                        <h3>EXTERNAL LAB RESULTS REPORT</h3>
+                                        <br>
+                                        <div class="material-datatables">
+                                            <section class="wizard-section">
+                                                <div class="row no-gutters">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                                        <div class="form-wizard">
+                                                            <div>
+                                                                <div>
+                                                                    <div class="text-center">
+                                                                        <h5 class="text-dark" style="text-align: left;
+                                                                               margin-top: 20px;">Documents Attached
+                                                                            Details</h5>
+
+                                                                    </div>
+                                                                    <div class="card-body" style="margin-top: 20px;">
+                                                                        <div class="material-datatables">
+                                                                            <div class="table-responsive">
+                                                                                <div>
+                                                                                    <table class=" table table-bordered table-hover table-striped"
+                                                                                           datatable
+                                                                                           [dtOptions]="dtOptionsExternalLabResults"
+                                                                                           [dtTrigger]="dtTriggerExternalLabResults"
+                                                                                    >
+                                                                                        <thead style="text-align: left;">
+                                                                                        <tr>
+
+                                                                                            <th><strong>File
+                                                                                                Name</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Version
+                                                                                                Number</strong></th>
+                                                                                            <th class="text-center">
+                                                                                                <strong>View
+                                                                                                    Details</strong>
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr *ngFor="let assessmentDetails of allPermitDetails?.labResultsExternalVisionList">
+                                                                                            <td>{{assessmentDetails?.name}}</td>
+                                                                                            <td>{{assessmentDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(assessmentDetails?.createdOn)}}</td>
+                                                                                            <td>{{assessmentDetails?.versionNumber}}</td>
+                                                                                            <td class="text-right">
+                                                                                                <a (click)="viewSavedFilesSaved(assessmentDetails)"
+                                                                                                   class="btn btn-info"
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
                                     <div class="tab-pane" id="link6">
                                         <h3>SSF and Lab Results</h3>
                                         <div class="material-datatables">
@@ -2013,11 +2091,22 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                       && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                        && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('addSSFDetails')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                   && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                   && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       data-target="#uploadSSFModal"
+                                       (click)="openModalAddDetails('uploadSSF')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
 
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
@@ -2032,12 +2121,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     <!--                                       (click)="openModalAddDetails('addRecommendationApproval')"-->
                                     <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
 
-                                    <!--                                   <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                    <!--                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"-->
-                                    <!--                                      data-target="#uploadSSFModal"-->
-                                    <!--                                   (click)="openModalAddDetails('uploadSSF')"-->
-                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>-->
-
                                     <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus && allPermitDetails?.permitDetails?.userTaskId == 2 ">
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
                                              && allPermitDetails?.permitDetails?.compliantStatus"
@@ -2046,11 +2129,21 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                            class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
 
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                            && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                            && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                            && allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                            data-target="#allProcessModel"
                                            (click)="openModalAddDetails('addSSFDetails')"
                                            class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
                                             NUMBER</a>
+
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                            && allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                            && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                           data-target="#uploadSSFModal"
+                                           (click)="openModalAddDetails('uploadSSF')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
 
                                         <a data-toggle="modal"
                                            *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
@@ -2312,11 +2405,22 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                        && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
                                         && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                       && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                        && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('addSSFDetails')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+                                    <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                   && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                   && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                       data-target="#uploadSSFModal"
+                                       (click)="openModalAddDetails('uploadSSF')"
+                                       class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
 
                                     <a data-toggle="modal"
                                        *ngIf="allPermitDetails?.permitDetails?.compliantStatus
@@ -2334,15 +2438,25 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                            class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
 
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
-                                            && allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                            && !allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                            && allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                            data-target="#allProcessModel"
                                            (click)="openModalAddDetails('addSSFDetails')"
                                            class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW SSF & BS
                                             NUMBER</a>
 
+                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                            && allPermitDetails?.permitDetails?.generateSchemeStatus
+                                            && allPermitDetails?.permitDetails?.labResultsOutsideAddedStatus
+                                            && allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                           data-target="#uploadSSFModal"
+                                           (click)="openModalAddDetails('uploadSSF')"
+                                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
+
                                         <a data-toggle="modal"
                                            *ngIf="allPermitDetails?.permitDetails?.compliantStatus
-                                       && allPermitDetails?.permitDetails?.justificationReportStatus"
+                                            && allPermitDetails?.permitDetails?.justificationReportStatus"
                                            data-target="#allProcessModel"
                                            (click)="openModalAddDetails('uploadJustificationReport')"
                                            class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
@@ -2492,46 +2606,37 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </div>
                             <div class="modal-body">
                                 <div>
-                                    <form [formGroup]="docSSFUploadForm" action="" class="form"
+                                    <form [formGroup]="ssfSaveComplianceStatusForm" action="" class="form"
                                           enctype="multipart/form-data" method="post">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
-
-                                                    <label for="files"><b>Description Of Attachment(s):</b></label>
-                                                    <mat-form-field class="example-full-width">
-                                                        <input formControlName="docSSFUpload" id="docSSFUpload"
-                                                               matInput name="docSSFUpload"
-                                                               placeholder="Please enter Description Of Attachment"
-                                                               type="text">
+                                                    <input id="ssfID%#" matInput type="number" formControlName="ssfID"
+                                                           name="ssfID" [value]="67"
+                                                           [hidden]="true">
+                                                    <label><b>Select Compliance Status</b></label>
+                                                    <mat-form-field id="complianceStatusSSF43">
+                                                        <mat-select placeholder="Please Select an option"  formControlName="resultsAnalysis"
+                                                                    name="resultsAnalysis">
+                                                            <mat-option [value]="true">Compliant</mat-option>
+                                                            <mat-option [value]="false">Non-Compliant</mat-option>
+                                                        </mat-select>
                                                     </mat-form-field>
-
-                                                    <label for="files"><b>Upload SSF Here</b></label>
+                                                    <label><b>Please write, in detail, your feedback for the whole Lab
+                                                        results:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF43" matInput type="text"  formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                                    </mat-form-field>
+                                                   <br>
+                                                    <label for="files"><b>Upload External LAB Results Here</b></label>
                                                     <form #demoForm="ngForm">
                                                         <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
                                                                      id="filesb"
-                                                                     accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
+                                                                     accept=".pdf, .doc, .docx"></file-upload>
                                                     </form>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div>
-                                                <label><b>Select Compliance Status</b></label>
-                                                <mat-form-field id="complianceStatusSSF43">
-                                                    <mat-select placeholder="Please Select an option"
-                                                                name="resultsAnalysis">
-                                                        <mat-option [value]="true">Compliant</mat-option>
-                                                        <mat-option [value]="false">Non-Compliant</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
-                                                <label><b>Please write, in detail, your feedback for the whole Lab
-                                                    results:</b></label>
-                                                <mat-form-field class="example-full-width">
-                                            <textarea id="complianceRemarksSSF43" matInput type="text"
-                                                      name="complianceRemarks">
-                                            </textarea>
-                                                </mat-form-field>
                                             </div>
                                         </div>
 
@@ -2543,9 +2648,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
                                     Close
                                 </button>
-                                <button *ngIf="(currDiv == 'uploadSSF')" mat-raised-button type="button"
-                                        class="btn btn-success"
-                                        (click)="onClickSaveUploadsSSF()"
+                                <button *ngIf="(currDiv == 'uploadSSF')" mat-raised-button type="button" class="btn btn-success" (click)="onClickSaveUploadsSSF()"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

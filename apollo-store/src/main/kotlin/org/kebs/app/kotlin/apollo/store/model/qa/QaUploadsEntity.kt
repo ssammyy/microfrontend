@@ -55,6 +55,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var assessmentReportStatus: Int? = null
 
+    @Column(name = "LAB_RESULTS_REPORT_STATUS")
+    @Basic
+    var labResultsReportStatus: Int? = null
+
     @Column(name = "SSC_STATUS")
     @Basic
     var sscStatus: Int? = null
@@ -170,94 +174,4 @@ class QaUploadsEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as QaUploadsEntity
-        return id == that.id &&
-                filepath == that.filepath &&
-                versionNumber == that.versionNumber &&
-                inspectionReportId == that.inspectionReportId &&
-                sta3Status == that.sta3Status &&
-                sscStatus == that.sscStatus &&
-                cocStatus == that.cocStatus &&
-                inspectionReportStatus == that.inspectionReportStatus &&
-                ordinaryStatus == that.ordinaryStatus &&
-                ssfUploads == that.ssfUploads &&
-                description == that.description &&
-                name == that.name &&
-                fileType == that.fileType &&
-                sta10Status == that.sta10Status &&
-                documentType == that.documentType &&
-                Arrays.equals(document, that.document) &&
-                transactionDate == that.transactionDate &&
-                permitId == that.permitId &&
-                nonManufactureStatus == that.nonManufactureStatus &&
-                assessmentReportStatus == that.assessmentReportStatus &&
-                invoiceStatus == that.invoiceStatus &&
-                status == that.status &&
-                permitRefNumber == that.permitRefNumber &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        var result = Objects.hash(
-            id,
-            sta3Status,
-            inspectionReportId,
-            ssfUploads,
-            invoiceStatus,
-            assessmentReportStatus,
-            versionNumber,
-            cocStatus,
-            sta10Status,
-            sscStatus,
-            inspectionReportStatus,
-            ordinaryStatus,
-            filepath,
-            description,
-            name,
-            permitRefNumber,
-            fileType,
-            documentType,
-            transactionDate,
-            permitId,
-            nonManufactureStatus,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
-        )
-        result = 31 * result + Arrays.hashCode(document)
-        return result
-    }
 }

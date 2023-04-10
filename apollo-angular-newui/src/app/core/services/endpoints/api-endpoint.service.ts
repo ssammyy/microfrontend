@@ -834,6 +834,7 @@ export class ApiEndpointService {
         UPLOAD_JUSTIFICATION_REPORT_DMARK_ASSESSMENT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-justification-report`,
         UPLOAD_INSPECTION_REPORT: `${ApiEndpointService.QA_CONTEXT}/permit/upload/inspection-report`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
+        UPLOAD_EXTERNAL_LAB_RESULTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-lab-results-report`,
 
     };
 

@@ -246,7 +246,14 @@ class QaInvoiceCalculationDaoServices(
 
         with(invoiceMaster) {
             varField10 = 1.toString()
-            paymentStatus = 0
+            paymentStatus = when (totalAmountPayable) {
+                BigDecimal.ZERO -> {
+                    10
+                }
+                else -> {
+                    0
+                }
+            }
             taxAmount = totalAmountTaxPayable
             subTotalBeforeTax = totalAmountPayable
             totalAmount = totalAmountPayable.plus(totalAmountTaxPayable)

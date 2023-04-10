@@ -349,10 +349,14 @@ class InvoiceDaoService(
                     if (permitInvoiceUpdated.permitId!= null){
                         var permitDetails = qaDaoServices.findPermitBYID(permitInvoiceUpdated.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
 
-                        with(permitDetails){
-                            paidStatus = 1
-                            permitStatus = applicationMapProperties.mapQaStatusPaymentDone
-                        }
+//                        if (permitDetails.invoiceDifferenceGenerated==1){
+//
+//                        }else{
+                            with(permitDetails){
+                                paidStatus = 1
+                                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                            }
+//                        }
                         permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
 
                         if (permitDetails.fmarkGenerateStatus == 1 && permitDetails.fmarkGenerated == 1){

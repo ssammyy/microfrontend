@@ -1467,7 +1467,9 @@ class QADaoServices(
                 with(permit) {
                     ssfCompletedStatus = 1
                     compliantStatus = null
-                    permitStatus = applicationMapProperties.mapQaStatusPLABResults
+                    if(resubmitApplicationStatus!=1){
+                        permitStatus = applicationMapProperties.mapQaStatusPLABResults
+                    }
                 }
 
                 //updating of Details in DB
@@ -3009,6 +3011,14 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("Invoice list With [BATCH ID = ${batchID}], do not Exist")
     }
 
+    fun findALLInvoicesPermitID(permitID: Long): List<QaInvoiceMasterDetailsEntity> {
+        invoiceMasterDetailsRepo.findByPermitId(permitID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoice list With [PERMIT ID = ${permitID}], do not Exist")
+    }
+
     fun findInvoicesPermitWithBatchID(batchID: Long): QaInvoiceMasterDetailsEntity {
         invoiceMasterDetailsRepo.findByBatchInvoiceNo(batchID)
             ?.let { it ->
@@ -4536,8 +4546,7 @@ class QADaoServices(
             try {
                 //Get permit type
                 var userAssigned: UsersEntity
-                val userDetails =
-                    commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
+                val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
                 when (permit.permitType) {
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
@@ -4563,44 +4572,43 @@ class QADaoServices(
                     }
 
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
-//                        userAssigned = assignNextOfficerBasedOnRegion(
-//                            permit,
-//                            map,
-//                            applicationMapProperties.mapQADesignationIDForQAMId
-//                        )
                         permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-//                        permit.qamId = userAssigned.id
-//                        sendEmailWithTaskDetails(
-//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-//                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-//                        )
-//                        qualityAssuranceBpmn.startQAAppReviewProcess(
-//                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-//                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-//                        )
                     }
 
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
-//                        userAssigned = assignNextOfficerBasedOnRegion(
-//                            permit,
-//                            map,
-//                            applicationMapProperties.mapQADesignationIDForQAMId
-//                        )
                         permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-//                        permit.qamId = userAssigned.id
-//                        sendEmailWithTaskDetails(
-//                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
-//                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-//                        )
-//                        qualityAssuranceBpmn.startQAAppReviewProcess(
-//                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-//                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-//                        )
                     }
                 }
 
-                permit.paidStatus = map.initStatus
-                permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                when (permit.invoiceDifferenceGenerated) {
+                    1 -> {
+                        var allPaidCount = 0
+                        val allInvoicesmasterFound = findALLInvoicesPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                        allInvoicesmasterFound.forEach { masterInvoice->
+                            when (masterInvoice.paymentStatus) {
+                                10 -> {
+                                    allPaidCount= allPaidCount.plus(1)
+                                }
+                            }
+                        }
+
+                        when (allInvoicesmasterFound.size) {
+                            allPaidCount -> {
+                                permit.paidStatus = map.initStatus
+                                permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                            }
+                            else -> {
+                                permit.paidStatus = 0
+                                permit.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                                permit.permitStatus = applicationMapProperties.mapQaStatusPPayment
+                            }
+                        }
+                    }
+                    else -> {
+                        permit.paidStatus = map.initStatus
+                        permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                    }
+                }
                 permitUpdateDetails(permit, map, userDetails)
 
                 val batchInvoice = findPermitInvoiceByPermitRefNumberANdPermitID(
@@ -4889,6 +4897,16 @@ class QADaoServices(
         status: Int
     ): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitRefNumberAndPermitIdAndAssessmentReportStatus(permitRefNumber, permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findAllUploadedFileBYPermitRefNumberAndPerMitIDAndLabResultsReportStatus(
+        permitRefNumber: String,
+        permitID: Long,
+        status: Int
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndPermitIdAndLabResultsReportStatus(permitRefNumber, permitID, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
@@ -5604,17 +5622,19 @@ class QADaoServices(
             assignAssessorStatus = permit.assignAssessorStatus == 1
             hodApproveAssessmentStatus = permit.hodApproveAssessmentStatus == 1
             pacDecisionStatus = permit.pacDecisionStatus == 1
+            assessmentReportAddedStatus = permit.assessmentReportAddedStatus == 1
             leadAssessorId = permit.leadAssessorId
             userTaskId = permit.userTaskId
             when (permit.assignAssessorStatus) {
                 map.activeStatus -> {
-                    assignAssessor = commonDaoServices.concatenateName(
+                    assignLeadAssessor = commonDaoServices.concatenateName(
                         commonDaoServices.findUserByID(
                             permit.leadAssessorId ?: throw Exception("INVALID ASSESSOR ID")
                         )
                     )
                 }
             }
+            labResultsOutsideAddedStatus = permit.labResultsOutsideAddedStatus == 1
         }
         return p
     }
@@ -5858,7 +5878,8 @@ class QADaoServices(
             inspectionInvoiceUpload,
             commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserAssessorRoleId)),
             findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
-            findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), 1, permit.id ?: throw Exception("MISSING PERMIT ID"), ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), 1, permit.id ?: throw Exception("MISSING PERMIT ID") ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitRefNumberAndPerMitIDAndLabResultsReportStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
         )
     }
 
@@ -9139,6 +9160,7 @@ class QADaoServices(
             sr.payload = "User[id= ${companyDetails.userId}]"
             sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
 
+            sr.varField10 = "true"
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
             sr.status = s.successStatus
@@ -9148,6 +9170,7 @@ class QADaoServices(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
 //            KotlinLogging.logger { }.trace(e.message, e)
+             sr.varField10 = "false"
             sr.status = sr.serviceMapsId?.exceptionStatus
             sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
             sr.responseMessage = e.message

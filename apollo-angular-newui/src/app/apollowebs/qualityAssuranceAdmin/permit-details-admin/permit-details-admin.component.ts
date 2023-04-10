@@ -7,7 +7,7 @@ import {
     FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PlantDetailsDto, RemarksAndStatusDto,
+    PlantDetailsDto, RemarksAndStatusDto, SaveSSFComplianceApplyDto,
     SectionDto,
     SSFComplianceStatusDetailsDto, SSFDetailsDto,
     SSFPDFListDetailsDto,
@@ -90,6 +90,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtTriggerAssessment: Subject<any> = new Subject<any>();
     dtOptionsJustification: DataTables.Settings = {};
     dtTriggerJustification: Subject<any> = new Subject<any>();
+    dtOptionsExternalLabResults: DataTables.Settings = {};
+    dtTriggerExternalLabResults: Subject<any> = new Subject<any>();
     dtOptionsVersion: DataTables.Settings = {};
     dtTriggerVersion: Subject<any> = new Subject<any>();
     dtOptionsDOCS: DataTables.Settings = {};
@@ -147,7 +149,6 @@ export class PermitDetailsAdminComponent implements OnInit {
     pdfSaveComplianceStatusForm!: FormGroup;
     ssfSaveComplianceStatusForm!: FormGroup;
     viewInspectionInvoiceDetailsForm!: FormGroup;
-
 
     // DTOS
     loadedFirmType: FirmTypeEntityDto[] = [];
@@ -1887,6 +1888,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
+                        this.pcmAddAmountToInvoiceForm.reset();
                         this.qaService.showSuccess('EXTRA AMOUNT ADDED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
@@ -2017,9 +2019,15 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
+                        window.$('#myModal2').modal('hide');
+                        window.$('#sampleLabResultsModal').modal('hide');
+                        window.$('body').removeClass('modal-open');
+                        window.$('.modal-backdrop').remove();
                         this.loadPermitDetails(data);
+                        // tslint:disable-next-line:max-line-length
+                        const selectedSSFDetails = this.allPermitDetails?.ssfListDetails.find(lab => lab?.id === this.selectedSSFDetails?.id);
                         this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
-                            this.closePopUpsModal2();
+                            this.viewSSFLabResultsRecord(selectedSSFDetails);
                         });
                     } else {
                         this.SpinnerService.hide();
@@ -2208,7 +2216,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     onClickSaveUploadsSSF() {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
 
-            'You can click the \'UPLOAD SSF\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+            'You can click the \'UPLOAD EXTERNAL TEST RESULTS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
                 this.SaveUploadsSSF();
             });
     }
@@ -2217,19 +2225,21 @@ export class PermitDetailsAdminComponent implements OnInit {
         if (this.uploadedSsfFilesOnly.length > 0) {
             this.SpinnerService.show();
             const file = this.uploadedSsfFilesOnly;
+            let ssfComplianceApply: SaveSSFComplianceApplyDto;
+            ssfComplianceApply = this.ssfSaveComplianceStatusForm.value;
             const formData = new FormData();
             formData.append('permitID', String(this.permitID));
-            formData.append('docSSFUpload', this.docSSFUploadForm.get('docSSFUpload').value);
-            formData.append('data', 'SCHEME_OF_SUPERVISION');
+            formData.append('data', JSON.stringify(ssfComplianceApply));
+            // formData.append('data', 'SCHEME_OF_SUPERVISION');
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
-                formData.append('SSFdocFile', file[i], file[i].name);
+                formData.append('docFile', file[i], file[i].name);
             }
-            this.qaService.qaSaveUploadFile(formData).subscribe(
+            this.qaService.qaSaveUploadLabResultsExternalFile(formData).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
-                        this.qaService.showSuccess('UPLOAD(S) SAVED  SUCCESSFULLY', () => {
+                        this.qaService.showSuccess('UPLOAD EXTERNAL TEST RESULTS, SAVED  SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {

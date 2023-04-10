@@ -340,6 +340,7 @@ export class PermitEntityDetails {
     leadAssessorId: number;
     userTaskId: number;
     assignLeadAssessor: string;
+    labResultsOutsideAddedStatus: boolean;
 }
 
 
@@ -447,6 +448,12 @@ export class CompanyUpgradeStatusDto {
     firmType: string;
 }
 
+export class SaveSSFComplianceApplyDto {
+    ssfID: number;
+    resultsAnalysis: boolean;
+    complianceRemarks: string;
+}
+
 export class AllPermitDetailsDto {
     companyStatusDetails: CompanyUpgradeStatusDto;
     permitDetails: PermitEntityDetails;
@@ -479,6 +486,7 @@ export class AllPermitDetailsDto {
     assessorList: UserEntityDto[];
     assessmentVisionList: FilesListDto[];
     justificationVisionList: FilesListDto[];
+    labResultsExternalVisionList: FilesListDto[];
 }
 
 

@@ -277,6 +277,26 @@ export class QaService {
         );
     }
 
+    public qaSaveUploadLabResultsExternalFile(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPLOAD_EXTERNAL_LAB_RESULTS,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public qaUpdateSection(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
