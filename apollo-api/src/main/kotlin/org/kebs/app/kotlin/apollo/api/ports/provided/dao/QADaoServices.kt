@@ -808,7 +808,8 @@ class QADaoServices(
                         }else if(justificationReportStatus==10){
                             justificationReportStatus = 1
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
-                        }else{
+                        }
+                        else{
                             permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
                         }
 

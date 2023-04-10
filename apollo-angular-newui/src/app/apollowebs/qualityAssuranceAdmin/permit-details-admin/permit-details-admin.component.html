@@ -2429,13 +2429,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('uploadJustificationReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
 
-                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                            && !allPermitDetails?.permitDetails?.changesMadeStatus">
-                                        <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
-                                             && allPermitDetails?.permitDetails?.compliantStatus"
-                                           data-target="#allProcessModel"
-                                           (click)="openModalAddDetails('addRecommendationRemarks')"
-                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
 
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
                                             && allPermitDetails?.permitDetails?.generateSchemeStatus
@@ -2484,7 +2478,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 </div>
 
-                                <div *ngIf="roles.includes('QA_ASSESSORS_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.leadAssessorId">
+                                <div *ngIf="roles.includes('QA_ASSESSORS_MODIFY') && userLoggedInID == allPermitDetails?.permitDetails?.leadAssessorId && allPermitDetails?.permitDetails?.userTaskId == 7">
                                     <a data-toggle="modal"
                                        *ngIf="!allPermitDetails?.permitDetails?.assessmentScheduledStatus"
                                        data-target="#allProcessModel"
@@ -2500,8 +2494,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('uploadAssessmentReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ASSESSMENT REPORT</a>
 
-                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus
-                                     && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
 
                                         <a data-toggle="modal"
                                            data-target="#allProcessModel"

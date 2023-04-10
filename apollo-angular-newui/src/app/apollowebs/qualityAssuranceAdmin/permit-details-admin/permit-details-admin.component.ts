@@ -2225,6 +2225,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         if (this.uploadedSsfFilesOnly.length > 0) {
             this.SpinnerService.show();
             const file = this.uploadedSsfFilesOnly;
+            this.ssfSaveComplianceStatusForm.get('ssfID').setValue(77)
             let ssfComplianceApply: SaveSSFComplianceApplyDto;
             ssfComplianceApply = this.ssfSaveComplianceStatusForm.value;
             const formData = new FormData();
