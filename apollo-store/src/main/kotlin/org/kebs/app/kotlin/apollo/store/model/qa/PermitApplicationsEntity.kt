@@ -145,6 +145,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var assessmentReportAddedStatus: Int? = null
 
+    @Column(name = "LAB_RESULTS_OUTSIDE_ADDED_STATUS")
+    @Basic
+    var labResultsOutsideAddedStatus: Int? = null
+
     @Column(name = "GENERATE_SCHEME_STATUS")
     @Basic
     var generateSchemeStatus: Int? = null

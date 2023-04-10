@@ -2105,8 +2105,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         AWARDING</a>
 
                                     <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
-                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
+                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                    && allPermitDetails?.permitDetails?.changesMadeStatus
+                                       && allPermitDetails?.permitDetails?.pscMemberApprovalStatus
+                                       && !allPermitDetails?.permitDetails?.pcmApprovalStatus"
                                        data-target="#allProcessModel"
                                        (click)="openModalAddDetails('approvePermitPCM')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
@@ -2165,6 +2167,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
                                         AWARDING</a>
                                 </div>
+
                                 <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')">
 
                                     <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
@@ -2322,7 +2325,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('uploadJustificationReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD JUSTIFICATION FOR DIAMOND MARK ASSESSMENT</a>
 
-                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                            && !allPermitDetails?.permitDetails?.changesMadeStatus">
                                         <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks != null
                                              && allPermitDetails?.permitDetails?.compliantStatus"
                                            data-target="#allProcessModel"
@@ -2382,7 +2386,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('uploadAssessmentReport')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ASSESSMENT REPORT</a>
 
-                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus && !allPermitDetails?.permitDetails?.changesMadeStatus">
+                                    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                     && !allPermitDetails?.permitDetails?.changesMadeStatus">
 
                                         <a data-toggle="modal"
                                            data-target="#allProcessModel"

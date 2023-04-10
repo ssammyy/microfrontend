@@ -770,17 +770,34 @@ class QADaoServices(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             var permit = findPermitBYID(permitID)
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-
+            var prBy = ""
+            var prName = ""
             with(permit) {
                 when (permitType.id) {
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
                         userTaskId = applicationMapProperties.mapUserTaskNameQAM
                         permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+
+                        if(pscMemberApprovalStatus==1){
+                            pscMemberApprovalStatus=0
+                        }
+
+                        if(hodQamApproveRejectStatus==1){
+                            hodQamApproveRejectStatus=0
+                        }
                     }
 
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
                         userTaskId = applicationMapProperties.mapUserTaskNameQAM
                         permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+
+                        if(pscMemberApprovalStatus==1){
+                            pscMemberApprovalStatus=0
+                        }
+
+                        if(hodQamApproveRejectStatus==1){
+                            hodQamApproveRejectStatus=0
+                        }
                     }
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
@@ -788,11 +805,29 @@ class QADaoServices(
                         if(assessmentReportAddedStatus==10){
                             assessmentReportAddedStatus = 1
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                        }else if(justificationReportStatus==10){
+                            justificationReportStatus = 1
+                            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
                         }else{
                             permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
                         }
+
+
+                        if(pacDecisionStatus==1){
+                            pacDecisionStatus=0
+                        }
+
+                        if(hodApproveAssessmentStatus==1){
+                            hodApproveAssessmentStatus=0
+                        }
                     }
                 }
+
+                if(pcmApprovalStatus==1){
+                    pcmApprovalStatus=0
+                }
+
+
                 resubmitRemarks = body.resubmitRemarks
                 changesMadeStatus = 1
             }
@@ -803,6 +838,15 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
+                        permit.resubmitRemarks,
+                        null,
+                        prBy,
+                        prName,
+                        map,
+                        loggedInUser
+                    )
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
                     val permitAllDetails =
@@ -1843,6 +1887,7 @@ class QADaoServices(
 
                     else -> {
                         justificationReportApproved = 0
+                        justificationReportStatus = 10
                         resubmitApplicationStatus = 1
                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         permitStatus = applicationMapProperties.mapQaStatusRejectedJustCationReport
@@ -7240,6 +7285,7 @@ class QADaoServices(
                 when (permitResubmit.resubmittedDetails) {
                     "resubmitLabNonComplianceResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         compliantStatus = 10
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        compliantStatus = null
@@ -7263,6 +7309,7 @@ class QADaoServices(
 
                     "resubmitPCMReviewCompletenessResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        compliantStatus = null
 //                        compliantRemarks = null
@@ -7314,6 +7361,7 @@ class QADaoServices(
 
                     "resubmitHofQamPSCRejectionResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null
@@ -7334,6 +7382,7 @@ class QADaoServices(
 
                     "resubmitHofQamRejectionResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null
@@ -7354,6 +7403,7 @@ class QADaoServices(
 
                     "resubmitHodRmPACRejectionResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null
@@ -7374,6 +7424,7 @@ class QADaoServices(
 
                     "resubmitHodRmPCMRejectionResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null
@@ -7394,6 +7445,7 @@ class QADaoServices(
 
                     "resubmitHofQamPCMRejectionResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null
@@ -7414,6 +7466,7 @@ class QADaoServices(
 
                     "resubmitHofQamToPSCResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
                         pscMemberApprovalStatus = 10
                         permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
@@ -7432,6 +7485,7 @@ class QADaoServices(
 
                     "resubmitHodRmToPACResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
                         pacDecisionStatus = 10
                         permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
@@ -7450,6 +7504,7 @@ class QADaoServices(
 
                     "resubmitHofQamToPCMResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
                         pcmApprovalStatus = 10
                         pscMemberApprovalStatus = 20
@@ -7469,6 +7524,7 @@ class QADaoServices(
 
                     "resubmitHodRmToPCMResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
                         pcmApprovalStatus = 10
                         pacDecisionStatus = 20
