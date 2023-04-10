@@ -2015,22 +2015,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        (click)="openModalAddDetails('assignOfficer')"
                                        class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
 
-<!--                                                                    <a data-toggle="modal"-->
-<!--                                                                       *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-<!--                                                                       && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-<!--                                                                       && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus"-->
-<!--                                                                       data-target="#allProcessModel"-->
-<!--                                                                       (click)="openModalAddDetails('approveRejectInspectionReport')"-->
-<!--                                                                       class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
-
-                                    <!--                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated-->
-                                    <!--                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null-->
-                                    <!--                                   && allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus-->
-                                    <!--                                   && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"-->
-                                    <!--                                   data-target="#allProcessModel"-->
-                                    <!--                                   (click)="openModalAddDetails('approveRejectRecommendation')"-->
-                                    <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATION</a>-->
-
                                     <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
                                    && allPermitDetails?.permitDetails?.recommendationRemarks != null
                                    && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
@@ -2041,7 +2025,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                        class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT</a>
 
                                     <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hodQamApproveRejectStatus
-                                   && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus
                                    && allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && allPermitDetails?.permitDetails?.changesMadeStatus
                                     && !allPermitDetails?.permitDetails?.recommendationApprovalStatus"
@@ -2208,6 +2191,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         AWARDING</a>
                                 </div>
                             </div>
+
                             <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
                                 <div *ngIf="roles.includes('QA_PCM_MODIFY')">
 
