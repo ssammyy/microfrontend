@@ -4972,7 +4972,11 @@ export class WorkPlanDetailsComponent implements OnInit {
             (data: UcrNumberSearch[]) => {
               this.SpinnerService.hide();
               this.dataUcrNumberSearchList = data;
-              this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+              if (this.dataUcrNumberSearchList?.length > 0){
+                this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+              }else{
+                this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
+              }
               this.currDiv = 'verificationUCRDetails';
               // this.verificationPermitForm.disabled;
 
