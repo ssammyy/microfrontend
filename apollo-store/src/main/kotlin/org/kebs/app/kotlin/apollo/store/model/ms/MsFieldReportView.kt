@@ -100,9 +100,6 @@ class MsFieldReportView : Serializable {
     @Column(name = "FINAL_REMARK_HOD")
     var finalRemarkHod: String? = null
 
-    @Basic
-    @Column(name = "FINDINGS")
-    var findings: String? = null
 
     @Basic
     @Column(name = "KEBS_INSPECTORS")
@@ -131,5 +128,9 @@ class MsFieldReportView : Serializable {
     @Basic
     @Column(name = "REPORT_CLASSIFICATION")
     var reportClassification: String? = null
+
+    @Basic
+    @Column(name = "CHANGES_MADE")
+    var changesMade: String? = null
 
 }

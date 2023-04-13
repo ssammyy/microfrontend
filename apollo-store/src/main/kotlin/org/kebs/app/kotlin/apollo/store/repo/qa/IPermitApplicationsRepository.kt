@@ -863,6 +863,8 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     fun findByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
     fun findTopByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
 
+    fun findByPermitId(permitId: Long): List<QaInvoiceMasterDetailsEntity>?
+    fun findByPermitIdAndPaymentStatus(permitId: Long, paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?
     fun findByPermitIdAndVarField10(permitId: Long, varField10: String): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(
         batchInvoiceNo: Long
@@ -1346,6 +1348,18 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
         permitRefNumber: String,
         permitId: Long,
         sscStatus: Int
+    ): List<QaUploadsEntity>?
+
+    fun findByPermitRefNumberAndPermitIdAndAssessmentReportStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        assessmentReportStatus: Int
+    ): List<QaUploadsEntity>?
+
+    fun findByPermitRefNumberAndPermitIdAndLabResultsReportStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        labResultsReportStatus: Int
     ): List<QaUploadsEntity>?
 
 

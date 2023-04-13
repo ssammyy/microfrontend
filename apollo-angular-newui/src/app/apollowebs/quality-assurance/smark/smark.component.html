@@ -1636,7 +1636,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
-                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.inspectionFeeInvoice != null
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated
+                         && allPermitDetails?.inspectionFeeInvoice != null
                         && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
                                 mat-raised-button=""
                                 (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
@@ -1646,7 +1647,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
-                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.companyStatusDetails?.firmType == 'MEDIUM'
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated
+                        &&  allPermitDetails?.companyStatusDetails?.firmType == 'MEDIUM'
                         && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
                                 mat-raised-button=""
                                 (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
@@ -1656,7 +1658,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference
-                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.companyStatusDetails?.firmType == 'LARGE'
+                        && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated
+                        && allPermitDetails?.companyStatusDetails?.firmType == 'SMALL'
                         && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
                                 mat-raised-button=""
                                 (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span

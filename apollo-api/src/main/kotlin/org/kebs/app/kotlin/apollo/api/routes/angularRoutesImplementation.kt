@@ -587,13 +587,13 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
-                        GET("/view-details", handler::permitViewSTA10AllDetailsMigration)
-                        GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)
+                        GET("/view_details", handler::permitViewSTA10AllDetailsMigration)
+                        GET("/firm_details", handler::permitViewSTA10FirmDetailsMigration)
                         GET("/personnel_details", handler::permitViewSTA10PersonnelMigration)
-                        GET("/products-being-manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
-                        GET("/raw-material", handler::permitViewSTA10RawMaterialsMigration)
-                        GET("/machinery-plant", handler::permitViewSTA10MachineryAndPlantMigration)
-                        GET("/manufacturing-process", handler::permitViewSTA10ManufacturingProcessMigration)
+                        GET("/products_being_manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
+                        GET("/raw_material", handler::permitViewSTA10RawMaterialsMigration)
+                        GET("/machinery_plant", handler::permitViewSTA10MachineryAndPlantMigration)
+                        GET("/manufacturing_process", handler::permitViewSTA10ManufacturingProcessMigration)
                     }
                     "/invoice".nest {
                         GET("/list", handler::invoiceListMigration)

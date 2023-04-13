@@ -3028,6 +3028,26 @@ export class MsService {
         );
     }
 
+    public loadProgressReportDetailsPDF(workPlanGeneratedID: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        console.log("service 2 called");
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_PROGRESS_REPORT);
+        const params = new HttpParams()
+            .set('workPlanGeneratedID', workPlanGeneratedID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                console.log("service 2 success");
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                console.log("service 2 fail");
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
 
 

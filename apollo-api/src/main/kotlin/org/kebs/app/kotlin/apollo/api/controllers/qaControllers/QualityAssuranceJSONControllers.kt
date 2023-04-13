@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -9,10 +10,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
+import org.kebs.app.kotlin.apollo.common.dto.ms.FieldReportAdditionalInfo
+import org.kebs.app.kotlin.apollo.common.dto.qa.SaveSSFComplianceApplyDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IManufacturePlantDetailsRepository
@@ -135,11 +139,7 @@ class QualityAssuranceJSONControllers(
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             var versionNumber: Long = 1
-            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                map.activeStatus
-            ).size.toLong().plus(versionNumber)
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), map.activeStatus).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
@@ -165,7 +165,9 @@ class QualityAssuranceJSONControllers(
                 generateSchemeStatus = 1
                 approvedRejectedScheme = 1
                 sscId = fileDocList[0]
-                permitStatus = applicationMapProperties.mapQaStatusPSSF
+                if(resubmitApplicationStatus!=1){
+                    permitStatus = applicationMapProperties.mapQaStatusPSSF
+                }
                 userTaskId = applicationMapProperties.mapUserTaskNameQAO
             }
             //updating of Details in DB
@@ -351,7 +353,11 @@ class QualityAssuranceJSONControllers(
             val permitType =
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            val versionNumber: Long = 1
+            var versionNumber: Long = 1
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                map.activeStatus, permit.id ?: throw Exception("INVALID PERMIT ID"),
+            ).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
@@ -374,10 +380,17 @@ class QualityAssuranceJSONControllers(
             }
 
             with(permit) {
-                justificationReportStatus = 1
+//                justificationReportStatus = 1
+                justificationReportStatus = if(justificationReportStatus==10){
+                    10
+                }else{
+                    1
+                }
+                if(resubmitApplicationStatus!=1){
+                    permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+                }
                 approvedRejectedScheme = 1
 //                jus = fileDocList[0]
-                permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
                 userTaskId = applicationMapProperties.mapUserTaskNameHOD
             }
             //updating of Details in DB
@@ -408,7 +421,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-assessment-report")
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_ASSESSORS_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadAssessmentReport(
         @RequestParam("permitID") permitID: Long,
@@ -424,7 +437,8 @@ class QualityAssuranceJSONControllers(
             val permitType =
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-            val versionNumber: Long = 1
+            var versionNumber: Long = 1
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndAssessmentStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), map.activeStatus).size.toLong().plus(versionNumber)
             val fileDocList = mutableListOf<Long>()
             docFile?.forEach { fileDoc ->
                 val uploads = QaUploadsEntity()
@@ -449,11 +463,19 @@ class QualityAssuranceJSONControllers(
 //            val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
 
             with(permit) {
-                assessmentScheduledStatus = 1
+                assessmentReportAddedStatus = if(assessmentReportAddedStatus==10){
+                    10
+                }else{
+                    1
+                }
+
+                if(resubmitApplicationStatus!=1){
+                    permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                }
 //                assessmentReportRemarks = 1
 //                jus = fileDocList[0]
 //                hodId = hodDetails?.id
-                permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+//                permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
                 userTaskId = applicationMapProperties.mapUserTaskNameHOD
             }
             //updating of Details in DB
@@ -462,6 +484,127 @@ class QualityAssuranceJSONControllers(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(
+                        permit,
+                        batchID,
+                        batchIDDifference,
+                        map
+                    )
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PostMapping("/internal-users/apply/permit/upload-lab-results-report")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadLabResultsReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val gson = Gson()
+            val body = gson.fromJson(data, SaveSSFComplianceApplyDto::class.java)
+
+            var versionNumber: Long = 1
+            versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndPerMitIDAndLabResultsReportStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), map.activeStatus).size.toLong().plus(versionNumber)
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads) {
+                    ordinaryStatus = 0
+                    labResultsReportStatus = 1
+                }
+                val fileDocSaved = qaDaoServices.saveQaFileUploads(
+                    fileDoc,
+                    "LAB_RESULTS_OUTSIDE",
+                    loggedInUser,
+                    map,
+                    uploads,
+                    permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                    permit.id ?: throw Exception("MISSING PERMIT ID"),
+                    versionNumber,
+                    0
+                )
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+//            val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
+            with(permit) {
+                labResultsOutsideAddedStatus = if(labResultsOutsideAddedStatus==10){
+                    10
+                }else{
+                    1
+                }
+
+                compliantStatus = when {
+                    body.resultsAnalysis -> {
+                        1
+                    }
+
+                    else -> {
+                        0
+                    }
+                }
+                compliantRemarks = body.complianceRemarks
+//                permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+//                userTaskId = applicationMapProperties.mapUserTaskNameHOD
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    var complianceValue: String? = null
+                    when (permit.compliantStatus) {
+                        map.activeStatus -> {
+                            complianceValue = "COMPLIANT"
+                            if (permit.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                                permit.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                qaDaoServices.permitInsertStatus(
+                                    permit,
+                                    applicationMapProperties.mapQaStatusPGeneJustCationReport,
+                                    loggedInUser
+                                )
+                            } else {
+                                qaDaoServices.permitInsertStatus(permit, applicationMapProperties.mapQaStatusPRecommendation, loggedInUser)
+                            }
+                        }
+
+                        map.inactiveStatus -> {
+                            complianceValue = "NON-COMPLIANT"
+                            permit.resubmitApplicationStatus = 1
+                            permit.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                            qaDaoServices.permitInsertStatus(permit, applicationMapProperties.mapQaStatusPendingCorrectionManf, loggedInUser)
+                        }
+                    }
+
+                    qaDaoServices.sendComplianceStatusAndLabReport(
+                        permit,
+                        complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+                        permit.compliantRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+                        null
+                    )
+
                     val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
                     val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(

@@ -66,6 +66,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.math.BigDecimal
 import java.sql.Date
 import java.text.SimpleDateFormat
 
@@ -2765,40 +2766,51 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            var permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
 
             val permitType = qaDaoServices.findPermitType(
                 permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
             )
 
             if (permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark) {
-                val invoiceCreated =
-                    qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
+                val invoiceCreated = qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
 
-                //Update Permit Details
-                with(permit) {
-                    paidStatus = 0
-                    sendApplication = map.activeStatus
-                    endOfProductionStatus = map.inactiveStatus
-                    invoiceDifferenceGenerated = 1
-                    varField10 = map.activeStatus.toString()
-                    varField9 = 2.toString()
-                    permitStatus = applicationMapProperties.mapQaStatusPPayment
-                }
-                permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
+                if(invoiceCreated.first.varField10=="true"){
+                    if(invoiceCreated.second?.totalAmount == BigDecimal.ZERO){
+                        with(permit){
+                            invoiceDifferenceGenerated = 1
+                            varField10 = map.activeStatus.toString()
+                            varField9 = 2.toString()
+                            paidStatus = map.initStatus
+                            sendApplication = map.activeStatus
+                            permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                            userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        }
+                    }else{
+                    //Update Permit Details
+                        with(permit) {
+                        paidStatus = 0
+                        sendApplication = map.activeStatus
+                        endOfProductionStatus = map.inactiveStatus
+                        invoiceDifferenceGenerated = 1
+                        varField10 = map.activeStatus.toString()
+                        varField9 = 2.toString()
+                        permitStatus = applicationMapProperties.mapQaStatusPPayment
+                    }
+                    }
+                    permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-                qaDaoServices.mapAllPermitDetailsTogether(
-                    permit,
-                    null,
-                    null,
-                    map
-                ).let {
-                    return ok().body(it)
+                    qaDaoServices.mapAllPermitDetailsTogether(
+                        permit,
+                        null,
+                        null,
+                        map
+                    ).let {
+                        return ok().body(it)
+                    }
+                }else {
+                    return badRequest().body(invoiceCreated.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
             } else {
                 throw Exception("YOUR CANNOT GENERATE ANOTHER INVOICE  FROM PERMIT TYPE ${permitType.descriptions}")
@@ -3655,7 +3667,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10FirmDetailsMigration(req: ServerRequest): ServerResponse {
         try {
@@ -3785,7 +3797,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10ProductsBeingManufacturedMigration(req: ServerRequest): ServerResponse {
         try {
@@ -3874,7 +3886,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10PersonnelMigration(req: ServerRequest): ServerResponse {
         try {
@@ -3901,7 +3913,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10RawMaterialsMigration(req: ServerRequest): ServerResponse {
         try {
@@ -3959,7 +3971,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10MachineryAndPlantMigration(req: ServerRequest): ServerResponse {
         try {
@@ -4016,7 +4028,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10ManufacturingProcessMigration(req: ServerRequest): ServerResponse {
         try {
@@ -4072,7 +4084,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
+            var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
             val pmOldPermitSmark = qaDaoServices.findPermitBYID(permitID)
             if (pmOldPermitSmark.fmarkGenerated == 1) {
                 val findFmarkRenew = qaDaoServices.findFmarkWithSmarkId(permitID).fmarkId
@@ -4086,6 +4098,12 @@ class QualityAssuranceHandler(
                     myRenewedPermitFmark.second,
                     loggedInUser
                 )
+
+                with(myRenewedPermit.second){
+                    fmarkGenerated = 1
+//                    fmarkGeneratedID = myRenewedPermitFmark.second.id
+                }
+                myRenewedPermit= qaDaoServices.permitUpdateDetails(myRenewedPermit.second, map, loggedInUser)
             }
 
 

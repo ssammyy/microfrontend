@@ -141,6 +141,14 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var assessmentScheduledStatus: Int? = null
 
+    @Column(name = "ASSESSMENT_REPORT_ADDED_STATUS")
+    @Basic
+    var assessmentReportAddedStatus: Int? = null
+
+    @Column(name = "LAB_RESULTS_OUTSIDE_ADDED_STATUS")
+    @Basic
+    var labResultsOutsideAddedStatus: Int? = null
+
     @Column(name = "GENERATE_SCHEME_STATUS")
     @Basic
     var generateSchemeStatus: Int? = null
@@ -160,6 +168,10 @@ class PermitApplicationsEntity : Serializable {
     @Column(name = "JUSTIFICATION_REPORT_STATUS")
     @Basic
     var justificationReportStatus: Int? = null
+
+    @Column(name = "JUSTIFICATION_REPORT_APPROVED")
+    @Basic
+    var justificationReportApproved: Int? = null
 
     @Column(name = "OLD_PERMIT_STATUS")
     @Basic

@@ -344,8 +344,8 @@ export class ApiEndpointService {
         // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 
         PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
-        PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm-details`,
-        PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view-details`,
+        PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm_details`,
+        PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view_details`,
 
 
         PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,
@@ -786,16 +786,21 @@ export class ApiEndpointService {
         UPDATE_OFFICER_DIFFERENCE_STATUS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/difference-status-activate`,
         QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
         ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,
+        ASSIGN_ASSESSOR: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-assessor`,
         RECOMMENDATION_APPROVAL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-recommendation`,
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
         ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
+        SCHEDULE_ASSESSMENT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-assessment-visit`,
         ADD_EXTRA_AMOUNT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-extra-amount`,
         SUBMIT_FOR_PAYMENT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/submit_for_payment`,
         APPROVE_REJECT_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-inspection-report`,
         APPROVE_REJECT_PERMIT_QAM_HOD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/qam-approve-reject-permit`,
         APPROVE_REJECT_PERMIT_PSC_MEMBER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/psc-approve-reject-permit`,
         APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PAC: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pac-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_ASSESSMENT_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-assessment-report`,
+        APPROVE_REJECT_PERMIT_JUSTIFICATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-justification-report`,
         APPROVE_REJECT_PERMIT_PCM_REVIEW: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/permit-review`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
@@ -825,8 +830,11 @@ export class ApiEndpointService {
         SAVE_PDF_LAB_RESULT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-pdf-selected`,
         SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
+        UPLOAD_FACTORY_ASSESSMENT_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-assessment-report`,
+        UPLOAD_JUSTIFICATION_REPORT_DMARK_ASSESSMENT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-justification-report`,
         UPLOAD_INSPECTION_REPORT: `${ApiEndpointService.QA_CONTEXT}/permit/upload/inspection-report`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
+        UPLOAD_EXTERNAL_LAB_RESULTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-lab-results-report`,
 
     };
 
@@ -850,6 +858,7 @@ export class ApiEndpointService {
         VIEW_PDF_COMPLAINT: `${ApiEndpointService.MS_CONTEXT}/report/complaint`,
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
         VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
+        VIEW_PDF_PROGRESS_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-progress-report`,
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {

@@ -868,6 +868,16 @@ data class PermitDetailsDto(
     var pcmApprovalStatus: Boolean? = null,
     var paidStatus: Boolean? = null,
     var changesMadeStatus: Boolean? = null,
+    var justificationReportStatus: Boolean? = null,
+    var justificationReportApproved: Boolean? = null,
+    var assignAssessorStatus: Boolean? = null,
+    var hodApproveAssessmentStatus: Boolean? = null,
+    var pacDecisionStatus: Boolean? = null,
+    var assessmentReportAddedStatus: Boolean? = null,
+    var leadAssessorId: Long? = null,
+    var userTaskId: Long? = null,
+    var assignLeadAssessor: String? = null,
+    var labResultsOutsideAddedStatus: Boolean? = null,
 
     )
 
@@ -899,7 +909,11 @@ data class AllPermitDetailsDto(
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
     var schemeOfSuperVisionList: List<FilesListDto>? = null,
     var remarksDetailsList: List<RemarksAndStatusDto>? = null,
-    var inspectionInvoiceUpload: InspectionInvoiceUploadedDto? = null
+    var inspectionInvoiceUpload: InspectionInvoiceUploadedDto? = null,
+    var assessorList: List<UserEntityDto>? = null,
+    var assessmentVisionList: List<FilesListDto>? = null,
+    var justificationVisionList: List<FilesListDto>? = null,
+    var labResultsExternalVisionList: List<FilesListDto>? = null,
 
     )
 

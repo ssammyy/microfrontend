@@ -555,6 +555,11 @@
                                             <br>
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Report Classification</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.inspectionInvestigationDto?.reportClassification}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Report reference</div>
                                                     <div class="list-text-accordion">
                                                         {{workPlanInspection?.inspectionInvestigationDto?.reportReference}}</div>
@@ -776,6 +781,7 @@
                                             </ul>
                                             <button mat-raised-button type="button"  class="btn btn-success"
                                                     (click)="viewFieldReportPdfFile(workPlanInspection?.id, workPlanInspection?.inspectionInvestigationDto?.reportReference,'application/pdf')">Download</button>
+
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -3065,7 +3071,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Most Recurring Non-Compliant</b> </label>
+                                        <label><b>Most Recurring Non-Compliance</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"
                                                class="form-control two-column-input"
                                                formControlName="mostRecurringNonCompliant"
@@ -7413,6 +7419,11 @@
                         <br>
                         <ul class="w-list-unstyled">
                             <li class="list-item-accordion">
+                                <div class="list-title-accordion">Report Classification</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportClassification}}</div>
+                            </li>
+                            <li class="list-item-accordion">
                                 <div class="list-title-accordion">Report reference</div>
                                 <div class="list-text-accordion">
                                     {{selectedPreliminaryReportDetails?.reportReference}}</div>
@@ -7724,7 +7735,7 @@
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
                                              (click)="openModalAddDetails('ssfSendResultsStatus')" mat-raised-button="" data-toggle="modal"
-                                             data-target="#myModal2"
+                                             data-target="#myModal5"
                                              class="btn btn-sm btn-primary mr-3"><span
                                             class="mat-button-wrapper">SEND RESULTS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -8163,7 +8174,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-<!--                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">-->
+                                        <div *ngIf="(selectClientAppealedStatus == 'Accept')">
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
                                                 <file-upload [(ngModel)]="uploadedAppealNotSuccesFiles" name="uploadedAppealNotSuccesFiles"
@@ -8171,7 +8182,7 @@
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
-<!--                                        </div>-->
+                                        </div>
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"

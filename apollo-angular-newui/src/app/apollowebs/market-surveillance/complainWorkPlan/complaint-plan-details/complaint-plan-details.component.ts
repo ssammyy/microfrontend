@@ -27,7 +27,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus,
+  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus, UcrNumberSearch,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
@@ -71,6 +71,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
+  //nonComplianceList: NonComplianceDto[];
   active: Number = 0;
   averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
@@ -174,6 +175,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
   laboratories: LaboratoryDto[] = [];
+  dataUcrNumberSearchList: UcrNumberSearch[] = [];
   standards: KebsStandardsDto[] = [];
   standardsOriginal: KebsStandardsDto[] = [];
 
@@ -2112,6 +2114,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
+    // this.msService.getMSNonCompliance().subscribe(
+    //     (data)=>{
+    //       this.nonComplianceList = data;
+    //       console.log("Non Compliance Data "+ data)
+    //     },
+    //     error => {
+    //       //this.SpinnerService.hide();
+    //       console.log("Could not get non compliance data "+error);
+    //       //this.msService.showError('AN ERROR OCCURRED');
+    //     },
+    // );
+
 // Hof Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatus === false
@@ -3058,7 +3072,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = `Field-Report-${fileName}`;
+          link.download = `Initial-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
@@ -3066,6 +3080,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewProgressReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    console.log("ts 1 called");
+    this.SpinnerService.show();
+    this.msService.loadProgressReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Progress-Report-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+          console.log("ts 1 success");
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+          console.log("ts 1 fail");
         },
     );
   }
@@ -4788,7 +4828,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.viewSeizedProductsFileSaved(event.data);
         break;
       case 'downloadRecord':
-        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
+        this.viewProgressReportPdfFile(this.workPlanInspection?.id, event.data.reportReference, 'application/pdf');
         break;
     }
   }
@@ -4855,7 +4895,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               this.currDiv = 'verificationPermitDetails';
               this.verificationPermitForm.disabled;
 
-              window.$('#dataReportModalUCR').modal('show');
+              window.$('#myModal3').modal('show');
 
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
@@ -4868,24 +4908,28 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         );
         break;
       case 'Import':
-        // this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
-        //     (data: any) => {
-        //       this.SpinnerService.hide();
-        //       // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
-        //       this.verificationPermitForm.patchValue(data);
-        //       this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
-        //       this.currDiv = 'verificationPermitDetails';
-        //       this.verificationPermitForm.disabled;
-        //
-        //       window.$('#myModal3').modal('show');
-        //
-        //     },
-        //     error => {
-        //       this.SpinnerService.hide();
-        //       console.log(error);
-        //       // this.msService.showError('AN ERROR OCCURRED');
-        //     },
-        // );
+        this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
+            (data: UcrNumberSearch[]) => {
+              this.SpinnerService.hide();
+              this.dataUcrNumberSearchList = data;
+              if (this.dataUcrNumberSearchList?.length > 0){
+                this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+              }else{
+                this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
+              }
+
+              this.currDiv = 'verificationUCRDetails';
+              // this.verificationPermitForm.disabled;
+
+              window.$('#dataReportModalUCR').modal('show');
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
         break;
     }
   }

@@ -271,6 +271,10 @@ class InvoicePaymentService(
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            if (demandNote.varField5.isNullOrEmpty()) {
+                demandNote.varField5 =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            }
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
             this.billingService.registerBillTransaction(
@@ -330,13 +334,18 @@ class InvoicePaymentService(
         val response = ApiResponseModel()
         KotlinLogging.logger { }.info("INVOICE GENERATION: $demandNoteId")
         try {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             //Send Demand Note
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             if (demandNote.postingStatus == 1) {
                 response.responseCode = ResponseCodes.INVALID_CODE
                 response.responseCode = "Demand note is already posted"
                 return response
+            } else if (demandNote.varField5.isNullOrEmpty()) {
+                demandNote.varField5 =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             }
+
             // Try to add transaction to current bill or generate batch payment
             demandNote.demandNoteNumber?.let {
                 KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")

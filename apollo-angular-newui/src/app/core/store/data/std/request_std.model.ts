@@ -176,6 +176,19 @@ export interface Stdtsectask {
     taskData: StandardRequestB;
 }
 
+export interface VotesDto {
+    id: number;
+    decision: string;
+    reason: string;
+    nwiId: number;
+    proposalTitle: string;
+    standardId: number;
+    requestNumber: string;
+    dateVoteWasCast: Date;
+    closingDate: string;
+
+}
+
 export interface NwiItem {
     taskId: string;
     name: string;

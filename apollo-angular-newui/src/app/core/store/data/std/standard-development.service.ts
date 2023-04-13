@@ -24,9 +24,11 @@ import {
     Stdtsectask,
     StdtsecTaskJustification,
     StdWorkPlan,
-    TechnicalCommitteeb
+    TechnicalCommitteeb,
+    VotesDto
 } from './request_std.model';
-import {Vote, VoteNwiRetrieved, VoteRetrieved, VotesNwiTally} from "./commitee-model";
+import {Vote, VoteNwiRetrieved, VotesNwiTally} from "./commitee-model";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -39,7 +41,8 @@ export class StandardDevelopmentService {
     private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/standard/`;
     private apiServerUrl23 = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/standard/`;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router: Router,
+    ) {
     }
 
     public getDepartments(): any {
@@ -138,10 +141,14 @@ export class StandardDevelopmentService {
         return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwis')
     }
 
+    public getAllNwisLoggedInUserToVoteFor(): Observable<Stdtsectask[]> {
+        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
+    }
+
 
     //retrieve vote for logged in user
     public retrieveVote(): Observable<any> {
-        return this.http.get<VoteRetrieved>(`${this.apiServerUrl}` + 'getUserLoggedInBallots')
+        return this.http.get<VotesDto>(`${this.apiServerUrl}` + 'getUserLoggedInBallots')
 
     }
 
@@ -242,6 +249,7 @@ export class StandardDevelopmentService {
             })
         );
     }
+
 
     public getAllNwiSApprovedForJustification(): Observable<any> {
 
@@ -384,6 +392,20 @@ export class StandardDevelopmentService {
         );
 
     }
+    public revoteOnNWI(vote: StdTCDecision): Observable<any> {
+        const url = `${this.apiServerUrl}` + 'reVoteOnNWI';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+    }
 
     public uploadJustification(stdJustification: StdJustification): Observable<any> {
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
@@ -395,6 +417,10 @@ export class StandardDevelopmentService {
 
     public getJustificationsPendingDecision(): Observable<StdJustification[]> {
         return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getJustificationsPendingDecision')
+    }
+
+    public getAllMyJustifications(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getAllMyJustifications')
     }
 
 
@@ -563,6 +589,13 @@ export class StandardDevelopmentService {
                 return throwError(fault);
             })
         );
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 }
 

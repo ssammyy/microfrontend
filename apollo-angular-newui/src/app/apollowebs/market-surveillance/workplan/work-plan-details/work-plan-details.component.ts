@@ -3125,7 +3125,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = `Field-Report-${fileName}`;
+          link.download = `Initial-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
@@ -3133,6 +3133,31 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+  viewProgressReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    console.log("ts 1 called");
+    this.SpinnerService.show();
+    this.msService.loadProgressReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Progress-Report-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+          console.log("ts 1 success");
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+          console.log("ts 1 fail");
         },
     );
   }
@@ -4863,7 +4888,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.viewSeizedProductsFileSaved(event.data);
         break;
       case 'downloadRecord':
-        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, 'application/pdf');
+        this.viewProgressReportPdfFile(this.workPlanInspection?.id, event.data.reportReference, 'application/pdf');
         break;
     }
   }
@@ -4947,7 +4972,11 @@ export class WorkPlanDetailsComponent implements OnInit {
             (data: UcrNumberSearch[]) => {
               this.SpinnerService.hide();
               this.dataUcrNumberSearchList = data;
-              this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+              if (this.dataUcrNumberSearchList?.length > 0){
+                this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+              }else{
+                this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
+              }
               this.currDiv = 'verificationUCRDetails';
               // this.verificationPermitForm.disabled;
 
