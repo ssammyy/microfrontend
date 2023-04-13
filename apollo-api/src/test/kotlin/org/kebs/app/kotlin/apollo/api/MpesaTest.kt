@@ -83,7 +83,11 @@ class MpesaTest {
         val password = "password@1"
         val loginid = "KEBSUSER"
 //        plainText.forEach {
+        val hPass=entryNumberKraServices.kraDataEncryption(password)
+        val hLogin=entryNumberKraServices.kraDataEncryption(loginid)
             val hashed = entryNumberKraServices.kraDataEncryption(numberRecords+password+loginid)
+            KotlinLogging.logger { }.info { "my hashed Password   $hPass" }
+            KotlinLogging.logger { }.info { "my hashed Login   $hLogin" }
             KotlinLogging.logger { }.info { "my hashed value   $hashed" }
 //        }
     }

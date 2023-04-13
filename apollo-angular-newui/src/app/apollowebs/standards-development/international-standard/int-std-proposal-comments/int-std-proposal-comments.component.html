@@ -48,7 +48,7 @@
                                         <td>{{isAdoptionProposal.circulationDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{isAdoptionProposal.closingDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{isAdoptionProposal.deadlineDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td>{{isAdoptionProposal.adoptionLink }}</td>
+                                        <td><a href="{{isAdoptionProposal.adoptionLink }}" target="_blank">{{isAdoptionProposal.adoptionLink }}</a></td>
                                         <td>{{isAdoptionProposal.noOfComments}}</td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'comment',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve"> Make Comment</a></td>
                                     </tr>
@@ -65,8 +65,8 @@
                                                 <button type="button" #closeModalComment class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
-                                                <div class="modal-header"><h3 class="modal-title">ADOPTION PROPOSAL</h3></div>
                                             </div>
+                                            <div class="modal-header"><h3 class="modal-title">ADOPTION PROPOSAL</h3></div>
                                             <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
                                                 <div class="modal-body">
                                                     <div class="form-group col-12">

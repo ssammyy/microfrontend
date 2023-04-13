@@ -181,5 +181,9 @@ class ComStdDraft {
     @Basic
     var notAdopt: Long? = null
 
+    @Column(name="TC_ACCEPTANCE_DATE")
+    @Basic
+    var tcAcceptanceDate: Timestamp?=null
+
 
 }

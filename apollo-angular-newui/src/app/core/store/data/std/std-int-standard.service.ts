@@ -20,7 +20,7 @@ import {
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
     ProposalComments,
-    StakeholderProposalComments, StakeHoldersFields, StandardBody, UsersEntity
+    StakeholderProposalComments, StakeHoldersFields, StandardBody, ThisProposalComment, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -113,9 +113,9 @@ export class StdIntStandardService {
     }
 
 
-    public getSessionProposals(proposalId: any): Observable<any> {
+    public getSessionProposals(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSAL);
-        const params = new HttpParams().set('proposalId', proposalId);
+        const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
@@ -368,10 +368,10 @@ export class StdIntStandardService {
     }
 
 
-    public submitDraftComments(comDraftComment: ProposalComments): Observable<any> {
+    public submitDraftComments(comDraftComment: ThisProposalComment): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
         const params = new HttpParams();
-        return this.http.post<ProposalComments>(url, comDraftComment, {params}).pipe(
+        return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -381,10 +381,10 @@ export class StdIntStandardService {
         );
     }
 
-    public submitDraftComment(comDraftComment: ProposalComments): Observable<any> {
+    public submitDraftComment(comDraftComment: ThisProposalComment): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENT);
         const params = new HttpParams();
-        return this.http.post<ProposalComments>(url, comDraftComment, {params}).pipe(
+        return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

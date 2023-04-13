@@ -284,6 +284,11 @@ class IntStandardService(
         return isAdoptionProposalRepository.getProposals(proposalId)
     }
 
+    fun getSessionProposals(): MutableList<ProposalDetails>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return loggedInUser.id?.let { isAdoptionProposalRepository.getSessionProposals(it) }
+    }
+
     //Submit Adoption Proposal comments
 
 
@@ -336,6 +341,8 @@ class IntStandardService(
             comDraftComments.requestID=com.requestId
             comDraftComments.draftID=com.draftId
             comDraftComments.nameOfRespondent=com.nameOfRespondent
+            comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+            comDraftComments.emailOfRespondent=com.emailOfRespondent
             comDraftComments.nameOfOrganization=com.nameOfOrganization
             comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
             comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
@@ -363,6 +370,64 @@ class IntStandardService(
                 }
                 comStdDraftRepository.save(comStdDraft)
             }?: throw Exception("REQUEST NOT FOUND")
+
+        val sub = "New Adoption Proposal "
+        val rec = com.emailOfRespondent
+        val userN = com.nameOfRespondent
+        val kebsEmail = "tim@kebs.com"
+        val messageBody= "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
+                "If you have additional information,Send to the email provided below. $kebsEmail"
+        if (rec != null) {
+            notifications.sendEmail(rec, sub, messageBody)
+        }
+
+
+
+
+        println("Comment Submitted")
+    }
+
+    fun submitDraftComment(com: ProposalCommentsDto){
+        val variables: MutableMap<String, Any> = HashMap()
+        var  comDraftCommentsSaved = ComDraftComments();
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val  comDraftComments = ComDraftComments();
+        comDraftComments.reason=com.reasons
+        comDraftComments.recommendations=com.recommendations
+        comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
+        comDraftComments.requestID=com.requestId
+        comDraftComments.draftID=com.draftId
+        comDraftComments.nameOfRespondent=com.nameOfRespondent
+        comDraftComments.phoneOfRespondent=loggedInUser.cellphone
+        comDraftComments.emailOfRespondent=loggedInUser.email
+        comDraftComments.nameOfOrganization=com.nameOfOrganization
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision=="Yes"){
+            newAdopt=adoptNumber+1
+            newNotAdopt=notAdoptNumber
+
+        }else{
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber+1
+        }
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
 
 
 
@@ -472,6 +537,7 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 1
+
 
                     }
                     comStdDraftRepository.save(comStdDraft)

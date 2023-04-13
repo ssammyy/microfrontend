@@ -85,7 +85,9 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
           nameOfOrganization: null,
           requestId: null,
           draftId: null,
-          adoptionAcceptableAsPresented:null
+          adoptionAcceptableAsPresented:null,
+          emailOfRespondent:null,
+          phoneOfRespondent:null
 
 
       });

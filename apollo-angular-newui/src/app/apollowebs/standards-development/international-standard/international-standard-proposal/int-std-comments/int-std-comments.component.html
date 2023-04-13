@@ -160,6 +160,20 @@
                                                                     class="form-control one-column-input"  formControlName="nameOfRespondent" name="nameOfRespondent"
                                                                     placeholder="" type="text" >
                                                         </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Email of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input
+                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                    class="form-control one-column-input"  formControlName="emailOfRespondent" name="emailOfRespondent"
+                                                                    placeholder="" type="text" >
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Phone Number of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input
+                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                    class="form-control one-column-input"  formControlName="phoneOfRespondent" name="phoneOfRespondent"
+                                                                    placeholder="" type="text" >
+                                                        </div>
 
                                                         <div class="form-group col-12">
                                                             <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -190,8 +204,13 @@
                                                     <button  mat-raised-button
                                                             class="btn btn-sm btn-success"  type="submit" >SUBMIT
                                                     </button>
-                                                    <h4 style="font-weight: bold">NOTE: Absence of any reply or comments shall be deemed to be an acceptance of the proposal for adoption and shall constitute an approval vote.</h4>
+                                                    <div>
+                                                        <h3 style="font-weight: bold">Disclaimer: Comments Once submitted can not be changed.</h3>
+                                                        <h4 style="font-weight: bold">NOTE: Absence of any reply or comments shall be deemed to be an acceptance of the proposal for adoption and shall constitute an approval vote.</h4>
+                                                    </div>
+
                                                 </div>
+
 <!--                                                <div class="modal-footer">-->
 <!--                                                    <button  mat-raised-button  class="btn btn-danger" type="button" >CLOSE</button>-->
 <!--                                                    <button *ngIf="predefinedSDCommentsDataAdded" mat-raised-button-->
