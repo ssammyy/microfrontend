@@ -19,6 +19,10 @@ class MsSampleSubmissionEntity : Serializable {
     @Id
     var id: Long = 0
 
+    @Column(name = "DOC_LIST")
+    @Basic
+    var docList: String? = null
+
     @Column(name = "LAB_RESULTS_STATUS")
     @Basic
     var labResultsStatus: Int? = null

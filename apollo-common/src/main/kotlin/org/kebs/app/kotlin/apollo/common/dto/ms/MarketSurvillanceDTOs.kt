@@ -781,6 +781,7 @@ data class SampleSubmissionDto(
         var parametersList: List<SampleSubmissionItemsDto>? = null,
         var dataReportID: Long?= null,
         var nameOutlet: String?= null,
+        var docList: List<Long>? = null,
 )
 
 data class SampleSubmissionItemsDto(

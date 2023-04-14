@@ -168,6 +168,9 @@ export class UcrNumberSearch {
     itemGrossWeight: string;
     hsDescription: string;
     itemHsCode: string;
+    countryOfOrigin: string;
+    cocNumber: string;
+    importerCD: number;
 }
 
 export class NotificationBodyDto {
@@ -1648,6 +1651,7 @@ export class SampleSubmissionDto {
     parametersList: SampleSubmissionItemsDto[];
     dataReportID: number;
     nameOutlet: string;
+    docList: number[];
 }
 
 export class SampleSubmissionItemsDto {

@@ -918,7 +918,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)
                         POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
                         POST("/sample-collect", handler::addWorkPlanScheduleSampleCollection)
-                        POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
+                        //POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
                         POST("/end-sample-submission", handler::addWorkPlanScheduleEndSampleSubmission)
                         PUT("/sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionBsNumber)
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)

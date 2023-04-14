@@ -3525,6 +3525,9 @@
                                         <th>Item Gross Weight</th>
                                         <th>Hs Description</th>
                                         <th>Item Hs Code</th>
+                                        <th>Country of Origin</th>
+                                        <th>COC Number</th>
+                                        <th>Importer CD</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -3538,6 +3541,9 @@
                                         <td>{{r.itemGrossWeight}}</td>
                                         <td>{{r.hsDescription}}</td>
                                         <td>{{r.itemHsCode}}</td>
+                                        <td>{{r.countryOfOrigin}}</td>
+                                        <td>{{r.cocNumber}}</td>
+                                        <td>{{r.importerCD}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -3583,7 +3589,9 @@
                                         <th>Item Gross Weight</th>
                                         <th>Hs Description</th>
                                         <th>Item Hs Code</th>
-                                    </tr>
+                                        <th>Country of Origin</th>
+                                        <th>COC Number</th>
+                                        <th>Importer CD</th>                                    </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let r of dataUcrNumberSearchList; let i=index">
@@ -3596,6 +3604,9 @@
                                         <td>{{r.itemGrossWeight}}</td>
                                         <td>{{r.hsDescription}}</td>
                                         <td>{{r.itemHsCode}}</td>
+                                        <td>{{r.countryOfOrigin}}</td>
+                                        <td>{{r.cocNumber}}</td>
+                                        <td>{{r.importerCD}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -4438,18 +4449,18 @@
                                         </div>
 
                                         <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Seizure Serial</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.seizureSerial.invalid && formSeizureDeclarationForm.seizureSerial.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="seizureSerial"
-                                                       name="seizureSerial" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.seizureSerial.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.seizureSerial.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
+<!--                                            <div class="form-group">-->
+<!--                                                <label><b>Seizure Serial</b> </label>-->
+<!--                                                <input [class.is-invalid]="formSeizureDeclarationForm.seizureSerial.invalid && formSeizureDeclarationForm.seizureSerial.errors"-->
+<!--                                                       class="form-control two-column-input"-->
+<!--                                                       formControlName="seizureSerial"-->
+<!--                                                       name="seizureSerial" required type="text">-->
+<!--                                                <div *ngIf="submitted && formSeizureDeclarationForm.seizureSerial.errors" class="invalid-feedback">-->
+<!--                                                    <div *ngIf="formSeizureDeclarationForm.seizureSerial.errors.required">This field is-->
+<!--                                                        required-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
                                         </div>
 
                                     </div>
@@ -4484,7 +4495,7 @@
 
                                             <th>Sector</th>
                                             <th>Reason Seizure</th>
-                                            <th>Seizure Serial</th>
+
                                             <th>Quantity</th>
                                             <th>Unit</th>
                                             <th>Estimated Cost</th>
@@ -4500,7 +4511,7 @@
                                             <td>{{r.descriptionProductsSeized}}</td>
                                             <td>{{r.sector}}</td>
                                             <td>{{r.reasonSeizure}}</td>
-                                            <td>{{r.seizureSerial}}</td>
+
                                             <td>{{r.quantity}}</td>
                                             <td>{{r.unit}}</td>
                                             <td>{{r.estimatedCost}}</td>
@@ -6779,6 +6790,17 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div  class="form-group">
+                                <label for="files"><b>Upload SSF Here</b></label>
+                                <form #demoForm="ngForm">
+                                    <file-upload [(ngModel)]="uploadedSSF" name="files" id="uploadedSSFFile"
+                                                 [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                </form>
                             </div>
                         </div>
                     </div>

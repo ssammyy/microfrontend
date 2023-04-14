@@ -1294,6 +1294,24 @@ export class MsService {
         );
     }
 
+    public msWorkPlanScheduleSaveSSF(data: FormData): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveSeizureDeclaration(batchReferenceNo: string, referenceNo: string, data: SeizureDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
@@ -2083,23 +2101,23 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<WorkPlanInspectionDto> {
-        console.log(data);
-        // tslint:disable-next-line:max-line-length
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
-        const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
-        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
-            map(function (response: WorkPlanInspectionDto) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
-                return throwError(fault);
-            }),
-        );
-    }
+    // public msWorkPlanInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<WorkPlanInspectionDto> {
+    //     console.log(data);
+    //     // tslint:disable-next-line:max-line-length
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
+    //     const params = new HttpParams()
+    //         .set('batchReferenceNo', batchReferenceNo)
+    //         .set('referenceNo', referenceNo);
+    //     return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+    //         map(function (response: WorkPlanInspectionDto) {
+    //             return response;
+    //         }),
+    //         catchError((fault: HttpErrorResponse) => {
+    //             // console.warn(`getAllFault( ${fault.message} )`);
+    //             return throwError(fault);
+    //         }),
+    //     );
+    // }
 
     public msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber
     (batchReferenceNo: string,
