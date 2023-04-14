@@ -3099,12 +3099,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Most Recurring Non-Compliance</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="mostRecurringNonCompliant"
-                                               name="mostRecurringNonCompliant" required type="text">
+                                        <mat-select [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"
+                                                    class="form-control two-column-input"
+                                                    formControlName="mostRecurringNonCompliant"
+                                                    name="mostRecurringNonCompliant" required>
+                                            <mat-option selected disabled>Please Select Non-Compliance</mat-option>
+                                            <mat-option *ngFor="let nonCompliance of nonComplianceList" [value]="nonCompliance.nonComplianceName">{{nonCompliance.nonComplianceName}}</mat-option>
+                                        </mat-select>
                                         <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is
+                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Most Recurring Non Compliance is
                                                 required
                                             </div>
                                         </div>
@@ -3113,6 +3116,17 @@
 
 
 
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Additional Non-Compliance Details</b> </label>
+                                        <textarea
+                                                  class="form-control two-column-input"
+                                                  formControlName="additionalNonComplianceDetails"
+                                                  name="additionalNonComplianceDetails"  type="text"></textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col">
@@ -3490,9 +3504,21 @@
                                         <!--                                            <input id="ucrNumber" matInput type="text" -->
                                         <!--                                                   formControlName="ucrNumber" name="ucrNumber">-->
                                         <!--                                        </mat-form-field>-->
+                                        <label for="complianceStatusSSF"><b>Company/Firm Name</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="companyName" matInput type="text" disabled formControlName="companyName" name="companyName">
+                                        </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Product Name</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="productName" matInput type="text" disabled formControlName="productName" name="productName">
+                                        </mat-form-field>
+                                        <label for="complianceStatusSSF"><b>Product brand name</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="brandName" matInput type="text" disabled formControlName="brandName" name="brandName">
+                                        </mat-form-field>
+                                        <label for="complianceStatusSSF"><b>Commodity Description</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="commodityDescription" matInput type="text" disabled formControlName="commodityDescription" name="commodityDescription">
                                         </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Validity Status</b></label>
                                         <mat-form-field class="example-full-width">

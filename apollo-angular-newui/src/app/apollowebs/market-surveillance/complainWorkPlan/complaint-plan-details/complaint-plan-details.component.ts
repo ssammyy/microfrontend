@@ -16,7 +16,7 @@ import {
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
-  MsStandardProductCategory,
+  MsStandardProductCategory, NonComplianceDto,
   PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
@@ -71,7 +71,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
-  //nonComplianceList: NonComplianceDto[];
+  nonComplianceList: NonComplianceDto[];
   active: Number = 0;
   averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
@@ -1796,6 +1796,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
+      additionalNonComplianceDetails: [''],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
       sourceOfProductAndEvidence: ['', Validators.required],
@@ -1992,6 +1993,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       ucrNumber: null,
       productName: null,
       validityStatus: null,
+      companyName: null,
+      brandName: null,
+      commodityDescription: null,
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -2114,17 +2118,17 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
-    // this.msService.getMSNonCompliance().subscribe(
-    //     (data)=>{
-    //       this.nonComplianceList = data;
-    //       console.log("Non Compliance Data "+ data)
-    //     },
-    //     error => {
-    //       //this.SpinnerService.hide();
-    //       console.log("Could not get non compliance data "+error);
-    //       //this.msService.showError('AN ERROR OCCURRED');
-    //     },
-    // );
+    this.msService.getMSNonCompliance().subscribe(
+        (data)=>{
+          this.nonComplianceList = data;
+          console.log("Non Compliance Data "+ data)
+        },
+        error => {
+          //this.SpinnerService.hide();
+          console.log("Could not get non compliance data "+error);
+          //this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
 
 // Hof Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatus

@@ -560,6 +560,7 @@ data class DataReportDto(
         var phoneNumber: String? = null,
         var emailAddress: String? = null,
         var mostRecurringNonCompliant: String? = null,
+        var additionalNonComplianceDetails: String? = null,
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
         var samplesDrawnAndSubmitted: String? = null,
@@ -1389,7 +1390,11 @@ data class PermitUcrSearch(
         var permitNumber: String? = null,
         var ucrNumber: String? = null,
         var productName: String? = null,
-        val validityStatus: Boolean? = null
+        var companyName: String? = null,
+        var brandName: String? = null,
+        var commodityDescription: String? = null,
+        val validityStatus: Boolean? = null,
+
 )
 
 data class MsUsersDto(

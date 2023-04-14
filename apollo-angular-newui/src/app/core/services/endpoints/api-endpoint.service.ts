@@ -907,6 +907,7 @@ export class ApiEndpointService {
         MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_LABORATORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/laboratories`,
+        MS_NON_COMPLIANCE_LIST: `${ApiEndpointService.MS_COMMON_CONTEXT}/non-compliance-list`,
         MS_STANDARDS: `${ApiEndpointService.MS_COMMON_CONTEXT}/standards`,
         MS_RECOMMENDATION: `${ApiEndpointService.MS_COMMON_CONTEXT}/recommendation-list`,
         MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,

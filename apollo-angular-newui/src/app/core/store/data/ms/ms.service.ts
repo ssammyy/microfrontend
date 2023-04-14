@@ -89,7 +89,7 @@ import {
     ConsumerComplaintViewSearchValues,
     SeizeViewSearchValues,
     SubmittedSamplesSummaryViewSearchValues,
-    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch,
+    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch, NonComplianceDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -2283,6 +2283,21 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_LABORATORIES);
         return this.http.get<LaboratoryEntityDto[]>(url).pipe(
             map(function (response: LaboratoryEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public getMSNonCompliance(): Observable<NonComplianceDto[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NON_COMPLIANCE_LIST);
+        return this.http.get<NonComplianceDto[]>(url).pipe(
+            map(function (response: NonComplianceDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

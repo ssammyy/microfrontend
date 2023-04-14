@@ -4618,6 +4618,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         marketCenter = body.marketCenter
                         outletDetails = body.outletDetails
                         mostRecurringNonCompliant = body.mostRecurringNonCompliant
+                        additionalNonComplianceDetails = body.additionalNonComplianceDetails
                         personMet = body.personMet
                         summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                         samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
@@ -4648,6 +4649,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     marketCenter = body.marketCenter
                     outletDetails = body.outletDetails
                     mostRecurringNonCompliant = body.mostRecurringNonCompliant
+                    additionalNonComplianceDetails = body.additionalNonComplianceDetails
                     personMet = body.personMet
                     summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                     samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
@@ -6001,6 +6003,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.phoneNumber,
             dataReport.emailAddress,
             dataReport.mostRecurringNonCompliant,
+            dataReport.additionalNonComplianceDetails,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
             dataReport.samplesDrawnAndSubmitted,

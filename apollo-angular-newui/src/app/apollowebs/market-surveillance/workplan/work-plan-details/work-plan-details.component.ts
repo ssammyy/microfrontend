@@ -16,7 +16,7 @@ import {
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
-  MsStandardProductCategory,
+  MsStandardProductCategory, NonComplianceDto,
   PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
@@ -75,6 +75,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('otherRecommendation') otherRecommendation: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
+  nonComplianceList: NonComplianceDto[];
   selectedDataSheet: DataReportDto;
   showOther = false;
   active: Number = 0;
@@ -1802,6 +1803,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
+      additionalNonComplianceDetails: [''],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
       sourceOfProductAndEvidence: ['', Validators.required],
@@ -1999,6 +2001,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       ucrNumber: null,
       productName: null,
       validityStatus: null,
+      companyName: null,
+      brandName: null,
+      commodityDescription: null,
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -2137,6 +2142,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
+    this.msService.getMSNonCompliance().subscribe(
+        (data)=>{
+          this.nonComplianceList = data;
+          console.log("Non Compliance Data "+ data)
+        },
+        error => {
+          //this.SpinnerService.hide();
+          console.log("Could not get non compliance data "+error);
+          //this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
 // Hof Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatus === false
