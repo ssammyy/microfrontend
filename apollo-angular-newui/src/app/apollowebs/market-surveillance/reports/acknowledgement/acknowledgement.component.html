@@ -90,6 +90,70 @@
                             </div>
                         </div>
 
+                        <div class="row border-0 box-shadow m-3 p-1">
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Summary</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Complaints Received</th>
+                                            <th>Complaints Resolved/Closed</th>
+                                            <th>% Compliance (% closed)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{complaintsReceived}}</td>
+                                            <td>{{complaintsClosed}}</td>
+                                            <td>{{percentageComplaintsClosed}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Compliance with Timelines (5 days Feedback)</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>No. Feedback Provided Within 5 Days</th>
+                                        <th>% Compliance</th>
+                                        <th>Average Feedback Time (Days)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{sumOfDaysTakenToProvideFeedback}}</td>
+                                        <td>{{percentageComplianceWithTimelines}}%</td>
+                                        <td>{{averageFeedbackTimeDays}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Compliance With Timelines (28 Days for Addressing Complaints)</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>No. of Complaints Addressed Within 28 Days</th>
+                                        <th>%Compliance to 28-Day Timeline</th>
+                                        <th>Average Time To Address Complaints (Days)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{noComplaintsAddressedWithin28Days}}</td>
+                                        <td>{{percentageComplianceTo28Days}}</td>
+                                        <td>{{averageTimeToAddressComplaints}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">

@@ -68,6 +68,11 @@ export class ComplaintMonitoringComponent implements OnInit {
     totalCount = 12;
     dataSet: LocalDataSource = new LocalDataSource();
     search: Subject<string>;
+    sumOfQuantity: number;
+    sumOfUnit: number;
+    currentLocationOfSeizedGoods: number;
+    productsDueForDestruction: number;
+    estimatedCost: number;
 
     constructor(private store$: Store<any>,
                 // private dialog: MatDialog,
@@ -139,6 +144,7 @@ export class ComplaintMonitoringComponent implements OnInit {
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
                     this.loadedData = dataResponse?.data as MsSeizedGoodsReportViewEntity[];
                     this.totalCount = this.loadedData.length;
+                    this.calculateSeizedGoodsSummary();
                     this.rerender();
                     this.msService.msOfficerListDetails().subscribe(
                         (dataOfficer: MsUsersDto[]) => {
@@ -191,6 +197,7 @@ export class ComplaintMonitoringComponent implements OnInit {
                     this.loadedData = data.data;
                     this.totalCount = this.loadedData.length;
                     this.dataSet.load(this.loadedData);
+                    this.calculateSeizedGoodsSummary();
                     this.rerender();
                 }
                 this.SpinnerService.hide();
@@ -219,5 +226,50 @@ export class ComplaintMonitoringComponent implements OnInit {
             this.loadData(this.defaultPage, this.defaultPageSize);
             // this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
         }
+    }
+
+    calculateSeizedGoodsSummary(){
+        let arrayOfQuantity = [];
+        let arrayOfUnit = [];
+        let arrayOfEstimatedCost = [];
+        let arrayOfLocationAndSeizedGoods = [];
+        let arrayOfProductsDueForDestruction = [];
+
+        for(let i=0; i < this.loadedData.length; i++){
+
+            if(isNaN(Number(this.loadedData[i].quantity))){
+                this.loadedData[i].quantity = '0';
+            }
+            arrayOfQuantity.push(Number(this.loadedData[i].quantity));
+
+            if(isNaN(Number(this.loadedData[i].unit))){
+                this.loadedData[i].unit = '0';
+            }
+            arrayOfUnit.push(Number(this.loadedData[i].unit));
+
+            if(isNaN(Number(this.loadedData[i].estimatedCost))){
+                this.loadedData[i].estimatedCost = '0';
+            }
+            arrayOfEstimatedCost.push(Number(this.loadedData[i].estimatedCost));
+
+            if(isNaN(Number(this.loadedData[i].currentLocationSeizedProducts))){
+                this.loadedData[i].currentLocationSeizedProducts = '0';
+            }
+            arrayOfLocationAndSeizedGoods.push(Number(this.loadedData[i].currentLocationSeizedProducts));
+
+            if(this.loadedData[i].productsDueForDestruction == "YES"){
+                this.loadedData[i].productsDueForDestruction = '1';
+            }else{
+                this.loadedData[i].productsDueForDestruction = '0';
+            }
+            arrayOfProductsDueForDestruction.push(Number(this.loadedData[i].productsDueForDestruction));
+
+        }
+        this.sumOfQuantity = arrayOfQuantity.reduce((a,b)=> a + b, 0);
+        this.sumOfUnit = arrayOfUnit.reduce((a,b)=> a + b, 0);
+        this.estimatedCost = arrayOfEstimatedCost.reduce((a,b)=> a + b, 0);
+        this.currentLocationOfSeizedGoods = arrayOfLocationAndSeizedGoods.reduce((a,b)=> a + b, 0);
+        this.productsDueForDestruction = arrayOfProductsDueForDestruction.reduce((a,b)=> a + b, 0);
+
     }
 }

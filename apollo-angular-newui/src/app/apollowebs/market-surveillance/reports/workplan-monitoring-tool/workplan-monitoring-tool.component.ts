@@ -64,6 +64,10 @@ export class WorkplanMonitoringToolComponent implements OnInit {
   dataSet: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
 
+  complianceToWorkplan: number;
+  sumOfAllMonths: number;
+  numberOfRows: number;
+
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
               private activatedRoute: ActivatedRoute,
@@ -131,6 +135,7 @@ export class WorkplanMonitoringToolComponent implements OnInit {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.loadedData = dataResponse?.data as WorkPlanMonitoringToolEntity[];
             this.totalCount = this.loadedData.length;
+            this.calculateAverageCompliance();
             this.rerender();
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
@@ -183,6 +188,7 @@ export class WorkplanMonitoringToolComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.calculateAverageCompliance();
             this.rerender();
           }
           this.SpinnerService.hide();
@@ -211,6 +217,55 @@ export class WorkplanMonitoringToolComponent implements OnInit {
       this.loadData(this.defaultPage, this.defaultPageSize);
       // this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
     }
+  }
+
+  calculateAverageCompliance(){
+    this.numberOfRows = this.loadedData.length;
+    let sumOfJan = 0;
+    let sumOfFeb = 0;
+    let sumOfMarch = 0;
+    let sumOfApril = 0;
+    let sumOfMay = 0;
+    let sumOfJune = 0;
+    let sumOfJuly = 0;
+    let sumOfAug = 0;
+    let sumOfSept = 0;
+    let sumOfOct = 0;
+    let sumOfNov = 0;
+    let sumOfDec = 0;
+
+    for (let i = 0; i < this.loadedData.length; i++) {
+      sumOfJan += Number(this.loadedData[i].january);
+      sumOfFeb += Number(this.loadedData[i].february);
+      sumOfMarch += Number(this.loadedData[i].march);
+      sumOfApril += Number(this.loadedData[i].april);
+      sumOfMay += Number(this.loadedData[i].may);
+      sumOfJune += Number(this.loadedData[i].june);
+      sumOfJuly += Number(this.loadedData[i].july);
+      sumOfAug += Number(this.loadedData[i].august);
+      sumOfSept += Number(this.loadedData[i].september);
+      sumOfOct += Number(this.loadedData[i].october);
+      sumOfNov += Number(this.loadedData[i].november);
+      sumOfDec += Number(this.loadedData[i].december);
+    }
+    console.log("Jan: " + sumOfJan);
+    console.log("Feb: " + sumOfFeb);
+    console.log("Mar: " + sumOfMarch);
+    console.log("Apr: " + sumOfApril);
+    console.log("May: " + sumOfMay);
+    console.log("Jun: " + sumOfJune);
+    console.log("Jul: " + sumOfJuly);
+    console.log("Aug: " + sumOfAug);
+    console.log("Sep: " + sumOfSept);
+    console.log("Oct: " + sumOfOct);
+    console.log("Nov: " + sumOfNov);
+    console.log("Dec: " + sumOfDec);
+
+
+    this.sumOfAllMonths = sumOfJan + sumOfFeb + sumOfMarch + sumOfApril + sumOfMay + sumOfJune + sumOfJuly + sumOfAug + sumOfSept + sumOfOct + sumOfNov + sumOfDec;
+    this.complianceToWorkplan = (this.sumOfAllMonths/this.loadedData.length)*100
+
+
   }
 
 }
