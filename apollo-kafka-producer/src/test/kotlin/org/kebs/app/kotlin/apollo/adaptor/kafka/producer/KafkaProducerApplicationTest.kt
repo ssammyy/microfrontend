@@ -22,10 +22,11 @@
 package org.kebs.app.kotlin.apollo.adaptor.kafka.producer
 
 import mu.KotlinLogging
+import org.junit.Test
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.common.dto.BaseRequest
 import org.springframework.beans.factory.annotation.Autowired
-import kotlin.test.Test
+//import org.junit.Test
 
 
 class KafkaProducerApplicationTest {
