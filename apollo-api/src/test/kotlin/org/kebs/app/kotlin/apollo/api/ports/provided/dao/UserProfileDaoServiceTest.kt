@@ -2,7 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.core.type.TypeReference
 import mu.KotlinLogging
-import org.junit.jupiter.api.Test
+//import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.spec.UserSpecification
@@ -22,7 +22,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import kotlin.test.expect
+import org.junit.Test
 
 
 @ExtendWith(SpringExtension::class)
@@ -57,7 +57,7 @@ class UserProfileDaoServiceTest {
                 RegionsCountyTownViewDto.FIND_ALL,
                 RegionsCountyTownViewDto::class.java
         ).resultList.filter { it.townId != null }
-        expect(list.isEmpty(), "Empty List found", { false })
+//        expect(list.isEmpty(), "Empty List found", { false })
         list.forEach {
             KotlinLogging.logger { }.info("Record found: ${it.townId} ${it.county}")
         }

@@ -134,6 +134,29 @@
                             </div>
                         </div>
 
+                        <div class="row border-0 box-shadow m-3 p-1">
+                            <div class="col border border-secondary m-1 p-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>Sum of Quantity</th>
+                                        <th>Sum of Unit</th>
+                                        <th>Sum of Estimated Cost</th>
+                                        <th>Sum of Current Location?</th>
+                                        <th>Number of Products Due For Destruction</th>
+                                    </thead>
+                                    <tbody>
+                                        <td>{{sumOfQuantity}}</td>
+                                        <td>{{sumOfUnit}}</td>
+                                        <td>{{estimatedCost}}</td>
+                                        <td>{{currentLocationOfSeizedGoods}}</td>
+                                        <td>{{productsDueForDestruction}}</td>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">

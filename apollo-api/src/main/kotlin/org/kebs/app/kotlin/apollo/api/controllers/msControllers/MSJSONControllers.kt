@@ -43,6 +43,7 @@ class MSJSONControllers(
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val seizureDeclarationRepo: IMsSeizureRepository,
     private val dataReportParameterRepo: IDataReportParameterRepository,
+    private val ssfLabParametersRepo: ISSFLabParameterRepository,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
@@ -455,6 +456,64 @@ class MSJSONControllers(
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(dataReportFileSaved.first))
+            }
+        }
+
+    }
+
+    @PostMapping("/workPlan/inspection/add/sample-submission")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanInspectionSSF(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, SampleSubmissionDto::class.java)
+
+        if (docFile!=null) {
+            body.docList?.forEach { fileDel->
+                msUploadRepo.deleteById(fileDel)
+            }
+        }
+
+        val fileDocList = mutableListOf<Long>()
+        docFile?.forEach { fileDoc ->
+            val fileDocSaved =   msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,"SAMPLE SUBMISSION FORM",workPlanScheduled)
+            fileDocSaved.second.id?.let { fileDocList.add(it) }
+        }
+
+
+        with(body){
+            docList = fileDocList
+        }
+
+        val SSFFileSaved = msWorkPlanDaoService.workPlanInspectionDetailsAddSSF(body, workPlanScheduled, map, loggedInUser)
+
+        when (SSFFileSaved.first.status) {
+            map.successStatus -> {
+                val SSFLabParamList = SSFFileSaved.second.id.let { msWorkPlanDaoService.findSSFLabParamsBySSFID(it) }
+                SSFLabParamList?.forEach { paramRemove ->
+                    val result: SampleSubmissionItemsDto? = body.parametersList?.find { actor -> actor.id == paramRemove.id }
+                    if (result == null) {
+                        dataReportParameterRepo.deleteById(paramRemove.id)
+                    }
+                }
+
+                body.parametersList?.forEach { param ->
+                    msWorkPlanDaoService.workPlanInspectionDetailsAddSSFLabParams(param, SSFFileSaved.second, map, loggedInUser)
+                }
+                return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(SSFFileSaved.first))
             }
         }
 

@@ -40,6 +40,7 @@ package org.kebs.app.kotlin.apollo.ipc
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
@@ -59,7 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.test.Test
+//import org.junit.Test
 
 
 @SpringBootTest

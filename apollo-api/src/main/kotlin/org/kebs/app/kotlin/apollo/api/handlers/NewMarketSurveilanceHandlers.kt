@@ -237,6 +237,17 @@ class NewMarketSurveillanceHandler(
             return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
     }
+    fun msNonCompliance(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllNonCompliance()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Non Compliance found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
 
     fun countiesListingAdmin(req: ServerRequest): ServerResponse {
         try {

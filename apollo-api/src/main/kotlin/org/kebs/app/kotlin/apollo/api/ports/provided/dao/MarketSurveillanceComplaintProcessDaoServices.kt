@@ -339,6 +339,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
 //                    ucrNumber= permitDetails,
                     productName= permitDetails.productName,
                     validityStatus= permitDetails.permitExpiredStatus ==1,
+            companyName = permitDetails.firmName,
+            brandName= permitDetails.tradeMark,
+            commodityDescription= permitDetails.commodityDescription,
         )
     }
 

@@ -16,7 +16,7 @@ import {
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
-  MsStandardProductCategory,
+  MsStandardProductCategory, NonComplianceDto,
   PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
@@ -56,6 +56,7 @@ import {
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 
 interface Post {
@@ -74,7 +75,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('standardsInput') standardsInput: ElementRef;
   @ViewChild('otherRecommendation') otherRecommendation: ElementRef;
 
+  dateObj: Date;
+
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
+  nonComplianceList: NonComplianceDto[];
   selectedDataSheet: DataReportDto;
   showOther = false;
   active: Number = 0;
@@ -231,6 +235,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   blob: Blob;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
+  uploadedSSF: FileList;
+  arrayOfUploadedSSF: File[] = [];
   uploadedFilesOnly: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedAppealFiles: FileList;
@@ -1802,6 +1808,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
+      additionalNonComplianceDetails: [''],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
       sourceOfProductAndEvidence: ['', Validators.required],
@@ -1866,7 +1873,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
-      seizureSerial: ['', Validators.required],
+      seizureSerial: null,
       quantity: ['', Validators.required],
       unit: ['', Validators.required],
       estimatedCost: ['', Validators.required],
@@ -1932,7 +1939,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
-      sendersDate: this.msService.formatDate(new Date()),
+      sendersDate: null,
       receiversName: null,
       productDescription: null,
       receiversDate: null,
@@ -1999,6 +2006,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       ucrNumber: null,
       productName: null,
       validityStatus: null,
+      companyName: null,
+      brandName: null,
+      commodityDescription: null,
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -2137,6 +2147,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
+    this.msService.getMSNonCompliance().subscribe(
+        (data)=>{
+          this.nonComplianceList = data;
+          console.log("Non Compliance Data "+ data)
+        },
+        error => {
+          //this.SpinnerService.hide();
+          console.log("Could not get non compliance data "+error);
+          //this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
 // Hof Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatus === false
@@ -4336,7 +4357,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
-    console.log('Data in the form control before: ' + standardsArrayControl.value);
+    this.sampleSubmitForm.get('sendersDate').setValue(null);
+    this.sampleSubmitForm.get('receiversDate').setValue(null);
+    this.sampleSubmitForm.get('lbIdDateOfManf').setValue(null);
+    this.sampleSubmitForm.get('lbIdExpiryDate').setValue(null);
+    this.sampleSubmitForm.get('sampleCollectionDate').setValue(null);
 
     for (const selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
@@ -4349,8 +4374,13 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-    console.log('Data in the form control after: ' + standardsArrayControl.value);
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+   if (this.uploadedSSF){
+     for ( let i = 0; i < this.uploadedSSF.length; i++) {
+       this.arrayOfUploadedSSF.push(this.uploadedSSF[i]);
+     }
+   }
+
+    if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -4362,16 +4392,41 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveSampleSubmitted() {
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+    if (this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'SSF_DOCUMENT');
+      formData.append('data', JSON.stringify(this.dataSaveSampleSubmit));
+      if (this.uploadedSSF?.length > 0){
+        const file = this.uploadedSSF;
+        for (let i = 0; i < file.length; i++) {
+          formData.append('docFile', file[i], file[i].name);
+        }
+      }
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveSampleSubmit).subscribe(
+      // this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
+      //     this.workPlanInspection.batchDetails.referenceNumber,
+      //     this.workPlanInspection.referenceNumber,
+      //     this.dataSaveSampleSubmit).subscribe(
+      //     (data: any) => {
+      //       this.workPlanInspection = data;
+      //       console.log(data);
+      //       this.SpinnerService.hide();
+      //       this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
+      //     },
+      //     error => {
+      //       this.SpinnerService.hide();
+      //       console.log(error);
+      //       this.msService.showError('AN ERROR OCCURRED');
+      //     },
+      // );
+
+      this.msService.msWorkPlanScheduleSaveSSF(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -4384,6 +4439,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+
     } else {
       this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
     }

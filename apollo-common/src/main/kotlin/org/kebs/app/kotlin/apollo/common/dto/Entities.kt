@@ -766,6 +766,13 @@ data class LaboratoryEntityDto(
     var status: Boolean? = null
 )
 
+data class NonComplianceDto(
+    var id: Long? = null,
+    var nonComplianceName: String? = null,
+    var description: String? = null,
+    var status: Boolean? = null
+)
+
 data class KebsStandardsDto(
     var id: Long? = null,
     var standardTitle: String? = null,

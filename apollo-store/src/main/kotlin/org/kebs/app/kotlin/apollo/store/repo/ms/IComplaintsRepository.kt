@@ -115,6 +115,10 @@ interface IComplaintDocumentsRepository : HazelcastRepository<ComplaintDocuments
 interface ICfgKebsMsOgaRepository : HazelcastRepository<CfgKebsMsOgaEntity, Long>{
 
 }
+interface INonComplianceRepository : HazelcastRepository<MSNonComplianceEntity, Long> {
+    fun findByStatus(status: Int): List<MSNonComplianceEntity>
+
+}
 
 @Repository
 interface IComplaintCustomersRepository : HazelcastRepository<ComplaintCustomersEntity, Long>{
