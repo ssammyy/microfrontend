@@ -1,44 +1,23 @@
-{
+
+curl -k --location --request POST 'https://196.61.52.52/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
   "REQUEST": {
-    "header": {
-      "loginId": "KEBSUSER",
-      "password": "password@1",
-      "hash": "b66c0b0f5a82154fc7e902b398403e5744da64496a392dc5ddf80e773d0563a9",
-      "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T19:57:52"
-    },
-    "penaltyinfo": [
-      {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "penaltyOrderNo": 33864,
-        "PenaltyOrderNo": 33864
-      }
-    ],
     "HEADER": {
       "loginId": "KEBSUSER",
       "password": "password@1",
-      "hash": "b66c0b0f5a82154fc7e902b398403e5744da64496a392dc5ddf80e773d0563a9",
+      "hash": "a0e5d563c0391bc12b5137504c8ccf944d0207805a46b4da46100d57948ff24c",
       "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T19:57:52"
+      "transmissionDate": "17-04-2023T10:21:01"
     },
-    "PENALTYINFO": [
+    "DETAILS": [
       {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "penaltyOrderNo": 33864,
-        "PenaltyOrderNo": 33864
+        "entryNumber": "20230417000033",
+        "kraPin": "P051936707P",
+        "manufacturerName": "LANGO WATER LIMITED",
+        "registrationDate": "05-04-2023T11:12:06",
+        "status": "Active"
       }
     ]
   }
-}
+}'

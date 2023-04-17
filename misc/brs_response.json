@@ -1,42 +1,27 @@
+
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails'
+--header 'Content-Type: application/json'
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "a3ff89d16f63a1529b254ae6bda522274636284d6e37722ab586c132a1af2b44",
+"noOfRecords": "1",
+"transmissionDate": "03-02-2023T15:50:22"
+},
+"PENALTYINFO": [
 {
-  "REQUEST": {
-    "penaltyinfo": [
-      {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "PenaltyOrderNo": 33864
-      }
-    ],
-    "header": {
-      "loginId": "KEBSUSER",
-      "password": "password@1",
-      "hash": "54291fee4fd675241d31c056829d816be9b703686f230de57e208c4f0e1d8c68",
-      "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T18:19:14"
-    },
-    "HEADER": {
-      "loginId": "KEBSUSER",
-      "password": "password@1",
-      "hash": "54291fee4fd675241d31c056829d816be9b703686f230de57e208c4f0e1d8c68",
-      "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T18:19:14"
-    },
-    "PENALTYINFO": [
-      {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "PenaltyOrderNo": 33864
-      }
-    ]
-  }
+"entryNo": "22435",
+"periodTo": "31-12-2022",
+"periodFrom": "01-12-2022",
+"penaltyPayable": 100,
+"kraPin": "P051399927T",
+"penaltyGenDate": "03-02-2023T15:24:04",
+"manufacName": "CABLE CONNECT LIMITED",
+"penaltyOrderNo": 33864
 }
+]
+}
+}'

@@ -1216,7 +1216,14 @@ class RegistrationDaoServices(
                         response="Not Saved"
 
 
-                    }
+                    }"90005" -> {
+                    slFormResponse="Form not saved..Contact System Administrator"
+                    responseStatus="error"
+                    responseButton="btn btn-danger form-wizard-next-btn"
+                    response="Not Saved"
+
+
+                }
                     else -> {
                         slFormResponse="Form not saved..Kindly try again"
                         responseStatus="error"

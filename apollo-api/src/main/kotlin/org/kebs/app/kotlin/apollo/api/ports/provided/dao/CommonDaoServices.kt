@@ -59,6 +59,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
@@ -177,7 +178,7 @@ class CommonDaoServices(
     private val apiClientRepo: ApiClientRepo,
     private val tokenService: JwtTokenService,
     private val authenticationProperties: AuthenticationProperties,
-    private val usersEntityRepository: UsersEntityRepository,
+    private val usersEntityRepository: UsersEntityRepository
 ) {
 
     @Value("\${common.page.view.name}")
@@ -2673,6 +2674,8 @@ class CommonDaoServices(
 
         return usersEntityRepository.getUserEmailById(userId) ?: throw ExpectedDataNotFound("No Email Address Found")
     }
+
+
 
 
 }
