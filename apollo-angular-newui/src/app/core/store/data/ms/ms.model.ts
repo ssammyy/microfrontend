@@ -154,6 +154,9 @@ export class PermitUcrSearch {
     ucrNumber: string;
     productName: string;
     validityStatus: boolean;
+    companyName: string;
+    brandName: string;
+    commodityDescription: string;
 }
 
 export class UcrNumberSearch {
@@ -165,6 +168,9 @@ export class UcrNumberSearch {
     itemGrossWeight: string;
     hsDescription: string;
     itemHsCode: string;
+    countryOfOrigin: string;
+    cocNumber: string;
+    importerCD: number;
 }
 
 export class NotificationBodyDto {
@@ -1206,6 +1212,7 @@ export class DataReportDto {
     phoneNumber: string;
     outletDetails: string;
     mostRecurringNonCompliant: string;
+    additionalNonComplianceDetails: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
     samplesDrawnAndSubmitted: string;
@@ -1271,6 +1278,13 @@ export class FuelBatchDetailsDto {
 export class LaboratoryDto {
     id: number;
     labName: string;
+    description: string;
+    status: boolean;
+}
+
+export class NonComplianceDto {
+    id: number;
+    nonComplianceName: string;
     description: string;
     status: boolean;
 }
@@ -1637,6 +1651,7 @@ export class SampleSubmissionDto {
     parametersList: SampleSubmissionItemsDto[];
     dataReportID: number;
     nameOutlet: string;
+    docList: number[];
 }
 
 export class SampleSubmissionItemsDto {

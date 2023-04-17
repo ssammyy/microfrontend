@@ -334,7 +334,7 @@
                                                                             <div class="form-body">
                                                                                 <div class="row col-12">
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>SPC Meeting Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>Justification Preparation Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 [class.is-invalid]="formPrepareJustification.meetingDate.invalid && formPrepareJustification.meetingDate.touched"
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -343,10 +343,9 @@
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label>Department/Sector</label>
-                                                                                        <select class="form-control" formControlName="department" name="department" required   >
-                                                                                            <option value="" disabled>Choose a Category</option>
-                                                                                            <option value="{{actionRequest?.departmentId}}" [selected]>{{actionRequest?.departmentName}}</option>
-                                                                                            <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                                                                                        <select class="form-control" formControlName="department" name="department" required [class.is-invalid]="formPrepareJustification.department.invalid && formPrepareJustification.department.touched"   >
+
+                                                                                            <option *ngFor="let department of departments" value="{{department.id}}" [selected]="department.id==actionRequest?.departmentId">{{department.name}}</option>
                                                                                         </select>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
@@ -367,7 +366,7 @@
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.title.invalid && formPrepareJustification.title.touched"
                                                                                                   class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="title" name="title"
                                                                                                   placeholder="International Standard Title" type="text" ></textarea>
 
@@ -375,7 +374,7 @@
 
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
+                                                                                        <input [class.is-invalid]="formPrepareJustification.edition.invalid && formPrepareJustification.edition.touched"
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{edition}}" formControlName="edition" name="edition"
                                                                                                 placeholder="Edition" type="text">
                                                                                     </div>
@@ -384,34 +383,34 @@
                                                                                         <label><b>Requested By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.requesterName}}" formControlName="requestedBy" name="requestedBy"
-                                                                                                placeholder="Name" type="text">
+                                                                                                placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <hr>
                                                                                     <h3>Issues Addressed</h3>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.scope.invalid && formPrepareJustification.scope.touched"
                                                                                                   class="form-control one-column-input" value="{{actionRequest?.scope}}" formControlName="scope" name="scope"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Purpose and Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.purposeAndApplication.invalid && formPrepareJustification.purposeAndApplication.touched"
                                                                                                   class="form-control one-column-input"  formControlName="purposeAndApplication" name="purposeAndApplication"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Intended Users</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.intendedUsers.invalid && formPrepareJustification.intendedUsers.touched"
                                                                                                   class="form-control one-column-input"  formControlName="intendedUsers" name="intendedUsers"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.referenceMaterial.invalid && formPrepareJustification.referenceMaterial.touched"
                                                                                                   class="form-control one-column-input"  formControlName="referenceMaterial" name="referenceMaterial"
                                                                                                   placeholder="Reference Material" type="text" ></textarea>
 
@@ -437,8 +436,8 @@
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>TC Acceptance Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="tcAcceptanceDate" name="tcAcceptanceDate"
-                                                                                                placeholder="Name" type="date" >
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.tcAcceptanceDate | date: 'yyyy-MM-dd'}}"  formControlName="tcAcceptanceDate" name="tcAcceptanceDate"
+                                                                                                placeholder="Name" type="text" disabled>
                                                                                     </div>
 
 
@@ -451,7 +450,7 @@
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                                            <button *ngIf="prepareJustificationFormGroup.valid" [disabled]="!prepareJustificationFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

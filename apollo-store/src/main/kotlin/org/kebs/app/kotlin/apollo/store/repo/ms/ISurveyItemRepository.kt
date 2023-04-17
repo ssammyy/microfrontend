@@ -376,6 +376,27 @@ interface IDataReportParameterRepository : HazelcastRepository<MsDataReportParam
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
+@Repository
+interface ISSFRepository : HazelcastRepository<MsSampleSubmissionEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsSampleSubmissionEntity>
+
+    fun findByWorkPlanGeneratedIDAndId(workPlanGeneratedID: Long, id: Long): MsSampleSubmissionEntity?
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): List<MsSampleSubmissionEntity>?
+//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+}
+
+@Repository
+interface ISSFLabParameterRepository : HazelcastRepository<MsLaboratoryParametersEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsLaboratoryParametersEntity>
+
+    fun findBysampleSubmissionId(sampleSubmissionId: Long, pageable: Pageable): Page<MsLaboratoryParametersEntity>
+
+    fun findBysampleSubmissionId(sampleSubmissionId: Long): List<MsLaboratoryParametersEntity>?
+//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+}
+
 
 
 

@@ -1791,7 +1791,7 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProposalsComponent}],
     },
     {
-        path: 'isPropComments/:proposalId', component: AdminLayoutComponent,
+        path: 'isPropComments', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdProposalCommentsComponent}],
     },

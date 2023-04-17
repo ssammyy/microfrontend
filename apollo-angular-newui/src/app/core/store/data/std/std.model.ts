@@ -633,7 +633,7 @@ export class PredefinedSdIntCommentsFields{
     requestID: number;
     draftID: number;
 }
-export class ProposalComments{
+export class ThisProposalComment{
     commentDocumentType: string;
     circulationDate: Timestamp<any>;
     closingDate: Timestamp<any>;
@@ -648,6 +648,8 @@ export class ProposalComments{
     requestId: number;
     draftId: number;
     adoptionAcceptableAsPresented: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
 }
 export class PredefinedSDCommentsFields {
     standardNumber: string;
@@ -696,6 +698,7 @@ export interface ISAdoptionProposal {
     //addStakeholdersList: string[];
     iStandardNumber: string;
     deadlineDate: Timestamp<any>;
+    tcAcceptanceDate: Timestamp<any>;
     noOfComments: number;
     preparedDate: Timestamp<any>;
     draftId: number;
@@ -717,6 +720,7 @@ export interface ISAdoptionProposal {
     voteAgainst: number;
     requesterName: string;
     departmentName: string;
+    standardType: string;
 }
 
 export interface ISJustificationProposal {

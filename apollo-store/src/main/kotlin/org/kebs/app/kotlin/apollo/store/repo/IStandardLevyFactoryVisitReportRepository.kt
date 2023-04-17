@@ -61,7 +61,7 @@ interface ISlUpdatecompanyDetailsEntityRepository : HazelcastRepository<SlUpdate
 }
 
 interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdLevyEntryNoDataMigrationEntity, Long>{
-    @Query(value = "SELECT max(ENTRY_COUNT)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
+    @Query(value = "SELECT NVL(max(ENTRY_COUNT),0)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
     fun getMaxEntryNo(): Long
 
     @Query(value = "SELECT ENTRY_NUMBERS  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)

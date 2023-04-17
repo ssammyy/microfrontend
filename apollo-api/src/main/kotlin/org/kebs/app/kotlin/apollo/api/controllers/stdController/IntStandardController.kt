@@ -154,9 +154,9 @@ class IntStandardController(
 
     @GetMapping("/international_standard/getSessionProposals")
     @ResponseBody
-    fun getSessionProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    fun getSessionProposals(): MutableList<ProposalDetails>?
     {
-        return internationalStandardService.getProposals(proposalId)
+        return internationalStandardService.getSessionProposals()
     }
 
 
@@ -248,7 +248,7 @@ class IntStandardController(
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(intDraftCommentDto))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComment(intDraftCommentDto))
 
     }
 

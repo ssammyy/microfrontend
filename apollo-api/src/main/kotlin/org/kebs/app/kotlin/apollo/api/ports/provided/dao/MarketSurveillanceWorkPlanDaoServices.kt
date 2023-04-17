@@ -59,6 +59,8 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val chargeSheetRepo: IChargeSheetRepository,
     private val dataReportRepo: IDataReportRepository,
     private val dataReportParameterRepo: IDataReportParameterRepository,
+    private val sampleSubmissionRepo: ISSFRepository,
+    private val ssfLabParametersRepo: ISSFLabParameterRepository,
     private val seizureDeclarationRepo: IMsSeizureRepository,
     private val seizureRepo: IMSSeizureDeclarationRepository,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
@@ -4618,6 +4620,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         marketCenter = body.marketCenter
                         outletDetails = body.outletDetails
                         mostRecurringNonCompliant = body.mostRecurringNonCompliant
+                        additionalNonComplianceDetails = body.additionalNonComplianceDetails
                         personMet = body.personMet
                         summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                         samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
@@ -4648,6 +4651,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     marketCenter = body.marketCenter
                     outletDetails = body.outletDetails
                     mostRecurringNonCompliant = body.mostRecurringNonCompliant
+                    additionalNonComplianceDetails = body.additionalNonComplianceDetails
                     personMet = body.personMet
                     summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                     samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
@@ -4685,6 +4689,136 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, saveDataReport)
+    }
+
+    fun workPlanInspectionDetailsAddSSF(
+        body: SampleSubmissionDto,
+        workPlanScheduled: MsWorkPlanGeneratedEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSF = MsSampleSubmissionEntity()
+        try {
+
+            sampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { updateSSF ->
+                    with(updateSSF) {
+                        docList = body.docList?.let { commonDaoServices.convertClassToJson(it) }
+                        nameProduct = body.nameProduct
+                        packaging = body.packaging
+                        labellingIdentification = body.labellingIdentification
+                        fileRefNumber = body.fileRefNumber
+                        referencesStandards = body.referencesStandards
+                        sizeTestSample = body.sizeTestSample
+                        sizeRefSample = body.sizeRefSample
+                        condition = body.condition
+                        sampleReferences = body.sampleReferences
+                        sendersName = body.sendersName
+                        designation = body.designation
+                        address = body.address
+                        sendersDate = body.sendersDate
+                        receiversDate = body.receiversDate
+                        receiversName = body.receiversName
+                        testChargesKsh = body.testChargesKsh
+                        receiptLpoNumber = body.receiptLpoNumber
+                        invoiceNumber = body.invoiceNumber
+                        disposal = body.disposal
+                        remarks = body.remarks
+                        countryOfOrigin = body.countryOfOrigin
+                        sampleCollectionNumber = body.sampleCollectionNumber
+                        lbIdAnyAomarking = body.lbIdAnyAomarking
+                        lbIdBatchNo = body.lbIdBatchNo
+                        lbIdContDecl = body.lbIdContDecl
+                        lbIdDateOfManf = body.lbIdDateOfManf
+                        sampleCollectionDate = body.sampleCollectionDate
+                        lbIdExpiryDate = body.lbIdExpiryDate
+                        lbIdTradeMark = body.lbIdTradeMark
+                        noteTransResults = body.noteTransResults
+                        scfNo = body.scfNo
+                        cocNumber = body.cocNumber
+                        bsNumber = body.bsNumber
+                        productDescription = body.productDescription
+                        sourceProductEvidence = body.sourceProductEvidence
+                        dataReportID = body.dataReportID
+                        workPlanGeneratedID = workPlanScheduled.id
+                        status = map.activeStatus
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    saveSSF = sampleSubmissionRepo.save(updateSSF)
+
+                } ?: kotlin.run {
+                with(saveSSF) {
+                    docList = body.docList?.let { commonDaoServices.convertClassToJson(it) }
+                    nameProduct = body.nameProduct
+                    packaging = body.packaging
+                    labellingIdentification = body.labellingIdentification
+                    fileRefNumber = body.fileRefNumber
+                    referencesStandards = body.referencesStandards
+                    sizeTestSample = body.sizeTestSample
+                    sizeRefSample = body.sizeRefSample
+                    condition = body.condition
+                    sampleReferences = body.sampleReferences
+                    sendersName = body.sendersName
+                    designation = body.designation
+                    address = body.address
+                    sendersDate = body.sendersDate
+                    receiversDate = body.receiversDate
+                    receiversName = body.receiversName
+                    testChargesKsh = body.testChargesKsh
+                    receiptLpoNumber = body.receiptLpoNumber
+                    invoiceNumber = body.invoiceNumber
+                    disposal = body.disposal
+                    remarks = body.remarks
+                    countryOfOrigin = body.countryOfOrigin
+                    sampleCollectionNumber = body.sampleCollectionNumber
+                    lbIdAnyAomarking = body.lbIdAnyAomarking
+                    lbIdBatchNo = body.lbIdBatchNo
+                    lbIdContDecl = body.lbIdContDecl
+                    lbIdDateOfManf = body.lbIdDateOfManf
+                    sampleCollectionDate = body.sampleCollectionDate
+                    lbIdExpiryDate = body.lbIdExpiryDate
+                    lbIdTradeMark = body.lbIdTradeMark
+                    noteTransResults = body.noteTransResults
+                    scfNo = body.scfNo
+                    cocNumber = body.cocNumber
+                    bsNumber = body.bsNumber
+                    productDescription = body.productDescription
+                    sourceProductEvidence = body.sourceProductEvidence
+                    dataReportID = body.dataReportID
+                    workPlanGeneratedID = workPlanScheduled.id
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+
+                }
+                saveSSF = sampleSubmissionRepo.save(saveSSF)
+            }
+
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveSSF)}"
+            sr.names = "Save SSF Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSF)
     }
 
     fun workPlanInspectionDetailsAddCountiesTowns(
@@ -4815,6 +4949,62 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, saveDataReport)
+    }
+
+    fun workPlanInspectionDetailsAddSSFLabParams(
+        body: SampleSubmissionItemsDto,
+        SSFReport: MsSampleSubmissionEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsLaboratoryParametersEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSFLabParams = MsLaboratoryParametersEntity()
+        try {
+            ssfLabParametersRepo.findByIdOrNull(body.id ?: -1L)?.let { param ->
+                with(param) {
+                    laboratoryName = body.laboratoryName
+                    parameters = body.parameters
+                    status = map.activeStatus
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+
+                }
+                saveSSFLabParams = sampleSubmitParameterRepo.save(param)
+            } ?: kotlin.run {
+                with(saveSSFLabParams) {
+                    laboratoryName = body.laboratoryName
+                    parameters = body.parameters
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+
+                }
+                saveSSFLabParams = sampleSubmitParameterRepo.save(saveSSFLabParams)
+            }
+
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveSSFLabParams)}"
+            sr.names = "Save SSF Lab Parameters Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSFLabParams)
     }
 
     fun workPlanInspectionDetailsAddSeizureDeclaration(
@@ -6001,6 +6191,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.phoneNumber,
             dataReport.emailAddress,
             dataReport.mostRecurringNonCompliant,
+            dataReport.additionalNonComplianceDetails,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
             dataReport.samplesDrawnAndSubmitted,
@@ -6886,6 +7077,10 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun findDataReportParamsByDataReportID(dataReportID: Long): List<MsDataReportParametersEntity>? {
         return dataReportParameterRepo.findByDataReportId(dataReportID)
+    }
+
+    fun findSSFLabParamsBySSFID(SSFID: Long): List<MsLaboratoryParametersEntity>? {
+        return ssfLabParametersRepo.findBysampleSubmissionId(SSFID)
     }
 
     fun findCountiesTownsByWorkPlanID(workPlanInspectionID: Long): List<MsWorkPlanCountiesTownsEntity>? {

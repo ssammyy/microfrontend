@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ICfgKebsMsOgaRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.INonComplianceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IPredefinedResourcesRequiredRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -38,6 +39,7 @@ class MasterDataDaoService(
     private val standardCategoryRepo: IStandardCategoryRepository,
     private val sampleStandardsRepo: ISampleStandardsRepository,
     private val laboratoryRepo: ILaboratoryRepository,
+    private val nonComplianceRepo: INonComplianceRepository,
     private val predefinedResourcesRequiredRepo: IPredefinedResourcesRequiredRepository,
     private val cfgKebsMsOgaRepo: ICfgKebsMsOgaRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
@@ -197,6 +199,9 @@ class MasterDataDaoService(
     fun getAllLaboratories(): List<LaboratoryEntityDto>? =
         laboratoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }
             .map { LaboratoryEntityDto(it.id, it.labName, it.description, it.status == 1) }
+    fun getAllNonCompliance(): List<NonComplianceDto>? =
+        nonComplianceRepo.findAll().sortedBy { it.id }.sortedBy { it.id }
+            .map { NonComplianceDto(it.id, it.nonComplianceName, it.description, it.status == 1) }
 
     fun getAllPredefinedResourcesRequired(): List<PredefinedResourcesRequiredEntityDto>? =
         predefinedResourcesRequiredRepo.findAll().sortedBy { it.id }.sortedBy { it.id }
