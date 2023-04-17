@@ -2475,8 +2475,7 @@ class QualityAssuranceHandler(
                     when {
                         standardLevyService.getLevyPaymentStatus() -> {
 
-                            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+                            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()?: throw ExpectedDataNotFound("Required PermitType ID, check config")
                             val permitType = qaDaoServices.findPermitType(permitTypeID)
 
                             val dto = req.body<STA1Dto>()
@@ -2493,7 +2492,6 @@ class QualityAssuranceHandler(
                                         .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                                         dto.attachedPlant
                                     }
-
                                     else -> {
                                         loggedInUser.plantId
                                     }

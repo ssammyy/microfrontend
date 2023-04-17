@@ -671,85 +671,76 @@ class PostInvoiceToSageServices(
                         ?.let { code ->
                             stagingRepo.findBySageInvoiceNumber(code.toUpperCase())
                                     ?.let { record ->
-                                        invoiceLogPaymentRepo.findByTransactionId(value.request?.paymentReferenceNo?: throw Exception("Missing paymentReferenceNo, can't be null"))
-                                            ?.let {
-                                                result.responseDate = Timestamp.from(Instant.now())
-                                                result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
-                                                result.message = "THE RECIEPT ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
-                                                return result
-                                            }?: kotlin.run {
-                                                if (record.transactionId != null) {
+                                        stagingRepo.findByTransactionId(value.request?.paymentReferenceNo?: throw Exception("Missing paymentReferenceNo, can't be null"))?.let { it2 ->
+                                            result.responseDate = Timestamp.from(Instant.now())
+                                            result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                                            result.message = "THE RECEIPT ALREADY EXIST (${it2.transactionId}), FOR INVOICE NUMBER ${it2.sageInvoiceNumber}"
+                                            return result
+                                        }?: kotlin.run {
+                                            invoiceLogPaymentRepo.findByTransactionId(value.request?.paymentReferenceNo?: throw Exception("Missing paymentReferenceNo, can't be null"))
+                                                ?.let {
                                                     result.responseDate = Timestamp.from(Instant.now())
                                                     result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
-                                                    result.message = record.statusDescription
+                                                    result.message = "THE RECEIPT ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
                                                     return result
+                                                }?: kotlin.run {
+                                                    if (record.transactionId != null) {
+                                                        result.responseDate = Timestamp.from(Instant.now())
+                                                        result.status = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                                                        result.message = record.statusDescription
+                                                        return result
+                                                    }
+                                                    else {
+                                                        log.integrationRequest = daoService.mapper().writeValueAsString(value)
+                                                        record.paidAmount = value.request?.paymentAmount
+                                                        record.paymentSource = value.request?.paymentCode
+                                                        record.paymentTransactionDate = value.request?.paymentDate
+                                                        record.transactionId = value.request?.paymentReferenceNo
+                                                        record.customerName = record.customerName?.let { value.header?.messageID }
+                                                            ?: "${record.customerName}|${value.header?.messageID}"
+                                                        record.extras = record.extras?.let { "${value.request?.additionalInfo}" }
+                                                            ?: "${record.extras}|${value.request?.additionalInfo}"
+                                                        record.paymentTablesUpdatedStatus = 1
+                                                        record.modifiedBy = "SYSTEM"
+                                                        record.modifiedOn = commonDaoServices.getTimestamp()
+                                                        result.data =  mutableMapOf(
+                                                            Pair("sageInvoiceNumber", record.sageInvoiceNumber),
+                                                            Pair("amountPaid", record.paidAmount),
+                                                            Pair("totalAmount", record.invoiceAmount)
+                                                        )
+                                                        stagingRepo.save(record)
+                                                        /**
+                                                         * Sage Update Details on sage logs
+                                                         * */
+                                                        sageRepo.findByStgPaymentId(record.id ?: throw Exception("MISSING STAGING ID"))
+                                                            ?.let { sage ->
+                                                                sage.status = 10
+                                                                sage.description = daoService.mapper().writeValueAsString(value)
+                                                                sage.modifiedBy = "commonDaoServices.concatenateName(loggedInUSer)"
+                                                                sage.modifiedOn = commonDaoServices.getTimestamp()
+                                                                sageRepo.save(sage)
+                                                            }
+                                                        /**
+                                                         * TODO: Transverse to a different status as a payment has now been received
+                                                         */
+                                                        /**
+                                                         * TODO: Transverse to a different status as a payment has now been received
+                                                         */
+
+                                                        result.responseDate = Timestamp.from(Instant.now())
+                                                        result.status = ResponseCodes.SUCCESS_CODE
+                                                        result.message = record.statusDescription
+
+                                                        log.integrationResponse = daoService.mapper().writeValueAsString(result)
+                                                        log.responseStatus = ResponseCodes.SUCCESS_CODE
+                                                        log.responseMessage =  daoService.mapper().writeValueAsString(result.data)
+                                                        log.transactionCompletedDate = Timestamp.from(Instant.now())
+                                                        logsRepo.save(log)
+                                                        return result
+
+                                                    }
                                                 }
-                                                else {
-                                                    log.integrationRequest = daoService.mapper().writeValueAsString(value)
-                                                    record.paidAmount = value.request?.paymentAmount
-                                                    record.paymentSource = value.request?.paymentCode
-                                                    record.paymentTransactionDate = value.request?.paymentDate
-                                                    record.transactionId = value.request?.paymentReferenceNo
-                                                    record.customerName = record.customerName?.let { value.header?.messageID }
-                                                        ?: "${record.customerName}|${value.header?.messageID}"
-                                                    record.extras = record.extras?.let { "${value.request?.additionalInfo}" }
-                                                        ?: "${record.extras}|${value.request?.additionalInfo}"
-                                                    record.paymentTablesUpdatedStatus = 1
-                                                    record.modifiedBy = "SYSTEM"
-                                                    record.modifiedOn = commonDaoServices.getTimestamp()
-                                                    result.data =  mutableMapOf(
-                                                        Pair("sageInvoiceNumber", record.sageInvoiceNumber),
-                                                        Pair("amountPaid", record.paidAmount),
-                                                        Pair("totalAmount", record.invoiceAmount)
-                                                    )
-                                                    stagingRepo.save(record)
-                                                    /**
-                                                     * Sage Update Details on sage logs
-                                                     * */
-                                                    /**
-                                                     * Sage Update Details on sage logs
-                                                     * */
-                                                    /**
-                                                     * Sage Update Details on sage logs
-                                                     * */
-                                                    /**
-                                                     * Sage Update Details on sage logs
-                                                     * */
-                                                    sageRepo.findByStgPaymentId(record.id ?: throw Exception("MISSING STAGING ID"))
-                                                        ?.let { sage ->
-                                                            sage.status = 10
-                                                            sage.description = daoService.mapper().writeValueAsString(value)
-                                                            sage.modifiedBy = "commonDaoServices.concatenateName(loggedInUSer)"
-                                                            sage.modifiedOn = commonDaoServices.getTimestamp()
-                                                            sageRepo.save(sage)
-                                                        }
-                                                    /**
-                                                     * TODO: Transverse to a different status as a payment has now been received
-                                                     */
-                                                    /**
-                                                     * TODO: Transverse to a different status as a payment has now been received
-                                                     */
-                                                    /**
-                                                     * TODO: Transverse to a different status as a payment has now been received
-                                                     */
-                                                    /**
-                                                     * TODO: Transverse to a different status as a payment has now been received
-                                                     */
-
-                                                    result.responseDate = Timestamp.from(Instant.now())
-                                                    result.status = ResponseCodes.SUCCESS_CODE
-                                                    result.message = record.statusDescription
-
-
-                                                    log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                                                    log.responseStatus = ResponseCodes.SUCCESS_CODE
-                                                    log.responseMessage = result.data as String?
-                                                    log.transactionCompletedDate = Timestamp.from(Instant.now())
-                                                    logsRepo.save(log)
-                                                    return result
-
-                                                }
-                                            }
+                                        }
                                     }
                                     ?: run {
                                         result.responseDate = Timestamp.from(Instant.now())
