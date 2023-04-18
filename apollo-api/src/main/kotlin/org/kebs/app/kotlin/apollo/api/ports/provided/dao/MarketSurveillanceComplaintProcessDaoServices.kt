@@ -177,7 +177,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
              */
 
             updatedComplaint.let {
-                return MSComplaintSubmittedSuccessful(it.referenceNumber,true,"Complaint submitted successful with ref number ${it.referenceNumber}, Check you Email for further Investigation", null)
+                return MSComplaintSubmittedSuccessful(it.referenceNumber,true,"Complaint submitted successfully with ref number ${it.referenceNumber}, Check your Email for further Information", null)
             }
 
         } catch (e: Exception) {
