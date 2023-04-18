@@ -1793,7 +1793,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportForm = this.formBuilder.group({
       id: null,
       dataReportValueToClone: null,
-      referenceNumber: ['', Validators.required],
+      referenceNumber: null,
       inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
@@ -1815,7 +1815,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      remarks: ['', Validators.required],
     });
 
     this.investInspectReportForm = this.formBuilder.group({

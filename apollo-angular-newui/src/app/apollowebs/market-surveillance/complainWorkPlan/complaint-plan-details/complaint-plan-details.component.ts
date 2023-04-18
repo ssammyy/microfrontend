@@ -1795,7 +1795,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      remarks: ['', Validators.required],
     });
 
     this.investInspectReportForm = this.formBuilder.group({
@@ -2919,6 +2919,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewDataReportRecord(data: DataReportDto) {
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
+    console.log(data.remarks);
     this.totalCompliantValue = data?.totalComplianceScore;
     const paramDetails = data.productsList;
     this.dataSaveDataReportParamList = [];
@@ -5146,6 +5147,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   onClickSaveDataReport() {
     //need permanent solution for picking user input
     const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    console.log(this.dataReportForm.get("remarks").value);
     inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {

@@ -67,6 +67,7 @@ export class SampleSubmittedTimelineComponent implements OnInit {
   search: Subject<string>;
 
   numberOfSamplesTested: number;
+  averageTestingCompliance: number;
   sumOfComplianceToTesting: number;
   sumOfTCTimesB: number;
   sumOfTimeTakenToSubmitSamples: number;
@@ -280,6 +281,7 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       }
       console.log("Array of submitted with 2 days"+arrayOfSubmittedWithin2Days);
       this.numberOfSamplesTested = arrayOfSamplesTested.reduce((a,b)=> a + b, 0);
+      this.averageTestingCompliance = this.numberOfSamplesTested/this.loadedData.length;
       this.sumOfComplianceToTesting = arrayOfComplianceTesting.reduce((a,b)=> a + b, 0);
       this.sumOfTCTimesB = arrayOfTCXB.reduce((a,b)=> a + b, 0);
       this.sumOfTimeTakenToSubmitSamples = arrayOfTimeTakenToSubmitSample.reduce((a,b)=> a + b, 0);
