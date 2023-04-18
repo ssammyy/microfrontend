@@ -4628,6 +4628,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
                         workPlanGeneratedID = workPlanScheduled.id
+                        remarks = body.remarks
                         status = map.activeStatus
                         modifiedBy = commonDaoServices.concatenateName(user)
                         modifiedOn = commonDaoServices.getTimestamp()
@@ -4658,6 +4659,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
+                    remarks = body.remarks
                     workPlanGeneratedID = workPlanScheduled.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
