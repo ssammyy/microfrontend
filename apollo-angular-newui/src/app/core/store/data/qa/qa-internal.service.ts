@@ -7,7 +7,7 @@ import {
     InspectionDetailsDto,
     InspectionDetailsDtoB,
     InspectionReportProcessStepDto,
-    OperationProcessAndControlsDetailsApplyDto,
+    OperationProcessAndControlsDetailsApplyDto, PermitSearchValues,
     ProductLabellingDto,
     StandardizationMarkSchemeDto,
     TechnicalDetailsDto
@@ -41,6 +41,21 @@ export class QaInternalService {
         const params = new HttpParams()
             .set('permitTypeID', String(permitTypeID))
         return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    public loadMySearchPermit(permitSearchValues: PermitSearchValues): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_SEARCH_LIST);
+        console.log(url)
+
+        return this.http.put<ApiResponseModel>(url, permitSearchValues).pipe(
             map(function (response: ApiResponseModel) {
                 return response;
             }),
