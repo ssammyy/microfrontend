@@ -13,30 +13,44 @@
 
             <div class="card-body">
                 <div class="row">
+                    <form (submit)="onSubmit()" [formGroup]="form">
 
-                    <div class="wrap">
-                        <div class="form-check form-check-inline">
-                            <mat-radio-button value="1" name="exampleRadios" checked="true">Product Name
-                            </mat-radio-button>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <mat-radio-button value="2" name="exampleRadios">Firm Name</mat-radio-button>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <mat-radio-button value="2" name="exampleRadios">Permit Ref Number</mat-radio-button>
 
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <mat-radio-button value="2" name="exampleRadios">Brand Name</mat-radio-button>
+                        <div class="wrap">
+                            <mat-radio-group formControlName="searchType">
+                                <div class="form-check form-check-inline">
+                                    <mat-radio-button value="productName" checked="true"
+                                    >Product Name
+                                    </mat-radio-button>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <mat-radio-button value="firmName">Firm
+                                        Name
+                                    </mat-radio-button>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <mat-radio-button value="refNumber">Permit
+                                        Ref Number
+                                    </mat-radio-button>
 
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <mat-radio-button value="tradeMark">Brand
+                                        Name
+                                    </mat-radio-button>
+
+                                </div>
+                            </mat-radio-group>
+                            <div class="search">
+                                <input type="text" class="searchTerm" name="searchTerm" formControlName="searchTerm"
+                                       placeholder="Search ......">
+
+                                <button type="submit" class="searchButton">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="search">
-                            <input type="text" class="searchTerm" placeholder="Search ......">
-                            <button type="submit" class="searchButton">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <br><br><br> <br><br><br>
 
