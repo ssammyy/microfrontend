@@ -425,7 +425,7 @@ class QADaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
 
-        return permitSearchResultListing(permitSearch, page, map)
+        return permitSearchResultListingEvenWhenNull(permitSearch, page, map)
     }
 
     fun permitSearchResultListing(
@@ -482,6 +482,29 @@ class QADaoServices(
         val permitListFound = permitRepo.findAll(
             permitTypeSpec?.and(refNumberSpec)?.and(assignedIoSpec)?.and(regionSpec)?.and(productNameSpec)
                 ?.and(tradeMarkIoSpec)?.and(divisionSpec)?.and(firmNameSpec)
+        )
+
+        val permitListMyTasksAddedTogether = listPermits(permitListFound, map)
+
+        val permitListMyTasksAddedTogetherPage: PageImpl<PermitEntityDto> =
+            PageImpl(permitListMyTasksAddedTogether, page, permitListMyTasksAddedTogether.distinct().size.toLong())
+        return commonDaoServices.setSuccessResponse(
+            permitListMyTasksAddedTogetherPage.toList(),
+            permitListMyTasksAddedTogetherPage.totalPages,
+            permitListMyTasksAddedTogetherPage.number,
+            permitListMyTasksAddedTogetherPage.totalElements
+        )
+
+    }
+
+    fun permitSearchResultListingEvenWhenNull(
+        search: PermitSearchValues,
+        page: PageRequest,
+        map: ServiceMapsEntity
+    ): ApiResponseModel {
+
+        val permitListFound = permitRepo.findFilteredConsumerComplaintReport(
+            search.refNumber, search.productName, search.tradeMark, search.assignedIo, search.region, search.division, search.permitType, search.firmName,
         )
 
         val permitListMyTasksAddedTogether = listPermits(permitListFound, map)
