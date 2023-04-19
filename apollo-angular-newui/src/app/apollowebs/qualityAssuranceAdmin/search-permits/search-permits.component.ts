@@ -1,5 +1,5 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {MyTasksPermitEntityDto} from "../../../core/store/data/qa/qa.model";
+import {MyTasksPermitEntityDto, PermitSearchValues} from "../../../core/store/data/qa/qa.model";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
@@ -9,6 +9,7 @@ import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service
 import {NgxSpinnerService} from "ngx-spinner";
 import * as CryptoJS from 'crypto-js';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
 
 @Component({
     selector: 'app-search-permits',
@@ -32,6 +33,7 @@ export class SearchPermitsComponent implements OnInit {
     searchType: string = 'users';
     searchTerm: string = '';
     form!: FormGroup;
+    permitSearchValues: PermitSearchValues;
 
     constructor(private schemeMembershipService: SchemeMembershipService,
                 private formBuilder: FormBuilder,
@@ -50,9 +52,47 @@ export class SearchPermitsComponent implements OnInit {
         });
 
     }
+
     onSubmit() {
         console.log(this.form.value);
         // Call your search service method here
+        this.SpinnerService.show();
+        this.permitSearchValues = new PermitSearchValues() ;
+        if(this.form.get("searchType").value==='productName'){
+            this.permitSearchValues.productName=this.form.get("searchTerm").value
+        }else  if(this.form.get("searchType").value==='firmName'){
+            this.permitSearchValues.firmName=this.form.get("searchTerm").value
+        }else if(this.form.get("searchType").value==='refNumber'){
+            this.permitSearchValues.refNumber=this.form.get("searchTerm").value
+        }else if(this.form.get("searchType").value==='tradeMark'){
+            this.permitSearchValues.tradeMark=this.form.get("searchTerm").value
+        }
+
+        this.internalService.loadMySearchPermit(this.permitSearchValues).subscribe(
+            (dataResponse: ApiResponseModel) => {
+                if (dataResponse.responseCode === '00') {
+                    // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+                    this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
+                    this.rerender()
+                    this.SpinnerService.hide()
+                    this.displayUsers = true;
+
+                    this.loading = false;
+
+                }
+                this.SpinnerService.hide();
+                this.displayUsers = true;
+
+                this.loading = false;
+            },
+            error => {
+                this.SpinnerService.hide();
+                this.displayUsers = true;
+
+                this.loading = false;
+            },
+        );
+
     }
 
 
