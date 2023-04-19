@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.jetbrains.annotations.Nullable
+import org.kebs.app.kotlin.apollo.store.model.ms.ConsumerComplaintsReportViewEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.PermitsAwarded
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
@@ -297,6 +298,28 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
         permitType: Long, permitAwardStatus: Int, pageable: Pageable
     ): Page<PermitApplicationsEntity>?
+
+    @Query(
+        value = "SELECT a.* SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION a where\n" +
+                "     (:permitRefNumber is null or a.PERMIT_REF_NUMBER =:permitRefNumber) and\n" +
+                "     (:assignedIo is null or a.QAO_ID =TO_NUMBER(:assignedIo)) and\n" +
+                "     (:region is null or a.REGION =TO_NUMBER(:region)) and\n" +
+                "     (:productName is null or a.PRODUCT_NAME =:productName) and\n" +
+                "     (:tradeMark is null or a.TRADE_MARK =:tradeMark) and\n" +
+                "     (:divisionId is null or a.DIVISION_ID =TO_NUMBER(:divisionId)) and\n" +
+                "     (:permitType is null or a.PERMIT_TYPE =TO_NUMBER(:permitType))",
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReport(
+        @Param("refNumber") refNumber: String?,
+        @Param("productName") productName: String?,
+        @Param("tradeMark") tradeMark: String?,
+        @Param("assignedIo") assignedIo: Long?,
+        @Param("region") region: Long?,
+        @Param("division") division: Long?,
+        @Param("permitType") permitType: Long?,
+        @Param("firmName") firmName: String?
+    ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int

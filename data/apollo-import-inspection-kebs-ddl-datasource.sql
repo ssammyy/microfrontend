@@ -805,3 +805,33 @@ index dat_kebs_cs_approval_applications_uploads_idx on dat_kebs_cs_approval_appl
 
 
 CFG_KEBS_CDCFS_USERCFS
+
+
+--     create or REPLACE view OUTLET_VISITED_AND_SUMMARY_OF_FINDINGS_VIEW as
+-- create or REPLACE view SUMMARY_OF_SAMPLES_DRAWN_VIEW as
+SELECT nvl(TO_CHAR(szd.FILE_REF_NUMBER),'N/A') AS FILE_REF_NUMBER,
+       nvl(TO_CHAR(szd.DATA_REPORT_ID),'N/A') AS DATA_REPORT_ID,
+       nvl(TO_CHAR(szd.NAME_PRODUCT), 'N/A') AS PRODUCT_NAME,
+       nvl(TO_CHAR(szd.LB_ID_TRADE_MARK), 'N/A') AS PRODUCT_BRAND,
+       nvl(TO_CHAR(szd.ADDRESS), 'N/A') AS ADDRESS,
+       nvl(TO_CHAR(szd.COUNTRY_OF_ORIGIN), 'N/A') AS COUNTRY_OF_ORIGIN,
+       nvl(TO_CHAR(szd.LB_ID_EXPIRY_DATE), 'N/A') AS EXPIRY_DATE,
+       nvl(TO_CHAR(szd.LB_ID_BATCH_NO), 'N/A') AS BATCH_NUMBER,
+       nvl(TO_CHAR(szd.MS_WORKPLAN_GENERATED_ID), 'N/A') AS MS_WORKPLAN_GENERATED_ID,
+       nvl(TO_CHAR(szd.SENDERS_NAME), 'N/A') AS SENDERS_NAME,
+       nvl(TO_CHAR(szd.ID), 'N/A') AS ID,
+       nvl(TO_CHAR(szd.SAMPLE_COLLECTION_DATE), 'N/A') AS SAMPLE_COLLECTION_DATE,
+       nvl(TO_CHAR(szd.SENDERS_DATE), 'N/A') AS DATE_SUBMITTED,
+FROM APOLLO.DAT_KEBS_MS_SAMPLE_SUBMISSION szd;
+
+FILE REF NUMBER
+DATA REPORT ID
+product name
+product brand
+ADDRESS
+country of origin
+expiry date
+batch number
+senders name
+sample collection date
+date submitted

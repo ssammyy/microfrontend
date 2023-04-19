@@ -729,11 +729,11 @@ class MSJSONControllers(
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        var fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
-        var officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        val officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
         var officersNames:String? = null
         var numberTest = 1
         officersList?.forEach { of->
