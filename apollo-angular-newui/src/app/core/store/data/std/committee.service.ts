@@ -107,11 +107,17 @@ export class CommitteeService {
     }
 
     //make comment
-    public makeComment(comment: CommentsDto[], preliminary_draft_id, doctype: string): Observable<any> {
+    public makeCommentB(comment: CommentsDto[], preliminary_draft_id, doctype: string): Observable<any> {
         const params = new HttpParams()
             .set('docType', doctype)
             .set('preliminary_draft_id', preliminary_draft_id)
         return this.http.post<CommentsDto[]>(`${this.apiServerUrl}` + 'makeComment', comment, {params})
+
+    }
+    public makeComment(comment: CommentMade, doctype: string): Observable<any> {
+        const params = new HttpParams()
+            .set('docType', doctype)
+        return this.http.post<CommentMade>(`${this.apiServerUrl}` + 'makeComment', comment, {params})
 
     }
 

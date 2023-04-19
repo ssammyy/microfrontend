@@ -403,7 +403,7 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
             this.SpinnerService.show();
 
             //(this.sta10Details.id.toString());
-            this.committeeService.makeComment(this.commentsDtos, preliminary_draft_id, "PD").subscribe(
+            this.committeeService.makeCommentB(this.commentsDtos, preliminary_draft_id, "PD").subscribe(
                 (data) => {
 
                     this.SpinnerService.hide();

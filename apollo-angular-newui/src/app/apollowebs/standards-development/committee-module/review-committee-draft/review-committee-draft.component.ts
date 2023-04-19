@@ -134,7 +134,8 @@ export class ReviewCommitteeDraftComponent implements OnInit {
 
     saveComment(): void {
         this.SpinnerService.show();
-        this.committeeService.makeComment(this.commentFormGroup.value,"CD").subscribe(
+
+            this.committeeService.makeComment(this.commentFormGroup.value,"CD").subscribe(
             (response) => {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, 'Successfully Submitted Comment');
