@@ -507,15 +507,16 @@ class QADaoServices(
             search.refNumber, search.productName, search.tradeMark, search.assignedIo, search.region, search.division, search.permitType, search.firmName,
         )
 
-        val permitListMyTasksAddedTogether = listPermits(permitListFound, map)
+        val permitListMyTasksAddedTogether = permitListFound?.let { listPermits(it, map) }
 
-        val permitListMyTasksAddedTogetherPage: PageImpl<PermitEntityDto> =
-            PageImpl(permitListMyTasksAddedTogether, page, permitListMyTasksAddedTogether.distinct().size.toLong())
+        val permitListMyTasksAddedTogetherPage: PageImpl<PermitEntityDto>? =
+            permitListMyTasksAddedTogether?.distinct()?.size?.toLong()
+                ?.let { PageImpl(permitListMyTasksAddedTogether, page, it) }
         return commonDaoServices.setSuccessResponse(
-            permitListMyTasksAddedTogetherPage.toList(),
-            permitListMyTasksAddedTogetherPage.totalPages,
-            permitListMyTasksAddedTogetherPage.number,
-            permitListMyTasksAddedTogetherPage.totalElements
+            permitListMyTasksAddedTogetherPage?.toList(),
+            permitListMyTasksAddedTogetherPage?.totalPages,
+            permitListMyTasksAddedTogetherPage?.number,
+            permitListMyTasksAddedTogetherPage?.totalElements
         )
 
     }
