@@ -214,7 +214,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
-        console.log(this.roles);
+        //console.log(this.roles);
         // Load all PermitList Details
         // this.qaService.loadFirmPermitList(this.)
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
@@ -234,6 +234,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
             this.roles = u.roles;
             return this.roles = u.roles;
+            //console.log(u.roles);
 
         });
 
