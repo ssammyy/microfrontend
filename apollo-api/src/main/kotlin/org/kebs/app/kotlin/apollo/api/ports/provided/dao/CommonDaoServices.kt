@@ -1271,6 +1271,14 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
     }
 
+    fun findCompanyProfileWithKraPins(kraPin: String): CompanyProfileEntity {
+        companyProfileRepo.findByKraPin(kraPin)
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with KRA PIN= ${kraPin}, does not Exist")
+    }
+
     fun findCompanyProfileWithProfileID(id: Long): CompanyProfileEntity? {
         return companyProfileRepo.findByIdOrNull(id)
     }
