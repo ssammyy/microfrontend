@@ -179,5 +179,9 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var workPlanGeneratedID: Long? = null
 
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
+
 
 }

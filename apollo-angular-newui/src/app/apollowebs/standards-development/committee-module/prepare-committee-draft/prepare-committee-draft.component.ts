@@ -58,6 +58,8 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
 
+    loading = false;
+    loadingText: string;
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -76,15 +78,24 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     }
 
     public getAllPds(): void {
+        this.loading = true
+        this.loadingText = "Retrieving Drafts Please Wait ...."
+        this.SpinnerService.show()
+
         this.committeeService.getAllPreliminaryDrafts().subscribe(
             (response: Preliminary_Draft_With_Name[]) => {
 
                 this.preliminary_drafts = response;
                 this.rerender()
+                this.loading = false
+                this.SpinnerService.hide();
+
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
+                this.SpinnerService.hide();
             }
         );
 

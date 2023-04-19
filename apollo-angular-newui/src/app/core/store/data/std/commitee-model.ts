@@ -48,6 +48,11 @@ export interface Preliminary_Draft_With_Name {
     pd_by: string;
     status: string;
     number_OF_COMMENTS: string;
+
+    organization: string;
+    proposal_TITLE: string;
+    circulation_DATE: string;
+    closing_DATE: string;
 }
 
 export interface TaskData {
@@ -266,6 +271,8 @@ export interface VotesNwiTally {
     nwi_ID: number;
     nwiname: string;
     status: string
+
+    reference_NUMBER: string;
 }
 
 export interface VoteNwiRetrieved {
@@ -276,6 +283,9 @@ export interface VoteNwiRetrieved {
     position: string
     proposal_Title: string
     reason: string
+
+    reference_Number: string
+
 
 }
 

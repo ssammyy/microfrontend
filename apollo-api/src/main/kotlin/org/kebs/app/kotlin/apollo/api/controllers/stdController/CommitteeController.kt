@@ -1,11 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import mu.KotlinLogging
-import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.CommitteeService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.DraftDocumentService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
+import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
+import org.springframework.validation.Validator
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
@@ -35,8 +36,10 @@ class CommitteeController(
     val committeeCDRepository: CommitteeCDRepository,
     val draftDocumentService: DraftDocumentService,
     val commonDaoServices: CommonDaoServices,
+    private val validator: Validator,
 
-    ) {
+
+    ) : AbstractValidationHandler() {
 
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy_committee")
@@ -61,11 +64,16 @@ class CommitteeController(
         return committeeService.getAllNwiSApprovedForPd()
     }
 
+    @GetMapping("/getAllNwiSApprovedForPdPendingTasks")
+    fun getAllNwiSApprovedForPdPendingTasks(): List<StandardNWI> {
+        return committeeService.getAllNwiSApprovedForPdPendingTasks()
+    }
+
     //preliminary draft upload minutes
     @PostMapping("/upload/minutes")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadPdMinutes(
-        @RequestParam("nwiId") nwiId: Long,
+        @RequestParam("pdId") pdId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -74,12 +82,11 @@ class CommitteeController(
 
         var docDescription: String
 
-        val application = standardNWIRepository.findByIdOrNull(nwiId)
-            ?: throw Exception("APPLICATION DOES NOT EXIST")
+
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()
             with(upload) {
-                sdDocumentId = application.id
+                sdDocumentId = pdId
                 documentTypeDef = type
 
             }
@@ -89,7 +96,7 @@ class CommitteeController(
                 upload,
                 u,
                 "MINUTES FOR PD",
-                application.id,
+                pdId,
                 docDescription
 
             )
@@ -105,7 +112,7 @@ class CommitteeController(
     @PostMapping("/upload/draftDocuments")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadPdDraftDocuments(
-        @RequestParam("nwiId") nwiId: Long,
+        @RequestParam("pdId") pdId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -114,13 +121,11 @@ class CommitteeController(
 
         var docDescription: String
 
-        val application = standardNWIRepository.findByIdOrNull(nwiId)
-            ?: throw Exception("APPLICATION DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()
             with(upload) {
-                sdDocumentId = application.id
+                sdDocumentId = pdId
                 documentTypeDef = type
 
             }
@@ -130,7 +135,7 @@ class CommitteeController(
                 upload,
                 u,
                 "DRAFT DOCUMENTS FOR PD",
-                application.id,
+                pdId,
                 docDescription
 
             )
@@ -220,12 +225,19 @@ class CommitteeController(
 
 
     @PostMapping("/makeComment")
-    fun makeComment(@RequestParam("docType") docType: String, @RequestBody comments: Comments): ServerResponse {
+    fun makeComment(
+        @RequestParam("preliminary_draft_id") preliminaryDraftId: String,
+        @RequestBody body: List<CommentsDto>,
+        @RequestParam("docType") docType: String,
+    ): ServerResponse {
+
+
         return ServerResponse(
             HttpStatus.OK,
-            "Comment Approved",
-            committeeService.makeComment(comments, docType)
+            "Success",
+            committeeService.makeComment(preliminaryDraftId.toLong(), docType, body)
         )
+
     }
 
     @PostMapping("/editComment")

@@ -937,7 +937,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill in bellow activity Details</h4>
+                    <h4 class="modal-title">Fill in below activity Details</h4>
                     <button aria-hidden="true" class="close" data-dismiss="modal" mat-button type="button">
                         <i class="material-icons">clear</i>
                     </button>
@@ -1002,19 +1002,19 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Rationale</b></label>
-                                        <input [class.is-invalid]="formNewScheduleForm.rationale.invalid && formNewScheduleForm.rationale.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="rationale"
-                                               name="rationale" required type="text">
-                                        <div *ngIf="submitted && formNewScheduleForm.rationale.errors"
-                                             class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.rationale.errors.required">Rationale
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Rationale</b></label>-->
+<!--                                        <input [class.is-invalid]="formNewScheduleForm.rationale.invalid && formNewScheduleForm.rationale.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="rationale"-->
+<!--                                               name="rationale" required type="text">-->
+<!--                                        <div *ngIf="submitted && formNewScheduleForm.rationale.errors"-->
+<!--                                             class="invalid-feedback">-->
+<!--                                            <div *ngIf="formNewScheduleForm.rationale.errors.required">Rationale-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </div>
 
 
@@ -1030,21 +1030,21 @@
                                 </div>
 
                                 <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Scope Of Coverage</b> </label>
-                                        <select [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"
-                                                class="form-control two-column-input" formControlName="scopeOfCoverage"
-                                                name="scopeOfCoverage" required type="text">
-                                            <!--                                            <option [value]="" selected>Please select</option>-->
-                                            <option  [value]="'Regional'">Regional</option>
-                                            <option  [value]="'National'" >National</option>
-                                        </select>
-                                    </div>
-                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"
-                                         class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required
-                                        </div>
-                                    </div>
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Scope Of Coverage</b> </label>-->
+<!--                                        <select [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"-->
+<!--                                                class="form-control two-column-input" formControlName="scopeOfCoverage"-->
+<!--                                                name="scopeOfCoverage" required type="text">-->
+<!--                                            &lt;!&ndash;                                            <option [value]="" selected>Please select</option>&ndash;&gt;-->
+<!--                                            <option  [value]="'Regional'">Regional</option>-->
+<!--                                            <option  [value]="'National'" >National</option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"-->
+<!--                                         class="invalid-feedback">-->
+<!--                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </div>
 
                             </div>

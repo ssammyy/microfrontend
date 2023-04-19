@@ -4628,6 +4628,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
                         workPlanGeneratedID = workPlanScheduled.id
+                        remarks = body.remarks
                         status = map.activeStatus
                         modifiedBy = commonDaoServices.concatenateName(user)
                         modifiedOn = commonDaoServices.getTimestamp()
@@ -4658,6 +4659,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
+                    remarks = body.remarks
                     workPlanGeneratedID = workPlanScheduled.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
@@ -4718,7 +4720,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         sendersName = body.sendersName
                         designation = body.designation
                         address = body.address
-                        sendersDate = body.sendersDate
+                        sendersDate = commonDaoServices.getCurrentDate()
                         receiversDate = body.receiversDate
                         receiversName = body.receiversName
                         testChargesKsh = body.testChargesKsh
@@ -4732,7 +4734,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         lbIdBatchNo = body.lbIdBatchNo
                         lbIdContDecl = body.lbIdContDecl
                         lbIdDateOfManf = body.lbIdDateOfManf
-                        sampleCollectionDate = body.sampleCollectionDate
+                        sampleCollectionDate = commonDaoServices.getCurrentDate()
                         lbIdExpiryDate = body.lbIdExpiryDate
                         lbIdTradeMark = body.lbIdTradeMark
                         noteTransResults = body.noteTransResults
@@ -4755,7 +4757,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     nameProduct = body.nameProduct
                     packaging = body.packaging
                     labellingIdentification = body.labellingIdentification
-                    fileRefNumber = body.fileRefNumber
+                    fileRefNumber = "REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                     referencesStandards = body.referencesStandards
                     sizeTestSample = body.sizeTestSample
                     sizeRefSample = body.sizeRefSample
@@ -4764,7 +4766,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     sendersName = body.sendersName
                     designation = body.designation
                     address = body.address
-                    sendersDate = body.sendersDate
+                    sendersDate = commonDaoServices.getCurrentDate()
                     receiversDate = body.receiversDate
                     receiversName = body.receiversName
                     testChargesKsh = body.testChargesKsh
@@ -4778,7 +4780,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     lbIdBatchNo = body.lbIdBatchNo
                     lbIdContDecl = body.lbIdContDecl
                     lbIdDateOfManf = body.lbIdDateOfManf
-                    sampleCollectionDate = body.sampleCollectionDate
+                    sampleCollectionDate = commonDaoServices.getCurrentDate()
                     lbIdExpiryDate = body.lbIdExpiryDate
                     lbIdTradeMark = body.lbIdTradeMark
                     noteTransResults = body.noteTransResults

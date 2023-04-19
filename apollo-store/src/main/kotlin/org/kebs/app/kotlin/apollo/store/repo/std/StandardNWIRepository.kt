@@ -22,6 +22,10 @@ interface StandardNWIRepository : JpaRepository<StandardNWI, Long> {
     fun findAllByPdStatusAndTcSec(status: String, tcSecId: String): List<StandardNWI>
 
 
+    fun findAllByPdStatusAndTcSecAndPrPdStatusIsNull(status: String,tcSecId: String): List<StandardNWI>
+
+
+
     @Query(
         "SELECT t1.* FROM SD_NWI t1 WHERE  t1.STATUS='Vote ON NWI' and NOT EXISTS (SELECT t2.NWI_ID from SD_VOTE_ON_NWI t2 where t2.USER_ID=:userId and t2.NWI_ID=t1.ID)",
         nativeQuery = true

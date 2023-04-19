@@ -21,7 +21,9 @@ data class PermitSearchValues(
     var assignedIo: Long? = null,
     var region: Long? = null,
     var division: Long? = null,
-    var permitType: Long? = null
+    var permitType: Long? = null,
+    var firmName: String? = null,
+
 )
 
 data class SectionApplyDto(

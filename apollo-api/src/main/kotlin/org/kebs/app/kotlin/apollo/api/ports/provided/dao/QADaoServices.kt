@@ -441,6 +441,8 @@ class QADaoServices(
         var regionSpec: PermitSpecification? = null
         var divisionSpec: PermitSpecification? = null
         var permitTypeSpec: PermitSpecification? = null
+        var firmNameSpec: PermitSpecification? = null
+
 
 
         if (search.refNumber != null && search.refNumber?.length!! > 0) {
@@ -471,10 +473,15 @@ class QADaoServices(
             permitTypeSpec = PermitSpecification(SearchCriteria("permitType", "=", search.permitType))
         }
 
+        if (search.firmName != null && search.firmName?.length!! > 0) {
+            firmNameSpec = PermitSpecification(SearchCriteria("firmName", "=", search.firmName))
+        }
+
+
 
         val permitListFound = permitRepo.findAll(
             permitTypeSpec?.and(refNumberSpec)?.and(assignedIoSpec)?.and(regionSpec)?.and(productNameSpec)
-                ?.and(tradeMarkIoSpec)?.and(divisionSpec)
+                ?.and(tradeMarkIoSpec)?.and(divisionSpec)?.and(firmNameSpec)
         )
 
         val permitListMyTasksAddedTogether = listPermits(permitListFound, map)
@@ -6250,12 +6257,12 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(map)
         var savePermit = permits
-        var maxpermit = permitRepo.getMaxId()
-        if (maxpermit.toString().contains("REF")) {
-            maxpermit = 60000.toString()
-        }
-
-        var newMaxPermit = maxpermit?.plus(1)
+//        var maxpermit = permitRepo.getMaxId()
+//        if (maxpermit.toString().contains("REF")) {
+//            maxpermit = 60000.toString()
+//        }
+//
+//        var newMaxPermit = maxpermit?.plus(1)
 
         try {
 

@@ -34,6 +34,8 @@ export class SpcSecTaskComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     public userDetails!: UserRegister;
 
+    loading = false;
+    loadingText: string;
 
     constructor(
         private standardDevelopmentService: StandardDevelopmentService,
@@ -50,14 +52,21 @@ export class SpcSecTaskComponent implements OnInit {
     }
 
     public getSPCSECTasks(): void {
+        this.loading = true
+        this.loadingText = "Retrieving Justifications Please Wait ...."
+        this.SpinnerService.show()
         this.standardDevelopmentService.getJustificationsPendingDecision().subscribe(
             (response: StdJustification[]) => {
                 // console.log(response);
                 this.tcTasks = response;
                 this.rerender()
+                this.loading = false
+                this.SpinnerService.hide();
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
+                this.SpinnerService.hide();
             }
         )
     }

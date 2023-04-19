@@ -7,6 +7,7 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.common.dto.CompanySlFormDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
@@ -27,6 +28,10 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.math.BigInteger
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -2448,6 +2453,16 @@ class StandardLevyService(
     }
 
     fun getLevyDefaulters(): MutableList<LevyPenalty> {
+        //commonDaoServices.kra256Hashing()
+        val password = "password@1"
+        val loginid = "kebsuser"
+        val hashedUser=kraDataEncryptions(loginid)
+        val hashedPass=kraDataEncryptions(password)
+
+        KotlinLogging.logger { }.info { "my hashed Password   $hashedPass" }
+        KotlinLogging.logger { }.info { "my hashed Login   $hashedUser" }
+        //KotlinLogging.logger { }.info { "my hashed value   $hashed" }
+
         return companyProfileRepo.getLevyDefaulters()
     }
 
@@ -2868,5 +2883,27 @@ class StandardLevyService(
         return standardLevyFactoryVisitReportRepo.getSiteVisitsFilter(startDate, endDate, businessLines, region)
 
     }
+
+    fun kraDataEncryptions(hashedData: String): String {
+        fun encryptThisString(input: String): String {
+            return try {
+                val md = MessageDigest.getInstance("SHA-256")
+                val messageDigest = md.digest(input.toByteArray(StandardCharsets.UTF_8))
+                //val messageDigest = md.digest(input.toByteArray())
+                val no = BigInteger(1, messageDigest)
+                var hashtext = no.toString(16)
+                while (hashtext.length < 32) {
+                    hashtext = "0$hashtext"
+                }
+                hashtext
+            } catch (e: NoSuchAlgorithmException) {
+                throw RuntimeException(e)
+            }
+        }
+        return encryptThisString(hashedData)
+
+    }
+
+
 
 }

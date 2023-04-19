@@ -133,11 +133,56 @@ class SendEntryNumberToKraServices(
                 resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
 
-            } else {
+            }else if(response.second?.response?.responseCode == "90001"){
                 transactionsRequest.apply {
                     responseStatus = response.second?.response?.status
                     responseResponseCode = response.second?.response?.responseCode
                     responseMessage = response.second?.response?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+
+            }else if(response.second?.response?.responseCode == "90002"){
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+
+            }else if(response.second?.response?.responseCode == "90003"){
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+
+            }else if(response.second?.response?.responseCode == "90004"){
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+
+            }
+            else {
+                transactionsRequest.apply {
+                    responseStatus = "NOK"
+                    responseResponseCode = "90005"
+                    responseMessage = "No Response From KRA"
                     updateBy = user
                     updatedOn = commonDaoServices.getTimestamp()
                 }
