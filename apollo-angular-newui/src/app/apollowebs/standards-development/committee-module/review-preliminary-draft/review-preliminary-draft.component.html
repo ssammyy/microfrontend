@@ -1,36 +1,34 @@
-<div class="container-fluid" style="margin-top: 5%" id="main-container">
-    <div class="loading-spinner ">
+<div class="container-fluid" style="margin-top: 5%;" id="main-container">
+    <div class="loading-spinner " *ngIf="loading">
         <ngx-spinner
                 bdColor="rgba(51,51,51,0.8)"
-                size="medium"
                 color="#fff"
-                type="ball-scale-multiple"
-        >
-            <p style="font-size: 20px; color: white">Loading...</p>
+                size="medium"
+                type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
         </ngx-spinner>
     </div>
     <div class="main-content">
         <div class="container-fluid">
             <div class="row">
-                <div class="card ">
-                    <div class="card-header ">
-                        <h4 class="card-title">Review Preliminary Drafts -
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Review Preliminary Drafts -
                             <small class="description">Comment and Review</small>
                         </h4>
                     </div>
-                    <div class="card-body ">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-lg-1 col-md-4">
                                 <ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" data-toggle="tab" href="#link10" role="tablist">
-                                            <i class="material-icons">assignment</i> Review
-                                        </a>
+                                        <a class="nav-link active" data-toggle="tab" href="#link10" role="tablist"> <i
+                                                class="material-icons">assignment</i> Review </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
-                                            <i class="material-icons">schedule</i> Previous Comments
-                                        </a>
+                                        <a class="nav-link" data-toggle="tab" href="#link11" role="tablist"> <i
+                                                class="material-icons">schedule</i> Previous Comments </a>
                                     </li>
                                 </ul>
                             </div>
@@ -44,21 +42,16 @@
                                                         <div class="card-icon">
                                                             <i class="material-icons">assignment</i>
                                                         </div>
-                                                        <h4 class="card-title">Review Preliminary Draft
-                                                        </h4>
-
+                                                        <h4 class="card-title">Review Preliminary Draft</h4>
                                                     </div>
                                                     <div class="card-body">
-                                                        <div class="toolbar">
+                                                        <div class="toolbar"></div>
 
-                                                        </div>
-
-                                                        <h4 class="card-title">All Preliminary Drafts
-                                                        </h4>
+                                                        <h4 class="card-title">All Preliminary Drafts</h4>
                                                         <div class="material-datatables">
                                                             <table class="table table-striped table-bordered table-hover"
-                                                                   datatable
-                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                                                   datatable [dtOptions]="dtOptions"
+                                                                   [dtTrigger]="dtTrigger1">
                                                                 <thead>
                                                                 <tr>
                                                                     <th class="id">Preliminary Draft ID</th>
@@ -72,13 +65,11 @@
                                                                     <td>{{i + 1}}</td>
                                                                     <td>{{preliminaryDraft.pd_name}}</td>
                                                                     <td>
-                                                                        <button class="btn btn-secondary tooltips"
-                                                                                (click)="viewPdfFile( preliminaryDraft.id,preliminaryDraft.pd_name, 'application/pdf','PD Document')"
-                                                                                data-placement="top"
-                                                                                data-original-title="Upload NWI"><i
-                                                                                class="fa fa-download"></i> Download
-                                                                            Preliminary Draft
-                                                                        </button>
+                                                                        <a (click)="onOpenModal(preliminaryDraft,'viewPD')"
+                                                                           class="btn btn-info tooltips"
+                                                                           data-placement="top"
+                                                                           data-original-title="Make Comment">View
+                                                                            Pd</a>
                                                                     </td>
 
                                                                     <td>
@@ -87,24 +78,250 @@
                                                                            data-placement="top"
                                                                            data-original-title="Make Comment">Add
                                                                             Comment</a>
-                                                                        <br>
-
+                                                                        <br/>
                                                                     </td>
-
-
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                        <div class="modal fade " id="makeComment" tabindex="-1"
+                                                        <div class="modal fade" id="makeComment" tabindex="-1"
                                                              role="dialog" aria-hidden="true">
                                                             <div class="modal-dialog modal-lg modal-xl" role="document"
-                                                                 style="width: 100%">
+                                                                 style="width: 100%;">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title"
-                                                                            id="updateExampleModalLabel">
-                                                                            Comment On Preliminary Draft</h5>
+                                                                        <h5 class="modal-title">
+                                                                            Comment On Preliminary Draft
+                                                                        </h5>
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close"
+                                                                                #closeModal>
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="row col-12">
+                                                                            <div class="form-group col-12">
+                                                                                <form class="form"
+                                                                                      (ngSubmit)="onClickSaveCommentsMade(preliminary_draftsB.id)"
+                                                                                      [formGroup]="commentsMadeFormGroup"
+                                                                                      enctype="multipart/form-data">
+                                                                                    <div class="form-body">
+                                                                                        <div class="row col-12">
+                                                                                            <label><b>Title</b></label>
+                                                                                            <input aria-describedby="inputGroup-sizing-sm"
+                                                                                                   aria-label="Small"
+                                                                                                   class="form-control one-column-input"
+                                                                                                   readonly
+                                                                                                   value="{{preliminary_draftsB?.proposal_TITLE}}"/>
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <label><b>Document Type</b></label>
+                                                                                            <input aria-describedby="inputGroup-sizing-sm"
+                                                                                                   aria-label="Small"
+                                                                                                   class="form-control one-column-input"
+                                                                                                   readonly
+                                                                                                   value="{{documentType}}"/>
+                                                                                        </div>
+
+                                                                                        <div class="row col-12">
+                                                                                            <label><b>Circulation
+                                                                                                Date</b></label>
+                                                                                            <input aria-describedby="inputGroup-sizing-sm"
+                                                                                                   aria-label="Small"
+                                                                                                   class="form-control one-column-input"
+                                                                                                   readonly
+                                                                                                   value="{{preliminary_draftsB?.circulation_DATE}}"
+                                                                                            />
+                                                                                        </div>
+                                                                                        <div class="row col-12">
+                                                                                            <label><b>Closing
+                                                                                                Date</b></label>
+                                                                                            <input aria-describedby="inputGroup-sizing-sm"
+                                                                                                   aria-label="Small"
+                                                                                                   class="form-control one-column-input"
+                                                                                                   readonly
+                                                                                                   value="{{preliminary_draftsB?.closing_DATE}}"/>
+                                                                                        </div>
+
+                                                                                        <div class="row col-12">
+                                                                                            <label><b>Organization </b></label>
+                                                                                            <input aria-describedby="inputGroup-sizing-sm"
+                                                                                                   aria-label="Small"
+                                                                                                   class="form-control one-column-input"
+                                                                                                   readonly
+                                                                                                   value="{{preliminary_draftsB?.organization}}"/>
+                                                                                        </div>
+
+                                                                                        <br/>
+                                                                                        <br/>
+                                                                                        <br/>
+                                                                                        <br/>
+
+                                                                                        <h4><b>COMMENTS</b></h4>
+                                                                                        <div class="row">
+                                                                                            <div class="col-4">
+                                                                                                <label><b>Clause</b></label>
+                                                                                                <mat-form-field
+                                                                                                        class="example-full-width">
+                                                                                                    <input name="clause"
+                                                                                                           formControlName="clause"
+                                                                                                           matInput
+                                                                                                           placeholder="Clause"
+                                                                                                           type="text"/>
+                                                                                                </mat-form-field>
+                                                                                            </div>
+                                                                                            <div class="col-4">
+                                                                                                <label><b>Paragraph/
+                                                                                                    Figure/Table</b></label>
+                                                                                                <mat-form-field
+                                                                                                        class="example-full-width">
+                                                                                                    <input name="paragraph"
+                                                                                                           formControlName="paragraph"
+                                                                                                           matInput
+                                                                                                           placeholder="Paragraph/ Figure/Table"
+                                                                                                           type="text"/>
+                                                                                                </mat-form-field>
+                                                                                            </div>
+                                                                                            <div class="col-4">
+                                                                                                <label><b>Type of
+                                                                                                    comment </b></label>
+                                                                                                <mat-form-field>
+                                                                                                    <mat-select
+                                                                                                            aria-label="Small"
+                                                                                                            aria-describedby="inputGroup-sizing-lg"
+                                                                                                            class="form-control"
+                                                                                                            required
+                                                                                                            formControlName="typeOfComment"
+                                                                                                            name="typeOfComment"
+                                                                                                            placeholder="Select Type Of Comment">
+                                                                                                        <mat-option
+                                                                                                                *ngFor="let lvs of levelOfStandards"
+                                                                                                                value="{{lvs}}">{{lvs}}</mat-option>
+                                                                                                    </mat-select>
+                                                                                                </mat-form-field>
+                                                                                            </div>
+                                                                                            <div class="col-3">
+                                                                                                <label><b>Comment </b></label>
+                                                                                                <mat-form-field
+                                                                                                        class="example-full-width">
+                                                                                                        <textarea
+                                                                                                                rows="5"
+                                                                                                                cols="50"
+                                                                                                                name="comment"
+                                                                                                                formControlName="comment"
+                                                                                                                matInput
+                                                                                                                placeholder="Comment"
+                                                                                                                type="text"></textarea>
+                                                                                                </mat-form-field>
+                                                                                            </div>
+
+                                                                                            <div class="col-3">
+                                                                                                <label><b>Proposed
+                                                                                                    Change</b></label>
+                                                                                                <mat-form-field
+                                                                                                        class="example-full-width">
+                                                                                                        <textarea
+                                                                                                                rows="5"
+                                                                                                                cols="50"
+                                                                                                                name="proposedChange"
+                                                                                                                formControlName="proposedChange"
+                                                                                                                matInput
+                                                                                                                placeholder="Proposed Change"
+                                                                                                                type="text"
+                                                                                                        ></textarea>
+                                                                                                </mat-form-field>
+                                                                                            </div>
+
+                                                                                            <div class="col-12">
+                                                                                                <button class="btn btn-success float-right"
+                                                                                                        (click)="onClickAddComment()"
+                                                                                                        type="button"
+                                                                                                        style="position:absolute;bottom:25px;right:5px;margin:15px;">
+                                                                                                    ADD
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="material-datatables">
+                                                                                            <div class="table-responsive">
+                                                                                                <table class="table table-striped table-bordered table-hover">
+                                                                                                    <thead>
+                                                                                                    <tr>
+                                                                                                        <th>Clause
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            Paragraph/
+                                                                                                            Figure/Table
+                                                                                                        </th>
+                                                                                                        <th>Type of
+                                                                                                            comment
+                                                                                                        </th>
+                                                                                                        <th>
+                                                                                                            Comment
+                                                                                                        </th>
+                                                                                                        <th>Proposed
+                                                                                                            Change
+                                                                                                        </th>
+                                                                                                        <th>Action
+                                                                                                        </th>
+                                                                                                    </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody>
+                                                                                                    <tr *ngFor="let r of commentsDtos; let i=index">
+                                                                                                        <td>{{r.clause}}</td>
+                                                                                                        <td>{{r.paragraph}}</td>
+                                                                                                        <td>{{r.typeOfComment}}</td>
+                                                                                                        <td>{{r.comment}}</td>
+                                                                                                        <td>{{r.proposedChange}}</td>
+
+                                                                                                        <td>
+                                                                                                            <button (click)="removeProductLabelling(i)"
+                                                                                                                    type="button"
+                                                                                                                    class="btn btn-warning btn-sm">
+                                                                                                                    <span class=""
+                                                                                                                          aria-hidden="true">Remove</span>
+                                                                                                            </button>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div *ngIf="commentsDtos.length > 0"
+                                                                                             class="form-group clearfix">
+                                                                                            <button class="btn btn-sm btn-primary float-right"
+                                                                                                    type="submit">
+                                                                                                Save
+                                                                                            </button>
+
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                                #closeModal (click)="hideModel()"
+                                                                                data-dismiss="modal">Close
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="modal fade" id="viewPD" tabindex="-1"
+                                                             role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg modal-xl" role="document"
+                                                                 style="width: 100%;">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">
+                                                                            Preliminary Draft Details
+                                                                        </h5>
                                                                         <button type="button" class="close"
                                                                                 data-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
@@ -113,261 +330,75 @@
                                                                     <div class="modal-body">
                                                                         <div class="row col-12">
                                                                             <div class="form-group col-12">
-                                                                                <form (ngSubmit)="saveComment()"
-                                                                                      [formGroup]="commentFormGroup"
-                                                                                      class="form">
-                                                                                    <div class="form-body">
-
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Title</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.title.invalid && formMakeComment.title.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="title"
-                                                                                                        name="title"
-                                                                                                        placeholder="Title"
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Document
-                                                                                                    Type</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.documentType.invalid && formMakeComment.documentType.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="documentType"
-                                                                                                        name="documentType"
-                                                                                                        placeholder="Document Type"
-                                                                                                        type="text">
-                                                                                            </div>
 
 
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Circulation
-                                                                                                    Date</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.circulationDate.invalid && formMakeComment.circulationDate.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="circulationDate"
-                                                                                                        name="circulationDate"
-                                                                                                        placeholder="Circulation Date"
-                                                                                                        type="date">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Closing
-                                                                                                    Date</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.closingDate.invalid && formMakeComment.closingDate.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="closingDate"
-                                                                                                        name="closingDate"
-                                                                                                        placeholder="Closing Date"
-                                                                                                        type="date">
-                                                                                            </div>
+                                                                                <ul class="list-group">
+                                                                                    <li class="list-group-item active">
+                                                                                        Preliminary Draft Details
+                                                                                    </li>
+                                                                                    <li style="background: lightgray"
+                                                                                        class="list-group-item">{{"Preliminary Draft Name: " + preliminary_draftsB?.pd_name}}</li>
+
+                                                                                    <li style="background: lightgray"
+                                                                                        class="list-group-item">{{"Prepared By: " + preliminary_draftsB?.pd_by}}</li>
+
+                                                                                </ul>
+
+                                                                                <div class="material-datatables">
+                                                                                    <table class="table table-striped table-bordered table-hover"
+                                                                                           datatable>
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            <th class="task">Document Name</th>
+                                                                                            <th class="task">Description</th>
+
+                                                                                            <th class="task">Action</th>
+
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr *ngFor="let doc of standardDocuments let i= index; ">
+
+                                                                                            <td>{{doc.name}}</td>
+                                                                                            <td>{{doc.description}}</td>
+
+                                                                                            <td>
+                                                                                                <button class="btn btn-info tooltips"
+                                                                                                        style="width: inherit"
+                                                                                                        (click)="viewPdfFile( doc.id,doc?.name, doc.documentType,'application/pdf')"
+                                                                                                        data-placement="top"
+                                                                                                ><i
+                                                                                                        class="fa fa-eye"></i>
+                                                                                                    View
+                                                                                                </button>
+                                                                                            </td>
+
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
 
 
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Organization
-                                                                                                </b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.organization.invalid && formMakeComment.organization.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="organization"
-                                                                                                        name="organization"
-                                                                                                        placeholder="Organization"
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Clause
-                                                                                                </b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.clause.invalid && formMakeComment.clause.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="clause"
-                                                                                                        name="clause"
-                                                                                                        placeholder="Clause"
-                                                                                                        type="text">
-                                                                                            </div>
 
-
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Paragraph/Figure/Table
-                                                                                                </b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        oninput="this.value = this.value.toUpperCase()"
-                                                                                                        [class.is-invalid]="formMakeComment.paragraph.invalid && formMakeComment.paragraph.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="paragraph"
-                                                                                                        name="paragraph"
-                                                                                                        placeholder="Paragraph"
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Type Of
-                                                                                                    Comment
-                                                                                                </b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <select aria-label="Small"
-                                                                                                        aria-describedby="inputGroup-sizing-lg"
-                                                                                                        class="form-control"
-                                                                                                        required
-                                                                                                        formControlName="commentType"
-                                                                                                        name="commentType"
-                                                                                                        [class.is-invalid]="formMakeComment.commentType.invalid && formMakeComment.commentType.touched">
-                                                                                                    <option disabled>
-                                                                                                        --Select Type Of
-                                                                                                        Comment--
-                                                                                                    </option>
-                                                                                                    <option value="General">
-                                                                                                        General
-                                                                                                    </option>
-                                                                                                    <option value="Technical">
-                                                                                                        Technical
-                                                                                                    </option>
-                                                                                                    <option value="Editorial">
-                                                                                                        Editorial
-                                                                                                    </option>
-
-                                                                                                </select>
-                                                                                            </div>
-
-
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Comment</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        [class.is-invalid]="formMakeComment.commentsMade.invalid && formMakeComment.commentsMade.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="commentsMade"
-                                                                                                        name="commentsMade"
-                                                                                                        placeholder="Comment"
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Proposed
-                                                                                                    Change</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        [class.is-invalid]="formMakeComment.proposedChange.invalid && formMakeComment.proposedChange.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="proposedChange"
-                                                                                                        name="proposedChange"
-                                                                                                        placeholder="Proposed Change"
-                                                                                                        type="text">
-                                                                                            </div>
-
-
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>TC
-                                                                                                    Observation</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        [class.is-invalid]="formMakeComment.observation.invalid && formMakeComment.observation.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="observation"
-                                                                                                        name="observation"
-                                                                                                        placeholder="TC Observation"
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Recipient</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <select aria-label="Small"
-                                                                                                        aria-describedby="inputGroup-sizing-lg"
-                                                                                                        class="form-control"
-                                                                                                        required
-                                                                                                        formControlName="recipientId"
-                                                                                                        name="recipientId"
-                                                                                                        [class.is-invalid]="formMakeComment.recipientId.invalid && formMakeComment.recipientId.touched">
-                                                                                                    <option disabled>
-                                                                                                        --Select Type Of
-                                                                                                        Comment--
-                                                                                                    </option>
-                                                                                                    <option value="80">
-                                                                                                        Mike Owiti
-                                                                                                    </option>
-
-
-                                                                                                </select>
-                                                                                            </div>
-
-
-                                                                                        </div>
-
-                                                                                        <input type="hidden"
-                                                                                               formControlName="pdId"
-                                                                                               name="pdId"
-                                                                                               ngModel="{{preliminary_draftsB?.id}}">
-                                                                                    </div>
-                                                                                </form>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
-                                                                                #closeModal
-                                                                                (click)="hideModel()"
+                                                                                #closeModal (click)="hideModel()"
                                                                                 data-dismiss="modal">Close
                                                                         </button>
-                                                                        <button class="btn btn-primary"
-                                                                                mat-raised-button
-                                                                                (click)="saveComment()"
-                                                                                *ngIf="commentFormGroup.valid"
-                                                                                type="button">SUBMIT
-                                                                        </button>
-                                                                    </div>
 
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="tab-pane" id="link11">
                                         <div class="row">
@@ -377,22 +408,17 @@
                                                         <div class="card-icon">
                                                             <i class="material-icons">schedule</i>
                                                         </div>
-                                                        <h4 class="card-title">Previous Comments
-                                                        </h4>
-
+                                                        <h4 class="card-title">Previous Comments</h4>
                                                     </div>
                                                     <div class="card-body">
-                                                        <div class="toolbar">
+                                                        <div class="toolbar"></div>
 
-                                                        </div>
-
-                                                        <h4 class="card-title">All Comments
-                                                        </h4>
+                                                        <h4 class="card-title">All Comments</h4>
 
                                                         <div class="material-datatables">
                                                             <table class="table table-striped table-bordered table-hover"
-                                                                   datatable
-                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2">
+                                                                   datatable [dtOptions]="dtOptions"
+                                                                   [dtTrigger]="dtTrigger2">
                                                                 <thead>
                                                                 <tr>
                                                                     <th class="id">Comment ID</th>
@@ -419,23 +445,21 @@
                                                                             </button>
                                                                         </div>
                                                                     </td>
-
-
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
                                                         </div>
 
-
-                                                        <div class="modal fade " id="editComment" tabindex="-1"
+                                                        <div class="modal fade" id="editComment" tabindex="-1"
                                                              role="dialog" aria-hidden="true">
                                                             <div class="modal-dialog modal-lg modal-xl" role="document"
-                                                                 style="width: 100%">
+                                                                 style="width: 100%;">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title"
                                                                             id="updateExampleModalLabel">
-                                                                            Edit Comment On Preliminary Draft</h5>
+                                                                            Edit Comment On Preliminary Draft
+                                                                        </h5>
                                                                         <button type="button" class="close"
                                                                                 data-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
@@ -448,14 +472,13 @@
                                                                                       [formGroup]="editCommentFormGroup"
                                                                                       class="form">
                                                                                     <div class="form-body">
-
                                                                                         <div class="row col-12">
                                                                                             <div class="form-group col-6">
-                                                                                                <label><b>Title</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                                <label><b>Title</b></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                                         [class.is-invalid]="formEditComment.title.invalid && formEditComment.title.touched"
+                                                                                                        readonly
                                                                                                         aria-describedby="inputGroup-sizing-sm"
                                                                                                         aria-label="Small"
                                                                                                         class="form-control one-column-input"
@@ -463,12 +486,12 @@
                                                                                                         name="title"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.title}}"
                                                                                                         placeholder="Title"
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
                                                                                             <div class="form-group col-6">
                                                                                                 <label><b>Document
-                                                                                                    Type</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                                    Type</b></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                                         [class.is-invalid]="formEditComment.documentType.invalid && formEditComment.documentType.touched"
@@ -477,18 +500,17 @@
                                                                                                         class="form-control one-column-input"
                                                                                                         formControlName="documentType"
                                                                                                         name="documentType"
+                                                                                                        readonly
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.document_type}}"
                                                                                                         placeholder="Document Type"
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
-
-
                                                                                         </div>
                                                                                         <div class="row col-12">
                                                                                             <div class="form-group col-6">
                                                                                                 <label><b>Circulation
-                                                                                                    Date</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                                    Date</b></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                                         [class.is-invalid]="formEditComment.circulationDate.invalid && formEditComment.circulationDate.touched"
@@ -499,12 +521,13 @@
                                                                                                         name="circulationDate"
                                                                                                         ngModel="{{formatFormDate(this.commentMadeRetrievedB?.circulation_date.toString().split(' ')[0])}}"
                                                                                                         placeholder="Circulation Date"
-                                                                                                        type="date">
+                                                                                                        readonly
+                                                                                                        type="date"
+                                                                                                />
                                                                                             </div>
                                                                                             <div class="form-group col-6">
                                                                                                 <label><b>Closing
-                                                                                                    Date</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                                    Date</b></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                                         [class.is-invalid]="formEditComment.closingDate.invalid && formEditComment.closingDate.touched"
@@ -513,18 +536,16 @@
                                                                                                         class="form-control one-column-input"
                                                                                                         formControlName="closingDate"
                                                                                                         name="closingDate"
+                                                                                                        readonly
                                                                                                         ngModel="{{formatFormDate(this.commentMadeRetrievedB?.closing_date.toString().split(' ')[0])}}"
                                                                                                         placeholder="Closing Date"
-                                                                                                        type="date">
+                                                                                                        type="date"
+                                                                                                />
                                                                                             </div>
-
-
                                                                                         </div>
                                                                                         <div class="row col-12">
                                                                                             <div class="form-group col-6">
-                                                                                                <label><b>Organization
-                                                                                                </b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                                <label><b>Organization </b></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                                         [class.is-invalid]="formEditComment.organization.invalid && formEditComment.organization.touched"
@@ -535,12 +556,12 @@
                                                                                                         name="organization"
                                                                                                         placeholder="Organization"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.organization}}"
-
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                        readonly
+                                                                                                />
                                                                                             </div>
                                                                                             <div class="form-group col-6">
-                                                                                                <label><b>Clause
-                                                                                                </b><span
+                                                                                                <label><b>Clause </b><span
                                                                                                         style="font-size: xx-small; color: red;"> (*)Required</span></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
@@ -551,17 +572,14 @@
                                                                                                         formControlName="clause"
                                                                                                         name="clause"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.clause}}"
-
                                                                                                         placeholder="Clause"
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
-
-
                                                                                         </div>
                                                                                         <div class="row col-12">
                                                                                             <div class="form-group col-6">
-                                                                                                <label><b>Paragraph/Figure/Table
-                                                                                                </b><span
+                                                                                                <label><b>Paragraph/Figure/Table </b><span
                                                                                                         style="font-size: xx-small; color: red;"> (*)Required</span></label>
                                                                                                 <input
                                                                                                         oninput="this.value = this.value.toUpperCase()"
@@ -573,15 +591,15 @@
                                                                                                         name="paragraph"
                                                                                                         placeholder="Paragraph"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.paragraph}}"
-
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
                                                                                             <div class="form-group col-6">
                                                                                                 <label><b>Type Of
-                                                                                                    Comment
-                                                                                                </b><span
+                                                                                                    Comment </b><span
                                                                                                         style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <select aria-label="Small"
+                                                                                                <select
+                                                                                                        aria-label="Small"
                                                                                                         aria-describedby="inputGroup-sizing-lg"
                                                                                                         class="form-control"
                                                                                                         required
@@ -601,11 +619,8 @@
                                                                                                     <option value="Editorial">
                                                                                                         Editorial
                                                                                                     </option>
-
                                                                                                 </select>
                                                                                             </div>
-
-
                                                                                         </div>
                                                                                         <div class="row col-12">
                                                                                             <div class="form-group col-6">
@@ -620,8 +635,8 @@
                                                                                                         name="commentsMade"
                                                                                                         placeholder="Comment"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.comments_made}}"
-
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
                                                                                             <div class="form-group col-6">
                                                                                                 <label><b>Proposed
@@ -636,59 +651,15 @@
                                                                                                         name="proposedChange"
                                                                                                         placeholder="Proposed Change"
                                                                                                         ngModel="{{this.commentMadeRetrievedB?.proposed_change}}"
-
-                                                                                                        type="text">
+                                                                                                        type="text"
+                                                                                                />
                                                                                             </div>
-
-
-                                                                                        </div>
-                                                                                        <div class="row col-12">
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>TC
-                                                                                                    Observation</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <input
-                                                                                                        [class.is-invalid]="formEditComment.observation.invalid && formEditComment.observation.touched"
-                                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                                        aria-label="Small"
-                                                                                                        class="form-control one-column-input"
-                                                                                                        formControlName="observation"
-                                                                                                        name="observation"
-                                                                                                        placeholder="TC Observation"
-                                                                                                        ngModel="{{this.commentMadeRetrievedB?.observation}}"
-
-                                                                                                        type="text">
-                                                                                            </div>
-                                                                                            <div class="form-group col-6">
-                                                                                                <label><b>Recipient</b><span
-                                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                                <select aria-label="Small"
-                                                                                                        aria-describedby="inputGroup-sizing-lg"
-                                                                                                        class="form-control"
-                                                                                                        required
-                                                                                                        formControlName="recipientId"
-                                                                                                        name="recipientId"
-                                                                                                        ngModel="{{this.commentMadeRetrievedB?.recipient_id}}"
-                                                                                                        [class.is-invalid]="formEditComment.recipientId.invalid && formEditComment.recipientId.touched">
-                                                                                                    <option selected
-                                                                                                            value="{{this.commentMadeRetrievedB?.recipient_id}}">
-                                                                                                        {{this.commentMadeRetrievedB?.received_by}}
-                                                                                                    </option>
-                                                                                                    <option value="23">
-                                                                                                        Mike Owiti
-                                                                                                    </option>
-
-
-                                                                                                </select>
-                                                                                            </div>
-
-
                                                                                         </div>
 
                                                                                         <input type="hidden"
                                                                                                formControlName="id"
                                                                                                name="id"
-                                                                                               ngModel="{{commentMadeRetrievedB?.commentsId}}">
+                                                                                               ngModel="{{commentMadeRetrievedB?.commentsId}}"/>
                                                                                     </div>
                                                                                 </form>
                                                                             </div>
@@ -696,17 +667,15 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
-                                                                                #closeModalB
-                                                                                (click)="hideModelB()"
+                                                                                #closeModalB (click)="hideModelB()"
                                                                                 data-dismiss="modal">Close
                                                                         </button>
                                                                         <button class="btn btn-primary"
                                                                                 mat-raised-button
-                                                                                (click)="editComment()"
-                                                                                type="button">EDIT
+                                                                                (click)="editComment()" type="button">
+                                                                            EDIT
                                                                         </button>
                                                                     </div>
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -714,7 +683,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -722,8 +690,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-

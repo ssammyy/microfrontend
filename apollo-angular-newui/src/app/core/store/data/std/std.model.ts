@@ -424,6 +424,19 @@ export interface HOPTasks {
     taskData: HOPTaskData;
 }
 
+export class CommentsDto {
+    id: number;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+
+
+}
+
+
+
 export interface HOPTaskData {
     title: number;
     referenceMaterial: string;

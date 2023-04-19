@@ -111,8 +111,7 @@
                                                 <td><a (click)="onOpenModal(secTask,'edit')"
                                                        class="btn btn-info tooltips"
                                                        data-placement="top"
-                                                       data-original-title="Upload NWI">Add New work
-                                                    Item/Justification </a></td>
+                                                       data-original-title="Upload NWI">Prepare SPC Justification </a></td>
 
                                             </tr>
                                             </tbody>
@@ -147,7 +146,7 @@
                     <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="updateExampleModalLabel">PREPARE SPC JUSTIFICATION</h5>
+                                <h5 class="modal-title">PREPARE SPC JUSTIFICATION</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -286,9 +285,34 @@
                                         </div>
                                     </div>
 
+                                    <h3 class="modal-title"><b>ISSUES ADDRESSED</b></h3>
                                     <div class="row">
                                         <div class="form-group col-10">
-                                            <label><b>Issues addressed by</b></label>
+                                            <label><b>Scope</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    ngModel="{{formActionRequest?.issuesAddressedBy}}"
+                                                    name="issuesAddressedBy"
+                                                    type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-10">
+                                            <label><b>Purpose And Application</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    aria-label="Small"
+                                                    class="form-control one-column-input"
+                                                    ngModel="{{formActionRequest?.issuesAddressedBy}}"
+                                                    name="issuesAddressedBy"
+                                                    type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-10">
+                                            <label><b>Intended Users</b></label>
                                             <input
                                                     aria-describedby="inputGroup-sizing-sm"
                                                     aria-label="Small"
@@ -590,8 +614,7 @@
                     <div class="modal-dialog modal-lg modal-xl" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title"
-                                    id="updateExampleModalLabel">Request Details</h5>
+                                <h5 class="modal-title">Request Details</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                         aria-label="Close">
                                     <span aria-hidden="true">&times;</span>

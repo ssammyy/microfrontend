@@ -668,11 +668,9 @@ class StandardRequestService(
     }
 
     fun getJustificationsPendingDecision(): List<StandardJustification> {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        return standardJustificationRepository.findByStatusAndTcSecretary(
+        return standardJustificationRepository.findByStatusOrderByIdAsc(
             "Justification Created. Awaiting Decision",
-            loggedInUser.id.toString()
+
         )
     }
     fun getAllMyJustifications(): List<StandardJustification> {

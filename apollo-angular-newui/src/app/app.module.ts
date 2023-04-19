@@ -1254,6 +1254,8 @@ import { ReviewApplicationsRejectedSacComponent } from './apollowebs/standards-d
 import { TcMemberAllVotesComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/tc-member-all-votes/tc-member-all-votes.component';
 import { TrackRequestComponent } from './apollowebs/standards-development/standard-request/track-request/track-request.component';
 import { AllJustificationsComponent } from './apollowebs/standards-development/standard-request/std-justification/all-justifications/all-justifications.component';
+import { AllTasksPdComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/all-tasks-pd/all-tasks-pd.component';
+import { SearchPermitsComponent } from './apollowebs/qualityAssuranceAdmin/search-permits/search-permits.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1879,6 +1881,8 @@ import { AllJustificationsComponent } from './apollowebs/standards-development/s
         TcMemberAllVotesComponent,
         TrackRequestComponent,
         AllJustificationsComponent,
+        AllTasksPdComponent,
+        SearchPermitsComponent,
 
     ],
     entryComponents: [LoaderComponent],

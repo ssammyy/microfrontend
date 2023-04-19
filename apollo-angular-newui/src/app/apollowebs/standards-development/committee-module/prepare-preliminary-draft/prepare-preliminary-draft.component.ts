@@ -13,7 +13,6 @@ import swal from "sweetalert2";
 import {
     DataHolder,
     Document,
-    Minutes,
     NwiItem,
     StandardRequestB,
     StdJustification,
@@ -89,6 +88,11 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     public dropdownSettingsB: IDropdownSettings = {};
     selectedItems?: UserRegister;
 
+    loading = false;
+    loadingText: string;
+
+    isFormSubmitted = false;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -131,10 +135,11 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
 
         this.preliminary_draftFormGroup = this.formBuilder.group({
-            pdName: ['', Validators.required]
+            pdName: ['', Validators.required],
+            nwiId: ['', Validators.required],
+
         });
 
-        this.prepareMinutesForm()
         this.dropdownSettings = {
             singleSelection: false,
             idField: 'id',
@@ -152,25 +157,34 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
     }
 
+    id: any = 'Pending Review';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Pending Review") {
+            this.reloadCurrentRoute()
+        }
+    }
+
     get formMinutesPd(): any {
         return this.minutes_preliminary_draftFormGroup.controls;
     }
 
     public getNWIS(): void {
-        this.SpinnerService.show();
-
-        this.committeeService.getAllNwiSForPd().subscribe(
+        this.loading = true
+        this.loadingText = "Retrieving Drafts Please Wait ...."
+        this.SpinnerService.show()
+        this.committeeService.getAllNwiSApprovedForPdPendingTasks().subscribe(
             (response: NwiItem[]) => {
-                console.log(response);
-
+                this.loading = false
                 this.approvedNwiSForPd = response;
                 this.rerender()
                 this.SpinnerService.hide();
 
             },
             (error: HttpErrorResponse) => {
+                this.loading = false
                 this.SpinnerService.hide();
-
                 alert(error.message);
             }
         );
@@ -184,131 +198,81 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        if (mode === 'edit') {
-            this.approvedNwiSForPdB = approvedNwiS;
-            button.setAttribute('data-target', '#updateNWIModal');
-        }
-        // if (mode === 'preparePd') {
-        //     this.approvedNwiSForPdB = approvedNwiS;
-        //     // button.setAttribute('data-target', '#preparePd');
-        //     localStorage.setItem('id', approvedNwiS.id);
-        //     // localStorage.removeItem(this.storageKey);
-        //
-        //
-        //     this.router.navigate(['/prepareDraft'], { state: { id:approvedNwiS.id } });
-        //
-        // }
-        if (mode === 'preparePd') {
-            this.approvedNwiSForPdB = approvedNwiS;
-            button.setAttribute('data-target', '#preparePd');
-        }
         if (mode === 'uploadMinutes') {
             this.approvedNwiSForPdB = approvedNwiS;
-            this.minutes_preliminary_draftFormGroup.controls.nwiId.setValue(approvedNwiS.id);
+            this.preliminary_draftFormGroup.controls.nwiId.setValue(approvedNwiS.id);
 
             button.setAttribute('data-target', '#uploadMinutes');
         }
-
-        if (mode === 'uploadDraftsAndOtherRelevantDocuments') {
-            this.approvedNwiSForPdB = approvedNwiS;
-            button.setAttribute('data-target', '#uploadDraftsAndOtherRelevantDocuments');
-        }
-
-        // @ts-ignore
         container.appendChild(button);
         button.click();
 
     }
 
-    public uploadMinutes(nwiID: string) {
-        if (this.uploadedFiles.length > 0) {
+    uploadPreliminaryDraft(formDirective): void {
+        this.isFormSubmitted = true;
+        if (this.preliminary_draftFormGroup.valid) {
+            if (this.uploadedFilesC != null && this.uploadedFilesC.length > 0) {
+
+
+                this.loading = true
+                this.loadingText = "Submitting  ...."
+                this.SpinnerService.show();
+
+
+
+                this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSForPdB.id).subscribe(
+                    (response) => {
+                        console.log(response)
+                        this.showToasterSuccess(response.httpStatus, `Successfully submitted Preliminary Draft`);
+                        this.uploadPDDoc(response.body.savedRowID)
+                        this.preliminary_draftFormGroup.reset();
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+                        console.log(error.message);
+                    }
+                );
+            } else {
+                this.loading = false
+                this.SpinnerService.hide();
+                this.showToasterError("Error", `Please Upload The Preliminary Draft document.`);
+            }
+        } else {
+            this.validateAllFormFields(this.preliminary_draftFormGroup);
+        }
+    }
+
+    public uploadPDDoc(pdID: string) {
+
+        //check if minutes are available
+        if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            this.SpinnerService.show();
-            this.committeeService.uploadMinutesForPd(nwiID, formData, "Minutes PD", "Minutes PD").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFiles = null;
-                    console.log(data);
-                    swal.fire({
-                        title: 'Minutes Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.hideModel()
-                    this.getNWIS();
+            this.committeeService.uploadMinutesForPd(pdID, formData, "Minutes PD", "Minutes PD").subscribe(
 
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
             );
         }
-    }
 
-    public uploadDraftsAndOtherDocs(nwiID: string) {
-        if (this.uploadedFilesB.length > 0) {
-            const file = this.uploadedFilesB;
+        //check draft documents
+        if (this.uploadedFilesB != null && this.uploadedFilesB.length > 0) {
+            const fileDraft = this.uploadedFilesB;
             const formData = new FormData();
-            for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
-                formData.append('docFile', file[i], file[i].name);
+            for (let i = 0; i < fileDraft.length; i++) {
+                console.log(fileDraft[i]);
+                formData.append('docFile', fileDraft[i], fileDraft[i].name);
             }
-            this.SpinnerService.show();
-            this.committeeService.uploadDraftDocumentsForPd(nwiID, formData, "Drafts And Other Relevant Documents PD", "Drafts And Other Relevant Documents PD").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFilesB = null;
-                    console.log(data);
-                    this.hideModel()
-                    swal.fire({
-                        title: 'Draft Documents Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.hideModel()
-                    this.getNWIS();
-
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
+            this.committeeService.uploadDraftDocumentsForPd(pdID, formData, "Drafts And Other Relevant Documents PD", "Drafts And Other Relevant Documents PD").subscribe(
             );
         }
-    }
 
-    uploadPreliminaryDraft(): void {
-        if (this.uploadedFilesC != null) {
-            this.SpinnerService.show();
-            this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSForPdB.id).subscribe(
-                (response) => {
-                    console.log(response)
-                    this.SpinnerService.hide();
-                    this.showToasterSuccess(response.httpStatus, `Successfully submitted Preliminary Draft`);
-                    this.uploadPDDoc(response.body.savedRowID)
-                    this.preliminary_draftFormGroup.reset();
-                },
-                (error: HttpErrorResponse) => {
-                    this.SpinnerService.hide();
-                    console.log(error.message);
-                }
-            );
-        } else {
-            this.showToasterError("Error", `Please Upload all the documents.`);
-        }
-    }
 
-    public uploadPDDoc(pdID: string) {
+
+
         if (this.uploadedFilesC.length > 0) {
             const file = this.uploadedFilesC;
             const formData = new FormData();
@@ -316,12 +280,11 @@ export class PreparePreliminaryDraftComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            this.SpinnerService.show();
             this.committeeService.uploadPDDocument(pdID, formData, "PD Document", "PD Document").subscribe(
                 (data: any) => {
+                    this.loading = false
                     this.SpinnerService.hide();
                     this.uploadedFilesC = null;
-                    console.log(data);
                     this.hideModel()
                     swal.fire({
                         title: 'Preliminary Draft Document Uploaded Successfully.',
@@ -379,11 +342,13 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
 
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+
     public hideModelC() {
         this.closeModalC?.nativeElement.click();
     }
@@ -549,23 +514,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         });
     }
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-        this.dataSourceB.filter = filterValue.trim().toLowerCase();
-        this.dataSourceC.filter = filterValue.trim().toLowerCase();
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-        }
-        if (this.dataSourceB.paginator) {
-            this.dataSourceB.paginator.firstPage();
-        }
-        if (this.dataSourceC.paginator) {
-            this.dataSourceC.paginator.firstPage();
-        }
-    }
-
     public getDecisionOnJustification(justificationId: string): void {
         this.standardDevelopmentService.getJustificationDecisionById(justificationId).subscribe(
             (response: StdJustificationDecision[]) => {
@@ -577,117 +525,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
             }
         )
     }
-
-    public prepareMinutesForm(): void {
-        this.minutes_preliminary_draftFormGroup = this.formBuilder.group({
-            committeeId: ['', Validators.required],
-            chairpersonData: [this.selectedItems, Validators.required],
-            secretaryData: [this.selectedItems, Validators.required],
-            attendeesData: [this.selectedItems, Validators.required],
-            agenda: ['', Validators.required],
-            minutesTitle: ['', Validators.required],
-            discussion: ['', Validators.required],
-            conclusion: ['', Validators.required],
-            actionItem: ['', Validators.required],
-            adjournmentDate: ['', Validators.required],
-            minutesDate: ['', Validators.required],
-            minutesTime: ['', Validators.required],
-            minutesLocation: ['', Validators.required],
-            nwiId: ['', Validators.required],
-
-
-        });
-    }
-
-    saveStandard(formDirective): void {
-
-
-        if (this.minutes_preliminary_draftFormGroup.invalid) {
-            this.minutes_preliminary_draftFormGroup.markAllAsTouched();
-            this.validateAllFormFields(this.minutes_preliminary_draftFormGroup);
-            console.log(this.minutes_preliminary_draftFormGroup)
-
-            return;
-        } else {
-            this.onUpload(this.minutes_preliminary_draftFormGroup.value)
-            formDirective.resetForm();
-            this.minutes_preliminary_draftFormGroup.reset()
-        }
-
-        // if (this.minutes_preliminary_draftFormGroup.valid) {
-        //     this.SpinnerService.show();
-        //     this.standardDevelopmentService.addStandardRequest(this.minutes_preliminary_draftFormGroup.value).subscribe(
-        //         (response) => {
-        //             this.showToasterSuccess(response.httpStatus, `Successfully uploaded minutes`);
-        //             this.SpinnerService.hide();
-        //             formDirective.resetForm();
-        //             this.minutes_preliminary_draftFormGroup.reset()
-        //             swal.fire({
-        //                 title: 'Minutes Successfully Uploaded.',
-        //                 buttonsStyling: false,
-        //                 customClass: {
-        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //                 },
-        //                 icon: 'success'
-        //             });
-        //
-        //         },
-        //         (error: HttpErrorResponse) => {
-        //             this.SpinnerService.hide();
-        //
-        //             alert(error.message);
-        //         }
-        //     );
-        //
-        // } else {
-        //     this.validateAllFormFields(this.minutes_preliminary_draftFormGroup);
-        // }
-
-
-    }
-
-    public onUpload(secTask: Minutes): void {
-        this.SpinnerService.show();
-
-
-        if (secTask.attendeesData != null) {
-            //console.log(JSON.stringify(secTask.liaisonOrganisationData.name));
-            secTask.attendeesId = JSON.stringify(secTask.attendeesData);
-            secTask.chairpersonId = JSON.stringify(secTask.chairpersonData);
-            secTask.secretaryId = JSON.stringify(secTask.secretaryData);
-
-        }
-        console.log(secTask)
-        this.hideModel();
-
-
-        // this.standardDevelopmentService.uploadNWI(secTask).subscribe(
-        //     (response) => {
-        //         console.log(response.body.savedRowID);
-        //         this.showToasterSuccess(response.httpStatus, `Successfully uploaded minutes`);
-        //         swal.fire({
-        //             title: 'Minutes Successfully Uploaded.',
-        //             buttonsStyling: false,
-        //             customClass: {
-        //                 confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //             },
-        //             icon: 'success'
-        //         });
-        //         this.hideModel();
-        //         this.SpinnerService.hide();
-        //
-        //
-        //     },
-        //     (error: HttpErrorResponse) => {
-        //         alert(error.message);
-        //         this.SpinnerService.hide();
-        //
-        //     }
-        // )
-        this.SpinnerService.hide();
-
-    }
-
 
     textValidationType(e) {
         this.validTextType = !!e;
@@ -754,6 +591,13 @@ export class PreparePreliminaryDraftComponent implements OnInit {
                 // this.pdfUploadsView = dataPdf;
             },
         );
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 
 
