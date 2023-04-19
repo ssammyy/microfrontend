@@ -18,6 +18,17 @@ export class QRCodeScannedQADto {
     dateOfExpiry: Date;
 }
 
+export class PermitSearchValues {
+    refNumber: string;
+    productName: string;
+    tradeMark: string;
+    assignedIo: bigint;
+    region: bigint;
+    division: bigint;
+    permitType: bigint;
+    firmName: string;
+}
+
 export class CompanyTurnOverUpdateDto {
     companyProfileID: bigint;
     selectedFirmTypeID: bigint;

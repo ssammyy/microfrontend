@@ -20,49 +20,56 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                                <div *ngIf="roles.includes('QA_PSC_MEMBERS_MODIFY'); else normal">
-                                    <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center"
-                                role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" id="task"
-                                       (click)="tabChange('My Tasks')">
-                                        <i class="material-icons">task</i>My Tasks
-                                    </a>
-                                </li>
+                            <div *ngIf="roles.includes('QA_PSC_MEMBERS_MODIFY'); else normal">
+                                <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center"
+                                    role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" id="task"
+                                           (click)="tabChange('My Tasks')">
+                                            <i class="material-icons">task</i>My Tasks
+                                        </a>
+                                    </li>
 
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" id="pscTasks"
-                                               (click)="tabChange('PSC Tasks')">
-                                                <i class="material-icons">diversity_3</i>PSC Tasks
-                                            </a>
-                                        </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" id="pscTasks"
+                                           (click)="tabChange('PSC Tasks')">
+                                            <i class="material-icons">diversity_3</i>PSC Tasks
+                                        </a>
+                                    </li>
 
 
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" id="complete-applications"
-                                       (click)="tabChange('Ongoing Applications')" role="tablist">
-                                        <i class="material-icons">done_outline</i>Ongoing Applications
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" id="awarded-applications"
-                                       (click)="tabChange('Awarded Applications')" role="tablist">
-                                        <i class="material-icons">verified</i>Awarded Applications
-                                    </a>
-                                </li>
-                                <!--                                    <li class="nav-item">-->
-                                <!--                                        <a class="nav-link" data-toggle="tab" id="expired-applications" (click)="tabChange('Expired Applications')" role="tablist">-->
-                                <!--                                            <i class="material-icons">report_problem</i>Expired Applications-->
-                                <!--                                        </a>-->
-                                <!--                                    </li>-->
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" id="applications"
-                                       (click)="tabChange('All Applications')" role="tablist">
-                                        <i class="material-icons">assignment</i>All Applications
-                                    </a>
-                                </li>
-                            </ul>
-                                </div>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" id="complete-applications"
+                                           (click)="tabChange('Ongoing Applications')" role="tablist">
+                                            <i class="material-icons">done_outline</i>Ongoing Applications
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" id="awarded-applications"
+                                           (click)="tabChange('Awarded Applications')" role="tablist">
+                                            <i class="material-icons">verified</i>Awarded Applications
+                                        </a>
+                                    </li>
+                                    <!--                                    <li class="nav-item">-->
+                                    <!--                                        <a class="nav-link" data-toggle="tab" id="expired-applications" (click)="tabChange('Expired Applications')" role="tablist">-->
+                                    <!--                                            <i class="material-icons">report_problem</i>Expired Applications-->
+                                    <!--                                        </a>-->
+                                    <!--                                    </li>-->
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" id="applications"
+                                           (click)="tabChange('All Applications')" role="tablist">
+                                            <i class="material-icons">assignment</i>All Applications
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" id="searchApplications"
+                                           (click)="tabChange('Search Applications')" role="tablist">
+                                            <i class="material-icons">search</i>Search Applications
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                             <ng-template #normal>
                                 <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center"
                                     role="tablist">
@@ -95,6 +102,13 @@
                                         <a class="nav-link" data-toggle="tab"
                                            (click)="tabChange('All Applications')" role="tablist">
                                             <i class="material-icons">assignment</i>All Applications
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab"
+                                           (click)="tabChange('Search Applications')" role="tablist">
+                                            <i class="material-icons">search</i>Search Applications
                                         </a>
                                     </li>
                                 </ul>
@@ -219,6 +233,12 @@
                             <div *ngIf="id == 'PSC Tasks'" class="w-100">
 
                                 <app-psc-tasks></app-psc-tasks>
+
+                            </div>
+
+                            <div *ngIf="id == 'Search Applications'" class="w-100">
+
+                                <app-search-permits></app-search-permits>
 
                             </div>
 

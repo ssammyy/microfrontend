@@ -49,7 +49,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
 
     //retrieve PD Drafts Docs
     @Query(
-        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_1 = :sdDocumentId",
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :sdDocumentId AND (DOCUMENT_TYPE='PD DOCUMENT' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PD' OR DOCUMENT_TYPE='MINUTES FOR PD'  )  ",
         nativeQuery = true
     )
     fun findStandardDocumentPdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
@@ -57,7 +57,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     @Transactional
     @Modifying
     @Query(
-        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_1 = :pdId WHERE t1.STANDARD_DOCUMENT_ID=:nwiID AND DOCUMENT_TYPE='MINUTES FOR PD' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PD'",
+        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_1 = :pdId, t1.STANDARD_DOCUMENT_ID= :pdId WHERE t1.STANDARD_DOCUMENT_ID=:nwiID AND DOCUMENT_TYPE='MINUTES FOR PD' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PD'",
         nativeQuery = true
     )
     fun updateDocsWithPDid(@Param("pdId") pdId: Long, @Param("nwiID") nwiID: Long): Int

@@ -14,7 +14,6 @@ import {
     HaccpImplementationDetailsApplyDto,
     InspectionDetailsDto,
     InspectionDetailsDtoB,
-    InspectionReportProcessStepDto,
     InspectionReportToBeClonedDto,
     OperationProcessAndControlsDetailsApplyDto,
     ProductLabellingDto,
@@ -33,10 +32,8 @@ declare const $: any;
     styleUrls: ['./inspection-report.css']
 })
 export class InspectionReport implements OnInit {
-    stepSoFar: | undefined;
     step = 1;
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
-    private permit_id: string;
     permitId: any;
 
     dateFormat = "yyyy-MM-dd";
@@ -50,7 +47,6 @@ export class InspectionReport implements OnInit {
     loading = false;
     loadingText: string;
 
-    setCloned = false;
 
     hideCloneButton = false;
 
@@ -84,13 +80,11 @@ export class InspectionReport implements OnInit {
 
     haccpImplementationDetailsApplyDto: HaccpImplementationDetailsApplyDto
 
-    inspectionReportProcessStep: InspectionReportProcessStepDto | undefined;
 
     currBtn = 'A';
     allInspectionReportDetails: AllInspectionDetailsApplyDto;
     allInspectionReportDetailsToBeCloned: InspectionReportToBeClonedDto[] = [];
     selectedPermitIdInspectionReport: number;
-    cloned: boolean;
 
     inspectionReportFilesList: FilesListDto[] = [];
     public uploadedFiles: FileList;
@@ -236,7 +230,7 @@ export class InspectionReport implements OnInit {
 
     }
 
-    onClickUpdateStep(stepNumber: number) {
+    onClickUpdateStep() {
         if (this.technicalDetails) {
             this.clickNextToTest();
         }
@@ -246,28 +240,6 @@ export class InspectionReport implements OnInit {
     get formTechnicalForm(): any {
         return this.technicalForm.controls;
     }
-
-    get formInspectionDetailsForm(): any {
-        return this.inspectionDetails.controls;
-    }
-
-    get formInspectionDetailsBForm(): any {
-        return this.inspectionDetailsB.controls;
-    }
-
-    get formProductLabellingForm(): any {
-        return this.productLabelling.controls;
-    }
-
-    get formOperationProcessAndControlsDetailsApplyForm(): any {
-        return this.operationProcessAndControlsDetailsApply.controls;
-    }
-
-    get formHaccpImplementationDetailsApply(): any {
-        return this.haccpImplementationDetailsApplyFormGroup.controls;
-    }
-
-
     onClickSaveInspectionReportTechnicalDetails(valid: boolean) {
         if (valid) {
             if (this.technicalDetails == null) {
@@ -411,7 +383,7 @@ export class InspectionReport implements OnInit {
                     (data) => {
                         this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
                         this.productLabellingDtos = this.allInspectionReportDetails.productLabelling;
-                        this.onClickUpdateStep(this.step);
+                        this.onClickUpdateStep();
                         this.SpinnerService.hide();
                         this.loading = false
                         swal.fire({
@@ -521,7 +493,7 @@ export class InspectionReport implements OnInit {
                         this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
 
                         this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls;
-                        this.onClickUpdateStep(this.step);
+                        this.onClickUpdateStep();
                         this.SpinnerService.hide();
                         this.loading = false
                         swal.fire({
@@ -677,7 +649,7 @@ export class InspectionReport implements OnInit {
                 '<span data-notify="title"></span> ' +
                 '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
-                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;"></div>' +
                 '</div>' +
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
@@ -886,7 +858,7 @@ export class InspectionReport implements OnInit {
                         this.qaService.showError(data.message);
                     }
                 },
-                error => {
+                () => {
                     this.SpinnerService.hide();
                     this.qaService.showError('AN ERROR OCCURRED');
                 },

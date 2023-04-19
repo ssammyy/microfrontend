@@ -75,6 +75,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
   percentageComplianceToVisitAsPerSchedule: number;
   sumOfNumberOfSamplesDrawnAndSubmitted: number;
   sumOfComplianceToPhysicalInspectionSumOfPC:number;
+  averageComplianceToPhysicalInspection: number;
   sumOfPCTimesA: number;
   sumOfTimeTakenToFillSurveillanceReport: number;
   averageTimeTakenToFillSurveillanceReport: number;
@@ -316,6 +317,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
     this.percentageComplianceToVisitAsPerSchedule = (this.sumOfSamplesPhysicallyInspected/this.loadedData.length)*100;
     this.sumOfNumberOfSamplesDrawnAndSubmitted = arrayOfSamplesDrawnAndSubmitted.reduce((a,b)=> a + b, 0);
     this.sumOfComplianceToPhysicalInspectionSumOfPC = arrayOfComplianceToPhysicalInspection.reduce((a,b)=> a + b, 0);
+    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/this.loadedData.length;
     this.sumOfPCTimesA = arrayOfPCXA.reduce((a,b)=> a + b, 0);
     this.sumOfTimeTakenToFillSurveillanceReport = arrayOfTimeTakenToFillSurveillanceReport.reduce((a,b)=> a + b, 0);
     this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/this.loadedData.length;

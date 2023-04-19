@@ -1126,11 +1126,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1183,11 +1178,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1783,7 +1773,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportForm = this.formBuilder.group({
       id: null,
       dataReportValueToClone: null,
-      referenceNumber: ['', Validators.required],
+      referenceNumber: null,
       inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
@@ -1792,7 +1782,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
-      outletDetails: ['', Validators.required],
+      outletDetails: null,
       outletName: ['', Validators.required],
       physicalLocation: ['', Validators.required],
       emailAddress: ['', Validators.required],
@@ -1805,7 +1795,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      remarks: ['', Validators.required],
     });
 
     this.investInspectReportForm = this.formBuilder.group({
@@ -2929,6 +2919,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewDataReportRecord(data: DataReportDto) {
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
+    console.log(data.remarks);
     this.totalCompliantValue = data?.totalComplianceScore;
     const paramDetails = data.productsList;
     this.dataSaveDataReportParamList = [];
@@ -3623,7 +3614,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
 
   onClickStartOnsiteActivities(valid: boolean) {
-    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
+    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be starting the timelines for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
           this.startOnsiteActivities(valid);
@@ -4303,6 +4294,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
 
     if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+      window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -5155,6 +5147,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   onClickSaveDataReport() {
     //need permanent solution for picking user input
     const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    console.log(this.dataReportForm.get("remarks").value);
     inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
@@ -5162,7 +5155,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       }
     }
     this.submitted = true;
-    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+    if (this.dataReportForm.valid ) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
@@ -5174,7 +5167,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   saveDataReport() {
-    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+    if (this.dataReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;

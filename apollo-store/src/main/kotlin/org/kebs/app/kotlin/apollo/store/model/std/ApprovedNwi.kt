@@ -113,6 +113,14 @@ interface PdWithUserName {
 
     fun getNUMBER_OF_COMMENTS(): String?
 
+    fun getPROPOSAL_TITLE(): String?
+
+    fun getCIRCULATION_DATE(): String?
+
+    fun getCLOSING_DATE(): String?
+
+    fun getORGANIZATION(): String?
+
 
 }
 
@@ -272,6 +280,9 @@ interface VotesWithNWIId {
 
 interface NwiVotesTally {
     fun getNWI_ID(): Long?
+
+    fun getREFERENCE_NUMBER(): String?
+
     fun getNWINAME(): String?
     fun getAPPROVED(): Long?
     fun getNOTAPPROVED(): Long?
@@ -301,3 +312,14 @@ interface SampleSubmissionDTO {
     fun getRESULTS_DATE(): String?
 
 }
+
+data class CommentsDto(
+    var id: Long? = null,
+    var clause: String? = null,
+    var paragraph: String? = null,
+    var typeOfComment: String? = null,
+    var comment: String? = null,
+    var proposedChange: String? = null,
+
+    )
+

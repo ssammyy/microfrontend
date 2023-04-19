@@ -247,7 +247,7 @@ export class AcknowledgementComponent implements OnInit {
         this.loadedData[i].timeTakenAddressComplaint = '0';
         arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)));
       }else{
-        arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)+1));
+        arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)));
       }
       count++;
     }

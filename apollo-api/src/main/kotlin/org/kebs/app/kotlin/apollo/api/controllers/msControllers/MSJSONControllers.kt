@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -33,6 +34,9 @@ class MSJSONControllers(
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
     private val iComplaintPdfViewRepo: IMsComplaintPdfGenerationViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
+    private val iSeizedGoodsReportViewRepo: IMsSeizedGoodsReportViewRepository,
+    private val iOutletVisitedAndSummaryOfFindingsViewRepo: IOutletVisitedAndSummaryOfFindingsViewRepository,
+    private val iSummaryOfSamplesDrawnViewRepo: ISummaryOfSamplesDrawnViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
@@ -729,11 +733,20 @@ class MSJSONControllers(
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        var fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(iOutletVisitedAndSummaryOfFindingsViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
+
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(iSummaryOfSamplesDrawnViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
+
+        val summarySiezedGoods = JRBeanCollectionDataSource(iSeizedGoodsReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
-        var officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        val officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
         var officersNames:String? = null
         var numberTest = 1
         officersList?.forEach { of->

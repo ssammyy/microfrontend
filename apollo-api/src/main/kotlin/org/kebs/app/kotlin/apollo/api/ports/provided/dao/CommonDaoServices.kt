@@ -551,7 +551,7 @@ class CommonDaoServices(
 
     fun extractPageRequest(req: ServerRequest, field: String = "id"): PageRequest {
         var page = 0
-        var records = 20
+        var records = 50
         // get page
         req.param("page").ifPresent { p ->
             p.toIntOrNull()?.let {
@@ -561,10 +561,10 @@ class CommonDaoServices(
         // Get page size
         req.param("records").ifPresent { p ->
             p.toIntOrNull()?.let {
-                records = if (it in 1..100) {
+                records = if (it in 1..1000) {
                     it
                 } else {
-                    20
+                    50
                 }
             }
         }

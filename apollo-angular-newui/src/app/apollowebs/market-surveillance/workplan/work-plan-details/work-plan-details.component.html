@@ -646,8 +646,11 @@
                                                     <thead>
                                                     <tr>
                                                         <th>No</th>
-                                                        <th>Data Collection Form reference</th>
-                                                        <th>Outlet details</th>
+                                                        <th>Outlet Name</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Email Address</th>
+                                                        <th>Person Met</th>
+                                                        <th>Date Visited</th>
                                                         <th>Summary of findings</th>
                                                         <th>Remarks</th>
                                                     </tr>
@@ -655,8 +658,11 @@
                                                     <tbody>
                                                     <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
                                                         <td>{{i+1}}</td>
-                                                        <td>{{app.referenceNumber}}</td>
                                                         <td>{{app.outletName}}</td>
+                                                        <td>{{app.phoneNumber}}</td>
+                                                        <td>{{app.emailAddress}}</td>
+                                                        <td>{{app.personMet}}</td>
+                                                        <td>{{app.inspectionDate}}</td>
                                                         <td>{{app.summaryFindingsActionsTaken}}</td>
                                                         <td>{{app.remarks}}</td>
                                                     </tr>
@@ -2873,18 +2879,18 @@
                             <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
                             <div class="row">
                                 <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Form reference No</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.referenceNumber.invalid && formDataReportForm.referenceNumber.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="referenceNumber"
-                                               name="referenceNumber" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.referenceNumber.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.referenceNumber.errors.required">Form reference No is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Form reference No</b> </label>-->
+<!--                                        <input [class.is-invalid]="formDataReportForm.referenceNumber.invalid && formDataReportForm.referenceNumber.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="referenceNumber"-->
+<!--                                               name="referenceNumber" required type="text">-->
+<!--                                        <div *ngIf="submitted && formDataReportForm.referenceNumber.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.referenceNumber.errors.required">Form reference No is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
@@ -3131,6 +3137,23 @@
                                 </div>
 
 
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Remarks</b> </label>
+                                        <textarea [class.is-invalid]="formDataReportForm.remarks.invalid && formDataReportForm.remarks.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="remarks"
+                                                  name="remarks" required type="text"></textarea>
+                                        <div *ngIf="submitted && formDataReportForm.remarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.remarks.errors.required">Remarks
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -3966,8 +3989,11 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Data Collection Form reference</th>
-                                    <th>Outlet details</th>
+                                    <th>Outlet Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+                                    <th>Person Met</th>
+                                    <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
                                 </tr>
@@ -3975,8 +4001,11 @@
                                 <tbody>
                                 <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
                                     <td>{{i+1}}</td>
-                                    <td>{{app.referenceNumber}}</td>
                                     <td>{{app.outletName}}</td>
+                                    <td>{{app.phoneNumber}}</td>
+                                    <td>{{app.emailAddress}}</td>
+                                    <td>{{app.personMet}}</td>
+                                    <td>{{app.inspectionDate}}</td>
                                     <td>{{app.summaryFindingsActionsTaken}}</td>
                                     <td>{{app.remarks}}</td>
                                 </tr>
@@ -5253,8 +5282,11 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Data Collection Form reference</th>
-                                    <th>Outlet details</th>
+                                    <th>Outlet Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+                                    <th>Person Met</th>
+                                    <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
                                 </tr>
@@ -5262,8 +5294,11 @@
                                 <tbody>
                                 <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
                                     <td>{{i+1}}</td>
-                                    <td>{{app.referenceNumber}}</td>
                                     <td>{{app.outletName}}</td>
+                                    <td>{{app.phoneNumber}}</td>
+                                    <td>{{app.emailAddress}}</td>
+                                    <td>{{app.personMet}}</td>
+                                    <td>{{app.inspectionDate}}</td>
                                     <td>{{app.summaryFindingsActionsTaken}}</td>
                                     <td>{{app.remarks}}</td>
                                 </tr>
@@ -7558,8 +7593,11 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Data Collection Form reference</th>
-                                    <th>Outlet details</th>
+                                    <th>Outlet Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Email Address</th>
+                                    <th>Person Met</th>
+                                    <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
                                 </tr>
@@ -7567,8 +7605,11 @@
                                 <tbody>
                                 <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
                                     <td>{{i+1}}</td>
-                                    <td>{{app.referenceNumber}}</td>
                                     <td>{{app.outletName}}</td>
+                                    <td>{{app.phoneNumber}}</td>
+                                    <td>{{app.emailAddress}}</td>
+                                    <td>{{app.personMet}}</td>
+                                    <td>{{app.inspectionDate}}</td>
                                     <td>{{app.summaryFindingsActionsTaken}}</td>
                                     <td>{{app.remarks}}</td>
                                 </tr>
