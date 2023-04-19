@@ -48,6 +48,21 @@ interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, 
 }
 
 @Repository
+interface IOutletVisitedAndSummaryOfFindingsViewRepository : HazelcastRepository<OutletVisitedAndSummaryOfFindingsViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<OutletVisitedAndSummaryOfFindingsViewEntity>
+
+    fun findByMsWorkplanGeneratedId(msWorkplanGeneratedId: String): List<OutletVisitedAndSummaryOfFindingsViewEntity>
+}
+
+@Repository
+interface ISummaryOfSamplesDrawnViewRepository : HazelcastRepository<SummaryOfSamplesDrawnViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<SummaryOfSamplesDrawnViewEntity>
+
+    fun findByMsWorkplanGeneratedId(msWorkplanGeneratedId: String): List<SummaryOfSamplesDrawnViewEntity>
+}
+
+
+@Repository
 interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String>, JpaSpecificationExecutor<MsPerformanceOfSelectedProductViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
 
@@ -132,6 +147,8 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
         @Param("productsDueForDestruction") productsDueForDestruction: String?,
         @Param("productsDueForRelease") productsDueForRelease: String?,
     ): List<MsSeizedGoodsReportViewEntity>?
+
+    fun findByMsWorkplanGeneratedId(msWorkplanGeneratedId: String): List<MsSeizedGoodsReportViewEntity>
 }
 
 

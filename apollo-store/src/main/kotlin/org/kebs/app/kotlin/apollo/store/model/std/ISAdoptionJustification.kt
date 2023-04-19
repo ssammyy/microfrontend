@@ -55,6 +55,10 @@ class ISAdoptionJustification {
     @Basic
     var referenceMaterial : String?=null
 
+    @Column(name="STANDARD_NUMBER")
+    @Basic
+    var standardNumber : String?=null
+
     @Column(name="DEPARTMENT")
     @Basic
     var department : String?=null

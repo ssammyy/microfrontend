@@ -591,6 +591,7 @@ class IntStandardService(
 
         val justification= ISAdoptionJustification();
         val variables: MutableMap<String, Any> = HashMap()
+        justification.standardNumber=isProposalJustification.standardNumber
         justification.meetingDate=isProposalJustification.meetingDate
         justification.slNumber=isProposalJustification.slNumber
         justification.edition=isProposalJustification.edition

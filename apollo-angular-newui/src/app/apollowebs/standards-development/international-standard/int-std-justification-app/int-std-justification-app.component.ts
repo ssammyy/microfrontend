@@ -226,7 +226,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
-                console.log(this.isAdoptionProposals);
+                //console.log(this.isAdoptionProposals);
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
