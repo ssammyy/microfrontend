@@ -508,7 +508,7 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionJustification>
 
     @Query(value = "SELECT * FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  DRAFT_ID=:id ORDER BY ID DESC", nativeQuery = true)
-    fun getISJustification(id: Long?): MutableList<ISAdoptionProposalJustification>
+    fun getISJustification(id: Long?): MutableList<ISAdoptionJustification>
 
     @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
             "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +

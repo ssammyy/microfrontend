@@ -738,8 +738,9 @@ export interface ISAdoptionProposal {
 
 export interface ISJustificationProposal {
     id: number;
-    meetingDate: string;
+    meetingDate: Timestamp<any>;
     tcId: string;
+    tcSec_id: string;
     tcSecName: string;
     slNumber: string;
     edition: string;
@@ -752,7 +753,7 @@ export interface ISJustificationProposal {
     referenceMaterial: string;
     department: number;
     remarks: string;
-    submissionDate: string;
+    submissionDate: Timestamp<any>;
     tcCommittee: string;
     departmentName: string;
     positiveVotes: number;
