@@ -340,7 +340,7 @@ class IntStandardController(
    // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getISJustification")
     @ResponseBody
-    fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionProposalJustification>
+    fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionJustification>
     {
         return internationalStandardService.getISJustification(draftId)
     }

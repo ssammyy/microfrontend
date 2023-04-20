@@ -97,10 +97,10 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
         this.loadingText = "Retrieving Justifications...";
         this.SpinnerService.show();
         this.stdIntStandardService.getISJustification(draftId).subscribe(
-            (response: ISJustificationProposal[]) => {
+                (response: ISJustificationProposal[]) => {
                 this.iSJustificationProposals = response;
                 console.log(this.iSJustificationProposals)
-                this.rerender();
+               // this.rerender();
                 this.SpinnerService.hide();
 
             },
@@ -226,7 +226,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
-                console.log(this.isAdoptionProposals);
+                //console.log(this.isAdoptionProposals);
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();

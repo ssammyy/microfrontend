@@ -591,6 +591,7 @@ class IntStandardService(
 
         val justification= ISAdoptionJustification();
         val variables: MutableMap<String, Any> = HashMap()
+        justification.standardNumber=isProposalJustification.standardNumber
         justification.meetingDate=isProposalJustification.meetingDate
         justification.slNumber=isProposalJustification.slNumber
         justification.edition=isProposalJustification.edition
@@ -607,6 +608,7 @@ class IntStandardService(
         justification.closingDate=isProposalJustification.closingDate
         justification.tcSec_id=isProposalJustification.tcSecName
         justification.title=isProposalJustification.title
+        justification.standardNumber=isProposalJustification.standardNumber
         justification.referenceMaterial=isProposalJustification.referenceMaterial
         justification.status= 0.toString()
 
@@ -677,7 +679,7 @@ class IntStandardService(
     }
 
 
-    fun getISJustification(draftId: Long): MutableList<ISAdoptionProposalJustification>{
+    fun getISJustification(draftId: Long): MutableList<ISAdoptionJustification>{
         return isAdoptionJustificationRepository.getISJustification(draftId);
     }
 

@@ -507,13 +507,16 @@ interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long>
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionJustification>
 
+    @Query(value = "SELECT * FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  DRAFT_ID=:id ORDER BY ID DESC", nativeQuery = true)
+    fun getISJustification(id: Long?): MutableList<ISAdoptionJustification>
+
     @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
             "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +
             "TC_ACCEPTANCE_DATE as tcAcceptanceDate,REFERENCE_MATERIAL AS referenceMaterial,DEPARTMENT as department,REMARKS as remarks," +
             "cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,TC_COMMITTEE as tcCommittee,DEPARTMENT_NAME as departmentName,POSITIVE_VOTES as positiveVotes," +
             "NEGATIVE_VOTES as negativeVotes,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms," +
             "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  DRAFT_ID=:id ORDER BY ID DESC", nativeQuery = true)
-    fun getISJustification(id: Long?): MutableList<ISAdoptionProposalJustification>
+    fun getISJustifications(id: Long?): MutableList<ISAdoptionProposalJustification>
 
     @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
             "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +

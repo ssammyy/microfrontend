@@ -2453,16 +2453,6 @@ class StandardLevyService(
     }
 
     fun getLevyDefaulters(): MutableList<LevyPenalty> {
-        //commonDaoServices.kra256Hashing()
-        val password = "password@1"
-        val loginid = "kebsuser"
-        val hashedUser=kraDataEncryptions(loginid)
-        val hashedPass=kraDataEncryptions(password)
-
-        KotlinLogging.logger { }.info { "my hashed Password   $hashedPass" }
-        KotlinLogging.logger { }.info { "my hashed Login   $hashedUser" }
-        //KotlinLogging.logger { }.info { "my hashed value   $hashed" }
-
         return companyProfileRepo.getLevyDefaulters()
     }
 

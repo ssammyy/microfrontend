@@ -77,6 +77,23 @@ class MpesaTest {
     }
 
     @Test
+    fun hashStrings() {
+        val plainText = listOf("Kims-Kebs")
+        val password = "password@1"
+        val loginid = "KEBSUSER"
+        val hashedPass = jasyptStringEncryptor.encrypt(password)
+        val hashedId = jasyptStringEncryptor.encrypt(loginid)
+        val decriptedId = jasyptStringEncryptor.decrypt(hashedId)
+        val decriptedPassword = jasyptStringEncryptor.decrypt(hashedPass)
+        KotlinLogging.logger { }.info { "my hashed value =$password =  $hashedPass" }
+        KotlinLogging.logger { }.info { "my hashed value =$loginid =  $hashedId" }
+        KotlinLogging.logger { }.info { "my Decrypted password =$hashedPass =  $decriptedId" }
+        KotlinLogging.logger { }.info { "my Decrypted uid =$hashedPass =  $decriptedPassword" }
+
+
+    }
+
+    @Test
     fun kra256Hashing() {
         val plainText = listOf("KEBSUSER", "password@1")
         val numberRecords = "2"
