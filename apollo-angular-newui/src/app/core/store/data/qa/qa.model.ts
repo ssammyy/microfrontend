@@ -22,10 +22,7 @@ export class PermitSearchValues {
     refNumber: string;
     productName: string;
     tradeMark: string;
-    assignedIo: bigint;
-    region: bigint;
-    division: bigint;
-    permitType: bigint;
+
     firmName: string;
 }
 
