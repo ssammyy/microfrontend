@@ -1458,7 +1458,7 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 
 @Repository
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
 
@@ -1479,7 +1479,7 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
 @Repository
 interface IPermitMigrationApplicationsFmarkEntityRepository :
     HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
 
     fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
@@ -1507,7 +1507,7 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
 
         ): List<PermitMigrationApplicationsEntityDmark>?
 
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
 
 
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
