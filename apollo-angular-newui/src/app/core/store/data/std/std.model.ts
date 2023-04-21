@@ -2693,5 +2693,20 @@ export interface HistoricalPayments{
     levyPenaltyPaymentDate: Timestamp<any>;
 }
 
+export interface AuthoritiesEntityDtos{
+    id: number;
+    name: string;
+    descriptions: string;
+    status: boolean;
+
+}
+export interface RolesEntityDtos{
+    id: number;
+    roleName: string;
+    descriptions: string;
+    status: boolean;
+
+}
+
 
 

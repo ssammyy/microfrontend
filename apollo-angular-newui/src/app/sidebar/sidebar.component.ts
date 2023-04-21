@@ -490,7 +490,21 @@ export const ROUTES: RouteInfo[] = [
                 title: 'Custom Offices',
                 ab: 'CO',
                 privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
+            },
+            {
+                path: 'user-roles',
+                title: 'User Roles',
+                ab: 'UR',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
+            },
+            {
+                path: 'privileges',
+                title: 'User Privileges',
+                ab: 'UP',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             }
+
+
         ],
         icontype: 'settings',
     },

@@ -1256,6 +1256,9 @@ import { TrackRequestComponent } from './apollowebs/standards-development/standa
 import { AllJustificationsComponent } from './apollowebs/standards-development/standard-request/std-justification/all-justifications/all-justifications.component';
 import { AllTasksPdComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/all-tasks-pd/all-tasks-pd.component';
 import { SearchPermitsComponent } from './apollowebs/qualityAssuranceAdmin/search-permits/search-permits.component';
+import { UserAccessComponent } from './apollowebs/admin/user-access/user-access.component';
+import { UserRolesComponent } from './apollowebs/system/user-roles/user-roles.component';
+import { UserPrivilegesComponent } from './apollowebs/system/user-privileges/user-privileges.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1883,6 +1886,9 @@ import { SearchPermitsComponent } from './apollowebs/qualityAssuranceAdmin/searc
         AllJustificationsComponent,
         AllTasksPdComponent,
         SearchPermitsComponent,
+        UserAccessComponent,
+        UserRolesComponent,
+        UserPrivilegesComponent,
 
     ],
     entryComponents: [LoaderComponent],
