@@ -2,11 +2,11 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ComStdCommitteeRemarks, ComStdRemarks,
-  Department,
-  InternationalStandardsComments,
-  ISAdoptionProposal, ProposalComments,
-  StakeholderProposalComments
+    ComStdCommitteeRemarks, ComStdRemarks,
+    Department,
+    InternationalStandardsComments,
+    ISAdoptionProposal, ISJustificationProposal, JustificationStatus, ProposalComments,
+    StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -16,7 +16,7 @@ import {StandardDevelopmentService} from "../../../../core/store/data/std/standa
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufacturingStatus} from "../../../../core/store/data/levy/levy.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 declare const $: any;
 @Component({
@@ -34,9 +34,11 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   isAdoptionProposals: ISAdoptionProposal[]=[];
   public actionRequest: ISAdoptionProposal | undefined;
   public prepareJustificationFormGroup!: FormGroup;
+  public editJustificationFormGroup!: FormGroup;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
+    iSJustificationProposals: ISJustificationProposal[] = [];
   loadingText: string;
   edition: string;
   approve: string;
@@ -51,7 +53,9 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   isShowCommentsTabs= true;
   isShowMainTab= true;
   isShowMainTabs= true;
+    isShowJustificationTabs= true;
     public uploadedFiles:  FileList;
+    justificationStatus !: JustificationStatus;
 
   constructor(
       private store$: Store<any>,
@@ -94,6 +98,34 @@ export class IntStdApprovedProposalsComponent implements OnInit {
       positiveVotes:[],
       negativeVotes:[],
     });
+
+      this.editJustificationFormGroup = this.formBuilder.group({
+          meetingDate: ['', Validators.required],
+          department: ['', Validators.required],
+          tcSecName: [],
+          standardNumber: [],
+          title: ['', Validators.required],
+          edition: ['', Validators.required],
+          requestedBy: [],
+          scope: ['', Validators.required],
+          purposeAndApplication: ['', Validators.required],
+          intendedUsers: ['', Validators.required],
+          referenceMaterial: ['', Validators.required],
+          circulationDate: [],
+          closingDate: [],
+          tcAcceptanceDate: [],
+          proposalId: [],
+          draftId: [],
+          knw: [],
+          slNumber: [],
+          remarks: [],
+          status: [],
+          uploadedFiles: [],
+          DocDescription: [],
+          positiveVotes:[],
+          negativeVotes:[],
+          justificationId:[],
+      });
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -110,6 +142,10 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   get formPrepareJustification(): any {
     return this.prepareJustificationFormGroup.controls;
   }
+    get formEditJustification(): any {
+        return this.editJustificationFormGroup.controls;
+    }
+
 
   public getDepartments(): void{
     this.standardDevelopmentService.getDepartments().subscribe(
@@ -145,7 +181,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     this.SpinnerService.show();
     this.stdIntStandardService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
         (response ) => {
-          console.log(response);
+          //console.log(response);
           this.getApprovedProposals();
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Justification Prepared`);
@@ -159,6 +195,51 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     );
     this.hideModalPrepareJustification();
   }
+
+    editJustification(): void {
+        this.loadingText = "Saving...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.editJustification(this.editJustificationFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.getApprovedProposals();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Justification Prepared`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalPrepareJustification();
+    }
+
+    public getISJustification(draftId: number): void {
+        this.loadingText = "Loading...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.getISJustification(draftId).subscribe(
+            (response: ISJustificationProposal[]) => {
+                this.iSJustificationProposals = response;
+                //console.log(this.iSJustificationProposals)
+                // this.rerender();
+                this.SpinnerService.hide();
+
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowJustificationTabs = !this.isShowJustificationTabs;
+        this.isShowRemarksTab= true;
+        this.isShowMainTab= true;
+        this.isShowMainTabs= true;
+        this.isShowCommentsTab= true;
+
+
+    }
 
   public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void {
     const container = document.getElementById('main-container');
@@ -181,6 +262,16 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     if (mode === 'prepareJustification') {
       this.actionRequest = isAdoptionProposal;
       button.setAttribute('data-target', '#prepareJustification');
+        this.stdIntStandardService.getJustificationStatus(comStdDraftID).subscribe(
+            (response: JustificationStatus)=> {
+                this.justificationStatus = response;
+                console.log(this.justificationStatus);
+            },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
       this.prepareJustificationFormGroup.patchValue(
           {
             requestedBy: this.actionRequest.requesterName,
@@ -226,6 +317,18 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     });
 
   }
+    public getJustificationStatus(draftId: number): void{
+        this.stdIntStandardService.getJustificationStatus(draftId).subscribe(
+            (response: JustificationStatus)=> {
+                this.justificationStatus = response;
+                //console.log(this.manufacturingStatus);
+            },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+    }
   public getApprovedProposals(): void{
     this.SpinnerService.show();
     this.stdIntStandardService.getApprovedProposals().subscribe(

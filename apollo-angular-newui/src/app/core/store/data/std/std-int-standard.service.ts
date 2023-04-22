@@ -16,7 +16,7 @@ import {
     ISJustificationProposal, ISProposalJustification,
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
-    ISTcSecTASKS, IstProposalComment,
+    ISTcSecTASKS, IstProposalComment, JustificationStatus,
     ListJustification, NwaRequestList,
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
@@ -27,7 +27,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {DefaulterDetails, DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
+import {DefaulterDetails, DocumentDTO, ManufacturingStatus, SiteVisitRemarks} from "../levy/levy.model";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
 
@@ -522,6 +522,19 @@ export class StdIntStandardService {
     );
   }
 
+    public editJustification(isProposalJustification: ISProposalJustification): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.post<ISProposalJustification>(url, isProposalJustification, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
 
     public uploadJSFile(isJustificationID: string, data: FormData): Observable<any> {
@@ -887,6 +900,11 @@ export class StdIntStandardService {
         );
     }
 
+    public getJustificationStatus(draftId: any): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION_STATUS);
+        const params = new HttpParams().set('draftId', draftId);
+        return this.http.get<JustificationStatus>(url, {params}).pipe();
+    }
 
 
 }

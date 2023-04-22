@@ -980,6 +980,7 @@ export interface ISProposalJustification{
     tcAcceptanceDate : string;
     proposalId : number;
     draftId : number;
+    justificationId : number;
     tcSecName: string;
     standardNumber: string;
     title: string;
@@ -2706,6 +2707,10 @@ export interface RolesEntityDtos{
     descriptions: string;
     status: boolean;
 
+}
+
+export interface JustificationStatus {
+    justificationStatus: number;
 }
 
 
