@@ -394,6 +394,38 @@ class ComStandardController (val comStandardService: ComStandardService,
         return sm
     }
 
+    @PostMapping("/company_standard/cover-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadCoverFiles(
+        @RequestParam("comStdDraftID") comStdDraftID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val comDraft = comStdDraftRepository.findByIdOrNull(comStdDraftID)?: throw Exception("DRAFT DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = ComStandardSacListUploads()
+            with(upload) {
+                comDraftDocumentId = comDraft.id
+
+            }
+            comStandardService.uploadCoverPages(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "COMPANY STANDARD COVER PAGES"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
     //@PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/anonymous/company_standard/getUploadedStdDraftForComment")
     @ResponseBody
@@ -476,6 +508,33 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+    }
+
+    @GetMapping("/company_standard/view/cover_pages")
+    fun viewDraftCoverPages(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedCPFileBYId(comStdDraftID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/octet-stream"
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @GetMapping("/company_standard/getCoverPagesList")
+    fun getCoverPagesList(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ): List<SiteVisitListHolder> {
+        return comStandardService.getCoverPagesList(comStdDraftID)
     }
 
 

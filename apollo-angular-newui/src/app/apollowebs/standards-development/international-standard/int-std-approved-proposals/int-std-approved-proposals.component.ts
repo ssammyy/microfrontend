@@ -165,7 +165,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         (response: InternationalStandardsComments[]) => {
           this.internationalStandardsComments = response;
           this.SpinnerService.hide();
-          console.log(this.internationalStandardsComments)
+          //console.log(this.internationalStandardsComments)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -204,7 +204,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
                 //console.log(response);
                 this.getApprovedProposals();
                 this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Justification Prepared`);
+                this.showToasterSuccess(response.httpStatus, `Changes have been made to the Justification`);
 
             },
             (error: HttpErrorResponse) => {
@@ -222,7 +222,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         this.stdIntStandardService.getISJustification(draftId).subscribe(
             (response: ISJustificationProposal[]) => {
                 this.iSJustificationProposals = response;
-                //console.log(this.iSJustificationProposals)
+                console.log(this.iSJustificationProposals)
                 // this.rerender();
                 this.SpinnerService.hide();
 
