@@ -329,12 +329,29 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(isProposalJustification))
     }
 
+    @PostMapping("/international_standard/editJustification")
+    @ResponseBody
+    fun editJustification(@RequestBody isProposalJustification: ISProposalJustification): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.editJustification(isProposalJustification))
+    }
+
+
+
     //@PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustification")
     @ResponseBody
     fun getJustification(): MutableList<ProposalDetails>
     {
         return internationalStandardService.getJustification()
+    }
+
+
+    // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getJustificationStatus")
+    @ResponseBody
+    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): Long
+    {
+        return internationalStandardService.getJustificationStatus(draftId)
     }
 
    // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")

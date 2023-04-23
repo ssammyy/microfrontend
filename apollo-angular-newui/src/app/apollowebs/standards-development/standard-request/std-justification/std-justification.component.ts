@@ -80,6 +80,13 @@ export class StdJustificationComponent implements OnInit {
 
     public itemId = "F&A/1:2021";
     public referenceMaterial: string = "ReferenceMaterialJustification";
+    loading = false;
+    loadingText: string;
+
+    //today's date
+    todayDate: Date = new Date();
+
+    otherSelected = false;
 
 
     constructor(
@@ -95,13 +102,10 @@ export class StdJustificationComponent implements OnInit {
 
     ngOnInit(): void {
         this.getTCSECTasksJustification();
-        this.getApprovedJustifications();
-        this.getRejectedJustifications();
-        this.getRejectedAmendmentJustifications();
+
 
     }
 
-    
     id: any = 'Pending Justification';
 
     tabChange(ids: any) {
@@ -109,69 +113,25 @@ export class StdJustificationComponent implements OnInit {
         console.log(this.id);
     }
 
-    get formStdTSec(): any {
-        return this.stdTSecFormGroup.controls;
-    }
-
     public getTCSECTasksJustification(): void {
+        this.loading = true
+        this.loadingText = "Retrieving Applications Please Wait ...."
+        this.SpinnerService.show()
+
         this.standardDevelopmentService.getAllNwiSApprovedForJustification().subscribe(
             (response: NwiItem[]) => {
-                console.log(response);
+                this.loading = false
+                this.SpinnerService.hide()
                 this.secTasks = response;
                 this.rerender()
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
+                this.SpinnerService.hide()
             }
         )
     }
-
-    public getApprovedJustifications(): void {
-        this.standardDevelopmentService.getApprovedJustifications().subscribe(
-            (response: StdJustification[]) => {
-                // console.log(response);
-                this.approved = response;
-                this.dataSource = new MatTableDataSource(this.approved);
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
-
-
-    public getRejectedJustifications(): void {
-        this.standardDevelopmentService.getRejectedJustifications().subscribe(
-            (response: StdJustification[]) => {
-                // console.log(response);
-                this.rejected = response;
-                this.dataSourceB = new MatTableDataSource(this.rejected);
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
-
-    public getRejectedAmendmentJustifications(): void {
-        this.standardDevelopmentService.getRejectedAmendmentJustifications().subscribe(
-            (response: StdJustification[]) => {
-                // console.log(response);
-                this.rejectedWithAmendments = response;
-                this.dataSourceC = new MatTableDataSource(this.rejectedWithAmendments);
-                this.dataSourceC.paginator = this.paginator;
-                this.dataSourceC.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
-
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
@@ -189,7 +149,10 @@ export class StdJustificationComponent implements OnInit {
             stdJustification.title == '' ||
             stdJustification.edition == '' ||
             stdJustification.requestedBy == '' ||
-            stdJustification.issuesAddressedBy == '' ||
+            stdJustification.scope == '' ||
+            stdJustification.ksIsoNumber == '' ||
+            stdJustification.purpose == '' ||
+            stdJustification.intendedUsers == '' ||
             stdJustification.tcAcceptanceDate == '') {
             this.showToasterError("Error", "Please Fill In All The Details")
 
@@ -215,6 +178,35 @@ export class StdJustificationComponent implements OnInit {
         }
     }
 
+
+    deferJustification(nwiItem: NwiItem): void {
+
+        if (nwiItem.deferredDate == '') {
+            this.showToasterError("Error", "Please Fill In All The Details")
+
+        } else {
+
+            this.loading = true
+            this.loadingText = "Deferring"
+            this.SpinnerService.show();
+            this.standardDevelopmentService.deferJustification(nwiItem).subscribe(
+                (response) => {
+                    this.showToasterSuccess(response.httpStatus, `Justification Deferred`);
+                    this.SpinnerService.hide();
+                    this.getTCSECTasksJustification();
+                    this.hideModel();
+
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+
+                    alert(error.message);
+                }
+            )
+        }
+    }
+
+
     public onOpenModal(secTask: NwiItem, mode: string): void {
 
         const container = document.getElementById('main-container');
@@ -223,11 +215,15 @@ export class StdJustificationComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'edit') {
-            console.log(secTask.taskId)
             this.tscsecRequest = secTask;
             this.itemId = this.tscsecRequest.id;
             this.getSelectedUser(secTask.tcSec)
             button.setAttribute('data-target', '#uploadSPCJustification');
+        }
+        if (mode === 'defer') {
+            this.tscsecRequest = secTask;
+            this.itemId = this.tscsecRequest.id;
+            button.setAttribute('data-target', '#deferForJustification');
         }
 
         // @ts-ignore
@@ -283,11 +279,16 @@ export class StdJustificationComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+    @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
 
 
     public hideModel() {
         this.closeModal?.nativeElement.click();
+    }
+
+    public hideModelB() {
+        this.closeModalB?.nativeElement.click();
     }
 
     public hideModelC() {
@@ -482,6 +483,10 @@ export class StdJustificationComponent implements OnInit {
         if (this.dataSourceC.paginator) {
             this.dataSourceC.paginator.firstPage();
         }
+    }
+
+    onSelectOption(selectedOption: string) {
+        this.otherSelected = selectedOption === 'Other';
     }
 
 

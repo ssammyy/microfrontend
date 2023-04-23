@@ -1053,6 +1053,7 @@ data class FilterDto(
     )
 
 data class KebsWebistePermitEntityDto(
+    var id: Long? = null,
     var companyName: String? = null,
     var physical_address: String? = null,
     var product_id: String? = null,

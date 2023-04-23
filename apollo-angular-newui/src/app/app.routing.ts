@@ -870,6 +870,8 @@ import {
 import {
     TrackRequestComponent
 } from "./apollowebs/standards-development/standard-request/track-request/track-request.component";
+import {UserPrivilegesComponent} from "./apollowebs/system/user-privileges/user-privileges.component";
+import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.component";
 
 export const routes: Routes = [
     {
@@ -1687,6 +1689,15 @@ export const routes: Routes = [
                 path: 'inspection/fees',
                 component: InspectionFeesComponent,
             },
+            {
+                path: 'privileges',
+                children: [{path: '', component: UserPrivilegesComponent}],
+            },
+            {
+                path: 'user-roles',
+                children: [{path: '', component: UserRolesComponent}],
+            },
+
         ],
     },
     {
@@ -3018,6 +3029,9 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyRejectedChangesComponent}],
     },
+
+
+
 
 
     /****************MS COMPONENTS ENDS HERE**********************************/

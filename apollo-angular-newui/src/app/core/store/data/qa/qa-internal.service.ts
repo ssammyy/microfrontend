@@ -53,8 +53,6 @@ export class QaInternalService {
 
     public loadMySearchPermit(permitSearchValues: PermitSearchValues): Observable<ApiResponseModel> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_SEARCH_LIST);
-        console.log(url)
-
         return this.http.put<ApiResponseModel>(url, permitSearchValues).pipe(
             map(function (response: ApiResponseModel) {
                 return response;

@@ -2475,7 +2475,8 @@ class QualityAssuranceHandler(
                     when {
                         standardLevyService.getLevyPaymentStatus() -> {
 
-                            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+                            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
                             val permitType = qaDaoServices.findPermitType(permitTypeID)
 
                             val dto = req.body<STA1Dto>()
@@ -2492,6 +2493,7 @@ class QualityAssuranceHandler(
                                         .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                                         dto.attachedPlant
                                     }
+
                                     else -> {
                                         loggedInUser.plantId
                                     }
@@ -2721,8 +2723,11 @@ class QualityAssuranceHandler(
 //                    var fmarkGenerated : PermitApplicationsEntity
                     var fmarkGenerated = when (permit.renewalStatus) {
                         map.activeStatus -> {
-                            qaDaoServices.findFmarkWithSmarkId(permit.id ?: throw Exception("INVALID PERMIT ID")).fmarkId?.let { qaDaoServices.findPermitBYID(it) }!!
+                            qaDaoServices.findFmarkWithSmarkId(
+                                permit.id ?: throw Exception("INVALID PERMIT ID")
+                            ).fmarkId?.let { qaDaoServices.findPermitBYID(it) }!!
                         }
+
                         else -> {
                             qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).second
 
@@ -2764,19 +2769,24 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            var permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
 
             val permitType = qaDaoServices.findPermitType(
                 permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
             )
 
             if (permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark) {
-                val invoiceCreated = qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
+                val invoiceCreated =
+                    qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
 
-                if(invoiceCreated.first.varField10=="true"){
-                    if(invoiceCreated.second?.totalAmount == BigDecimal.ZERO){
-                        with(permit){
+                if (invoiceCreated.first.varField10 == "true") {
+                    if (invoiceCreated.second?.totalAmount == BigDecimal.ZERO) {
+                        with(permit) {
                             invoiceDifferenceGenerated = 1
                             varField10 = map.activeStatus.toString()
                             varField9 = 2.toString()
@@ -2785,17 +2795,17 @@ class QualityAssuranceHandler(
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
                             userTaskId = applicationMapProperties.mapUserTaskNameQAM
                         }
-                    }else{
-                    //Update Permit Details
+                    } else {
+                        //Update Permit Details
                         with(permit) {
-                        paidStatus = 0
-                        sendApplication = map.activeStatus
-                        endOfProductionStatus = map.inactiveStatus
-                        invoiceDifferenceGenerated = 1
-                        varField10 = map.activeStatus.toString()
-                        varField9 = 2.toString()
-                        permitStatus = applicationMapProperties.mapQaStatusPPayment
-                    }
+                            paidStatus = 0
+                            sendApplication = map.activeStatus
+                            endOfProductionStatus = map.inactiveStatus
+                            invoiceDifferenceGenerated = 1
+                            varField10 = map.activeStatus.toString()
+                            varField9 = 2.toString()
+                            permitStatus = applicationMapProperties.mapQaStatusPPayment
+                        }
                     }
                     permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
@@ -2807,7 +2817,7 @@ class QualityAssuranceHandler(
                     ).let {
                         return ok().body(it)
                     }
-                }else {
+                } else {
                     return badRequest().body(invoiceCreated.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
             } else {
@@ -4081,7 +4091,8 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
             val pmOldPermitSmark = qaDaoServices.findPermitBYID(permitID)
             if (pmOldPermitSmark.fmarkGenerated == 1) {
@@ -4097,11 +4108,11 @@ class QualityAssuranceHandler(
                     loggedInUser
                 )
 
-                with(myRenewedPermit.second){
+                with(myRenewedPermit.second) {
                     fmarkGenerated = 1
 //                    fmarkGeneratedID = myRenewedPermitFmark.second.id
                 }
-                myRenewedPermit= qaDaoServices.permitUpdateDetails(myRenewedPermit.second, map, loggedInUser)
+                myRenewedPermit = qaDaoServices.permitUpdateDetails(myRenewedPermit.second, map, loggedInUser)
             }
 
 
@@ -4291,7 +4302,8 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val batchID = req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchID =
+                req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
             val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
 //            val dto = req.body<NewBatchInvoiceDto>()
 //            val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
@@ -4305,7 +4317,7 @@ class QualityAssuranceHandler(
             //Pass invoice Dto to Sage
 //            val permitType = qaDaoServices.findPermitType(permitTypeID ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 //            if (detailsSaved.first.varField10 == "true") {
-                //Add created invoice consolidated id to my batch id to be submitted
+            //Add created invoice consolidated id to my batch id to be submitted
 //                val batchInvoiceDetails = detailsSaved.second
 //                val newBatchInvoiceDto = NewBatchInvoiceDto()
 //                newBatchInvoiceDto.isWithHolding = dto.isWithHolding
@@ -4329,7 +4341,9 @@ class QualityAssuranceHandler(
                 invoiceBatchID.batchNumber ?: throw Exception("MISSING BATCH NUMBER")
             )
 
-            val manufactureDetails = commonDaoServices.findCompanyProfileWithID(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"))
+            val manufactureDetails = commonDaoServices.findCompanyProfileWithID(
+                loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID")
+            )
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
 //                reveneCode = paymentRevenueCode.revenueCode
@@ -4352,9 +4366,9 @@ class QualityAssuranceHandler(
                 }
             }
 
-                qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
-                    return ok().body(it)
-                }
+            qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
+                return ok().body(it)
+            }
 //            } else {
 //                return badRequest().body(detailsSaved.first.responseMessage ?: "UNKNOWN_ERROR")
 //            }
@@ -4366,7 +4380,6 @@ class QualityAssuranceHandler(
         }
 
     }
-
 
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -5191,6 +5204,7 @@ class QualityAssuranceHandler(
                     permitListAllApplications =
                         if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsite(
+
                                 qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumberToBeRetrieved), map
                             )
                         } else {
@@ -5243,8 +5257,8 @@ class QualityAssuranceHandler(
                     when (permitType) {
                         "SM" -> {
 
-
                             response =
+
                                 "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
                                         " SM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " SM Expiry Date: " + convertDateStringToDate(
                                     permit.expiry_date!!

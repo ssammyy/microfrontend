@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+    AuthoritiesEntityDtos,
     ComDraftComment,
     ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks,
     GazetteNotice,
@@ -15,18 +16,18 @@ import {
     ISJustificationProposal, ISProposalJustification,
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
-    ISTcSecTASKS, IstProposalComment,
+    ISTcSecTASKS, IstProposalComment, JustificationStatus,
     ListJustification, NwaRequestList,
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
-    ProposalComments,
+    ProposalComments, RolesEntityDtos,
     StakeholderProposalComments, StakeHoldersFields, StandardBody, ThisProposalComment, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {DefaulterDetails, DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
+import {DefaulterDetails, DocumentDTO, ManufacturingStatus, SiteVisitRemarks} from "../levy/levy.model";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
 
@@ -521,6 +522,19 @@ export class StdIntStandardService {
     );
   }
 
+    public editJustification(isProposalJustification: ISProposalJustification): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.post<ISProposalJustification>(url, isProposalJustification, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
 
     public uploadJSFile(isJustificationID: string, data: FormData): Observable<any> {
@@ -821,7 +835,76 @@ export class StdIntStandardService {
         );
     }
 
+    public getAuthorities(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_AUTHORITIES_LIST);
+        const params = new HttpParams();
+        return this.http.get<AuthoritiesEntityDtos>(url, {params}).pipe();
+    }
 
+    public createAuthority(authorities: AuthoritiesEntityDtos): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ADD_AUTHORITIES);
+        const params = new HttpParams();
+        return this.http.post<AuthoritiesEntityDtos>(url, authorities, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getRoles(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_ROLES_LIST);
+        const params = new HttpParams();
+        return this.http.get<RolesEntityDtos>(url, {params}).pipe();
+    }
+
+    public createRole(roles: RolesEntityDtos): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ADD_ROLES);
+        const params = new HttpParams();
+        return this.http.post<RolesEntityDtos>(url, roles, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    assignAuthorizationToRole(roleId: bigint, privilegeId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ASSIGN_AUTHORIZATION_TO_ROLE);
+        const urlAndPathVariables = `${url}${roleId}/${privilegeId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    loadActivePrivileges( status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.AUTHORITIES_LIST_BY_STATUS);
+        const urlAndPathVariables = `${url}/${status}`;
+        return this.http.get<any>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getJustificationStatus(draftId: any): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION_STATUS);
+        const params = new HttpParams().set('draftId', draftId);
+        return this.http.get<JustificationStatus>(url, {params}).pipe();
+    }
 
 
 }

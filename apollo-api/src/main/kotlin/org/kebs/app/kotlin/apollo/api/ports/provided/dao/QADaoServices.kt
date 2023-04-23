@@ -10872,6 +10872,7 @@ class QADaoServices(
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
             KebsWebistePermitEntityDto(
+                p.id,
                 if (p.firmName == null) {
                     p.attachedPlantId?.let {
                         commonDaoServices.findCompanyProfileWithID(
@@ -10956,6 +10957,7 @@ class QADaoServices(
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
             KebsWebistePermitEntityDto(
+                p.id,
                 p.companyName,
                 p.physicalAddress,
                 p.permitNumber,
@@ -10976,6 +10978,7 @@ class QADaoServices(
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
             KebsWebistePermitEntityDto(
+                p.id,
                 p.companyName,
                 p.physicalAddress,
                 p.permitNumber,
@@ -10996,6 +10999,7 @@ class QADaoServices(
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
             KebsWebistePermitEntityDto(
+                p.id,
                 p.companyName,
                 p.physicalAddress,
                 p.permitNumber,
@@ -11029,7 +11033,9 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntity> {
 
-        permitMigratedRepo.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
+
+
+        permitMigratedRepo.findFirstByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }
@@ -11070,7 +11076,7 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityDmark> {
 
-        permitMigratedRepoDmark.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
+        permitMigratedRepoDmark.findFirstByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }
@@ -11095,7 +11101,7 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityFmark> {
 
-        permitMigratedRepoFmark.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
+        permitMigratedRepoFmark.findFirstByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }

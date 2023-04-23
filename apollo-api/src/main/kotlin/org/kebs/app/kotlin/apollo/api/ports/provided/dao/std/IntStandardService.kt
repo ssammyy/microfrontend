@@ -649,6 +649,73 @@ class IntStandardService(
 
     }
 
+    fun editJustification(isProposalJustification: ISProposalJustification) : String
+    {
+
+
+        val variables: MutableMap<String, Any> = HashMap()
+        isAdoptionJustificationRepository.findByIdOrNull(isProposalJustification.justificationId)?.let { justification ->
+
+            with(justification) {
+        standardNumber=isProposalJustification.standardNumber
+        meetingDate=isProposalJustification.meetingDate
+        slNumber=isProposalJustification.slNumber
+        edition=isProposalJustification.edition
+        requestedBy=isProposalJustification.requestedBy
+        issuesAddressed=isProposalJustification.issuesAddressed
+        tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
+        department=isProposalJustification.department
+        proposalId=isProposalJustification.proposalId
+        draftId=isProposalJustification.draftId
+        scope=isProposalJustification.scope
+        purposeAndApplication=isProposalJustification.purposeAndApplication
+        intendedUsers=isProposalJustification.intendedUsers
+        circulationDate=isProposalJustification.circulationDate
+        closingDate=isProposalJustification.closingDate
+        tcSec_id=isProposalJustification.tcSecName
+        title=isProposalJustification.title
+        standardNumber=isProposalJustification.standardNumber
+        referenceMaterial=isProposalJustification.referenceMaterial
+        status= 0.toString()
+
+
+        departmentName = departmentListRepository.findNameById(isProposalJustification.department?.toLong())
+
+            }
+            isAdoptionJustificationRepository.save(justification)
+
+        } ?: throw Exception("JUSTIFICATION NOT FOUND")
+
+        comStdDraftRepository.findByIdOrNull(isProposalJustification.draftId)?.let { comStdDraft ->
+
+            with(comStdDraft) {
+                status = 3
+            }
+            comStdDraftRepository.save(comStdDraft)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        //variables["ID"] = ispDetails.id
+
+        var userList= companyStandardRepository.getHopEmailList()
+
+        //email to Head of publishing
+        val targetUrl = "${callUrl}/";
+        userList.forEach { item->
+            //  val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
+            val subject = "Justification"
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been prepared."
+            if (recipient != null) {
+                // notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
+
+        return "Justification Uploaded"
+
+    }
+
     fun getJustification(): MutableList<ProposalDetails>{
         return isAdoptionProposalRepository.getISJustification();
     }
@@ -678,6 +745,9 @@ class IntStandardService(
         return isJustificationUploadsRepository.save(uploads)
     }
 
+    fun getJustificationStatus(draftId: Long): Long{
+        return isAdoptionJustificationRepository.getJustificationCount(draftId)
+    }
 
     fun getISJustification(draftId: Long): MutableList<ISAdoptionJustification>{
         return isAdoptionJustificationRepository.getISJustification(draftId);
@@ -727,7 +797,7 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                     with(comStdDraft) {
-                        status = 5
+                        status = 1
                     }
                     comStdDraftRepository.save(comStdDraft)
                     companyStandardRemarksRepository.save(companyStandardRemarks)

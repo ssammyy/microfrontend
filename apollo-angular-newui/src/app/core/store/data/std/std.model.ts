@@ -980,6 +980,7 @@ export interface ISProposalJustification{
     tcAcceptanceDate : string;
     proposalId : number;
     draftId : number;
+    justificationId : number;
     tcSecName: string;
     standardNumber: string;
     title: string;
@@ -2691,6 +2692,25 @@ export interface HistoricalPayments{
     levyPenaltiesPaid: number;
     overallNetAmt: number;
     levyPenaltyPaymentDate: Timestamp<any>;
+}
+
+export interface AuthoritiesEntityDtos{
+    id: number;
+    name: string;
+    descriptions: string;
+    status: boolean;
+
+}
+export interface RolesEntityDtos{
+    id: number;
+    roleName: string;
+    descriptions: string;
+    status: boolean;
+
+}
+
+export interface JustificationStatus {
+    justificationStatus: number;
 }
 
 

@@ -96,8 +96,8 @@
                                         <td>{{i+1}}</td>
                                         <td>{{isAdoptionProposal.docName}}</td>
                                         <td>{{isAdoptionProposal.title}}</td>
-                                        <td>{{isAdoptionProposal.circulationDate}}</td>
-                                        <td>{{isAdoptionProposal.closingDate}}</td>
+                                        <td>{{isAdoptionProposal.circulationDate | date: 'yyyy-MM-dd'}}</td>
+                                        <td>{{isAdoptionProposal.closingDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{isAdoptionProposal.standardNumber}}</td>
                                         <td>{{isAdoptionProposal.tcSecName}}</td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'decisionOnJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Approve Justification</a></td>
@@ -510,8 +510,8 @@
                                                                                                     name="accentTo"
                                                                                             >
                                                                                                 <option disabled>--Select Option--</option>
-                                                                                                <option  value="Yes">Approve Justification</option>
-                                                                                                <option  value="No">Reject Justification</option>
+                                                                                                <option  value="Yes">Recommend</option>
+                                                                                                <option  value="No">Not Recommend</option>
                                                                                             </select>
                                                                                         </div>
                                                                                         <div >
@@ -527,8 +527,8 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+
+                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save and Submit</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

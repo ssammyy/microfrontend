@@ -448,6 +448,7 @@ data class ISProposalJustification(
     var tcAcceptanceDate: String?=null,
     var proposalId: Long?=null,
     var draftId: Long?=null,
+    var justificationId: Long?=null,
     var issuesAddressed: String?=null,
     var title: String?=null,
     var referenceMaterial: String?=null,
