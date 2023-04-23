@@ -56,6 +56,22 @@ class StandardJustification {
     @Basic
     val requestNo:String?=null
 
+    @Column(name="KS_ISO_NUMBER")
+    @Basic
+    val ksIsoNumber:String?=null
+
+    @Column(name="PURPOSE")
+    @Basic
+    val purpose:String?=null
+
+    @Column(name="SCOPE")
+    @Basic
+    val scope:String?=null
+
+    @Column(name="INTENDED_USERS")
+    @Basic
+    val intendedUsers:String?=null
+
     @Column(name="TC_ID")
     @Basic
     val tcId:String?=null

@@ -186,8 +186,8 @@ export class StandardTaskComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
                 this.SpinnerService.hide()
-
             }
         );
     }

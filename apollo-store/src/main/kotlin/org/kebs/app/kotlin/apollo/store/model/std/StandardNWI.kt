@@ -131,6 +131,10 @@ class StandardNWI {
     @Basic
     var prPdStatus: String? = null
 
+    @Column(name = "DEFERRED_DATE")
+    @Basic
+    var deferredDate: Timestamp? = null
+
 
 
 }

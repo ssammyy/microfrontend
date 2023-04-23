@@ -216,7 +216,11 @@ export interface NwiItem {
     pdStatus: String;
     minutesPdStatus: null,
     draftDocsPdStatus: null,
-    prPdStatus: null
+    prPdStatus: null,
+
+    deferredDate: null
+
+
 }
 
 
@@ -258,6 +262,10 @@ export interface StdJustification {
     requestedBy: string;
     issuesAddressedBy: string;
     tcAcceptanceDate: string;
+    ksIsoNumber: string;
+    scope: string;
+    purpose: string;
+    intendedUsers: string;
     status: string;
     cdNumber: null;
     createdOn: Date;

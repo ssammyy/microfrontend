@@ -5,7 +5,7 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
-import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 // @ts-ignore
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
@@ -1346,6 +1346,8 @@ import { UserPrivilegesComponent } from './apollowebs/system/user-privileges/use
             provide: RECAPTCHA_SETTINGS,
             useValue: {siteKey: ApiEndpointService.QA_SITE_VERIFICATION.siteKey} as RecaptchaSettings,
         },
+        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+
     ],
 
     declarations: [

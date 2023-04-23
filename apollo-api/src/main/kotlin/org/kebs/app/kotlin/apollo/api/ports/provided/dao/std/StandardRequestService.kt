@@ -31,6 +31,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -598,6 +599,23 @@ class StandardRequestService(
             "Rejected", "NWI Rejected."
         )
     }
+
+    fun deferNWI(standardNWI: StandardNWI): ServerResponse {
+        val u: StandardNWI = standardNWIRepository.findById(standardNWI.id).orElse(null)
+        u.status = "NWI Deferred"
+        val dateString = standardNWI.deferredDate.toString() // Date string to convert
+        println(standardNWI.deferredDate.toString() )
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss") // Date format
+        val date = format.parse(dateString) // Parse the date string into a Date object
+        val timestamp = Timestamp(date.time) // Create a Timestamp object using the time from the Date object
+        u.deferredDate = timestamp
+        standardNWIRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Deferred", "NWI Deferred."
+        )
+    }
+
 
     fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
