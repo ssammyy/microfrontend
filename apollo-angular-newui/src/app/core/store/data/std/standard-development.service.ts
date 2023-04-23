@@ -411,6 +411,10 @@ export class StandardDevelopmentService {
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
     }
 
+    public deferJustification(nwiItem: NwiItem): Observable<any> {
+        return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'deferJustification', nwiItem)
+    }
+
     public getTCSECTasksJustification(): Observable<StdtsecTaskJustification[]> {
         return this.http.get<StdtsecTaskJustification[]>(`${this.apiServerUrl}` + 'tc-sec/tasks')
     }

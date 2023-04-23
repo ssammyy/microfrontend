@@ -300,13 +300,16 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     @Query(
         value = " SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a where\n" +
-                "     (:refNumber is null or a.PERMIT_REF_NUMBER  like CONCAT(CONCAT('%',:refNumber),'%')) and\n" +
+                "     ((:refNumber is null or lower(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%')) or\n" +
+                "     (:refNumber is null or upper(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%'))) and\n" +
                 "     (:assignedIo is null or a.QAO_ID =TO_NUMBER(:assignedIo)) and\n" +
                 "     (:region is null or a.REGION =TO_NUMBER(:region)) and\n" +
-                "     (:productName is null or a.PRODUCT_NAME like CONCAT(CONCAT('%',:productName),'%')) and\n" +
-                "     (:tradeMark is null or a.TRADE_MARK like CONCAT(CONCAT('%',:tradeMark),'%')) and\n" +
+                "     ((:productName is null or lower(a.PRODUCT_NAME) like CONCAT(CONCAT('%',:productName),'%')) or\n" +
+                "     (:productName is null or upper(a.PRODUCT_NAME) like CONCAT(CONCAT('%',:productName),'%'))) and\n" +
+                "     ((:tradeMark is null or lower(a.TRADE_MARK) like CONCAT(CONCAT('%',:tradeMark),'%')) or\n" +
+                "     (:tradeMark is null or upper(a.TRADE_MARK) like CONCAT(CONCAT('%',:tradeMark),'%'))) and\n" +
                 "     (:division is null or a.DIVISION_ID =TO_NUMBER(:division)) and\n" +
-                "     (:firmName is null or a.FIRM_NAME like CONCAT(CONCAT('%',:firmName),'%')) and\n" +
+                "     (:firmName is null or lower(a.FIRM_NAME) like CONCAT(CONCAT('%',:firmName),'%')) and\n" +
                 "     (:permitType is null or a.PERMIT_TYPE =TO_NUMBER(:permitType))",
         nativeQuery = true
     )

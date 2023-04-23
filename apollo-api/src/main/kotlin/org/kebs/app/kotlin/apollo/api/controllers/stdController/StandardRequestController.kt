@@ -282,6 +282,16 @@ class StandardRequestController(
         )
     }
 
+    @PostMapping("standard/deferJustification")
+    @ResponseBody
+    fun deferJustification(@RequestBody nwi: StandardNWI): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully deferred justification",
+            standardRequestService.deferNWI(nwi)
+        )
+    }
+
     @GetMapping("standard/tc-sec/tasks")
     fun getTCSecTasks(): List<TaskDetails> {
         return standardRequestService.getTCSecTasks()
