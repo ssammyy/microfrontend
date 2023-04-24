@@ -132,3 +132,7 @@ ul, ol {
     font-size: 0.75em;
     max-width: available;
 }
+.mandatorySSFFields{
+    font-size: 18px;
+    color: red;
+}

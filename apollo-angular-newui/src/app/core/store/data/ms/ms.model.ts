@@ -1195,6 +1195,7 @@ export class SeizureDto {
     productsDestruction: string;
     additionalOutletDetails: string;
     remarks: string;
+    dateOfSeizure: string;
 }
 
 export class DataReportDto {
@@ -1240,6 +1241,7 @@ export class DataReportParamsDto {
     complianceInspectionParameter: number;
     measurementsResults: string;
     remarks: string;
+    importerManufacturer: string;
 }
 
 export class DataInspectorInvestDto {

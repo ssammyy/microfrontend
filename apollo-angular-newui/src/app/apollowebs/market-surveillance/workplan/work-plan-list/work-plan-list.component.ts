@@ -289,7 +289,7 @@ export class WorkPlanListComponent implements OnInit {
           );
             this.msService.msDepartmentListDetails().subscribe(
                 (dataDep: MsDepartment[]) => {
-                  this.msDepartments = dataDep;
+                  this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
                   console.log(dataDep);
                 },
                 error => {
@@ -299,7 +299,7 @@ export class WorkPlanListComponent implements OnInit {
             );
             this.msService.msDivisionListDetails().subscribe(
                 (dataDiv: MsDivisionDetails[]) => {
-                  this.msDivisions = dataDiv;
+                  this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
                   console.log(dataDiv);
                 },
                 error => {

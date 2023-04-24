@@ -4960,6 +4960,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               this.dataUcrNumberSearchList = data;
               if (this.dataUcrNumberSearchList?.length > 0){
                 this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+                const countries = this.msService.getAllCountriesList();
+                for (let i = 0; i < this.dataUcrNumberSearchList.length; i++){
+                  const matchingCountry = countries.find(country => country.code === this.dataUcrNumberSearchList[i].countryOfOrigin);
+                  if (matchingCountry) {
+                    this.dataUcrNumberSearchList[i].countryOfOrigin = matchingCountry.name;
+                  }
+                }
               }else{
                 this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
               }

@@ -398,7 +398,7 @@ data class WorkPlanScheduleOnsiteDto(
         var startDate: Date,
         @NotNull(message = "Required field")
         var endDate: Date,
-        var numberOfDays: Int? = null,
+        var numberOfDays: Long? = null,
         var remarks: String? = null,
 )
 
@@ -584,6 +584,7 @@ data class DataReportParamsDto(
         var complianceInspectionParameter: Int? = null,
         var measurementsResults: String? = null,
         var remarks: String? = null,
+        var importerManufacturer: String? = null
 )
 
 data class FieldReportBackDto(
@@ -674,6 +675,7 @@ data class SeizureDto(
         var dateSeizure: Date?=null,
         var dateDestructed: Date?=null,
         var dateRelease: Date?=null,
+        var dateOfSeizure: Date?=null,
 
 )
 

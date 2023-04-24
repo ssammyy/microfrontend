@@ -1686,6 +1686,10 @@
     </div>
     <!--  End Dynamic UPLOADS Modal -->
 
+    <!-- Uploads Preview Modal -->
+
+    <!-- End of Uploads Preview Modal -->
+
     <!-- Dynamic Modal -->
     <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -2151,9 +2155,15 @@
                                         <mat-form-field class="example-full-width">
                                             <input id="startDate" matInput type="date" formControlName="startDate" name="startDate">
                                         </mat-form-field>
-                                        <label for="totalCompliance"><b>End Date</b></label>
+                                        <label for="totalCompliance"><b>Number of days in the field</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate">
+                                            <input id="numberOfDays" matInput type="number" formControlName="numberOfDays"
+                                                   [disabled]="startOnsiteActivitiesForm.get('startDate').value == ''"
+                                                   name="numberOfDays">
+                                        </mat-form-field>
+                                        <label for="totalCompliance"><b>Projected End Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate" [disabled]="true">
                                         </mat-form-field>
                                         <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for Picking Above Dates:</b></label>
                                         <mat-form-field class="example-full-width">
@@ -3359,7 +3369,6 @@
                                     </div>
 
                                 </div>
-
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
@@ -3370,6 +3379,23 @@
                                                       name="remarks" required type="text"></textarea>
                                             <div *ngIf="submitted && formDataReportParamForm.remarks.errors" class="invalid-feedback">
                                                 <div *ngIf="formDataReportParamForm.remarks.errors.required">Remarks
+                                                    required
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Importer/Manufacturer</b> </label>
+                                            <input [class.is-invalid]="formDataReportParamForm.importerManufacturer.invalid && formDataReportParamForm.importerManufacturer.errors"
+                                                      class="form-control two-column-input"
+                                                      formControlName="importerManufacturer"
+                                                      name="importerManufacturer" required type="text">
+                                            <div *ngIf="submitted && formDataReportParamForm.importerManufacturer.errors" class="invalid-feedback">
+                                                <div *ngIf="formDataReportParamForm.importerManufacturer.errors.required">Remarks
                                                     required
                                                 </div>
                                             </div>
@@ -3403,6 +3429,7 @@
                                         <th>UCR Number</th>
                                         <th>Compliance (%Score)</th>
                                         <th>Measurements Results</th>
+                                        <th>Importer/ Manufacturer</th>
                                         <th>Remarks</th>
                                         <th *ngIf="addProductsStatus">Action</th>
                                     </tr>
@@ -3416,6 +3443,7 @@
                                         <td>{{r.ucrNumber}}</td>
                                         <td>{{r.complianceInspectionParameter}}</td>
                                         <td>{{r.measurementsResults}}</td>
+                                        <td>{{r.importerManufacturer}}</td>
                                         <td>{{r.remarks}}</td>
                                         <td *ngIf="addProductsStatus">
                                             <button (click)="removeDataReportParam(i)"
@@ -3482,7 +3510,7 @@
                         </button>
                         <div *ngIf="addProductsStatus">
                             <button *ngIf="dataReportForm.valid" mat-raised-button   data-dismiss="modal"
-                                    class="b    tn btn-success" (click)="onClickSaveDataReport()" type="button" >SUBMIT
+                                    class="btn btn-success" (click)="onClickSaveDataReport()" type="button" >SUBMIT
                             </button>
                             <button *ngIf="dataReportForm.invalid" mat-raised-button (click)="onClickSaveDataReport()" class="btn btn-success" type="button" >SUBMIT
                             </button>
@@ -3837,7 +3865,7 @@
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></input>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
                                                 required
@@ -4330,6 +4358,26 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
+                                                <label><b>Date of Seizure</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.dateOfSeizure.invalid && formSeizureDeclarationForm.dateOfSeizure.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="dateOfSeizure"
+                                                       name="dateOfSeizure" required type="date">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.dateOfSeizure.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.dateOfSeizure.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
                                                 <label><b>Product</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.product.invalid && formSeizureDeclarationForm.product.errors"
                                                        class="form-control two-column-input"
@@ -4534,6 +4582,7 @@
                                     >
                                         <thead>
                                         <tr>
+                                            <th>Date of Seizure</th>
                                             <th>Product</th>
                                             <th>Brand</th>
                                             <th>Description Products Seized</th>
@@ -4551,6 +4600,7 @@
                                         </thead>
                                         <tbody>
                                         <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
+                                            <td>{{r.dateOfSeizure}}</td>
                                             <td>{{r.product}}</td>
                                             <td>{{r.brand}}</td>
                                             <td>{{r.descriptionProductsSeized}}</td>
@@ -6352,7 +6402,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>NAME PRODUCT </b></label>
+                                        <label><b>NAME PRODUCT <span class="mandatorySSFFields">*</span></b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.errors"
                                                class="form-control two-column-input"
                                                formControlName="nameProduct" name="nameProduct" required type="text">
@@ -6382,7 +6432,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>TRADE MARK/BRAND NAME</b></label>
+                                        <label><b>TRADE MARK/BRAND NAME <span class="mandatorySSFFields">*</span></b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.lbIdTradeMark.invalid && formSampleSubmitForm.lbIdTradeMark.errors"
                                                class="form-control two-column-input"
                                                formControlName="lbIdTradeMark" name="lbIdTradeMark" required type="text">
@@ -6391,7 +6441,7 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Sample Collection Date</b></label>
+                                        <label><b>Sample Collection Date <span class="mandatorySSFFields">*</span></b></label>
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sampleCollectionDate" name="sampleCollectionDate" required
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
@@ -6407,7 +6457,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>PRODUCT DESCRIPTION</b></label>
+                                        <label><b>PRODUCT DESCRIPTION  <span class="mandatorySSFFields">*</span></b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.productDescription.invalid && formSampleSubmitForm.productDescription.errors"
                                                class="form-control two-column-input"
                                                formControlName="productDescription" name="productDescription" required type="text">
@@ -6416,7 +6466,7 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>DATE OF  MANUFACTURE</b> </label>
+                                        <label><b>DATE OF MANUFACTURE</b> </label>
                                         <input class="form-control two-column-input"
                                                formControlName="lbIdDateOfManf"
                                                name="lbIdDateOfManf" type="date">
@@ -6538,7 +6588,7 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SIZE TEST SAMPLE</b> </label>
+                                        <label><b>SIZE OF TEST SAMPLE <span class="mandatorySSFFields">*</span></b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="sizeTestSample" name="sizeTestSample" required
                                                [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.errors">
@@ -6642,7 +6692,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SUBMISSION DATE</b></label>
+                                        <label><b>SUBMISSION DATE <span class="mandatorySSFFields">*</span></b></label>
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sendersDate" name="sendersDate" disabled
                                                [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.errors">

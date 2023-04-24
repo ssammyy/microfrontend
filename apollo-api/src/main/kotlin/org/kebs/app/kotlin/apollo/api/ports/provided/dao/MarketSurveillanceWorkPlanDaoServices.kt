@@ -3798,6 +3798,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteStartDate = commonDaoServices.getCurrentDate()
             onsiteStartDateAdded = body.startDate
             onsiteEndDateAdded = body.endDate
+            numberOfDays = body.numberOfDays
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities.let { timeLine ->
                 findProcessNameByID(timeLine, 1).timelinesDay
@@ -4905,6 +4906,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     complianceInspectionParameter = body.complianceInspectionParameter
                     measurementsResults = body.measurementsResults
                     remarks = body.remarks
+                    importerManufacturer = body.importerManufacturer
                     dataReportId = dataReport.id
                     status = map.activeStatus
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -4922,6 +4924,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     complianceInspectionParameter = body.complianceInspectionParameter
                     measurementsResults = body.measurementsResults
                     remarks = body.remarks
+                    importerManufacturer = body.importerManufacturer
                     dataReportId = dataReport.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
@@ -5151,6 +5154,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             product = body.product
             sector = body.sector
             docId = body.docID
+            dateOfSeizure = body.dateOfSeizure
             mainSeizureId = body.mainSeizureID
             additionalOutletDetails = body.additionalOutletDetails
             reasonSeizure = body.reasonSeizure
