@@ -143,3 +143,8 @@ ul, ol {
 .form-control:focus{
     border-bottom: transparent;
 }
+
+.mandatorySSFFields{
+    font-size: 18px;
+    color: red;
+}

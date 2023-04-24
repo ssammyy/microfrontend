@@ -398,6 +398,7 @@ data class WorkPlanScheduleOnsiteDto(
         var startDate: Date,
         @NotNull(message = "Required field")
         var endDate: Date,
+        var numberOfDays: Long? = null,
         var remarks: String? = null,
 )
 
@@ -567,6 +568,7 @@ data class DataReportDto(
         var sourceOfProductAndEvidence: String? = null,
         var finalActionSeizedGoods: String? = null,
         var totalComplianceScore: String? = null,
+        var numberOfProducts: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
         var docList: List<Long>? = null,
@@ -582,6 +584,7 @@ data class DataReportParamsDto(
         var complianceInspectionParameter: Int? = null,
         var measurementsResults: String? = null,
         var remarks: String? = null,
+        var importerManufacturer: String? = null
 )
 
 data class FieldReportBackDto(
@@ -672,6 +675,7 @@ data class SeizureDto(
         var dateSeizure: Date?=null,
         var dateDestructed: Date?=null,
         var dateRelease: Date?=null,
+        var dateOfSeizure: Date?=null,
 
 )
 

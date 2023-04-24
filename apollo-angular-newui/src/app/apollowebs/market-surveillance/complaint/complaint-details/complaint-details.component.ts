@@ -1,44 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   AllComplaintsDetailsDto,
-  BSNumberSaveDto,
   ComplaintAdviceRejectDto,
   ComplaintApproveDto,
   ComplaintApproveRejectAdviceWhereDto,
   ComplaintAssignDto,
   ComplaintClassificationDto,
-  ComplaintDetailsDto,
   ComplaintRejectDto,
   ComplaintsFilesFoundDto,
-  CompliantRemediationDto,
-  FuelEntityAssignOfficerDto,
-  FuelEntityRapidTestDto,
-  FuelInspectionDto,
   LaboratoryDto,
-  LIMSFilesFoundDto,
   MsBroadProductCategory,
   MsDepartment,
-  MsDivisionDetails, PredefinedResourcesRequired,
-  MsProductCategories,
+  MsDivisionDetails,
   MsProducts,
   MsProductSubcategory,
   MSRemarksDto,
-  MSSSFPDFListDetailsDto,
   MsStandardProductCategory,
-  PDFSaveComplianceStatusDto, RegionReAssignDto,
-  RemediationDto,
-  SampleCollectionDto,
-  SampleCollectionItemsDto,
-  SampleSubmissionDto,
-  SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto, OGAEntity,
+  OGAEntity,
+  PredefinedResourcesRequired,
+  RegionReAssignDto,
+  WorkPlanEntityDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   County,
   CountyService,
   loadCountyId,
-  LoggedInUser, Region, RegionService,
+  LoggedInUser,
+  Region,
+  RegionService,
   selectCountyIdData,
   selectUserInfo,
   Town,
@@ -52,7 +42,8 @@ import {
   BroadProductCategory,
   ProductCategories,
   Products,
-  ProductSubcategory, RegionsEntityDto,
+  ProductSubcategory,
+  RegionsEntityDto,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
@@ -125,7 +116,8 @@ export class ComplaintDetailsComponent implements OnInit {
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
   productSubcategory!: ProductSubcategory[];
-  standardProductCategorySelected!: number;
+  standardProductCategorySelected!: string;
+  standardProductCategoryEngineering: boolean;
   productCategoriesSelected!: number;
   broadProductCategorySelected!: number;
   productsSelected!: number;
@@ -391,7 +383,7 @@ export class ComplaintDetailsComponent implements OnInit {
           if (this.complaintInspection.complaintsDetails.approvedStatus === false && this.complaintInspection.complaintsDetails.rejectedStatus === false) {
             this.msService.msDepartmentListDetails().subscribe(
                 (dataDep: MsDepartment[]) => {
-                  this.msDepartments = dataDep;
+                  this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
                   console.log(dataDep);
                 },
                 error => {
@@ -401,7 +393,7 @@ export class ComplaintDetailsComponent implements OnInit {
             );
             this.msService.msDivisionListDetails().subscribe(
                 (dataDiv: MsDivisionDetails[]) => {
-                  this.msDivisions = dataDiv;
+                  this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
                   console.log(dataDiv);
                 },
                 error => {
@@ -414,7 +406,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
             this.msService.msDepartmentListDetails().subscribe(
                 (dataDep: MsDepartment[]) => {
-                  this.msDepartments = dataDep;
+                  this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
                   console.log(dataDep);
                 },
                 error => {
@@ -424,7 +416,7 @@ export class ComplaintDetailsComponent implements OnInit {
             );
           this.msService.msRegionListDetails().subscribe(
               (dataRegions: RegionsEntityDto[]) => {
-                this.msRegions = dataRegions;
+                this.msRegions = dataRegions.sort((a,b)=>a.region > b.region ? 1 : -1);
               },
               error => {
                 console.log(error);
@@ -434,7 +426,7 @@ export class ComplaintDetailsComponent implements OnInit {
           );
             this.msService.msDivisionListDetails().subscribe(
                 (dataDiv: MsDivisionDetails[]) => {
-                  this.msDivisions = dataDiv;
+                  this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
                   console.log(dataDiv);
                 },
                 error => {
@@ -456,7 +448,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
           this.msService.msOGAListDetails().subscribe(
               (data1: OGAEntity[]) => {
-                this.ogaListRequired = data1;
+                this.ogaListRequired = data1.sort((a,b)=>a.ogaName > b.ogaName ? 1 : -1);
                 console.log(data1);
               },
               error => {
@@ -539,7 +531,6 @@ export class ComplaintDetailsComponent implements OnInit {
     this.selectedRegion = this.reAssignRegionForm?.get('regionID')?.value;
     console.log(`region set to ${this.selectedRegion}`);
   }
-
   updateSelectedCounty() {
     this.selectedCounty = this.reAssignRegionForm?.get('countyID')?.value;
     console.log(`county set to ${this.selectedCounty}`);
@@ -564,7 +555,12 @@ export class ComplaintDetailsComponent implements OnInit {
   onClickAddResource() {
     this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
     console.log(this.dataSaveResourcesRequired);
-    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    let valueOfInput = this.addResourceRequiredForm?.get('resourceName').value;
+    const existingResource = this.dataSaveResourcesRequiredList.find(item => item.resourceName === valueOfInput);
+    if (!existingResource) {
+      this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    }
+    console.log(this.dataSaveResourcesRequiredList);
     this.addResourceRequiredForm?.get('resourceName')?.reset();
   }
 
@@ -913,8 +909,13 @@ export class ComplaintDetailsComponent implements OnInit {
     this.departmentSelected = this.acceptRejectComplaintForm?.get('department')?.value;
   }
 
-  onChangeSelectedProductClassification() {
-    this.standardProductCategorySelected = this.classificationForm?.get('productClassification')?.value;
+  onChangeSelectedStandardProductClassification() {
+    this.standardProductCategorySelected = this.classificationForm?.get('productClassificationString')?.value;
+    if (this.standardProductCategorySelected == 'AGROCHEMICAL'){
+      this.standardProductCategoryEngineering = false;
+    }else{
+      this.standardProductCategoryEngineering = true;
+    }
   }
 
   onChangeSelectedBroadProductCategory() {
@@ -995,6 +996,42 @@ export class ComplaintDetailsComponent implements OnInit {
           // this.msService.showError('AN ERROR OCCURRED');
         },
     );
+  }
+
+  getEndDate28(startDateStr){
+    const holidays: Date[] = [
+      new Date('2023-05-01'), // Labour Day
+      new Date('2023-06-01'), // Madaraka Day
+      new Date('2023-10-20'), // Mashujaa Day
+      new Date('2023-12-12'), // Jamhuri Day
+    ];
+
+    const numberOfDays = 28;
+    let daysLeft = numberOfDays;
+    // Attempt to convert the start date string to a Date object
+    const startDate = new Date(Date.parse(startDateStr));
+
+    // Check if the conversion was successful and the date string was in a valid format
+    if (isNaN(startDate.getTime())) {
+      console.log('Invalid date format. The date must be in the format YYYY-MM-DD');
+    }
+
+    const endDate = new Date(startDate.getTime()); // create a new date object with the same time as the start date
+    while (daysLeft > 0) {
+      const dayOfWeek = endDate.getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+      if (!isWeekend && !isHoliday) {
+        daysLeft--;
+      }
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // Check if endDate is a weekend, and add 1 day until it's not
+    while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    return endDate.toISOString().substr(0, 10);
   }
 
 }

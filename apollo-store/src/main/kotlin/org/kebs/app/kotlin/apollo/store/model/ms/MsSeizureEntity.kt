@@ -71,6 +71,10 @@ class MsSeizureEntity : Serializable {
     var status: Int? = null
 
     @Basic
+    @Column(name = "DATE_OF_SEIZURE")
+    var dateOfSeizure: java.sql.Date? = null
+
+    @Basic
     @Column(name = "DESCRIPTION")
     var description: String? = null
 

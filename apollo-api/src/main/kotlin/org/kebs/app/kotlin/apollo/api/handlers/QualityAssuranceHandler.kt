@@ -2703,6 +2703,7 @@ class QualityAssuranceHandler(
 
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
+
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
 

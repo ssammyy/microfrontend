@@ -1074,6 +1074,7 @@ export class WorkPlanInspectionDto {
     latestFinalPreliminaryReport: number;
     complaintReferenceNumber: string;
     overAllCompliance: number;
+
 }
 
 export class CountryListDto {
@@ -1159,6 +1160,7 @@ export class WorkPlanScheduleOnsiteDto {
         startDate: Date;
         endDate: Date;
         remarks: string;
+        numberOfDays: number;
 }
 
 export class SeizureListDto {
@@ -1193,6 +1195,7 @@ export class SeizureDto {
     productsDestruction: string;
     additionalOutletDetails: string;
     remarks: string;
+    dateOfSeizure: string;
 }
 
 export class DataReportDto {
@@ -1219,6 +1222,7 @@ export class DataReportDto {
     sourceOfProductAndEvidence: string;
     finalActionSeizedGoods: string;
     totalComplianceScore: number;
+    numberOfProducts: string;
     remarks: string;
     productsList: DataReportParamsDto[];
     docList: number[];
@@ -1237,6 +1241,7 @@ export class DataReportParamsDto {
     complianceInspectionParameter: number;
     measurementsResults: string;
     remarks: string;
+    importerManufacturer: string;
 }
 
 export class DataInspectorInvestDto {
