@@ -2664,6 +2664,7 @@ class QADaoServices(
                         val allPermitDetailsSage = permitRepo.findAllPermitsSentToSageDetails(
                             applicationMapProperties.mapQAPermitTypeIdSmark,
                             entity.id ?: throw Exception("MISSING COMPANY ID"),
+                            1,
                             1
                         )
                         allPermitDetailsSage?.forEach { pm ->
@@ -2680,7 +2681,7 @@ class QADaoServices(
                         val allPermitDetailsNotSage = permitRepo.findAllPermitsNotSentToSageDetails(
                             applicationMapProperties.mapQAPermitTypeIdSmark,
                             entity.id ?: throw Exception("MISSING COMPANY ID"),
-                            1
+                            1, 1
                         )
                         allPermitDetailsNotSage?.forEach { pm ->
                             with(pm) {
@@ -2700,7 +2701,7 @@ class QADaoServices(
                         val allPermitDetails = permitRepo.findAllPermitsNotSentToSageDetails(
                             applicationMapProperties.mapQAPermitTypeIdSmark,
                             entity.id ?: throw Exception("MISSING COMPANY ID"),
-                            1
+                            1,1
                         )
                         allPermitDetails?.forEach { pm ->
                             with(pm) {
@@ -9084,15 +9085,19 @@ class QADaoServices(
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
         try {
 
-            val userDetails =
-                commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+            val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
             )
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
 
-            when (permitType.id) {
+            invoiceMasterDetailsRepo.findByPermitRefNumberAndUserIdAndPermitId(permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"),
+                permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"),
+                permit.id ?: throw Exception("MISSING PERMIT ID"))?.let {batchInvoice ->
+                invoiceGenerated=batchInvoice
+            } ?: kotlin.run {
+                when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     val manufactureTurnOver =
                         companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
@@ -9119,6 +9124,7 @@ class QADaoServices(
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
                 }
+            }
             }
 
 

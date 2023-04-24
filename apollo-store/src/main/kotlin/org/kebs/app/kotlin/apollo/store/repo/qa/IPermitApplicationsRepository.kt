@@ -732,7 +732,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
                 "JOIN DAT_KEBS_QA_INVOICE_DETAILS c ON c.INVOICE_MASTER_ID = b.ID\n" +
                 "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
                 "AND b.BATCH_INVOICE_NO IS NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
-                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.SEND_APPLICATION=:sendApplication AND a.PERMIT_AWARD_STATUS IS NULL\n" +
                 "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
         nativeQuery = true
     )
@@ -740,6 +740,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long,
         @Param("companyId") companyId: Long,
         @Param("invoiceGenerated") invoiceGenerated: Int,
+        @Param("sendApplication") sendApplication: Int,
     ): List<PermitApplicationsEntity>?
 
     @Query(
@@ -749,7 +750,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
                 "JOIN DAT_KEBS_QA_BATCH_INVOICE d ON d.ID = b.BATCH_INVOICE_NO\n" +
                 "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
                 "AND b.BATCH_INVOICE_NO IS NOT NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
-                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.SEND_APPLICATION=:sendApplication AND a.PERMIT_AWARD_STATUS IS NULL\n" +
                 "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
         nativeQuery = true
     )
@@ -757,6 +758,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long,
         @Param("companyId") companyId: Long,
         @Param("invoiceGenerated") invoiceGenerated: Int,
+        @Param("sendApplication") sendApplication: Int,
     ): List<PermitApplicationsEntity>?
 
     @Query(
