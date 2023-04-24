@@ -398,6 +398,7 @@ data class WorkPlanScheduleOnsiteDto(
         var startDate: Date,
         @NotNull(message = "Required field")
         var endDate: Date,
+        var numberOfDays: Int? = null,
         var remarks: String? = null,
 )
 
@@ -567,6 +568,7 @@ data class DataReportDto(
         var sourceOfProductAndEvidence: String? = null,
         var finalActionSeizedGoods: String? = null,
         var totalComplianceScore: String? = null,
+        var numberOfProducts: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
         var docList: List<Long>? = null,

@@ -4627,6 +4627,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
+                        numberOfProducts = body.numberOfProducts
                         workPlanGeneratedID = workPlanScheduled.id
                         remarks = body.remarks
                         status = map.activeStatus
@@ -4660,6 +4661,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
                     remarks = body.remarks
+                    numberOfProducts = body.numberOfProducts
                     workPlanGeneratedID = workPlanScheduled.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
@@ -6200,7 +6202,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.sourceOfProductAndEvidence,
             dataReport.finalActionSeizedGoods,
             dataReport.totalComplianceScore,
-            null,
+            dataReport.numberOfProducts,
+            dataReport.remarks,
             dataReportParam,
             dataReport.docList?.let { mapUploadListListDto(it) }
         )

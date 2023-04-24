@@ -114,6 +114,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
   averageCompliance = 0;
+  totalNumberOfProducts: number = 0;
 
   addResourceRequiredForm!: FormGroup;
 
@@ -1140,11 +1141,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
+      // referenceNumber: {
+      //   title: 'FORM REFERENCE NO',
+      //   type: 'string',
+      //   filter: false,
+      // },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1158,6 +1159,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1198,11 +1204,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
+      // referenceNumber: {
+      //   title: 'FORM REFERENCE NO',
+      //   type: 'string',
+      //   filter: false,
+      // },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1216,6 +1222,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1815,6 +1826,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
+      numberOfProducts: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
@@ -2200,7 +2212,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
-            this.msDepartments = dataDep;
+            this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
             console.log(dataDep);
           },
           error => {
@@ -2210,7 +2222,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
       this.msService.msDivisionListDetails().subscribe(
           (dataDiv: MsDivisionDetails[]) => {
-            this.msDivisions = dataDiv;
+            this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
             console.log(dataDiv);
           },
           error => {
@@ -4381,6 +4393,7 @@ export class WorkPlanDetailsComponent implements OnInit {
    }
 
     if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+      window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -5051,9 +5064,6 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickAddDataReportParam() {
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
-
-
-
 
     this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
     this.dataReportParamForm?.get('productName')?.reset();
@@ -5757,7 +5767,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         if (this.dataSaveWorkPlan?.remarks !== null) {
           this.msService.msUpdateWorkPlanScheduleDetails(
               this.workPlanInspection.batchDetails.referenceNumber,
-              this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(1)).subscribe(
+              this.workPlanInspection.referenceNumber,
+              this.dataSaveWorkPlan, String(1)).subscribe(
               (data: any) => {
                 console.log(data);
                 this.workPlanInspection = data;
@@ -5866,8 +5877,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   calculateAverageCompliance() {
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
+    this.totalNumberOfProducts = 0;
     for (let i = 0; i < dataReportData?.length; i++) {
       sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      this.totalNumberOfProducts += Number(dataReportData[i].numberOfProducts);
       // console.log(i + " " + dataReportData[i].totalComplianceScore);
       // console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }

@@ -649,7 +649,7 @@
                                                         <th>Outlet Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email Address</th>
-                                                        <th>Person Met</th>
+                                                        <th>Person Met/Designation</th>
                                                         <th>Date Visited</th>
                                                         <th>Summary of findings</th>
                                                         <th>Remarks</th>
@@ -808,14 +808,27 @@
                                         <ng-template mat-tab-label>
                                             DATA REPORT
                                         </ng-template>
-                                        <div *ngIf="workPlanInspection?.dataReportDto?.length!=0" class="row d-flex align-items-center justify-content-end flex-row" style="padding-top: 10px;">
-                                            <div style="margin-right: 7%;">
-                                                <label><b>Average compliance: </b></label>
+                                        <div *ngIf="workPlanInspection?.dataReportDto?.length!=0" class="row justify-content-center align-items-center" style="padding-top: 10px;">
+                                            <div class="col-sm">
+                                                <div class="row align-items-center" style="margin: 2% 0;">
+                                                    <div class="col-sm-auto">
+                                                        <label><b>Total Number of Products Inspected: </b></label>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <label><b>{{totalNumberOfProducts}}</b></label>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div style="margin-right: 20%;">
-                                                <label><b>{{workPlanInspection?.overAllCompliance}}</b></label>
+                                            <div class="col-sm">
+                                                <div class="row align-items-center" style="margin: 2% 0;">
+                                                    <div class="col-sm-auto">
+                                                        <label><b>Average compliance: </b></label>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <label><b>{{workPlanInspection?.overAllCompliance}}</b></label>
+                                                    </div>
+                                                </div>
                                             </div>
-
                                         </div>
 
                                         <div class="form-row">
@@ -2891,8 +2904,6 @@
 <!--                                            </div>-->
 <!--                                        </div>-->
 <!--                                    </div>-->
-                                </div>
-                                <div class="col">
                                     <div class="form-group">
                                         <label><b>Name of Inspector</b> </label>
                                         <input class="form-control two-column-input"
@@ -2900,6 +2911,7 @@
                                                name="inspectorName" required type="text">
                                     </div>
                                 </div>
+
 
                             </div>
                             <div class="row">
@@ -3063,7 +3075,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Person met</b> </label>
+                                        <label><b>Person met / Designation</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.personMet.invalid && formDataReportForm.personMet.errors"
                                                class="form-control two-column-input"
                                                formControlName="personMet"
@@ -3202,6 +3214,10 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
+                                        <label><b>Number of Products Inspected</b> </label>
+                                        <textarea class="form-control two-column-input"
+                                                  formControlName="numberOfProducts" ngModel="{{dataSaveDataReportParamList.length }}" disabled
+                                                  name="numberOfProducts" required type="number"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -3992,7 +4008,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met</th>
+                                    <th>Person Met/Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -4379,7 +4395,7 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Reason Seizure</b> </label>
+                                                <label><b>Reason for Seizure</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.reasonSeizure.invalid && formSeizureDeclarationForm.reasonSeizure.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="reasonSeizure"
@@ -4396,7 +4412,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Quantity</b> </label>
+                                                <label><b>Quantity in KSH</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="quantity"
@@ -4564,7 +4580,7 @@
                         <div *ngIf="addSeizureProductsStatus" class="row">
                             <div class="col">
                                 <div  class="form-group">
-                                    <label for="files"><b>Upload Documents Here</b></label>
+                                    <label for="files"><b>Upload Seizure Form and Chain of Custody Report</b></label>
                                     <form #demoForm="ngForm">
                                         <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
                                                      [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
@@ -5285,7 +5301,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met</th>
+                                    <th>Person Met/Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -7596,7 +7612,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met</th>
+                                    <th>Person Met/Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>

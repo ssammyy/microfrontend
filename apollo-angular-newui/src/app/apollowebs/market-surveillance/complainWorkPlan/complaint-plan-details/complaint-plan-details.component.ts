@@ -74,6 +74,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   nonComplianceList: NonComplianceDto[];
   active: Number = 0;
   averageCompliance: number = 0;
+  totalNumberOfProducts: number = 0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   showOther: boolean = false;
@@ -1141,6 +1142,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         type: 'date',
         filter: false,
       },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
+        filter: false,
+      },
       totalComplianceScore: {
         title: 'Total Compliance Score %',
         type: 'string',
@@ -1191,6 +1197,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1702,7 +1713,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.startOnsiteActivitiesForm = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      numberOfDays: [0, Validators.required],
       remarks: null,
+    });
+    this.startOnsiteActivitiesForm.get('numberOfDays').valueChanges.subscribe(() => {
+      this.calculateEndDate();
     });
 
     this.clientEmailNotificationForm = this.formBuilder.group({
@@ -1795,6 +1810,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
+      numberOfProducts: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
@@ -5147,7 +5163,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   onClickSaveDataReport() {
     //need permanent solution for picking user input
     const inspectionDateControl = this.dataReportForm.get("inspectionDate");
-    console.log(this.dataReportForm.get("remarks").value);
+    console.log("Remarks: "+this.dataReportForm.get("remarks").value);
+    console.log("Number of products: "+this.dataReportForm.get("numberOfProducts").value);
     inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
@@ -5766,8 +5783,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   calculateAverageCompliance() {
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
+    this.totalNumberOfProducts = 0;
     for (let i = 0; i < dataReportData?.length; i++) {
       sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      this.totalNumberOfProducts += Number(dataReportData[i].numberOfProducts);
       //console.log(i + " " + dataReportData[i].totalComplianceScore);
       //console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
@@ -5787,5 +5806,35 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     link.href = downloadURL;
     link.download = fileUploaded.name;
     link.click();
+  }
+
+
+  calculateEndDate() {
+      const holidays: Date[] = [
+        new Date('2023-05-01'), // Labour Day
+        new Date('2023-06-01'), // Madaraka Day
+        new Date('2023-10-20'), // Mashujaa Day
+        new Date('2023-12-12'), // Jamhuri Day
+      ];
+      const startDate = this.startOnsiteActivitiesForm.get('startDate').value;
+      const numberOfDays = this.startOnsiteActivitiesForm.get('numberOfDays').value;
+      let daysLeft = numberOfDays;
+      let endDate = new Date(startDate);
+      while (daysLeft > 0) {
+        const dayOfWeek = endDate.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+        const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+        if (!isWeekend && !isHoliday) {
+          daysLeft--;
+        }
+        endDate.setDate(endDate.getDate() + 1);
+      }
+      // Check if endDate is a weekend, and add 1 day until it's not
+      while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+        endDate.setDate(endDate.getDate() + 1);
+      }
+
+      this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
+
   }
 }
