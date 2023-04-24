@@ -47,6 +47,10 @@ class MsDataReportParametersEntity : Serializable{
     @Basic
     var remarks: String? = null
 
+    @Column(name = "IMPORTER_MANUFACTURER")
+    @Basic
+    var importerManufacturer: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

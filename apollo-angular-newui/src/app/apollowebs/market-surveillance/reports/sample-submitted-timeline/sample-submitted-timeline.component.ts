@@ -78,6 +78,7 @@ export class SampleSubmittedTimelineComponent implements OnInit {
   averageTimeTakenToForwardLetters: number;
   sumOfForwardingWithin14Days: number;
   percentageComplianceToForwardingWithin14Days: number;
+  totalEntries: number;
 
 
   constructor(private store$: Store<any>,
@@ -239,6 +240,7 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       let arrayOfSubmittedWithin2Days = [];
       let arrayOfTimeTakenToForwardLetter = [];
       let arrayOfForwardingWithin14DaysOfTesting = [];
+      this.totalEntries = this.loadedData.length;
 
       for(let i=0; i < this.loadedData.length; i++){
         if(isNaN(Number(this.loadedData[i].noSamplesTested))){

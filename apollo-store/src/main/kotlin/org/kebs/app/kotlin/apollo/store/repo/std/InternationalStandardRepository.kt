@@ -487,6 +487,18 @@ interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, L
 
 
 
+interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacListUploads, Long> {
+    fun findByComDraftDocumentId(id: Long): ComStandardSacListUploads
+    fun findAllById(id: Long): ComStandardSacListUploads
+
+    @Query(
+        value = "SELECT ID as id  FROM SD_STD_DRAFT_SAC_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",
+        nativeQuery = true
+    )
+    fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
+
+}
+
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
     fun findAllById(id: Long): ComStandardDraftUploads

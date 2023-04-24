@@ -182,10 +182,10 @@
                                                 <div class="list-title-accordion">Product</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productName}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Product Sub-Category</div>
-                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productSubcategory}}</div>
-                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Product Sub-Category</div>-->
+<!--                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productSubcategory}}</div>-->
+<!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Product Brand</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productBrand}}
@@ -745,10 +745,11 @@
                                     <div>
                                         <label ><b>Standard Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <mat-select [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"
+                                            <mat-select (selectionChange)="onChangeSelectedStandardProductClassification()"
+                                                    [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"
                                                         formControlName="productClassificationString"
                                                         id="productClassificationString" name="productClassificationString" placeholder="Please Select an option">
-                                                <mat-option [value]="" selected>Please select</mat-option>
+                                                <mat-option [value]="" selected disabled>Please select</mat-option>
                                                 <mat-option [value]="'AGROCHEMICAL'" >AGROCHEMICAL</mat-option>
                                                 <mat-option [value]="'ENGINEERING'" >ENGINEERING</mat-option>
 
@@ -770,20 +771,40 @@
                                         <!--                                            </mat-select>-->
                                         <!--                                        </mat-form-field>-->
                                         <label for="broadProductCategoryString"><b>Broad Product Category:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <mat-select formControlName="broadProductCategoryString" id="broadProductCategoryString"  name="broadProductCategoryString"
-                                                        [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"
-                                                        placeholder="Please Select an option">
-                                                <mat-option [value]="" selected>Please select</mat-option>
-                                                <mat-option [value]="'FOOD'" >FOOD</mat-option>
-                                                <mat-option [value]="'AGRICULTURE'" >AGRICULTURE</mat-option>
-                                                <mat-option [value]="'CHEMICAL'" >CHEMICAL</mat-option>
-                                                <mat-option [value]="'TEXTILE'" >TEXTILE</mat-option>
-                                                <mat-option [value]="'MECHANICAL'" >MECHANICAL</mat-option>
-                                                <mat-option [value]="'CIVIL'" >CIVIL</mat-option>
-                                                <mat-option [value]="'ELECTRICAL'" >ELECTRICAL</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                        <div *ngIf="standardProductCategoryEngineering == false">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-select formControlName="broadProductCategoryString" id="broadProductCategoryString"  name="broadProductCategoryString"
+                                                            [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"
+                                                            placeholder="Please Select an option">
+                                                    <mat-option [value]="" selected disabled>Please select</mat-option>
+
+                                                    <mat-option [value]="'AGRICULTURE'" >AGRICULTURE</mat-option>
+                                                    <mat-option [value]="'CHEMICAL'" >CHEMICAL</mat-option>
+                                                    <mat-option [value]="'FOOD'" >FOOD</mat-option>
+<!--                                                    <mat-option [value]="'TEXTILE'" >TEXTILE</mat-option>-->
+<!--                                                    <mat-option [value]="'MECHANICAL'" >MECHANICAL</mat-option>-->
+<!--                                                    <mat-option [value]="'CIVIL'" >CIVIL</mat-option>-->
+<!--                                                    <mat-option [value]="'ELECTRICAL'" >ELECTRICAL</mat-option>-->
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="standardProductCategoryEngineering">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-select formControlName="broadProductCategoryString" id="broadProductCategoryString2"  name="broadProductCategoryString"
+                                                            [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"
+                                                            placeholder="Please Select an option">
+                                                    <mat-option [value]="" selected disabled>Please select</mat-option>
+<!--                                                    <mat-option [value]="'FOOD'" >FOOD</mat-option>-->
+<!--                                                    <mat-option [value]="'AGRICULTURE'" >AGRICULTURE</mat-option>-->
+<!--                                                    <mat-option [value]="'CHEMICAL'" >CHEMICAL</mat-option>-->
+                                                    <mat-option [value]="'CIVIL'" >CIVIL</mat-option>
+                                                    <mat-option [value]="'ELECTRICAL'" >ELECTRICAL</mat-option>
+                                                    <mat-option [value]="'MECHANICAL'" >MECHANICAL</mat-option>
+                                                    <mat-option [value]="'TEXTILE'" >TEXTILE</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
                                         <!--                                        <label for="broadProductCategory"><b>Select Broad Product Category</b></label>-->
                                         <!--                                        <mat-form-field>-->
 
@@ -945,7 +966,7 @@
                 <div class="modal-body">
                     <form [formGroup]="addNewScheduleForm">
                         <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
+                            <h5 class="mb-3" style="color: #0066B1">Complaint Plan Details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -953,7 +974,7 @@
                                         <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
-                                            <option [value]="" selected>Please select</option>
+                                            <option [value]="" selected disabled>Please select</option>
                                             <option [value]="'Complaints Handling'">Complaints Handling</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid"
@@ -972,7 +993,7 @@
                                         <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.errors"
                                                class="form-control two-column-input"
                                                formControlName="timeActivityDate"
-                                               name="timeActivityDate" required type="date">
+                                               name="timeActivityDate" required type="date" [ngModel]="complaintInspection?.complaintsDetails?.timelineStartDate" disabled>
                                         <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors"
                                              class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of
@@ -991,7 +1012,7 @@
                                         <input [class.is-invalid]="formNewScheduleForm.timeActivityEndDate.invalid && formNewScheduleForm.timeActivityEndDate.errors"
                                                class="form-control two-column-input"
                                                formControlName="timeActivityEndDate"
-                                               name="timeActivityEndDate" required type="date">
+                                               name="timeActivityEndDate" required type="date" disabled [ngModel]="getEndDate28(complaintInspection?.complaintsDetails?.timelineStartDate)">
                                         <div *ngIf="submitted && formNewScheduleForm.timeActivityEndDate.errors"
                                              class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.timeActivityEndDate.errors.required">Date of
@@ -1015,13 +1036,7 @@
 <!--                                            </div>-->
 <!--                                        </div>-->
 <!--                                    </div>-->
-                                </div>
 
-
-                            </div>
-                            <div class="row">
-
-                                <div class="col">
                                     <div class="form-group">
                                         <label><b>Budget</b> </label>
                                         <input class="form-control two-column-input" formControlName="budget"
@@ -1029,25 +1044,33 @@
                                     </div>
                                 </div>
 
-                                <div class="col">
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Scope Of Coverage</b> </label>-->
-<!--                                        <select [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"-->
-<!--                                                class="form-control two-column-input" formControlName="scopeOfCoverage"-->
-<!--                                                name="scopeOfCoverage" required type="text">-->
-<!--                                            &lt;!&ndash;                                            <option [value]="" selected>Please select</option>&ndash;&gt;-->
-<!--                                            <option  [value]="'Regional'">Regional</option>-->
-<!--                                            <option  [value]="'National'" >National</option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-<!--                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"-->
-<!--                                         class="invalid-feedback">-->
-<!--                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-                                </div>
 
                             </div>
+<!--                            <div class="row">-->
+
+<!--                                <div class="col">-->
+<!--                                    -->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--&lt;!&ndash;                                    <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <label><b>Scope Of Coverage</b> </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <select [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                class="form-control two-column-input" formControlName="scopeOfCoverage"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                name="scopeOfCoverage" required type="text">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            &lt;!&ndash;                                            <option [value]="" selected>Please select</option>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <option  [value]="'Regional'">Regional</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <option  [value]="'National'" >National</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </select>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         class="invalid-feedback">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                </div>-->
+
+<!--                            </div>-->
                         </div>
                     </form>
                     <form [formGroup]="addResourceRequiredForm">
@@ -1060,7 +1083,7 @@
                                         <select [class.is-invalid]="formAddResourceRequiredForm.resourceName.invalid && formAddResourceRequiredForm.resourceName.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="resourceName" name="resourceName" required>
-                                            <option [value]="" selected>Please select</option>
+                                            <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of predefinedResourcesRequired| filterPipe: {status: true}" [ngValue]="app.resourceName">{{app.resourceName}}</option>
                                         </select>
                                     </div>

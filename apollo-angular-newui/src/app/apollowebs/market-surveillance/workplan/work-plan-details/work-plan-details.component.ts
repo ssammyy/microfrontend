@@ -114,6 +114,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
   averageCompliance = 0;
+  totalNumberOfProducts: number = 0;
 
   addResourceRequiredForm!: FormGroup;
 
@@ -1140,11 +1141,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
+      // referenceNumber: {
+      //   title: 'FORM REFERENCE NO',
+      //   type: 'string',
+      //   filter: false,
+      // },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1158,6 +1159,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1198,11 +1204,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
+      // referenceNumber: {
+      //   title: 'FORM REFERENCE NO',
+      //   type: 'string',
+      //   filter: false,
+      // },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1216,6 +1222,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1815,6 +1826,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
+      numberOfProducts: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
@@ -1856,6 +1868,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceInspectionParameter: ['', Validators.required],
       measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
+      importerManufacturer: ['', Validators.required],
     });
 
     this.investInspectReportInspectorsForm = this.formBuilder.group({
@@ -1879,6 +1892,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+      dateOfSeizure: ['', Validators.required],
     });
 
     this.seizureForm = this.formBuilder.group({
@@ -2114,7 +2128,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.startOnsiteActivitiesForm = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      numberOfDays: [0, Validators.required],
       remarks: null,
+    });
+    this.startOnsiteActivitiesForm.get('numberOfDays').valueChanges.subscribe(() => {
+      this.calculateEndDate();
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -2200,7 +2218,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
-            this.msDepartments = dataDep;
+            this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
             console.log(dataDep);
           },
           error => {
@@ -2210,7 +2228,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
       this.msService.msDivisionListDetails().subscribe(
           (dataDiv: MsDivisionDetails[]) => {
-            this.msDivisions = dataDiv;
+            this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
             console.log(dataDiv);
           },
           error => {
@@ -3695,7 +3713,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickStartOnsiteActivities(valid: boolean) {
-    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
+    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be starting the Timelines for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
           this.startOnsiteActivities(valid);
@@ -4381,6 +4399,7 @@ export class WorkPlanDetailsComponent implements OnInit {
    }
 
     if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+      window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -5028,8 +5047,16 @@ export class WorkPlanDetailsComponent implements OnInit {
             (data: UcrNumberSearch[]) => {
               this.SpinnerService.hide();
               this.dataUcrNumberSearchList = data;
+
               if (this.dataUcrNumberSearchList?.length > 0){
                 this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+                const countries = this.msService.getAllCountriesList();
+                for (let i = 0; i < this.dataUcrNumberSearchList.length; i++){
+                  const matchingCountry = countries.find(country => country.code === this.dataUcrNumberSearchList[i].countryOfOrigin);
+                  if (matchingCountry) {
+                    this.dataUcrNumberSearchList[i].countryOfOrigin = matchingCountry.name;
+                  }
+                }
               }else{
                 this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
               }
@@ -5052,9 +5079,6 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickAddDataReportParam() {
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
 
-
-
-
     this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
     this.dataReportParamForm?.get('productName')?.reset();
     this.dataReportParamForm?.get('typeBrandName')?.reset();
@@ -5066,6 +5090,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
+    this.dataReportParamForm?.get('importerManufacturer')?.reset();
     const totalCount: number = this.dataSaveDataReportParamList.length;
     let compliantCount = 0;
 
@@ -5757,7 +5782,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         if (this.dataSaveWorkPlan?.remarks !== null) {
           this.msService.msUpdateWorkPlanScheduleDetails(
               this.workPlanInspection.batchDetails.referenceNumber,
-              this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(1)).subscribe(
+              this.workPlanInspection.referenceNumber,
+              this.dataSaveWorkPlan, String(1)).subscribe(
               (data: any) => {
                 console.log(data);
                 this.workPlanInspection = data;
@@ -5839,6 +5865,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportForm.patchValue(selectedClone);
     this.dataReportForm?.get('id').setValue(0);
     const paramDetails = selectedClone.productsList;
+    for (let i = 0; i < paramDetails.length; i++){
+      paramDetails[i].id = 0;
+    }
     this.dataSaveDataReportParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveDataReportParamList.push(paramDetails[i]);
@@ -5866,8 +5895,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   calculateAverageCompliance() {
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
+    this.totalNumberOfProducts = 0;
     for (let i = 0; i < dataReportData?.length; i++) {
       sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      this.totalNumberOfProducts += Number(dataReportData[i].numberOfProducts);
       // console.log(i + " " + dataReportData[i].totalComplianceScore);
       // console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
@@ -5892,5 +5923,34 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onSelectedDataReport() {
      this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
+  }
+
+  calculateEndDate() {
+    const holidays: Date[] = [
+      new Date('2023-05-01'), // Labour Day
+      new Date('2023-06-01'), // Madaraka Day
+      new Date('2023-10-20'), // Mashujaa Day
+      new Date('2023-12-12'), // Jamhuri Day
+    ];
+    const startDate = this.startOnsiteActivitiesForm.get('startDate').value;
+    const numberOfDays = this.startOnsiteActivitiesForm.get('numberOfDays').value;
+    let daysLeft = numberOfDays;
+    let endDate = new Date(startDate);
+    while (daysLeft > 0) {
+      const dayOfWeek = endDate.getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+      if (!isWeekend && !isHoliday) {
+        daysLeft--;
+      }
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // Check if endDate is a weekend, and add 1 day until it's not
+    while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
+
   }
 }

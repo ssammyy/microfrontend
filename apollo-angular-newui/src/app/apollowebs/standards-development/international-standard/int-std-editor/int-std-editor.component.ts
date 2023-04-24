@@ -48,6 +48,7 @@ export class IntStdEditorComponent implements OnInit {
     comStdRemarks: ComStdRemarks[] = [];
     blob: Blob;
     public uploadedFiles:  FileList;
+    public uploadedCoverPages:  FileList;
     isShowRemarksTabs= true;
     isShowCommentsTabs= true;
     isShowMainTab= true;

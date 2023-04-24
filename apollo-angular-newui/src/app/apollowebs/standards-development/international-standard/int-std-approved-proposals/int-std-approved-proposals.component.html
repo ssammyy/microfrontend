@@ -456,7 +456,7 @@
                                                                     </form>
                                                                 </div>
                                                                 <div class="tab-pane fade" id="nav-edit-justification" role="tabpanel" aria-labelledby="nav-edit-justification-tab">
-                                                                    <form (ngSubmit)="prepareJustification()" [formGroup]="editJustificationFormGroup" class="form">
+                                                                    <form (ngSubmit)="editJustification()" [formGroup]="editJustificationFormGroup" class="form">
                                                                         <div class="modal-body">
                                                                             <div class="form-body" *ngFor="let iSJustificationProposal of iSJustificationProposals">
                                                                                 <div class="row col-12">
@@ -469,8 +469,8 @@
                                                                                                 placeholder="Date" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
-                                                                                        <label>Department/Sector</label>
-                                                                                        <select class="form-control" formControlName="department" name="department" required [class.is-invalid]="formEditJustification.department.invalid"   >
+                                                                                        <label>Department/Sector </label>
+                                                                                        <select class="form-control" formControlName="department" name="department" required    >
 
                                                                                             <option *ngFor="let department of departments" value="{{department.id}}" [selected]="department.id==iSJustificationProposal.department">{{department.name}}</option>
                                                                                         </select>
@@ -493,7 +493,7 @@
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formEditJustification.title.invalid "
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" ngModel="{{iSJustificationProposal.title}}" value="{{iSJustificationProposal.title}}" formControlName="title" name="title"
                                                                                                   placeholder="International Standard Title" type="text" ></textarea>
 
@@ -501,7 +501,7 @@
 
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input [class.is-invalid]="formPrepareJustification.edition.invalid "
+                                                                                        <input
                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{iSJustificationProposal.edition}}" value="{{iSJustificationProposal.edition}}" formControlName="edition" name="edition"
                                                                                                placeholder="Edition" type="text">
                                                                                     </div>
@@ -516,28 +516,28 @@
                                                                                     <h3>Issues Addressed</h3>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formEditJustification.scope.invalid "
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" ngModel="{{iSJustificationProposal.scope}}" value="{{iSJustificationProposal.scope}}" formControlName="scope" name="scope"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Purpose and Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formEditJustification.purposeAndApplication.invalid "
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" ngModel="{{iSJustificationProposal.purposeAndApplication}}" value="{{iSJustificationProposal.purposeAndApplication}}" formControlName="purposeAndApplication" name="purposeAndApplication"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Intended Users</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formEditJustification.intendedUsers.invalid "
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" ngModel="{{iSJustificationProposal.intendedUsers}}" value="{{iSJustificationProposal.intendedUsers}}" formControlName="intendedUsers" name="intendedUsers"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formEditJustification.referenceMaterial.invalid "
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" ngModel="{{iSJustificationProposal.referenceMaterial}}" value="{{iSJustificationProposal.referenceMaterial}}" formControlName="referenceMaterial" name="referenceMaterial"
                                                                                                   placeholder="Reference Material" type="text" ></textarea>
 

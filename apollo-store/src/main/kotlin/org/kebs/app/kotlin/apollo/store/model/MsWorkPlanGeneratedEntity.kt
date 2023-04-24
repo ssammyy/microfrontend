@@ -209,6 +209,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var resourcesRequired: String? = null
 
+    @Column(name = "WORKPLAN_COUNTIES_TOWNS")
+    @Basic
+    var workPlanCountiesTowns: String? = null
+
     @Column(name = "BUDGET")
     @Basic
     var budget: String? = null
@@ -639,6 +643,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "COMPLAINT_DEPARTMENT")
     @Basic
     var complaintDepartment: Long? = null
+
+    @Column(name = "NUMBER_OF_DAYS")
+    @Basic
+    var numberOfDays: Long? = null
 
 
     @Column(name = "REFERENCE_NUMBER")

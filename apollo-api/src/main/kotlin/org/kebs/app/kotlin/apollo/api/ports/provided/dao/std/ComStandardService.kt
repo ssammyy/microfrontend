@@ -57,6 +57,7 @@ class ComStandardService(
     private val sdDocumentsRepository: StandardsDocumentsRepository,
     private val comContactDetailsRepository: ComContactDetailsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val comCoverPagesRepo: ComStandardSacListUploadsRepository
 ) {
     val callUrl=applicationMapProperties.mapKebsLevyUrl
     //request for company standard
@@ -541,6 +542,7 @@ class ComStandardService(
         return comStandardDraftUploadsRepository.save(uploads)
     }
 
+
     fun getUploadedStdDraft(): MutableList<ComStdDraft> {
         return comStdDraftRepository.getUploadedStdDraft()
     }
@@ -552,6 +554,38 @@ class ComStandardService(
 
     fun getDraftDocumentList(comStdDraftID: Long): List<SiteVisitListHolder> {
         return comStandardDraftUploadsRepository.findAllDocumentId(comStdDraftID)
+    }
+
+    fun uploadCoverPages(
+        uploads: ComStandardSacListUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComStandardSacListUploads {
+
+        with(uploads) {
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comCoverPagesRepo.save(uploads)
+    }
+
+    //View Company Draft
+    fun findUploadedCPFileBYId(comStdDraftID: Long): ComStandardSacListUploads {
+        return comCoverPagesRepo.findAllById(comStdDraftID)
+    }
+
+    fun getCoverPagesList(comStdDraftID: Long): List<SiteVisitListHolder> {
+        return comCoverPagesRepo.findAllDocumentId(comStdDraftID)
     }
 
 

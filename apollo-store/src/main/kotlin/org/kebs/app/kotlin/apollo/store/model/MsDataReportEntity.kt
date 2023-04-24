@@ -87,6 +87,10 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var personMet: String? = null
 
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
+
     @Column(name = "SUMMARY_FINDINGS_ACTIONS_TAKEN")
     @Basic
     var summaryFindingsActionsTaken: String? = null
@@ -106,6 +110,10 @@ class MsDataReportEntity  : Serializable {
     @Column(name = "TOTAL_COMPLIANCE_SCORE")
     @Basic
     var totalComplianceScore: String? = null
+
+    @Column(name = "NUMBER_OF_PRODUCTS")
+    @Basic
+    var numberOfProducts: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -178,10 +186,6 @@ class MsDataReportEntity  : Serializable {
     @Column(name = "MS_WORKPLAN_GENERATED_ID")
     @Basic
     var workPlanGeneratedID: Long? = null
-
-    @Column(name = "REMARKS")
-    @Basic
-    var remarks: String? = null
 
 
 }
