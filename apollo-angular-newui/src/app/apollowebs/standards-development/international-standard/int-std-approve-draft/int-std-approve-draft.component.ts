@@ -305,7 +305,7 @@ export class IntStdApproveDraftComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Standard Draft Uploaded',
+                        html:'Standard Draft Updated',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
