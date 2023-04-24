@@ -936,6 +936,7 @@ export interface ComStdDraftEdit{
     companyName: string;
     companyPhone: string;
     standardType: string;
+    assignedTo: number;
 }
 
 export interface IStandardDraftEdit {
@@ -1064,6 +1065,9 @@ export interface ISDraftDecision {
     requestId: number;
     draftId: number;
     standardType: string;
+    draftStatus: string;
+    coverPageStatus: string;
+    assignedTo: number;
 }
 
 export interface ISDraftDecisionStd {

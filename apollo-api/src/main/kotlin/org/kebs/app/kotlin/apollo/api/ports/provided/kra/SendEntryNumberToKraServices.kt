@@ -69,9 +69,11 @@ class SendEntryNumberToKraServices(
                 val join = numberRecords + globalVar
                 hash = kraDataEncryption(join)
             }
+//            var comKraPin=companyProfile.kraPin
+//            var kraPin= comKraPin?.uppercase()
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber
-                kraPin = companyProfile.kraPin
+                kraPin = companyProfile.kraPin?.uppercase()
                 manufacturerName = companyProfile.name
                 registrationDate =
                     companyProfile.createdOn?.let { commonDaoServices.convertTimestampToKraValidDate(it) }

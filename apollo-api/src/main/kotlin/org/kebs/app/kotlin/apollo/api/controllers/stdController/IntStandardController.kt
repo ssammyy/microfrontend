@@ -47,6 +47,24 @@ class IntStandardController(
 //    }
 //    *****************************************Find Stake Holders***********************************
 
+    @GetMapping("/international_standard/getEditorDetails")
+    @ResponseBody
+    fun getEditorDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getEditorDetails()
+    }
+
+    @GetMapping("/international_standard/getDraughtsManDetails")
+    @ResponseBody
+    fun getDraughtsManDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getDraughtsManDetails()
+    }
+
+    @GetMapping("/international_standard/getProofReaderDetails")
+    @ResponseBody
+    fun getProofReaderDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getProofReaderDetails()
+    }
+
     @GetMapping("/international_standard/findStandardStakeholders")
     @ResponseBody
     fun findStandardStakeholders(): List<UserDetailHolder>? {

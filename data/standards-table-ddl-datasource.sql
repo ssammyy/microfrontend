@@ -1138,6 +1138,26 @@ end;
 
 create index SD_STD_DRAFT_SAC_UPLOADS_idx on SD_STD_DRAFT_SAC_UPLOADS (COM_DRAFT_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
+alter table SD_COM_STANDARD
+    ADD
+        (
+        DRAFT_STATUS VARCHAR2(200),
+        COVER_PAGE_STATUS VARCHAR2(200)
+        );
+/
+alter table SD_COM_STANDARD
+    ADD
+        (
+        ASSIGNED_TO NUMBER(2)
+        );
+/
+alter table SD_COM_STD_DRAFT
+    ADD
+        (
+        DRAFT_STATUS VARCHAR2(200),
+        COVER_PAGE_STATUS VARCHAR2(200)
+        );
+/
 
 
 

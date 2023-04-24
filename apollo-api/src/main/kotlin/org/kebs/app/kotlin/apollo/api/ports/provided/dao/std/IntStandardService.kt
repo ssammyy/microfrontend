@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -87,6 +88,19 @@ class IntStandardService(
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
         return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
     }
+
+    fun getEditorDetails(): List<UserDetailHolder> {
+        return userListRepository.getEditorDetails()
+    }
+
+    fun getDraughtsManDetails(): List<UserDetailHolder> {
+        return userListRepository.getDraughtsManDetails()
+    }
+
+    fun getProofReaderDetails(): List<UserDetailHolder> {
+        return userListRepository.getProofReaderDetails()
+    }
+
     //find stakeholder
     fun findStandardStakeholders(): List<UserDetailHolder>? {
         return userListRepository.findStandardStakeholders()
@@ -1050,7 +1064,7 @@ class IntStandardService(
 
     fun checkRequirements(
         iSDraftDecisions: ISDraftDecisions
-    ) : String {
+    ) : NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
 
@@ -1067,6 +1081,10 @@ class IntStandardService(
         comRemarks.dateOfRemark = timeOfRemark
         comRemarks.remarkBy = usersName
         comRemarks.role = "HOP"
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
         val deadline: Timestamp = Timestamp.valueOf(timeOfRemark.toLocalDateTime().plusMonths(5))
 
 
@@ -1074,11 +1092,19 @@ class IntStandardService(
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
                 with(companyStandard) {
                     status = 3
+                    draftStatus=iSDraftDecisions.draftStatus
+                    coverPageStatus=iSDraftDecisions.coverPageStatus
+                    assignedTo=iSDraftDecisions.assignedTo
 
                 }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
             }?: throw Exception("DRAFT NOT FOUND")
+
+            slFormResponse="Draft Was Approved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Approved"
 
         } else if (decision == "No") {
             if(typeOfStandard=="Company Standard"){
@@ -1086,6 +1112,8 @@ class IntStandardService(
 
                     with(companyStandard) {
                         status = 0
+                        draftStatus=iSDraftDecisions.draftStatus
+                        coverPageStatus=iSDraftDecisions.coverPageStatus
                     }
                     companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
@@ -1095,6 +1123,8 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 4
+                        draftStatus=iSDraftDecisions.draftStatus
+                        coverPageStatus=iSDraftDecisions.coverPageStatus
 
                     }
                     comStdDraftRepository.save(comStdDraft)
@@ -1111,10 +1141,14 @@ class IntStandardService(
                 }?: throw Exception("DRAFT NOT FOUND")
             }
 
+            slFormResponse="Draft Was Not Approved"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse,responseStatus,responseButton,response)
     }
 
     fun getApprovedDraft(): MutableList<ISUploadedDraft> {
@@ -1153,6 +1187,7 @@ class IntStandardService(
                 special=isDraftDto.special
                 draughting=isDraftDto.draughting
                 requestNumber=isDraftDto.requestNumber
+                assignedTo=isDraftDto.assignedTo
 
             }
             companyStandardRepository.save(companyStandard)

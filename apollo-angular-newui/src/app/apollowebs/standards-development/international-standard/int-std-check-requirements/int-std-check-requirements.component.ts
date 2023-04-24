@@ -1,12 +1,12 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ComStdCommitteeRemarks,
-  ComStdRemarks,
-  InternationalStandardsComments,
-  ISCheckRequirements,
-  StakeholderProposalComments
+    ComStdCommitteeRemarks,
+    ComStdRemarks,
+    InternationalStandardsComments,
+    ISCheckRequirements,
+    StakeholderProposalComments, UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
@@ -18,11 +18,13 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-check-requirements',
   templateUrl: './int-std-check-requirements.component.html',
-  styleUrls: ['./int-std-check-requirements.component.css']
+  styleUrls: ['./int-std-check-requirements.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class IntStdCheckRequirementsComponent implements OnInit {
   @ViewChildren(DataTableDirective)
@@ -46,6 +48,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   isShowCommentsTabs= true;
   isShowMainTab= true;
   isShowMainTabs= true;
+    public usersLists !: UsersEntity[] ;
   public uploadDraftStandardFormGroup!: FormGroup;
   public approveRequirementsFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
@@ -53,14 +56,19 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   public draughtFormGroup!: FormGroup;
   public proofReadFormGroup!: FormGroup;
   documentDTOs: DocumentDTO[] = [];
+  coverDTOs: DocumentDTO[] = [];
   fullname = '';
   blob: Blob;
+    usersList: number;
   public uploadedFiles:  FileList;
   public uploadedFile:  FileList;
   public uploadDrafts:  FileList;
   public uploadProofReads:  FileList;
   public uploadStandardFile:  FileList;
   loadingText: string;
+  selectedType: number;
+  met: string;
+  notMet: string;
 
   constructor(
       private store$: Store<any>,
@@ -77,6 +85,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getStdRequirements();
+    this.getEditorDetails();
     this.approveRequirementsFormGroup = this.formBuilder.group({
       id:[],
       comments:null,
@@ -105,6 +114,9 @@ export class IntStdCheckRequirementsComponent implements OnInit {
       docName:[],
       draughting:[],
       requestNumber:[],
+        draftStatus:[],
+        coverPageStatus:[],
+        assignedTo:[]
     });
 
     this.rejectRequirementsFormGroup = this.formBuilder.group({
@@ -191,11 +203,18 @@ export class IntStdCheckRequirementsComponent implements OnInit {
         (response: DocumentDTO[]) => {
           this.documentDTOs = response;
           this.SpinnerService.hide();
-          //console.log(this.documentDTOs)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          //console.log(error.message);
+        }
+    );
+    this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.coverDTOs = response;
+          this.SpinnerService.hide();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
         }
     );
     if (mode==='checkRequirementsMet'){
@@ -273,7 +292,20 @@ export class IntStdCheckRequirementsComponent implements OnInit {
           //console.log(response);
           this.getStdRequirements();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Approved`);
+          if(response.body.responseStatus=="success"){
+              this.showToasterSuccess('Approved', response.body.responseMessage);
+          }else if(response.body.responseStatus=="error"){
+              this.showToasterError('Not Approved', response.body.responseMessage);
+          }
+            swal.fire({
+                title: response.body.responseMsg,
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: response.body.responseButton,
+                },
+                icon: response.body.responseStatus
+            });
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -307,4 +339,41 @@ export class IntStdCheckRequirementsComponent implements OnInit {
         }
     );
   }
+
+  viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
+          console.log(error.message);
+          this.getStdRequirements();
+        }
+    );
+  }
+
+    public getEditorDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getEditorDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.usersLists = response;
+               // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
 }

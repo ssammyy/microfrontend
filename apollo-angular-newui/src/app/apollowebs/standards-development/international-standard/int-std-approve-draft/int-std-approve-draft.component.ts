@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
@@ -6,7 +6,7 @@ import {
     ComStdRemarks,
     InternationalStandardsComments,
     ISCheckRequirements,
-    StakeholderProposalComments
+    StakeholderProposalComments, UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -23,7 +23,8 @@ import swal from "sweetalert2";
 @Component({
   selector: 'app-int-std-approve-draft',
   templateUrl: './int-std-approve-draft.component.html',
-  styleUrls: ['./int-std-approve-draft.component.css']
+  styleUrls: ['./int-std-approve-draft.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdApproveDraftComponent implements OnInit {
     @ViewChildren(DataTableDirective)
@@ -54,6 +55,7 @@ export class IntStdApproveDraftComponent implements OnInit {
     public draughtFormGroup!: FormGroup;
     public proofReadFormGroup!: FormGroup;
     documentDTOs: DocumentDTO[] = [];
+    coverDTOs: DocumentDTO[] = [];
     fullname = '';
     blob: Blob;
     public uploadedFiles:  FileList;
@@ -62,6 +64,12 @@ export class IntStdApproveDraftComponent implements OnInit {
     public uploadProofReads:  FileList;
     public uploadStandardFile:  FileList;
     loadingText: string;
+    selectedOption = '';
+    selectedType: number;
+    draughtsMan: number;
+    proofReader: number;
+    public draughtsMans !: UsersEntity[] ;
+    public proofReaders !: UsersEntity[] ;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -77,6 +85,8 @@ export class IntStdApproveDraftComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getStdEditing();
+    this.getDraughtsManDetails();
+    this.getProofReaderDetails();
       this.editDraughtFormGroup = this.formBuilder.group({
           id:[],
           comments:null,
@@ -99,6 +109,7 @@ export class IntStdApproveDraftComponent implements OnInit {
           docName:[],
           draughting:[],
           requestNumber:[],
+          assignedTo:[]
 
       });
   }
@@ -191,6 +202,15 @@ export class IntStdApproveDraftComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
                 //console.log(error.message);
+            }
+        );
+        this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.coverDTOs = response;
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
             }
         );
         if (mode==='draftStandardEditing'){
@@ -372,6 +392,61 @@ export class IntStdApproveDraftComponent implements OnInit {
 
     public hideModalDraftEditing() {
         this.closeModalDraftEditing?.nativeElement.click();
+    }
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
+    }
+
+    public getProofReaderDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getProofReaderDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.proofReaders = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getDraughtsManDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getDraughtsManDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.draughtsMans = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getStdEditing();
+            }
+        );
     }
 
 

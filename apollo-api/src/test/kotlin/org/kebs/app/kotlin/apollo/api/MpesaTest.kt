@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.*
 
 
 @ExtendWith(SpringExtension::class)
@@ -99,6 +100,11 @@ class MpesaTest {
         val numberRecords = "2"
         val password = "password@1"
         val loginid = "KEBSUSER"
+        val str = "p052088221y"
+        val strH=str.uppercase()
+        //println(str.uppercase(Locale.getDefault())) //prints "HELLO WORLD!"
+
+
 //        plainText.forEach {
         val hPass=entryNumberKraServices.kraDataEncryption(password)
         val hLogin=entryNumberKraServices.kraDataEncryption(loginid)
@@ -106,6 +112,7 @@ class MpesaTest {
             KotlinLogging.logger { }.info { "my hashed Password   $hPass" }
             KotlinLogging.logger { }.info { "my hashed Login   $hLogin" }
             KotlinLogging.logger { }.info { "my hashed value   $hashed" }
+            KotlinLogging.logger { }.info { "my uppercase value   $strH" }
 //        }
     }
 

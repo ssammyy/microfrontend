@@ -922,7 +922,8 @@ class ComStandardService(
     }
 
     fun getStdEditing(): MutableList<ComStandard> {
-        return companyStandardRepository.getStdEditing()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return companyStandardRepository.getStdEditing(loggedInUser.id)
     }
 
     fun getStdEditDrafting(): MutableList<ComStandard> {

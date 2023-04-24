@@ -44,6 +44,27 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
+    public getEditorDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_EDITORS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getDraughtsManDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_DRAUGHTSMANS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getProofReaderDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_PROOFREADERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+
+
+
     public getIntStandardProposals(): Observable<NwaRequestList[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_ADOPTION_PROPOSAL_REQUEST);
         const params = new HttpParams();

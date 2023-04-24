@@ -836,7 +836,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isApproveDraftStd',
                 title: 'Edit Draft',
                 ab: 'ED',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
             },
             {
                 path: 'isStdDraughting',

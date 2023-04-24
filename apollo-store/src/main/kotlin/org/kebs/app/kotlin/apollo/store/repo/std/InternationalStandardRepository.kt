@@ -87,10 +87,10 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
                 "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
                 "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
-                "WHERE  s.STATUS IN('3') ORDER BY s.ID DESC",
+                "WHERE  s.STATUS IN('3') AND s.ASSIGNED_TO=:id ORDER BY s.ID DESC",
         nativeQuery = true
     )
-    fun getStdEditing(): MutableList<ComStandard>
+    fun getStdEditing(id: Long?): MutableList<ComStandard>
 
     @Query(
         value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
@@ -338,6 +338,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         nativeQuery = true
     )
     fun getEditorId(): Long
+
 
     @Query(
         value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='DRAUGHTSMAN_SD'",
@@ -956,6 +957,19 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('HO_SIC_SD','SD_TEST_ROLE') ", nativeQuery = true)
     fun getHeadOfSic(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('EDITOR_SD') ", nativeQuery = true)
+    fun getEditorDetails(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('DRAUGHTSMAN_SD') ", nativeQuery = true)
+    fun getDraughtsManDetails(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
+            "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('PROOFREADER_SD') ", nativeQuery = true)
+    fun getProofReaderDetails(): List<UserDetailHolder>
+
 
     @Query(
         "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email,u.CELL_PHONE as telephone from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",

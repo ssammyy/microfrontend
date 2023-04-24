@@ -421,6 +421,9 @@ export class ApiEndpointService {
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
+        IST_GET_STD_EDITORS: `${ApiEndpointService.SD_IST_CONTEXT}/getEditorDetails`,
+        IST_GET_STD_DRAUGHTSMANS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraughtsManDetails`,
+        IST_GET_STD_PROOFREADERS: `${ApiEndpointService.SD_IST_CONTEXT}/getProofReaderDetails`,
         IST_VIEW_ADOPTION_PROPOSAL_REQUEST: `${ApiEndpointService.SD_IST_CONTEXT}/getIntStandardProposals`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_PD: `${ApiEndpointService.SD_IST_CONTEXT}/draft-file-upload`,
@@ -523,7 +526,7 @@ export class ApiEndpointService {
         ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/view/comDraft`,
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
         ICT_VIEW_COVER_PAGES: `${ApiEndpointService.SD_ICT_CONTEXT}/company_standard/view/cover_pages`,
-        ICT_STD_SAC_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/company_standard/getCoverPagesList`,
+        ICT_STD_SAC_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCoverPagesList`,
         ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnStdDraft`,
         ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/decisionOnComStdDraft`,
         ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,

@@ -144,5 +144,20 @@ class CompanyStandard {
     @Column(name="STANDARD_TYPE")
     @Basic
     var standardType: String?=null
+
+    @Column(name="DRAFT_STATUS")
+    @Basic
+    var draftStatus: String?=null
+
+    @Column(name="COVER_PAGE_STATUS")
+    @Basic
+    var coverPageStatus: String?=null
+
+    @Column(name = "ASSIGNED_TO")
+    @Basic
+    var assignedTo: Long? = null
+
+
+
 }
 

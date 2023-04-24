@@ -290,6 +290,23 @@ export class StdComStandardService {
     );
   }
 
+  public uploadCoverPages(comStdDraftID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_CP);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comStdDraftID': comStdDraftID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
   //upload Draft Document
   public uploadCompanyStandard(standardID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_COM_STANDARD);
@@ -331,8 +348,28 @@ export class StdComStandardService {
     );
   }
 
+  public viewCoverPages(comStdDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_VIEW_COVER_PAGES);
+    const params = new HttpParams()
+        .set('comStdDraftID', comStdDraftID);
+    return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
   public getDraftDocumentList(comStdDraftID: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
+    const params = new HttpParams().set('comStdDraftID', comStdDraftID);
+    return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+  }
+
+  public getCoverPagesList(comStdDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STD_SAC_DOCUMENT_LIST);
     const params = new HttpParams().set('comStdDraftID', comStdDraftID);
     return this.http.get<DocumentDTO[]>(url, {params}).pipe();
   }
@@ -719,6 +756,12 @@ export class StdComStandardService {
           return throwError(fault);
         })
     );
+  }
+
+  public getApproveLevelThree(): Observable<UsersEntity[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVED_USERS_LEVEL_THREE);
+    const params = new HttpParams();
+    return this.http.get<UsersEntity[]>(url, {params}).pipe();
   }
 
   public getStdRequirements(): any {
