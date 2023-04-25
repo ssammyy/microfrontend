@@ -73,7 +73,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
 
     //retrieve CD Drafts Docs
     @Query(
-        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_2 = :sdDocumentId",
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :sdDocumentId AND (DOCUMENT_TYPE='CD DOCUMENT' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR CD' OR DOCUMENT_TYPE='MINUTES FOR CD') ",
         nativeQuery = true
     )
     fun findStandardDocumentCdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?

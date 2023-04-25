@@ -4,7 +4,7 @@ import {
     Preliminary_Draft_With_Name,
     StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
@@ -48,9 +48,10 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     language = "en";
 
     blob: Blob;
-    public uploadedFiles: FileList;
-    public uploadedFilesB: FileList;
-    public uploadedFilesC: FileList;
+    public uploadedFiles: Array<File> = [];
+    public uploadedFilesB: Array<File> = [];
+    public uploadedFilesC: Array<File> = [];
+
 
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
@@ -60,6 +61,9 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
     loading = false;
     loadingText: string;
+    validTextType: boolean = false;
+
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -69,6 +73,32 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 private SpinnerService: NgxSpinnerService) {
     }
 
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
+    }
+    textValidationType(e) {
+        this.validTextType = !!e;
+    }
+
+
     ngOnInit(): void {
         this.getAllPds();
         this.committee_draftFormGroup = this.formBuilder.group({
@@ -77,12 +107,21 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
     }
 
+    id: any = 'Pending Review';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Pending Review") {
+            this.reloadCurrentRoute()
+        }
+    }
+
     public getAllPds(): void {
         this.loading = true
         this.loadingText = "Retrieving Drafts Please Wait ...."
         this.SpinnerService.show()
 
-        this.committeeService.getAllPreliminaryDrafts().subscribe(
+        this.committeeService.getAllPdPendingCds().subscribe(
             (response: Preliminary_Draft_With_Name[]) => {
 
                 this.preliminary_drafts = response;
@@ -128,8 +167,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
             }
         );
     }
-
-    public uploadMinutesForCd(pdID: number) {
+    public uploadCDDoc(cdId: string) {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -137,32 +175,8 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            this.SpinnerService.show();
-            this.committeeService.uploadMinutesForCd(String(pdID), formData, "Minutes CD", "Minutes CD").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFiles = null;
-                    console.log(data);
-                    swal.fire({
-                        title: 'Minutes Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.hideModelE()
-                    this.getAllPds();
-
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
-            );
+            this.committeeService.uploadMinutesForCd(String(cdId), formData, "Minutes CD", "Minutes CD").subscribe();
         }
-    }
-
-    public uploadDraftsAndOtherDocs(pdID: number) {
         if (this.uploadedFilesB.length > 0) {
             const file = this.uploadedFilesB;
             const formData = new FormData();
@@ -170,54 +184,12 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            this.SpinnerService.show();
-            this.committeeService.uploadCdDraftDocuments(String(pdID), formData, "Drafts And Other Relevant Documents CD", "Drafts And Other Relevant Documents CD").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFilesB = null;
-                    console.log(data);
-                    this.hideModelD()
-                    swal.fire({
-                        title: 'Draft Documents Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.getAllPds();
-
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
-            );
+            this.committeeService.uploadCdDraftDocuments(String(cdId), formData, "Drafts And Other Relevant Documents CD", "Drafts And Other Relevant Documents CD").subscribe();
         }
-    }
 
 
-    uploadCommitteeDraft(): void {
-        if (this.uploadedFilesC != null) {
-            this.SpinnerService.show();
-            this.committeeService.prepareCommitteeDraft(this.committee_draftFormGroup.value, String(this.preliminary_draftsB.id)).subscribe(
-                (response) => {
-                    console.log(response)
-                    this.SpinnerService.hide();
-                    this.showToasterSuccess(response.httpStatus, `Successfully Submitted Committee Draft`);
-                    this.uploadCDDoc(response.body.savedRowID)
-                    this.committee_draftFormGroup.reset();
-                },
-                (error: HttpErrorResponse) => {
-                    this.SpinnerService.hide();
-                    console.log(error.message);
-                }
-            );
-        } else {
-            this.showToasterError("Error", `Please Upload all the documents.`);
-        }
-    }
 
-    public uploadCDDoc(cdId: string) {
+
         if (this.uploadedFilesC.length > 0) {
             const file = this.uploadedFilesC;
             const formData = new FormData();
@@ -228,10 +200,15 @@ export class PrepareCommitteeDraftComponent implements OnInit {
             this.SpinnerService.show();
             this.committeeService.uploadCDDocument(cdId, formData, "CD Document", "CD Document").subscribe(
                 (data: any) => {
+                    this.loading = false
                     this.SpinnerService.hide();
-                    this.uploadedFilesC = null;
-                    console.log(data);
-                    this.hideModelC()
+                    this.uploadedFiles = [];
+                    this.uploadedFilesB = [];
+                    this.uploadedFilesC = [];
+
+                    this.committee_draftFormGroup.reset()
+
+                    this.hideModel()
                     swal.fire({
                         title: 'Committee Draft Document Uploaded Successfully.',
                         buttonsStyling: false,
@@ -246,6 +223,40 @@ export class PrepareCommitteeDraftComponent implements OnInit {
             );
         }
     }
+
+    uploadCommitteeDraft(formDirective): void {
+        if (this.committee_draftFormGroup.valid) {
+            if (this.uploadedFilesC != null && this.uploadedFilesC.length > 0) {
+
+
+                this.loading = true
+                this.loadingText = "Submitting  ...."
+                this.SpinnerService.show();
+
+
+
+                this.committeeService.prepareCommitteeDraft(this.committee_draftFormGroup.value,  String(this.preliminary_draftsB.id)).subscribe(
+                    (response) => {
+                        console.log(response)
+                        this.showToasterSuccess(response.httpStatus, `Successfully submitted Committee Draft`);
+                        this.uploadCDDoc(response.body.savedRowID)
+                        formDirective.reset();
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+                        console.log(error.message);
+                    }
+                );
+            } else {
+                this.loading = false
+                this.SpinnerService.hide();
+                this.showToasterError("Error", `Please Upload The Committee Draft document.`);
+            }
+        } else {
+            this.validateAllFormFields(this.committee_draftFormGroup);
+        }
+    }
+
 
 
     public onOpenModal(preliminaryDraft: Preliminary_Draft_With_Name, mode: string): void {
@@ -430,5 +441,12 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
     formatFormDate(date: string) {
         return formatDate(date, this.dateFormat, this.language);
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 }

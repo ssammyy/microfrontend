@@ -208,6 +208,11 @@ class CommitteeController(
         return committeeService.getAllPd()
     }
 
+    @GetMapping("/getAllPdPendingCds")
+    fun getAllPdPendingCds(): List<PdWithUserName> {
+        return committeeService.getAllPdPendingCds()
+    }
+
     @GetMapping("/getAllCommentsOnPd")
     fun getAllCommentsOnPreliminaryDrafts(@RequestParam("preliminaryDraftId") preliminaryDraftId: Long): List<CommentsWithPdId> {
         return committeeService.getAllCommentsOnPd(preliminaryDraftId)
@@ -288,7 +293,7 @@ class CommitteeController(
     @PostMapping("/upload/cdMinutes")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadCDMinutes(
-        @RequestParam("pdId") pdId: Long,
+        @RequestParam("cdId") cdId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -297,7 +302,7 @@ class CommitteeController(
 
         var docDescription: String
 
-        val application = committeePDRepository.findByIdOrNull(pdId)
+        val application = committeeCDRepository.findByIdOrNull(cdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()
@@ -328,7 +333,7 @@ class CommitteeController(
     @PostMapping("/upload/cdDraftDocuments")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadCdDraftDocuments(
-        @RequestParam("pdId") pdId: Long,
+        @RequestParam("cdId") cdId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -337,7 +342,7 @@ class CommitteeController(
 
         var docDescription: String
 
-        val application = committeePDRepository.findByIdOrNull(pdId)
+        val application = committeeCDRepository.findByIdOrNull(cdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
 
         docFile.forEach { u ->

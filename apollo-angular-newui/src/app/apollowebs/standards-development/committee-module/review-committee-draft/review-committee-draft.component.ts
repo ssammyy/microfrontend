@@ -1,7 +1,8 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     CommentMadeRetrieved,
-    Committee_Draft_With_Name
+    Committee_Draft_With_Name,
+    StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -15,6 +16,7 @@ import {formatDate} from "@angular/common";
 import {HttpErrorResponse} from "@angular/common/http";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
+import {CommentsDto} from "../../../../core/store/data/std/std.model";
 
 declare const $: any;
 
@@ -24,14 +26,11 @@ declare const $: any;
     styleUrls: ['./review-committee-draft.component.css']
 })
 export class ReviewCommitteeDraftComponent implements OnInit {
-
-    committee_draft: Committee_Draft_With_Name | undefined;
     committee_drafts !: Committee_Draft_With_Name[];
     committee_draftsB !: Committee_Draft_With_Name | undefined;
 
     commentMadeRetrievedS !: CommentMadeRetrieved[];
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
-
 
 
     dateFormat = "yyyy-MM-dd";
@@ -48,6 +47,25 @@ export class ReviewCommitteeDraftComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
 
+    loading = false;
+    loadingText: string;
+
+    commentsMadeFormGroup: FormGroup;
+
+    commentsDto: CommentsDto
+
+    commentsDtos: CommentsDto[] = [];
+
+    levelOfStandards: string[] = ['General', 'Technical', 'Editorial']
+
+    standardDocuments !: StandardDocuments[];
+
+    documentType = "Committee Draft";
+
+    displayUsers: boolean = false;
+
+    loadingDocsTable= false;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -59,24 +77,17 @@ export class ReviewCommitteeDraftComponent implements OnInit {
 
     ngOnInit(): void {
         this.getAllCds();
-        this.getAllUserLoggedInCommentsMadeOnPd();
+        this.getAllUserLoggedInCommentsMadeOnCd();
 
 
-        this.commentFormGroup = this.formBuilder.group({
-            cdId: ['', Validators.required],
-            recipientId: ['', Validators.required],
-            title: ['', Validators.required],
-            documentType: ['', Validators.required],
-            circulationDate: ['', Validators.required],
-            closingDate: ['', Validators.required],
-            organization: ['', Validators.required],
+        this.commentsMadeFormGroup = this.formBuilder.group({
             clause: ['', Validators.required],
             paragraph: ['', Validators.required],
-            commentType: ['', Validators.required],
+            typeOfComment: ['', Validators.required],
             proposedChange: ['', Validators.required],
-            observation: ['', Validators.required],
-            commentsMade: ['', Validators.required],
+            comment: ['', Validators.required],
         });
+
 
         this.editCommentFormGroup = this.formBuilder.group({
             recipientId: ['', Validators.required],
@@ -102,11 +113,6 @@ export class ReviewCommitteeDraftComponent implements OnInit {
             order: [[1, "desc"]],
         };
     }
-
-    get formMakeComment(): any {
-        return this.commentFormGroup.controls;
-    }
-
     get formEditComment(): any {
         return this.editCommentFormGroup.controls;
     }
@@ -132,26 +138,6 @@ export class ReviewCommitteeDraftComponent implements OnInit {
 
     }
 
-    saveComment(): void {
-        this.SpinnerService.show();
-
-            this.committeeService.makeComment(this.commentFormGroup.value,"CD").subscribe(
-            (response) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, 'Successfully Submitted Comment');
-                this.commentFormGroup.reset()
-                this.hideModel()
-                this.getAllUserLoggedInCommentsMadeOnPd();
-                this.getAllCds();
-
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                console.log(error.message);
-            }
-        );
-    }
-
     editComment(): void {
         this.SpinnerService.show();
         this.committeeService.editComment(this.editCommentFormGroup.value).subscribe(
@@ -159,7 +145,7 @@ export class ReviewCommitteeDraftComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, 'Successfully Edited Comment');
                 this.hideModelB()
-                this.getAllUserLoggedInCommentsMadeOnPd();
+                this.getAllUserLoggedInCommentsMadeOnCd();
 
             },
             (error: HttpErrorResponse) => {
@@ -199,7 +185,7 @@ export class ReviewCommitteeDraftComponent implements OnInit {
                         );
                         this.SpinnerService.hide();
                         this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
-                        this.getAllUserLoggedInCommentsMadeOnPd();
+                        this.getAllUserLoggedInCommentsMadeOnCd();
                     },
                 );
             } else if (
@@ -215,7 +201,7 @@ export class ReviewCommitteeDraftComponent implements OnInit {
         });
     }
 
-    public getAllUserLoggedInCommentsMadeOnPd(): void {
+    public getAllUserLoggedInCommentsMadeOnCd(): void {
         this.committeeService.retrieveUserLoggedInCommentsOnCd().subscribe(
             (response: CommentMadeRetrieved[]) => {
                 console.log(response);
@@ -242,6 +228,12 @@ export class ReviewCommitteeDraftComponent implements OnInit {
         if (mode === 'makeComment') {
             this.committee_draftsB = committee_draft;
             button.setAttribute('data-target', '#makeComment');
+        }
+        if (mode === 'viewCd') {
+            this.committee_draftsB = committee_draft;
+            this.getAllCdDocs(committee_draft.id)
+
+            button.setAttribute('data-target', '#viewCd');
         }
 
 
@@ -321,13 +313,15 @@ export class ReviewCommitteeDraftComponent implements OnInit {
         this.closeModalB?.nativeElement.click();
     }
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading= true
+        this.loadingText="Downloading Document"
         this.SpinnerService.show();
-        this.committeeService.viewDocs(pdfId, doctype).subscribe(
+        this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
+                this.loading=false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
-
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');
@@ -358,6 +352,112 @@ export class ReviewCommitteeDraftComponent implements OnInit {
         // Do not forget to unsubscribe the event
         this.dtTrigger1.unsubscribe();
         this.dtTrigger2.unsubscribe();
+    }
+
+
+    onClickAddComment() {
+
+        console.log(this.commentsMadeFormGroup?.get('clause')?.value)
+
+
+        if (this.commentsMadeFormGroup?.get('clause')?.value == null || this.commentsMadeFormGroup?.get('clause')?.value == '') {
+            this.showToasterError("Error", "Please Enter Clause")
+        } else if (this.commentsMadeFormGroup?.get('paragraph')?.value == null || this.commentsMadeFormGroup?.get('paragraph')?.value == '') {
+            this.showToasterError("Error", "Please Enter Paragraph")
+        } else if (this.commentsMadeFormGroup?.get('typeOfComment')?.value == null || this.commentsMadeFormGroup?.get('typeOfComment')?.value == '') {
+            this.showToasterError("Error", "Please Select Comment Type")
+        } else if (this.commentsMadeFormGroup?.get('comment')?.value == null || this.commentsMadeFormGroup?.get('comment')?.value == '') {
+            this.showToasterError("Error", "Please Enter Your Comment")
+        } else if (this.commentsMadeFormGroup?.get('proposedChange')?.value == null || this.commentsMadeFormGroup?.get('proposedChange')?.value == '') {
+            this.showToasterError("Error", "Please Enter Proposed Change")
+        } else {
+            this.commentsDto = this.commentsMadeFormGroup.value;
+            this.commentsDtos.push(this.commentsDto);
+            this.commentsMadeFormGroup?.get('clause')?.reset();
+            this.commentsMadeFormGroup?.get('paragraph')?.reset();
+            this.commentsMadeFormGroup?.get('typeOfComment')?.reset();
+            this.commentsMadeFormGroup?.get('comment')?.reset();
+            this.commentsMadeFormGroup?.get('proposedChange')?.reset();
+            console.log(this.commentsDtos.length)
+        }
+        // this.sta10FormA.reset();
+    }
+
+    removeProductLabelling(index) {
+        //(index);
+        if (index === 0) {
+            this.commentsDtos.splice(index, 1);
+        } else {
+            this.commentsDtos.splice(index, index);
+        }
+    }
+
+    onClickSaveCommentsMade(preliminary_draft_id: number) {
+        this.loading = true
+        if (this.commentsDtos.length > 0) {
+            this.loadingText = "Saving Comment"
+            this.SpinnerService.show();
+
+            //(this.sta10Details.id.toString());
+            this.committeeService.makeCommentB(this.commentsDtos, preliminary_draft_id, "CD").subscribe(
+                (data) => {
+
+                    this.SpinnerService.hide();
+                    this.loading = false
+                    this.commentsMadeFormGroup.reset()
+                    this.hideModel()
+                    this.commentsDtos = []
+                    this.getAllUserLoggedInCommentsMadeOnCd();
+
+                    swal.fire({
+                        title: 'Comments Saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+            );
+        } else {
+            this.loading = false
+
+            swal.fire({
+                title: 'Comments missing!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'error'
+            });
+        }
+    }
+
+
+    public getAllCdDocs(cdID: number) {
+        this.loadingDocsTable = true
+        this.displayUsers = false;
+        this.SpinnerService.show("loader2");
+
+
+        this.committeeService.getDocsOnCd(cdID).subscribe(
+            (response: StandardDocuments[]) => {
+                console.log(response)
+                this.standardDocuments = response;
+                // this.rerender()
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+            }
+        );
     }
 
 

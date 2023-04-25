@@ -21,7 +21,7 @@ class Comments {
 
     @Column(name = "CD_ID")
     @Basic
-    val cdId: Long = 0
+    var cdId: Long = 0
 
     @Column(name = "RECIPIENT_ID")
     @Basic

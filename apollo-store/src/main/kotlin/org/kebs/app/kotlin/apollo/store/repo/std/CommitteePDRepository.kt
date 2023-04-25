@@ -25,4 +25,11 @@ interface CommitteePDRepository : JpaRepository<CommitteePD, Long> {
     )
     fun findPreliminaryDraftUnAssigned(): MutableList<PdWithUserName>
 
+
+    @Query(
+        value = "SELECT p.ID, p.CREATED_ON, p.PD_NAME, p.NWI_ID, (t.FIRST_NAME || ' ' || t.LAST_NAME) AS PD_BY, p.STATUS,c2.Count_P_ID AS NUMBER_OF_COMMENTS, m.PROPOSAL_TITLE, m.CIRCULATION_DATE,m.CLOSING_DATE, m.ORGANIZATION FROM CommitteePD p Join DAT_KEBS_USERS t on p.PD_BY = t.ID  join SD_NWI m on p.NWI_ID =m.ID left outer join (select COUNT(c.PD_ID) Count_P_ID, PD_ID from SD_COMMENTS c where c.STATUS=1 group by PD_ID) c2 on p.id = c2.PD_ID where p.STATUS='Commenting By TC'",
+        nativeQuery = true
+    )
+    fun findPreliminaryDraftPendingCds(): MutableList<PdWithUserName>
+
 }
