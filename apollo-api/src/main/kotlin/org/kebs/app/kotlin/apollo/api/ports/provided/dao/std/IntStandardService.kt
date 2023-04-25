@@ -1275,7 +1275,7 @@ class IntStandardService(
 
 
     fun approveProofReadLevel(
-        iSDraftDecisions: ISDraftDecisions
+        iSDraftDecisions: ISDecisions
     ) : NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
@@ -1353,7 +1353,7 @@ class IntStandardService(
         return iSUploadStandardRepository.getProofReadDraft()
     }
 
-    fun approveProofReadStandard(
+    fun approveProofReadStandardx(
         iSDraftDecisions: ISDrDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1390,7 +1390,7 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedProofReadDraft()
     }
 
-    fun approveEditedStandard(
+    fun approveProofReadStandard(
         iSDraftDecisions: ISDraftDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()

@@ -60,6 +60,7 @@ export class IntStdApproveChangesComponent implements OnInit {
   public uploadProofReads:  FileList;
   public uploadStandardFile:  FileList;
   loadingText: string;
+    coverDTOs: DocumentDTO[] = [];
 
   constructor(
       private store$: Store<any>,
@@ -186,6 +187,15 @@ export class IntStdApproveChangesComponent implements OnInit {
           //console.log(error.message);
         }
     );
+      this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.coverDTOs = response;
+              this.SpinnerService.hide();
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+          }
+      );
     if (mode==='approveChanges'){
       this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#approveChanges');
@@ -309,5 +319,25 @@ export class IntStdApproveChangesComponent implements OnInit {
         }
     );
   }
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getStdForApproval();
+            }
+        );
+    }
 
 }

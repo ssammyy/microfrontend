@@ -522,6 +522,12 @@ export class IntStdApproveDraftComponent implements OnInit {
         this.closeModalProof?.nativeElement.click();
     }
 
+    @ViewChild('closeModalAProof') private closeModalAProof: ElementRef | undefined;
+
+    public hideModalAProof() {
+        this.closeModalAProof?.nativeElement.click();
+    }
+
     onSelected(value:string): void {
         this.selectedOption = value;
     }
@@ -606,7 +612,7 @@ export class IntStdApproveDraftComponent implements OnInit {
                 //console.log(error.message);
             }
         );
-        this.hideModalRequirements();
+        this.hideModalAProof();
     }
 
 

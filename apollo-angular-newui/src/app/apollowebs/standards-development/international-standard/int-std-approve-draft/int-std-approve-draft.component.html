@@ -717,7 +717,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h3 class="modal-title" id="approveProofReadDraftLabel">Approve Draft For Publishing</h3>
-                                                <button type="button" #closeModalProof class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" #hideModalAProof class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -804,6 +804,10 @@
                                                                                         <ng-option  [value]="approve" >Approve </ng-option>
                                                                                         <ng-option  [value]="reject" >Reject </ng-option>
                                                                                     </ng-select>
+                                                                                </div>
+                                                                                <div class="form-group col-12">
+                                                                                    <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: blue;">(*)Optional</span></label>
+                                                                                    <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                 </div>
                                                                                 <input type="hidden" formControlName="draftId"  name="draftId" value="{{actionRequests?.draftId}}" >
                                                                                 <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >

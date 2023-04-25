@@ -626,7 +626,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
-    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDrDecisions
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
     {
 
@@ -645,17 +645,17 @@ class IntStandardController(
 
     //decision on Adoption Proposal
    // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/international_standard/approveEditedStandard")
-    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
-    ) : ServerResponse
-    {
-
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
-
-    }
+//    @PostMapping("/international_standard/approveEditedStandard")
+//    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+//    ) : ServerResponse
+//    {
+//
+//        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
+//
+//    }
 
     @PostMapping("/international_standard/approveProofReadLevel")
-    fun approveProofReadLevel(@RequestBody iSDraftDecisions: ISDraftDecisions
+    fun approveProofReadLevel(@RequestBody iSDraftDecisions: ISDecisions
     ) : ServerResponse
     {
 
