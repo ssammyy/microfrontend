@@ -2714,7 +2714,7 @@ export interface RolesEntityDtos{
 }
 
 export interface JustificationStatus {
-    justificationStatus: number;
+    statusType: number;
 }
 
 

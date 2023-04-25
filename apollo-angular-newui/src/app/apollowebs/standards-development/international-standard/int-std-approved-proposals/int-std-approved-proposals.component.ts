@@ -43,6 +43,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   edition: string;
   approve: string;
   reject: string;
+  returnType: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
   public departments !: Department[] ;
@@ -260,12 +261,13 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     );
 
     if (mode === 'prepareJustification') {
+
       this.actionRequest = isAdoptionProposal;
       button.setAttribute('data-target', '#prepareJustification');
         this.stdIntStandardService.getJustificationStatus(comStdDraftID).subscribe(
             (response: JustificationStatus)=> {
                 this.justificationStatus = response;
-                console.log(this.justificationStatus);
+
             },
             (error: HttpErrorResponse)=>{
                 console.log(error.message)
