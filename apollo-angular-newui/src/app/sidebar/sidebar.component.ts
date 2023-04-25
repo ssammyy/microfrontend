@@ -834,15 +834,15 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'isApproveDraftStd',
-                title: 'Edit Draft',
-                ab: 'ED',
+                title: 'Editing Tasks',
+                ab: 'ET',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
             },
             {
                 path: 'isStdDraughting',
-                title: 'Drafting',
+                title: 'Draughting',
                 ab: 'SD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ', 'EDITOR_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ']
             },
             {
                 path: 'isStdProofReading',

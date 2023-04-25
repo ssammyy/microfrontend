@@ -692,6 +692,19 @@ export class StdComStandardService {
         })
     );
   }
+  public assignProofReader(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_ASSIGNED_APPROVED_DRAFT_STANDARD);
+    const params = new HttpParams();
+    return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
 
   public draughtStandard(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);

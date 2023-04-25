@@ -1170,21 +1170,22 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = if (draughting =="Yes"){
-                    4
-                }else{
-                    5
+
+                if(draughting =="Yes"){
+                   status=4
+                }else if(draughting =="No"){
+                    status=5
                 }
+//                status = if (draughting =="Yes"){
+//                    4
+//                }else{
+//                    5
+//                }
 
                 requestId=isDraftDto.proposalId
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
                 draughting=isDraftDto.draughting
                 requestNumber=isDraftDto.requestNumber
                 assignedTo=isDraftDto.assignedTo
@@ -1210,17 +1211,31 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 5
+                status = 12
                 requestId=isDraftDto.proposalId
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
-                draughting=isDraftDto.draughting
+                assignedTo=isDraftDto.assignedTo
+            }
+            companyStandardRepository.save(companyStandard)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        return standard
+    }
+
+    fun assignProofReader(isDraftDto: ISDraftDto) : ISUploadStandard {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val standard= ISUploadStandard()
+
+
+        companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
+
+            with(companyStandard) {
+                status = 5
+                assignedTo=isDraftDto.assignedTo
             }
             companyStandardRepository.save(companyStandard)
 
@@ -1244,14 +1259,8 @@ class IntStandardService(
             with(companyStandard) {
                 status = 6
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
-                draughting=isDraftDto.draughting
                 requestId=isDraftDto.proposalId
             }
             companyStandardRepository.save(companyStandard)

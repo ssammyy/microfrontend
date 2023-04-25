@@ -54,6 +54,7 @@ export class IntStdApproveDraftComponent implements OnInit {
     public editDraughtFormGroup!: FormGroup;
     public draughtFormGroup!: FormGroup;
     public proofReadFormGroup!: FormGroup;
+    public assignProofReaderFormGroup!: FormGroup;
     documentDTOs: DocumentDTO[] = [];
     coverDTOs: DocumentDTO[] = [];
     fullname = '';
@@ -88,6 +89,31 @@ export class IntStdApproveDraftComponent implements OnInit {
     this.getDraughtsManDetails();
     this.getProofReaderDetails();
       this.editDraughtFormGroup = this.formBuilder.group({
+          id:[],
+          comments:null,
+          accentTo:null,
+          requestId:null,
+          draftId:null,
+          title:null,
+          standardNumber:null,
+          scope:null,
+          normativeReference:null,
+          symbolsAbbreviatedTerms:null,
+          clause:null,
+          special:null,
+          uploadDate:null,
+          preparedBy:null,
+          departmentId:null,
+          subject:null,
+          description:null,
+          standardType:null,
+          docName:[],
+          draughting:[],
+          requestNumber:[],
+          assignedTo:[]
+
+      });
+      this.assignProofReaderFormGroup = this.formBuilder.group({
           id:[],
           comments:null,
           accentTo:null,
@@ -242,6 +268,35 @@ export class IntStdApproveDraftComponent implements OnInit {
             );
 
         }
+        if (mode==='assignProofReader'){
+            this.actionRequests=iSCheckRequirement;
+            button.setAttribute('data-target','#assignProofReader');
+
+            this.editDraughtFormGroup.patchValue(
+                {
+                    requestId: this.actionRequests.requestId,
+                    draftId: this.actionRequests.draftId,
+                    id: this.actionRequests.id,
+                    title: this.actionRequests.title,
+                    docName:this.actionRequests.documentType,
+                    standardNumber:this.actionRequests.comStdNumber,
+                    standardType:this.actionRequests.standardType,
+
+                    requestNumber: this.actionRequests.requestNumber,
+                    scope:this.actionRequests.scope,
+                    normativeReference: this.actionRequests.normativeReference,
+                    symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+                    clause:this.actionRequests.clause,
+                    special:this.actionRequests.special,
+                    departmentId:this.actionRequests.departmentId,
+                    subject:this.actionRequests.subject,
+                    description:this.actionRequests.description,
+
+
+                }
+            );
+
+        }
         // @ts-ignore
         container.appendChild(button);
         button.click();
@@ -319,6 +374,26 @@ export class IntStdApproveDraftComponent implements OnInit {
 
     }
 
+    assignProofReader(): void {
+        this.loadingText = "Saving Draft...";
+        this.SpinnerService.show();
+        this.stdComStandardService.assignProofReader(this.editDraughtFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.getStdEditing();
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Proof Reader Assigned`);
+                this.editDraughtFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalProof();
+    }
+
     toggleDisplayMainTab(){
         this.isShowMainTab = !this.isShowMainTab;
         this.isShowRemarksTab= true;
@@ -392,6 +467,12 @@ export class IntStdApproveDraftComponent implements OnInit {
 
     public hideModalDraftEditing() {
         this.closeModalDraftEditing?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalProof') private closeModalProof: ElementRef | undefined;
+
+    public hideModalProof() {
+        this.closeModalProof?.nativeElement.click();
     }
 
     onSelected(value:string): void {

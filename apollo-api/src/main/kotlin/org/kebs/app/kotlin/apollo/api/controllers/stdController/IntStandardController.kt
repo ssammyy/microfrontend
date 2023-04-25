@@ -589,6 +589,14 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(isDraftDto))
     }
 
+    @PostMapping("/international_standard/assignProofReader")
+    @ResponseBody
+    fun assignProofReader(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.assignProofReader(isDraftDto))
+    }
+
     //@PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getDraughtedDraft")
     @ResponseBody

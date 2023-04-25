@@ -87,7 +87,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
                 "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
                 "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
-                "WHERE  s.STATUS IN('3') AND s.ASSIGNED_TO=:id ORDER BY s.ID DESC",
+                "WHERE  s.STATUS IN('3','12') AND s.ASSIGNED_TO=:id ORDER BY s.ID DESC",
         nativeQuery = true
     )
     fun getStdEditing(id: Long?): MutableList<ComStandard>

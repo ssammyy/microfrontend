@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
@@ -6,7 +6,7 @@ import {
     ComStdRemarks,
     InternationalStandardsComments,
     ISCheckRequirements,
-    StakeholderProposalComments
+    StakeholderProposalComments, UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -23,7 +23,8 @@ import swal from "sweetalert2";
 @Component({
   selector: 'app-int-std-draught',
   templateUrl: './int-std-draught.component.html',
-  styleUrls: ['./int-std-draught.component.css']
+  styleUrls: ['./int-std-draught.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdDraughtComponent implements OnInit {
     @ViewChildren(DataTableDirective)
@@ -62,6 +63,9 @@ export class IntStdDraughtComponent implements OnInit {
     public uploadProofReads:  FileList;
     public uploadStandardFile:  FileList;
     loadingText: string;
+    coverDTOs: DocumentDTO[] = [];
+    public usersLists !: UsersEntity[] ;
+    usersList: number;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -75,6 +79,7 @@ export class IntStdDraughtComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStdEditDrafting();
+    this.getEditorDetails();
       this.draughtFormGroup = this.formBuilder.group({
           id:[],
           comments:null,
@@ -103,6 +108,7 @@ export class IntStdDraughtComponent implements OnInit {
           docName:[],
           draughting:[],
           requestNumber:[],
+          assignedTo:[]
 
       });
   }
@@ -194,6 +200,15 @@ export class IntStdDraughtComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
                 //console.log(error.message);
+            }
+        );
+        this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.coverDTOs = response;
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
             }
         );
         if (mode==='standardDrafting'){
@@ -367,5 +382,40 @@ export class IntStdDraughtComponent implements OnInit {
 
     public hideModalDrafting() {
         this.closeModalDrafting?.nativeElement.click();
+    }
+
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getStdEditDrafting();
+            }
+        );
+    }
+    public getEditorDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getEditorDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.usersLists = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
     }
 }
