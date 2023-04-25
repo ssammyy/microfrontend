@@ -654,6 +654,15 @@ class IntStandardController(
 
     }
 
+    @PostMapping("/international_standard/approveProofReadLevel")
+    fun approveProofReadLevel(@RequestBody iSDraftDecisions: ISDraftDecisions
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveProofReadLevel(iSDraftDecisions))
+
+    }
+
 
     //@PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedEditedDraft")

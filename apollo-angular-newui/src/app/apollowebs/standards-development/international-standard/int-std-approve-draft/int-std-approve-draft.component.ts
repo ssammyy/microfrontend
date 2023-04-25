@@ -138,6 +138,38 @@ export class IntStdApproveDraftComponent implements OnInit {
           assignedTo:[]
 
       });
+      this.approveRequirementsFormGroup = this.formBuilder.group({
+          id:[],
+          comments:null,
+          accentTo:null,
+          requestId:null,
+          draftId:null,
+          title:null,
+          standardNumber:null,
+          scope:null,
+          normativeReference:null,
+          symbolsAbbreviatedTerms:null,
+          clause:null,
+          special:null,
+          uploadDate:null,
+          preparedBy:null,
+          documentType:null,
+          departmentId:null,
+          subject:null,
+          description:null,
+          contactOneFullName:null,
+          contactOneTelephone:null,
+          contactOneEmail:null,
+          standardType:null,
+          companyName:[],
+          companyPhone:[],
+          docName:[],
+          draughting:[],
+          requestNumber:[],
+          draftStatus:[],
+          coverPageStatus:[],
+          assignedTo:[]
+      });
   }
 
     ngOnDestroy(): void {
@@ -268,33 +300,48 @@ export class IntStdApproveDraftComponent implements OnInit {
             );
 
         }
-        if (mode==='assignProofReader'){
-            this.actionRequests=iSCheckRequirement;
-            button.setAttribute('data-target','#assignProofReader');
 
-            this.editDraughtFormGroup.patchValue(
+        if (mode==='assignProofReader') {
+            this.actionRequests = iSCheckRequirement;
+            button.setAttribute('data-target', '#assignProofReader');
+
+            this.assignProofReaderFormGroup.patchValue(
                 {
                     requestId: this.actionRequests.requestId,
                     draftId: this.actionRequests.draftId,
                     id: this.actionRequests.id,
                     title: this.actionRequests.title,
-                    docName:this.actionRequests.documentType,
-                    standardNumber:this.actionRequests.comStdNumber,
-                    standardType:this.actionRequests.standardType,
+                    docName: this.actionRequests.documentType,
+                    standardNumber: this.actionRequests.comStdNumber,
+                    standardType: this.actionRequests.standardType,
 
                     requestNumber: this.actionRequests.requestNumber,
-                    scope:this.actionRequests.scope,
+                    scope: this.actionRequests.scope,
                     normativeReference: this.actionRequests.normativeReference,
                     symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
-                    clause:this.actionRequests.clause,
-                    special:this.actionRequests.special,
-                    departmentId:this.actionRequests.departmentId,
-                    subject:this.actionRequests.subject,
-                    description:this.actionRequests.description,
+                    clause: this.actionRequests.clause,
+                    special: this.actionRequests.special,
+                    departmentId: this.actionRequests.departmentId,
+                    subject: this.actionRequests.subject,
+                    description: this.actionRequests.description,
 
 
                 }
             );
+        }
+            if (mode==='approveProofReadDraft'){
+                this.actionRequests=iSCheckRequirement;
+                button.setAttribute('data-target','#approveProofReadDraft');
+
+                this.approveRequirementsFormGroup.patchValue(
+                    {
+
+                        requestId: this.actionRequests.requestId,
+                        id: this.actionRequests.id,
+                        draftId: this.actionRequests.draftId,
+                        standardType: this.actionRequests.standardType
+                    }
+                );
 
         }
         // @ts-ignore
@@ -377,13 +424,13 @@ export class IntStdApproveDraftComponent implements OnInit {
     assignProofReader(): void {
         this.loadingText = "Saving Draft...";
         this.SpinnerService.show();
-        this.stdComStandardService.assignProofReader(this.editDraughtFormGroup.value).subscribe(
+        this.stdComStandardService.assignProofReader(this.assignProofReaderFormGroup.value).subscribe(
             (response ) => {
                 //console.log(response);
                 this.getStdEditing();
                 this.SpinnerService.hide();
                 this.showToasterSuccess('Success', `Proof Reader Assigned`);
-                this.editDraughtFormGroup.reset();
+                this.assignProofReaderFormGroup.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -528,6 +575,38 @@ export class IntStdApproveDraftComponent implements OnInit {
                 this.getStdEditing();
             }
         );
+    }
+
+    approveProofReadLevel(): void {
+        this.loadingText = "Approving Draft...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.approveProofReadLevel(this.approveRequirementsFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.getStdEditing();
+                this.SpinnerService.hide();
+                if(response.body.responseStatus=="success"){
+                    this.showToasterSuccess('Approved', response.body.responseMessage);
+                }else if(response.body.responseStatus=="error"){
+                    this.showToasterError('Not Approved', response.body.responseMessage);
+                }
+                swal.fire({
+                    title: response.body.responseMsg,
+                    text: response.body.responseMessage,
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: response.body.responseButton,
+                    },
+                    icon: response.body.responseStatus
+                });
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                //console.log(error.message);
+            }
+        );
+        this.hideModalRequirements();
     }
 
 

@@ -455,6 +455,7 @@ export class ApiEndpointService {
         IST_VIEW_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedDraft`,
         IST_EDIT_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/editStandardDraft`,
         IST_ASSIGNED_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/assignProofReader`,
+        IST_APPROVE_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveProofReadLevel`,
         IST_VIEW_EDITED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getEditedDraft`,
         IST_UPLOAD_DRAFTING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/draughtStandard`,
         IST_VIEW_DRAUGHTED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getDraughtedDraft`,

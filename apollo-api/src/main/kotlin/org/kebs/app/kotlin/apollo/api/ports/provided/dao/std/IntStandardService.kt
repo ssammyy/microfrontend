@@ -1257,17 +1257,93 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 6
+                //status = 6
+                status=13
                 title=isDraftDto.title
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
                 requestId=isDraftDto.proposalId
+                assignedTo=isDraftDto.assignedTo
             }
             companyStandardRepository.save(companyStandard)
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
         return standard
+    }
+
+
+
+    fun approveProofReadLevel(
+        iSDraftDecisions: ISDraftDecisions
+    ) : NotificationForm {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val comRemarks=CompanyStandardRemarks()
+        val decision=iSDraftDecisions.accentTo
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val typeOfStandard= iSDraftDecisions.standardType
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
+
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
+        var url=""
+
+        if (decision == "Yes") {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                with(companyStandard) {
+                    status = 6
+
+                }
+
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
+            slFormResponse="Draft Was Approved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Approved"
+
+        } else if (decision == "No") {
+            comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+
+                with(comStdDraft) {
+                    status = 4
+                }
+                comStdDraftRepository.save(comStdDraft)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 14
+                }
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            slFormResponse="Draft Was Not Approved"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Approved"
+
+
+        }
+
+        return NotificationForm(slFormResponse,responseStatus,responseButton,response)
     }
 
 
