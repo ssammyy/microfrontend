@@ -320,8 +320,10 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     }
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+        this.loading = true;
+        this.loadingText="Retrieving File"
         this.SpinnerService.show();
-        this.committeeService.viewDocs(pdfId, doctype).subscribe(
+        this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});

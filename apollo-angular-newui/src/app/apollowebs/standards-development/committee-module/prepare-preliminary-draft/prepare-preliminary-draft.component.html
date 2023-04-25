@@ -208,7 +208,7 @@
                                                             <button type="button" class="btn btn-secondary" #closeModal
                                                                     (click)="hideModel()" data-dismiss="modal">Close
                                                             </button>
-                                                            <button  class="btn btn-info" mat-raised-button
+                                                            <button class="btn btn-info" mat-raised-button
                                                                     type="submit">SUBMIT
                                                             </button>
                                                         </div>
@@ -218,67 +218,362 @@
 
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="modal fade" id="justificationDecisionModal" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="justificationDecisionModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">SPC JUSTIFICATION</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form #editForm="ngForm">
+                                                    <div class="modal-body">
+                                                        <div *ngFor="let actionRequest of justificationItem let i= index; ">
 
-                                        <div class="modal fade" id="justificationDecisionModal" tabindex="-1"
-                                             role="dialog"
-                                             aria-labelledby="justificationDecisionModalLabel"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-xl" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">SPC JUSTIFICATION</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
+
+                                                            <div class="row">
+                                                                <div class=" col-12">
+                                                                    <ul class="list-group">
+                                                                        <li class="list-group-item active">
+                                                                            Justification
+                                                                            Details
+                                                                        </li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Title: " + actionRequest?.title}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Edition: " + actionRequest?.edition}}
+                                                                            Version
+                                                                        </li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
+                                                                    </ul>
+                                                                    <div class="material-datatables">
+                                                                        <table class="table table-striped table-bordered table-hover"
+                                                                               datatable
+                                                                               [dtOptions]="dtOptions"
+                                                                               [dtTrigger]="dtTrigger4">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th class="task">Document Name</th>
+                                                                                <th class="task">Description</th>
+
+                                                                                <th class="task">Action</th>
+
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr *ngFor="let doc of docs let i= index; ">
+
+                                                                                <td>{{doc.name}}</td>
+                                                                                <td>{{doc.description}}</td>
+
+                                                                                <td>
+                                                                                    <button class="btn btn-info tooltips"
+                                                                                            style="width: inherit"
+                                                                                            (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                                            data-placement="top"
+                                                                                    ><i
+                                                                                            class="fa fa-eye"></i>
+                                                                                        View
+                                                                                    </button>
+                                                                                </td>
+
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
+                                                            <div class="row">
+                                                                <div class=" col-12">
+                                                                    <ul class="list-group">
+                                                                        <li class="list-group-item active">Decision
+                                                                            Details
+                                                                        </li>
+
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
+
+                                                                        <li style="background: lightgray"
+                                                                            class="list-group-item">{{"Reason: " + actionRequest?.reason}}</li>
+
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
                                                     </div>
-                                                    <form #editForm="ngForm">
-                                                        <div class="modal-body">
-                                                            <div *ngFor="let actionRequest of justificationItem let i= index; ">
+                                                    <input hidden ngModel="true" name="decision">
+                                                    <input hidden ngModel name="reason">
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                #closeViewModal
+                                                                (click)="hideModel()" data-dismiss="modal">Close
+                                                        </button>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
+                                         aria-labelledby="viewNwiModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="viewNwiModalLabel">NEW WORK
+                                                        ITEM</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class=" col-12">
+                                                            <ul class="list-group">
+                                                                <li class="list-group-item active">New Work Item
+                                                                    Details
+                                                                </li>
+
+                                                                <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
 
 
-                                                                <div class="row">
-                                                                    <div class=" col-12">
-                                                                        <ul class="list-group">
-                                                                            <li class="list-group-item active">
-                                                                                Justification
-                                                                                Details
-                                                                            </li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Title: " + actionRequest?.title}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Edition: " + actionRequest?.edition}}
-                                                                                Version
-                                                                            </li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
-                                                                        </ul>
-                                                                        <div class="material-datatables">
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        <div>
+                                                                            {{"Scope: " + nwiActionRequest?.scope}}
+                                                                        </div>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        <div style="overflow-wrap: break-word; width: 100%">{{"Purpose: " + nwiActionRequest?.purpose}}</div>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Name of TC: " + nwiActionRequest?.nameOfTC}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
+                                                                </div>
+
+                                                                <br><br>
+                                                                <li style="background: lightgray">
+                                                                    <div class="material-datatables">
+                                                                        <table class="table table-striped table-bordered table-hover"
+                                                                               datatable
+                                                                               [dtOptions]="dtOptions"
+                                                                               [dtTrigger]="dtTrigger5">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th class="task">Document Name</th>
+                                                                                <th class="task">Descritpion</th>
+
+                                                                                <th class="task">Action</th>
+
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr *ngFor="let doc of docs let i= index; ">
+
+                                                                                <td>{{doc.name}}</td>
+                                                                                <td>{{doc.description}}</td>
+
+                                                                                <td>
+                                                                                    <button class="btn btn-info tooltips"
+                                                                                            style="width: inherit"
+                                                                                            (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                                            data-placement="top"
+                                                                                    ><i
+                                                                                            class="fa fa-eye"></i>
+                                                                                        View
+                                                                                    </button>
+                                                                                </td>
+
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <br>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            (click)="hideModel()"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="viewRequestModalLabel"
+                                         aria-hidden="true">
+
+                                        <div class="modal-dialog modal-lg modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"
+                                                        id="viewRequestModalLabel">Request Details</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div *ngFor="let actionRequest of tasks let i= index; ">
+
+                                                        <div class="row">
+                                                            <div class=" col-12">
+                                                                <ul class="list-group">
+                                                                    <li class="list-group-item active">Standard
+                                                                        Request
+                                                                        Details
+                                                                    </li>
+
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Organisation: " + actionRequest?.organisationName}}</li>
+
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Name: " + actionRequest?.name}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Phone: " + actionRequest?.phone}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Section: " + actionRequest?.departmentName}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Subject: " + actionRequest?.subject}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Description: " + actionRequest?.description}}</li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        Potential To
+                                                                        Contribute To Economic Efficiency :
+                                                                        <ngb-rating [max]="5"
+                                                                                    *ngIf="actionRequest?.economicEfficiency!=null"
+                                                                                    [(rate)]="actionRequest.economicEfficiency"
+                                                                                    [readonly]="false"></ngb-rating>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        Potential To
+                                                                        Safeguard Health And Safety :
+                                                                        <ngb-rating [max]="5"
+                                                                                    *ngIf="actionRequest?.healthSafety!=null"
+                                                                                    [(rate)]="actionRequest.healthSafety"
+                                                                                    [readonly]="false"></ngb-rating>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        Potential To
+                                                                        Preserve The Environment :
+                                                                        <ngb-rating [max]="5"
+                                                                                    *ngIf="actionRequest?.environment!=null"
+                                                                                    [(rate)]="actionRequest.environment"
+                                                                                    [readonly]="false"></ngb-rating>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        Potential To
+                                                                        Facilitate The Local Exchange Of Products
+                                                                        And
+                                                                        Industrial Integration :
+                                                                        <ngb-rating [max]="5"
+                                                                                    *ngIf="actionRequest?.integration!=null"
+                                                                                    [(rate)]="actionRequest.integration"
+                                                                                    [readonly]="false"></ngb-rating>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        Potential To
+                                                                        Facilitate Access To Export Markets :
+                                                                        <ngb-rating [max]="5"
+                                                                                    *ngIf="actionRequest?.exportMarkets!=null"
+                                                                                    [(rate)]="actionRequest.exportMarkets"
+                                                                                    [readonly]="false"></ngb-rating>
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">{{"Level Of Standard: " + actionRequest?.levelOfStandard}}</li>
+
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">Additional
+                                                                        Information:
+
+                                                                    </li>
+                                                                    <li style="background: lightgray">
+                                                                        <div class="material-datatables table-responsive">
                                                                             <table class="table table-striped table-bordered table-hover"
                                                                                    datatable
                                                                                    [dtOptions]="dtOptions"
                                                                                    [dtTrigger]="dtTrigger4">
                                                                                 <thead>
                                                                                 <tr>
-                                                                                    <th class="task">Document Name</th>
-                                                                                    <th class="task">Description</th>
-
+                                                                                    <th class="task">Document Name
+                                                                                    </th>
                                                                                     <th class="task">Action</th>
 
                                                                                 </tr>
@@ -287,152 +582,6 @@
                                                                                 <tr *ngFor="let doc of docs let i= index; ">
 
                                                                                     <td>{{doc.name}}</td>
-                                                                                    <td>{{doc.description}}</td>
-
-                                                                                    <td>
-                                                                                        <button class="btn btn-info tooltips"
-                                                                                                style="width: inherit"
-                                                                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                                                                data-placement="top"
-                                                                                        ><i
-                                                                                                class="fa fa-eye"></i>
-                                                                                            View
-                                                                                        </button>
-                                                                                    </td>
-
-                                                                                </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </div>
-
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
-                                                                <div class="row">
-                                                                    <div class=" col-12">
-                                                                        <ul class="list-group">
-                                                                            <li class="list-group-item active">Decision
-                                                                                Details
-                                                                            </li>
-
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
-
-                                                                            <li style="background: lightgray"
-                                                                                class="list-group-item">{{"Reason: " + actionRequest?.reason}}</li>
-
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
-                                                        </div>
-                                                        <input hidden ngModel="true" name="decision">
-                                                        <input hidden ngModel name="reason">
-
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    #closeViewModal
-                                                                    (click)="hideModel()" data-dismiss="modal">Close
-                                                            </button>
-
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                                             aria-labelledby="viewNwiModalLabel"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-xl" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="viewNwiModalLabel">NEW WORK
-                                                            ITEM</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class=" col-12">
-                                                                <ul class="list-group">
-                                                                    <li class="list-group-item active">New Work Item
-                                                                        Details
-                                                                    </li>
-
-                                                                    <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
-
-
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            <div>
-                                                                                {{"Scope: " + nwiActionRequest?.scope}}
-                                                                            </div>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            <div style="overflow-wrap: break-word; width: 100%">{{"Purpose: " + nwiActionRequest?.purpose}}</div>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Name of TC: " + nwiActionRequest?.nameOfTC}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
-                                                                    </div>
-
-                                                                    <br><br>
-                                                                    <li style="background: lightgray">
-                                                                        <div class="material-datatables">
-                                                                            <table class="table table-striped table-bordered table-hover"
-                                                                                   datatable
-                                                                                   [dtOptions]="dtOptions"
-                                                                                   [dtTrigger]="dtTrigger5">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <th class="task">Document Name</th>
-                                                                                    <th class="task">Descritpion</th>
-
-                                                                                    <th class="task">Action</th>
-
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                <tr *ngFor="let doc of docs let i= index; ">
-
-                                                                                    <td>{{doc.name}}</td>
-                                                                                    <td>{{doc.description}}</td>
-
                                                                                     <td>
                                                                                         <button class="btn btn-info tooltips"
                                                                                                 style="width: inherit"
@@ -456,222 +605,70 @@
                                                         </div>
 
                                                         <br>
+                                                        <div class="row">
+                                                            <div class=" col-12">
+                                                                <ul class="list-group">
+                                                                    <li class="list-group-item active">Review
+                                                                        Details
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>TC Secretary
+                                                                        Assigned:</b>{{ actionRequest?.tcSecAssigned}}
+                                                                    </li>
 
-                                                    </div>
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                (click)="hideModel()"
-                                                                data-dismiss="modal">Close
-                                                        </button>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
-                                             aria-labelledby="viewRequestModalLabel"
-                                             aria-hidden="true">
-
-                                            <div class="modal-dialog modal-lg modal-xl" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="viewRequestModalLabel">Request Details</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div *ngFor="let actionRequest of tasks let i= index; ">
-
-                                                            <div class="row">
-                                                                <div class=" col-12">
-                                                                    <ul class="list-group">
-                                                                        <li class="list-group-item active">Standard
-                                                                            Request
-                                                                            Details
-                                                                        </li>
-
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Organisation: " + actionRequest?.organisationName}}</li>
-
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Name: " + actionRequest?.name}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Phone: " + actionRequest?.phone}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Section: " + actionRequest?.departmentName}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Subject: " + actionRequest?.subject}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Description: " + actionRequest?.description}}</li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            Potential To
-                                                                            Contribute To Economic Efficiency :
-                                                                            <ngb-rating [max]="5"
-                                                                                        *ngIf="actionRequest?.economicEfficiency!=null"
-                                                                                        [(rate)]="actionRequest.economicEfficiency"
-                                                                                        [readonly]="false"></ngb-rating>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            Potential To
-                                                                            Safeguard Health And Safety :
-                                                                            <ngb-rating [max]="5"
-                                                                                        *ngIf="actionRequest?.healthSafety!=null"
-                                                                                        [(rate)]="actionRequest.healthSafety"
-                                                                                        [readonly]="false"></ngb-rating>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            Potential To
-                                                                            Preserve The Environment :
-                                                                            <ngb-rating [max]="5"
-                                                                                        *ngIf="actionRequest?.environment!=null"
-                                                                                        [(rate)]="actionRequest.environment"
-                                                                                        [readonly]="false"></ngb-rating>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            Potential To
-                                                                            Facilitate The Local Exchange Of Products
-                                                                            And
-                                                                            Industrial Integration :
-                                                                            <ngb-rating [max]="5"
-                                                                                        *ngIf="actionRequest?.integration!=null"
-                                                                                        [(rate)]="actionRequest.integration"
-                                                                                        [readonly]="false"></ngb-rating>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            Potential To
-                                                                            Facilitate Access To Export Markets :
-                                                                            <ngb-rating [max]="5"
-                                                                                        *ngIf="actionRequest?.exportMarkets!=null"
-                                                                                        [(rate)]="actionRequest.exportMarkets"
-                                                                                        [readonly]="false"></ngb-rating>
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Level Of Standard: " + actionRequest?.levelOfStandard}}</li>
-
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">Additional
-                                                                            Information:
-
-                                                                        </li>
-                                                                        <li style="background: lightgray">
-                                                                            <div class="material-datatables table-responsive">
-                                                                                <table class="table table-striped table-bordered table-hover"
-                                                                                       datatable
-                                                                                       [dtOptions]="dtOptions"
-                                                                                       [dtTrigger]="dtTrigger4">
-                                                                                    <thead>
-                                                                                    <tr>
-                                                                                        <th class="task">Document Name
-                                                                                        </th>
-                                                                                        <th class="task">Action</th>
-
-                                                                                    </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                    <tr *ngFor="let doc of docs let i= index; ">
-
-                                                                                        <td>{{doc.name}}</td>
-                                                                                        <td>
-                                                                                            <button class="btn btn-info tooltips"
-                                                                                                    style="width: inherit"
-                                                                                                    (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                                                                    data-placement="top"
-                                                                                            ><i
-                                                                                                    class="fa fa-eye"></i>
-                                                                                                View
-                                                                                            </button>
-                                                                                        </td>
-
-                                                                                    </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-
-                                                                        </li>
-
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-
-                                                            <br>
-                                                            <div class="row">
-                                                                <div class=" col-12">
-                                                                    <ul class="list-group">
-                                                                        <li class="list-group-item active">Review
-                                                                            Details
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>TC Secretary
-                                                                            Assigned:</b>{{ actionRequest?.tcSecAssigned}}
-                                                                        </li>
-
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>Desired
-                                                                            Output: </b>{{actionRequest?.desiredOutput}}
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>Desired
-                                                                            Result: </b>{{actionRequest?.desiredResult}}
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>Reason For
-                                                                            Result: </b>{{actionRequest?.reason}}
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>Reviewed
-                                                                            By: </b>{{actionRequest?.reviewedBy}}
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item"><b>Reviewed
-                                                                            On: </b>{{formatFormDate(actionRequest?.reviewDate)}}
-                                                                        </li>
-                                                                        <li style="background: lightgray"
-                                                                            class="list-group-item">
-                                                                            <b>Status: </b>{{actionRequest?.status}}
-                                                                        </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>Desired
+                                                                        Output: </b>{{actionRequest?.desiredOutput}}
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>Desired
+                                                                        Result: </b>{{actionRequest?.desiredResult}}
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>Reason For
+                                                                        Result: </b>{{actionRequest?.reason}}
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>Reviewed
+                                                                        By: </b>{{actionRequest?.reviewedBy}}
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item"><b>Reviewed
+                                                                        On: </b>{{formatFormDate(actionRequest?.reviewDate)}}
+                                                                    </li>
+                                                                    <li style="background: lightgray"
+                                                                        class="list-group-item">
+                                                                        <b>Status: </b>{{actionRequest?.status}}
+                                                                    </li>
 
 
-                                                                    </ul>
-                                                                </div>
+                                                                </ul>
                                                             </div>
                                                         </div>
-
-
                                                     </div>
 
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" #closeModalC
-                                                                (click)="hideModelC()"
-                                                                data-dismiss="modal">Close
-                                                        </button>
 
-                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" #closeModalC
+                                                            (click)="hideModelC()"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div *ngIf="id == 'All NWI'" class="w-100">
-
                     <app-all-tasks-pd></app-all-tasks-pd>
-
                 </div>
             </div>
         </div>
