@@ -194,6 +194,14 @@ interface PrdWithUserName {
 
     fun getVAR_FIELD_1(): String?
 
+    fun getPROPOSAL_TITLE(): String?
+
+    fun getCIRCULATION_DATE(): String?
+
+    fun getCLOSING_DATE(): String?
+
+    fun getORGANIZATION(): String?
+
 }
 
 interface CommentsWithPrdId {

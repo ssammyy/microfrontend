@@ -125,6 +125,11 @@ export interface PublicReviewDraftWithName {
     ks_NUMBER: string;
     var_FIELD_1: string;
 
+    organization: string;
+    proposal_TITLE: string;
+    circulation_DATE: string;
+    closing_DATE: string;
+
 
 }
 

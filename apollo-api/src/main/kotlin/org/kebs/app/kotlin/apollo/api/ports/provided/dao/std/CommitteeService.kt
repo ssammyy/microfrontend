@@ -133,18 +133,29 @@ class CommitteeService(
         var preliminaryDraft: CommitteePD? = null
         var nwi: StandardNWI? = null
 
-        if (docType == "PD") {
-            preliminaryDraft = committeePDRepository.findByIdOrNull(preliminaryDraftId)
-            preliminaryDraft?.let {
-                nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
-            }
-        } else if (docType == "CD") {
-            val committeeDraft = committeeCDRepository.findByIdOrNull(preliminaryDraftId)
-            committeeDraft?.let {
-                preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft.pdID)
+        when (docType) {
+            "PD" -> {
+                preliminaryDraft = committeePDRepository.findByIdOrNull(preliminaryDraftId)
                 preliminaryDraft?.let {
                     nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
                 }
+            }
+            "CD" -> {
+                val committeeDraft = committeeCDRepository.findByIdOrNull(preliminaryDraftId)
+                committeeDraft?.let {
+                    preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft.pdID)
+                    preliminaryDraft?.let {
+                        nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
+                    }
+                }
+            }
+            "PRD" -> {
+                val publicReviewDraft = publicReviewDraftRepository.findByIdOrNull(preliminaryDraftId)
+                val committeeDraft = committeeCDRepository.findByIdOrNull(publicReviewDraft?.cdID ?: -1L)
+                preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft?.pdID ?: -1L)
+                nwi = standardNWIRepository.findByIdOrNull(preliminaryDraft?.nwiID?.toLong() ?: -1L)
+
+
             }
         }
 
@@ -197,10 +208,16 @@ class CommitteeService(
             commentType = details.typeOfComment
             commentsMade = details.comment
             proposedChange = details.proposedChange
-            if (docType == "PD") {
-                pdId = preliminaryDraftIdAssigned
-            } else if (docType == "CD") {
-                cdId = preliminaryDraftIdAssigned
+            when (docType) {
+                "PD" -> {
+                    pdId = preliminaryDraftIdAssigned
+                }
+                "CD" -> {
+                    cdId = preliminaryDraftIdAssigned
+                }
+                "PRD" -> {
+                    prdId = preliminaryDraftIdAssigned.toString()
+                }
             }
             documentType = docType
             userId = loggedInUser.id!!

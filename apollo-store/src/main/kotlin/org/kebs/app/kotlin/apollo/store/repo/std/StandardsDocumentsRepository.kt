@@ -90,7 +90,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
 
     //retrieve PRD Drafts Docs
     @Query(
-        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_3 = :sdDocumentId",
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :sdDocumentId  AND (DOCUMENT_TYPE='PRD DOCUMENT' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PRD' OR DOCUMENT_TYPE='MINUTES FOR PRD')",
         nativeQuery = true
     )
     fun findStandardDocumentPrdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
