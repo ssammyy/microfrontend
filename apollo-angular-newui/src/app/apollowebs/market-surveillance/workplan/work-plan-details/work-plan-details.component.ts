@@ -75,7 +75,6 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('standardsInput') standardsInput: ElementRef;
   @ViewChild('otherRecommendation') otherRecommendation: ElementRef;
 
-  dateObj: Date;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
   nonComplianceList: NonComplianceDto[];
@@ -174,6 +173,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveBsNumber: string[] = [];
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportUploadsList: WorkPlanFilesFoundDto[] = [];
+  dataSaveSSFUploadList: WorkPlanFilesFoundDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
   dataSaveSeizure: SeizureListDto;
@@ -247,6 +247,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
   uploadedFilesSeizedGoods!: FileList;
+  uploadedChainOfCustodyDoc!: FileList;
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
@@ -1443,7 +1444,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       edit: false,
       delete: false,
       custom: [
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Follow Up Action</i>'},
         {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">Add Remarks</i>'},
       ],
       position: 'right', // left|right
@@ -1454,13 +1455,18 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1506,8 +1512,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        {name: 'addRecommendation', title: '<i class="btn btn-sm btn-primary">Add Recommendation</i>'},
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'addRecommendation', title: '<i class="btn btn-sm btn-primary">Add Follow Up Action</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Follow up Actions</i>'},
         // {name: 'addRemarkHod', title: '<i class="btn btn-sm btn-primary">ADD REMARKS</i>'},
       ],
       position: 'right', // left|right
@@ -1518,13 +1524,18 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1570,7 +1581,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
 
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Follow Up Actions</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1580,13 +1591,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1692,6 +1709,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   msTowns: Town[] = null;
   msTownsOriginal: Town[] = [];
   currentDateDetails = new Date();
+  addingSSFDetails: Boolean;
   post: Post = {
     startDate: new Date(Date.now()),
     endDate: new Date(Date.now()),
@@ -1718,6 +1736,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentDateDetails = new Date();
+    this.addingSSFDetails = true;
 
     console.log('currentdate' + this.currentDateDetails);
 
@@ -1856,6 +1875,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       finalRemarkHod: null,
       // remarks: ['', Validators.required],
       changesMade: null,
+      summaryOfFindings: [''],
     });
 
     this.dataReportParamForm = this.formBuilder.group({
@@ -1892,7 +1912,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
-      dateOfSeizure: ['', Validators.required],
+      dateOfSeizure: [new Date(), Validators.required],
     });
 
     this.seizureForm = this.formBuilder.group({
@@ -3049,6 +3069,13 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
     }
+    if (data.docList != null && data.docList.length > 0){
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
+    }
     this.sampleSubmitForm.disable();
     this.addLabParamStatus = false;
     window.$('#sampleSubmitModal').modal('show');
@@ -3076,6 +3103,13 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataSaveSampleSubmitParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    if (data.docList != null && data.docList.length > 0){
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
     }
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
@@ -3352,6 +3386,31 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  saveChainOfCustodyDocument(docName: string){
+    //this.SpinnerService.show();
+    const chainOfCustodyDoc = this.uploadedChainOfCustodyDoc;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < chainOfCustodyDoc.length; i++) {
+      formData.append('docFile', chainOfCustodyDoc[i], chainOfCustodyDoc[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          // this.SpinnerService.hide();
+          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Chain of Custody Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -5326,6 +5385,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (file === undefined) {
       this.msService.showError('Kindly Add An Attachment');
     }
+    for (let i=0; i < this.dataSaveSeizureDeclarationList.length; i++){
+      this.dataSaveSeizureDeclarationList[i].dateOfSeizure = null;
+    }
+
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods?.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
@@ -5363,6 +5426,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];
           console.log(data);
+          this.saveChainOfCustodyDocument("CHAIN_OF_CUSTODY");
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
         },
@@ -5400,6 +5464,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          //window.$('#investInspectReportModal').modal('hide');
           this.saveInitialReport();
         });
 
@@ -5884,10 +5949,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
-
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
-    }
+    //Dont clone the goods
+    // for (let i = 0; i < paramDetails.length; i++) {
+    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    // }
     this.seizureForm.enable();
     this.addLabParamStatus = true;
   }

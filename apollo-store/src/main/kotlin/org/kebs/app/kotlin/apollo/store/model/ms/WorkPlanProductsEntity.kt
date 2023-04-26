@@ -20,6 +20,10 @@ class WorkPlanProductsEntity : Serializable {
     var productName: String? = null
 
     @Basic
+    @Column(name = "PRODUCT_BRAND")
+    var productBrand: String? = null
+
+    @Basic
     @Column(name = "REFERENCE_NO")
     var referenceNo: String? = null
 

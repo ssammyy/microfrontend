@@ -3428,6 +3428,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     )
                 }".toUpperCase()
                 productName = spb.nameProduct
+                productBrand = spb.lbIdTradeMark
                 ssfId = spb.id
                 workPlanId = workPlanScheduled.id
                 createdBy = commonDaoServices.concatenateName(loggedInUser)
@@ -4970,6 +4971,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         try {
             ssfLabParametersRepo.findByIdOrNull(body.id ?: -1L)?.let { param ->
                 with(param) {
+                    sampleSubmissionId = body.id
                     laboratoryName = body.laboratoryName
                     parameters = body.parameters
                     status = map.activeStatus
@@ -4980,6 +4982,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 saveSSFLabParams = sampleSubmitParameterRepo.save(param)
             } ?: kotlin.run {
                 with(saveSSFLabParams) {
+                    sampleSubmissionId = body.id
                     laboratoryName = body.laboratoryName
                     parameters = body.parameters
                     status = map.activeStatus
@@ -5154,7 +5157,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             product = body.product
             sector = body.sector
             docId = body.docID
-            dateOfSeizure = body.dateOfSeizure
+            dateOfSeizure = commonDaoServices.getCurrentDate()
             mainSeizureId = body.mainSeizureID
             additionalOutletDetails = body.additionalOutletDetails
             reasonSeizure = body.reasonSeizure
@@ -5238,28 +5241,28 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(saveData) {
             when (body.reportFunction) {
                 "Food" -> {
-                    reportReference = "KEBS/MS/XXX/FOO/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/FOO/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Agriculture" -> {
-                    reportReference = "KEBS/MS/XXX/AGR/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/AGR/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Chemical" -> {
-                    reportReference = "KEBS/MS/XXX/CHEM/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/CHEM/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Civil" -> {
-                    reportReference = "KEBS/MS/XXX/CIV/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/CIV/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Electrical" -> {
-                    reportReference = "KEBS/MS/XXX/ELEC/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/ELEC/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Mechanical" -> {
-                    reportReference = "KEBS/MS/XXX/MECH/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/MECH/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 "Textile" -> {
-                    reportReference = "KEBS/MS/XXX/TEX/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "KEBS/MS/XXX/TEX/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
                 else -> {
-                    reportReference = "REF/INITIAL/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    reportReference = "REF/INITIAL/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase().addRegion(body.reportRegion.toString())
                 }
             }
 
@@ -5281,6 +5284,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
+            summaryOfFindings = body.summaryOfFindings
             createdUserId = user.id
             conclusion = body.conclusion
             recommendations = body.recommendations
@@ -5311,6 +5315,21 @@ class MarketSurveillanceWorkPlanDaoServices(
             return this
         }
     }
+
+    fun String.addRegion(region: String): String{
+        return when {
+            region.contains("NAIROBI REGION") -> this.replace("XXX", "HQ")
+            region.contains("COAST REGION") -> this.replace("XXX", "COR")
+            region.contains("LAKE REGION") -> this.replace("XXX", "LAR")
+            region.contains("SOUTH RIFT REGION") -> this.replace("XXX", "SRR")
+            region.contains("NORTH RIFT REGION") -> this.replace("XXX", "NRR")
+            region.contains("NORTH EASTERN REGION") -> this.replace("XXX", "NER")
+            region.contains("MOUNT KENYA REGION") -> this.replace("XXX", "MKR")
+            else -> this
+        }
+    }
+
+
 
 
     fun msFieldReportWhichIsPreliminaryReport(
@@ -5352,6 +5371,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             isPreliminaryReport = map.activeStatus
             status = map.activeStatus
             changesMade = body.changesMade
+            summaryOfFindings = body.summaryOfFindings
             when {
                 update -> {
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -6154,7 +6174,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun mapSeizureDeclarationDetailsDto(
         data: List<MsSeizureEntity>
     ): List<SeizureDto> {
-        return data.map { seizureDeclaration ->
+        return data.map { seizureDeclaration: MsSeizureEntity ->
             SeizureDto(
                 seizureDeclaration.id,
                 seizureDeclaration.docId,
@@ -6174,6 +6194,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                 seizureDeclaration.currentLocation,
                 seizureDeclaration.productsDestruction,
                 seizureDeclaration.additionalOutletDetails,
+                null,
+                null,
+                null,
+                null,
+                seizureDeclaration.dateOfSeizure,
             )
         }
 
@@ -6242,7 +6267,13 @@ class MarketSurveillanceWorkPlanDaoServices(
             inspectionInvestigation.finalRemarkHod,
             null,
             gson.fromJson(inspectionInvestigation.additionalInformation, FieldReportAdditionalInfo::class.java),
-            inspectionInvestigation.additionalInformationStatus == 1
+            inspectionInvestigation.additionalInformationStatus == 1,
+            null,
+            null,
+            null,
+            null,
+            null,
+            inspectionInvestigation.summaryOfFindings,
         )
     }
 
@@ -6281,7 +6312,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.version,
                 it.createdBy,
                 it.createdOn,
-                it.changesMade
+                it.changesMade,
+                it.summaryOfFindings,
             )
         }
     }
@@ -6298,6 +6330,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.complianceInspectionParameter,
                 it.measurementsResults,
                 it.remarks,
+                it.importerManufacturer,
             )
         }
     }
@@ -6994,6 +7027,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             WorkPlanProductDto(
                 it.id,
                 it.productName,
+                it.productBrand,
                 it.referenceNo,
                 it.recommendation?.let { it1 -> mapRecommendationListDto(it1) },
                 it.destructionRecommended == 1,

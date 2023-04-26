@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
+import java.util.Date
 
 
 @Service
@@ -1287,6 +1288,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             assignedIo = commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned IO ID")).id
             assignedDate = commonDaoServices.getCurrentDate()
             assignedBy = commonDaoServices.getUserName(loggedInUser)
+
         }
 
         val remarksDto = RemarksToAddDto()
@@ -2337,6 +2339,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             timelineOverDue,
             comp.standardTitle,
             comp.standardNumber,
+            comp.assignedDate,
         )
 
     }
