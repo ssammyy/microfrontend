@@ -420,6 +420,7 @@ export class ComplaintDetailsDto {
     timelineOverDue: boolean;
     standardTitle: string;
     standardNumber: string;
+    assignedIODate: Date;
 }
 
 
@@ -666,6 +667,7 @@ export class InspectionInvestigationReportDto {
     createdBy: string;
     createdOn: Date;
     changesMade: string;
+    summaryOfFindings: string;
 }
 
 export class FieldReportAdditionalInfo {
@@ -1085,6 +1087,7 @@ export class CountryListDto {
 export class WorkPlanProductDto {
         id: number;
         productName: string;
+        productBrand: string;
         referenceNo: string;
         recommendation: RecommendationDto[];
         destructionRecommended: boolean;
@@ -1195,7 +1198,7 @@ export class SeizureDto {
     productsDestruction: string;
     additionalOutletDetails: string;
     remarks: string;
-    dateOfSeizure: string;
+    dateOfSeizure: Date;
 }
 
 export class DataReportDto {

@@ -646,6 +646,11 @@
                                                     </tr>
                                                     </tbody>
                                                 </table>
+                                                <br/>
+                                                <b class="text-secondary">Summary of Findings</b>
+                                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.summaryOfFindings}}</span></p>
+                                                <br/>
                                                 <br>
                                                 <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                                                 <div class="table-responsive">
@@ -660,6 +665,7 @@
                                                             <th>Country of Origin</th>
                                                             <th>Expiry Date</th>
                                                             <th>Batch Number</th>
+                                                            <th>Size of Test Sample</th>
                                                             <th>Permit No. / UCR Code</th>
                                                             <th>Sampling Officer</th>
                                                             <th>Date COLLECTED</th>
@@ -676,6 +682,7 @@
                                                             <td>{{app.countryOfOrigin}}</td>
                                                             <td>{{app.lbIdExpiryDate}}</td>
                                                             <td>{{app.lbIdBatchNo}}</td>
+                                                            <td>{{app.sizeTestSample}}</td>
                                                             <td></td>
                                                             <td>{{app.sendersName}}</td>
                                                             <td>{{app.sampleCollectionDate}}</td>
@@ -852,7 +859,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal" label="19">
                                         <ng-template mat-tab-label>
-                                            FINAL RECOMMENDATION DETAILS
+                                            FINAL FOLLOW UP ACTIONS
                                         </ng-template>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus"
@@ -1062,9 +1069,9 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
@@ -1400,7 +1407,7 @@
                                             && workPlanInspection?.destructionRecommended"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
                                                       class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">END RECOMMENDATION DONE</span>
+                                                    class="mat-button-wrapper">END FOLLOW UP ACTIONS</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1409,7 +1416,7 @@
                                             && workPlanInspection?.destructionRecommended == false"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
                                                       class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">END RECOMMENDATION DONE</span>
+                                                    class="mat-button-wrapper">END FOLLOW UP ACTIONS</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -4022,7 +4029,22 @@
                                 </tr>
                                 </tbody>
                             </table>
-
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Summary of Findings</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.summaryOfFindings.invalid && formInvestInspectReportForm.summaryOfFindings.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="summaryOfFindings"
+                                                  name="summaryOfFindings" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
@@ -4038,6 +4060,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -4054,6 +4077,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -4322,6 +4346,26 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
+                                                <label><b>Date of Seizure</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.dateOfSeizure.invalid && formSeizureDeclarationForm.dateOfSeizure.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="dateOfSeizure"
+                                                       name="dateOfSeizure" required type="date">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.dateOfSeizure.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.dateOfSeizure.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
                                                 <label><b>Product</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.product.invalid && formSeizureDeclarationForm.product.errors"
                                                        class="form-control two-column-input"
@@ -4404,7 +4448,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Quantity in KSH</b> </label>
+                                                <label><b>Quantity</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="quantity"
@@ -4436,7 +4480,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Estimated Cost</b> </label>
+                                                <label><b>Estimated Cost in KSH</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.estimatedCost.invalid && formSeizureDeclarationForm.estimatedCost.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="estimatedCost"
@@ -4451,7 +4495,7 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Current Location</b></label>
+                                                <label><b>Current Location</b> (Upload Chain of Command Doc)</label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="currentLocation"
@@ -4526,6 +4570,7 @@
                                     >
                                         <thead>
                                         <tr>
+                                            <th>Date of Seizure</th>
                                             <th>Product</th>
                                             <th>Brand</th>
                                             <th>Description Products Seized</th>
@@ -4541,6 +4586,7 @@
                                         </thead>
                                         <tbody>
                                         <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
+                                            <td>{{r.dateOfSeizure}}</td>
                                             <td>{{r.product}}</td>
                                             <td>{{r.brand}}</td>
                                             <td>{{r.descriptionProductsSeized}}</td>
@@ -4571,14 +4617,24 @@
                         <div *ngIf="addSeizureProductsStatus" class="row">
                             <div class="col">
                                 <div  class="form-group">
-                                    <label for="files"><b>Upload Seizure Form and Chain of Custody Report</b></label>
+                                    <label for="files"><b>Upload Seizure Form</b></label>
                                     <form #demoForm="ngForm">
                                         <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
                                                      [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                     </form>
                                 </div>
                             </div>
-
+                        </div>
+                        <div *ngIf="addSeizureProductsStatus" class="row">
+                            <div class="col">
+                                <div  class="form-group">
+                                    <label for="files"><b>Upload Chain of Custody Document</b></label>
+                                    <form #demoForm="ngForm">
+                                        <file-upload [(ngModel)]="uploadedChainOfCustodyDoc" name="files" id="files89"
+                                                     [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </form>
                     <div class="modal-footer">
@@ -4838,11 +4894,11 @@
 <!--                    </form>-->
                     <form [formGroup]="finalRecommendationDetailsForm">
                         <div>
-                            <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>
+                            <h5 class="mb-3" style="color: #0066B1">Follow up actions Details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SELECT RECOMMENDATION NAME</b></label>
+                                        <label><b>SELECT FOLLOW UP ACTION</b></label>
                                         <select (change)="updateSelectedRecommendation()"
                                                 [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
@@ -5305,6 +5361,23 @@
                                 </tbody>
                             </table>
 
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Summary of Findings</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.summaryOfFindings.invalid && formInvestInspectReportForm.summaryOfFindings.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="summaryOfFindings"
+                                                  name="summaryOfFindings" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
                                 <table class="table table-striped">
@@ -5318,6 +5391,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -5335,6 +5409,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -6350,14 +6425,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>PACKAGING</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"-->
+                                        <input
                                                class="form-control two-column-input"
-                                               formControlName="packaging" name="packaging" required type="text">
-                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="packaging" name="packaging" type="text">
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6391,9 +6467,10 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>PRODUCT DESCRIPTION</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.productDescription.invalid && formSampleSubmitForm.productDescription.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.productDescription.invalid && formSampleSubmitForm.productDescription.errors"-->
+                                        <input
                                                class="form-control two-column-input"
-                                               formControlName="productDescription" name="productDescription" required type="text">
+                                               formControlName="productDescription" name="productDescription" type="text">
                                     </div>
                                 </div>
 
@@ -6419,7 +6496,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONTENT DECLARED</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdContDecl"
                                                name="lbIdContDecl" type="text">
@@ -6431,7 +6509,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>BATCH NO</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdBatchNo"
                                                name="lbIdBatchNo" type="text">
@@ -6442,7 +6521,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ANY OTHER MARKING</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdAnyAomarking"
                                                name="lbIdAnyAomarking" type="text">
@@ -6454,17 +6534,19 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SCF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="scfNo"
-                                               name="scfNo" required type="text">
+                                               name="scfNo" type="text">
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>FILE REF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="fileRefNumber" disabled
                                                name="fileRefNumber"  type="text">
@@ -6484,7 +6566,7 @@
                                         <textarea
                                                 class="form-control two-column-input"
                                                 formControlName="noteTransResults"
-                                                name="noteTransResults" required type="text"></textarea>
+                                                name="noteTransResults"  type="text"></textarea>
                                     </div>
                                 </div>
 
@@ -6558,14 +6640,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONDITION</b> </label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors"-->
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="condition" name="condition" required
-                                               [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="condition" name="condition"
+                                               >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6598,28 +6681,30 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DESIGNATION</b></label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="designation" name="designation" required
-                                               [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ADDRESS</b> </label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="address" name="address" required
-                                               [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6836,6 +6921,37 @@
                                     <file-upload [(ngModel)]="uploadedSSF" name="files" id="uploadedSSFFile"
                                                  [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="dataSaveSSFUploadList.length > 0">
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesUploads"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Document Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveSSFUploadList; let i=index">
+                                        <td>{{r.documentType}}</td>
+                                        <td>{{r.fileName}}</td>
+                                        <td>
+                                            <button (click)="viewUploadsFileSaved(r)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">view</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -7282,7 +7398,7 @@
 
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
-                                        <label style="color: #0082f3">RECOMMENDATION LIST</label>
+                                        <label style="color: #0082f3">FOLLOW UP ACTIONS</label>
                                     </div>
                                     <div>
                                         <div class="material-datatables">
@@ -7290,7 +7406,7 @@
                                                 <table id="datatables78" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                     <tr>
-                                                        <th>RECOMMENDATION NAME</th>
+                                                        <th>NAME OF FOLLOW UP ACTION</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -7531,6 +7647,11 @@
                                 </tbody>
                             </table>
                             <br/>
+                            <br/>
+                            <b class="text-secondary">Summary of Findings</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.summaryOfFindings}}</span></p>
+                            <br/>
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
                                 <table class="table table-striped">
@@ -7544,6 +7665,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -7561,6 +7683,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -7570,6 +7693,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <br/>
+                            <b class="text-secondary">Summary of Findings</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.summaryOfFindings}}</span></p>
+                            <br/>
                             <br/>
                             <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
                             <table class="table table-striped">
@@ -7609,20 +7737,20 @@
                                 <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.statusActivity}}</div>
                             </li>
                             <br/>
-                            <b class="text-secondary" style="font-size: 12px">Bs Numbers</b>
-                            <div>
-                                <div class="material-datatables">
-                                    <div class="table-responsive">
-                                        <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
-                                            <tbody>
-                                            <tr *ngFor="let r of selectedPreliminaryReportDetails?.bsNumbersList; let i=index">
-                                                <td style="font-size: 11px">{{r}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+<!--                            <b class="text-secondary" style="font-size: 12px">Bs Numbers</b>-->
+<!--                            <div>-->
+<!--                                <div class="material-datatables">-->
+<!--                                    <div class="table-responsive">-->
+<!--                                        <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">-->
+<!--                                            <tbody>-->
+<!--                                            <tr *ngFor="let r of selectedPreliminaryReportDetails?.bsNumbersList; let i=index">-->
+<!--                                                <td style="font-size: 11px">{{r}}</td>-->
+<!--                                            </tr>-->
+<!--                                            </tbody>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <br/>
                             <div *ngIf="selectedPreliminaryReportDetails?.additionalInformationStatus">
                                 <b class="text-secondary">Additional Information</b>

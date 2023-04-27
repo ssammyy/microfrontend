@@ -632,6 +632,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var clientAppealDocID: Long? = null
 
+    @Column(name = "CHAIN_OF_CUSTODY_DOC_ID")
+    @Basic
+    var chainOfCustodyDocID: Long? = null
+
     @Column(name = "SUCCESSFUL_UNSUCCESSFUL_APPEAL_DOCUMENT_ID")
     @Basic
     var successfulOrUnsuccessfulAppealDocID: Long? = null

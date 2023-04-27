@@ -52,7 +52,9 @@ class MSJSONControllers(
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
-    private val companyProfileRepo: ICompanyProfileRepository
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
+    private val sampleSubmitParameterRepo: ISampleSubmitParameterRepository,
 ){
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
@@ -117,6 +119,10 @@ class MSJSONControllers(
                     "SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         successfulOrUnsuccessfulAppealDocID = fileDocSaved!!.id
+                    }
+                    "CHAIN_OF_CUSTODY" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        chainOfCustodyDocID = fileDocSaved!!.id
                     }
                 }
             }
@@ -503,17 +509,18 @@ class MSJSONControllers(
 
         when (SSFFileSaved.first.status) {
             map.successStatus -> {
-                val SSFLabParamList = SSFFileSaved.second.id.let { msWorkPlanDaoService.findSSFLabParamsBySSFID(it) }
+                val SSFLabParamList = SSFFileSaved.second.id.let { msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
                 SSFLabParamList?.forEach { paramRemove ->
                     val result: SampleSubmissionItemsDto? = body.parametersList?.find { actor -> actor.id == paramRemove.id }
                     if (result == null) {
-                        dataReportParameterRepo.deleteById(paramRemove.id)
+                        sampleSubmitParameterRepo.deleteById(paramRemove.id)
                     }
                 }
 
                 body.parametersList?.forEach { param ->
-                    msWorkPlanDaoService.workPlanInspectionDetailsAddSSFLabParams(param, SSFFileSaved.second, map, loggedInUser)
+                    msFuelDaoServices.addSampleSubmissionParamAdd(param, SSFFileSaved.second, map, loggedInUser)
                 }
+
                 return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {

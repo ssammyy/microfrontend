@@ -62,6 +62,10 @@ declare global {
 export class ComplaintDetailsComponent implements OnInit {
 
   active: Number = 0;
+  targetEndDate: Date;
+  showTimelines: boolean = true;
+  isAssignedDateValid: boolean = false;
+  currentDate: Date = new Date();
   submitted = false;
   selectedRefNo: string;
   region$: Observable<Region[]>;
@@ -378,7 +382,9 @@ export class ComplaintDetailsComponent implements OnInit {
     this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
           this.complaintInspection = data;
-          console.log(this.countyService);
+          console.log("Start Date: "+this.complaintInspection.complaintsDetails.timelineStartDate);
+          console.log("Assigned Date: "+this.complaintInspection.complaintsDetails.assignedIODate);
+          //console.log(this.countyService);
           // tslint:disable-next-line:max-line-length
           if (this.complaintInspection.complaintsDetails.approvedStatus === false && this.complaintInspection.complaintsDetails.rejectedStatus === false) {
             this.msService.msDepartmentListDetails().subscribe(
@@ -1005,16 +1011,28 @@ export class ComplaintDetailsComponent implements OnInit {
       new Date('2023-10-20'), // Mashujaa Day
       new Date('2023-12-12'), // Jamhuri Day
     ];
-
+    if (startDateStr == null){
+      startDateStr = this.msService.formatDate(new Date());
+      this.showTimelines = false;
+    }else if(startDateStr){
+      this.isAssignedDateValid = true;
+      this.showTimelines = true;
+    }
+    //console.log("Date string passed to function: "+ startDateStr);
     const numberOfDays = 28;
     let daysLeft = numberOfDays;
     // Attempt to convert the start date string to a Date object
-    const startDate = new Date(Date.parse(startDateStr));
+    startDateStr = this.msService.formatDate(new Date(Date.parse(startDateStr)))
+    //console.log("Date string after format date: "+ startDateStr);
+    let startDate = new Date(Date.parse(startDateStr));
+    //console.log("Formatted Date: "+ startDate);
+    //startDate = this.msService.formatDate(startDate)
 
     // Check if the conversion was successful and the date string was in a valid format
-    if (isNaN(startDate.getTime())) {
-      console.log('Invalid date format. The date must be in the format YYYY-MM-DD');
-    }
+    // if (isNaN(startDate.getTime())) {
+    //   console.log('Invalid date format. The date must be in the format YYYY-MM-DD');
+    //
+    // }
 
     const endDate = new Date(startDate.getTime()); // create a new date object with the same time as the start date
     while (daysLeft > 0) {
@@ -1030,8 +1048,18 @@ export class ComplaintDetailsComponent implements OnInit {
     while (endDate.getDay() === 0 || endDate.getDay() === 6) {
       endDate.setDate(endDate.getDate() + 1);
     }
+    // console.log("End date returned: "+ endDate);
+    // console.log("End date returned as string: "+ endDate.toISOString().substr(0, 10));
 
     return endDate.toISOString().substr(0, 10);
   }
+
+  iSTimelinesPassed(date: string): boolean {
+    const currentDate = new Date();
+    const targetDate = new Date(date);
+
+    return targetDate < currentDate;
+  }
+
 
 }

@@ -172,6 +172,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSaveDataReportUploadsList: WorkPlanFilesFoundDto[] = [];
+  dataSaveSSFUploadList: WorkPlanFilesFoundDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
@@ -235,6 +236,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFinalRemarksFiles: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
+  uploadedChainOfCustodyDoc: FileList;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
   uploadedSSF: FileList;
@@ -1839,6 +1841,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       statusActivity: ['', Validators.required],
       finalRemarkHod: null,
       changesMade: null,
+      summaryOfFindings: ['', Validators.required],
       // remarks: ['', Validators.required],
     });
 
@@ -1876,6 +1879,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+      dateOfSeizure: [new Date(), Validators.required],
     });
 
     this.seizureForm = this.formBuilder.group({
@@ -1926,17 +1930,17 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       dataReportSelected: null,
       dataReportID: null,
       nameProduct: ['', Validators.required],
-      packaging: ['', Validators.required],
+      packaging: [''],
       labellingIdentification: null,
       fileRefNumber: null,
       referencesStandards: null,
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
-      condition: ['', Validators.required],
+      condition: [''],
       sampleReferences: null,
-      sendersName: ['', Validators.required],
-      designation: ['', Validators.required],
-      address: ['', Validators.required],
+      sendersName: [''],
+      designation: [''],
+      address: [''],
       sendersDate: this.msService.formatDate(new Date()),
       receiversName: null,
       productDescription: null,
@@ -2129,12 +2133,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.msService.getMSNonCompliance().subscribe(
         (data)=>{
           this.nonComplianceList = data;
-          console.log("Non Compliance Data "+ data)
+          // console.log("Non Compliance Data "+ data)
         },
         error => {
           //this.SpinnerService.hide();
-          console.log("Could not get non compliance data "+error);
-          //this.msService.showError('AN ERROR OCCURRED');
+          // console.log("Could not get non compliance data "+error);
+          this.msService.showError('AN ERROR OCCURRED');
         },
     );
 
@@ -2970,6 +2974,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
     }
+    if (data.docList != null && data.docList.length > 0){
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
+    }
     this.sampleSubmitForm.disable();
     this.addLabParamStatus = false;
     window.$('#sampleSubmitModal').modal('show');
@@ -2998,6 +3009,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
     }
+    if (data.docList != null && data.docList.length > 0){
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
+    }
+
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
     window.$('#sampleSubmitModal').modal('show');
@@ -3372,6 +3391,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+  saveChainOfCustodyDocument(docName: string){
+    //this.SpinnerService.show();
+    const chainOfCustodyDoc = this.uploadedChainOfCustodyDoc;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < chainOfCustodyDoc.length; i++) {
+      formData.append('docFile', chainOfCustodyDoc[i], chainOfCustodyDoc[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          // this.SpinnerService.hide();
+          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Chain of Custody Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -5238,6 +5281,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
+    for (let i=0; i < this.dataSaveSeizureDeclarationList.length; i++){
+      this.dataSaveSeizureDeclarationList[i].dateOfSeizure = null;
+    }
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods?.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
@@ -5274,6 +5320,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];
           console.log(data);
+          this.saveChainOfCustodyDocument("CHAIN_OF_CUSTODY");
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
         },
@@ -5311,6 +5358,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          //window.$('#investInspectReportModal').modal('hide');
           this.saveInitialReport();
         });
   }
@@ -5780,9 +5828,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
-    }
+    //dont clone products
+    // for (let i = 0; i < paramDetails.length; i++) {
+    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    // }
     this.seizureForm.enable();
     this.addLabParamStatus = true;
   }
