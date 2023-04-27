@@ -627,7 +627,7 @@
                                                         <th>Outlet Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email Address</th>
-                                                        <th>Person Met/Designation</th>
+                                                        <th>Person Met/ Designation</th>
                                                         <th>Date Visited</th>
                                                         <th>Summary of findings</th>
                                                         <th>Remarks</th>
@@ -859,7 +859,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal" label="19">
                                         <ng-template mat-tab-label>
-                                            FINAL FOLLOW UP ACTIONS
+                                            FOLLOW UP ACTIONS
                                         </ng-template>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus"
@@ -2377,7 +2377,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'addFinalRemarksHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveUploadFinalEndWorkPlanResults();"
+                            (click)="onClickSaveFinalRemarksAndEndProcess(finalRemarkHODForm.valid);"
                             [disabled]="!finalRemarkHODForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -4010,7 +4010,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -5341,7 +5341,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -7332,13 +7332,13 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Product Recommendation Details</h4>
+                    <h4 class="modal-title">Product Follow Up Actions</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label style="color: #0082f3">Product Recommendation Details</label>
+                    <label style="color: #0082f3">Product Follow Up Actions</label>
                     <div class="panel">
                         <br>
                         <div class="row">
@@ -7398,7 +7398,7 @@
 
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
-                                        <label style="color: #0082f3">FOLLOW UP ACTIONS</label>
+                                        <label style="color: #0082f3">Follow up actions details</label>
                                     </div>
                                     <div>
                                         <div class="material-datatables">
@@ -7406,7 +7406,7 @@
                                                 <table id="datatables78" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                     <tr>
-                                                        <th>NAME OF FOLLOW UP ACTION</th>
+                                                        <th>Follow Up Action</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -7426,6 +7426,13 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus"
+                                                  (click)="openModalAddDetails('uploadFollowUpDocument')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">OTHER FOLLOW UP DOCUMENTS</span>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
                                         <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
                                             && selectedProductRecommendation?.destructionNotificationStatus == false
                                             && selectedProductRecommendation?.destructionRecommended"
@@ -7627,7 +7634,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -8073,6 +8080,21 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadFollowUpDocument')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Follow up Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadFollowUpFiles" name="files" id="files4"
+                                                         fileslimit="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
                         <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
@@ -8190,6 +8212,31 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'previewUploadedDocs')">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div>
+                                    <label for="files"><b>Preview Uploaded Documents</b></label>
+                                    <ul class="w-list-unstyled">
+                                        <div *ngFor="let userUpload of arrayOfGeneralUploadedFiles">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">{{userUpload.name}}</div>
+                                                <div class="list-text-accordion" style="text-align: center">
+                                                    <a
+                                                            target="_blank"
+                                                            class="btn btn-info"
+                                                            style="color: white"
+                                                            (click)="viewFile(userUpload)"
+                                                    >VIEW</a>
+                                                </div>
+                                            </li>
+                                        </div>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
 
@@ -8233,6 +8280,11 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFollowUpDocument')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFollowUpActionDoc('FOLLOW_UP_ACTION_DOC');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

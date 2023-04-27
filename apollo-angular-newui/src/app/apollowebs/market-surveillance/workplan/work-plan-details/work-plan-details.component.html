@@ -649,7 +649,7 @@
                                                         <th>Outlet Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email Address</th>
-                                                        <th>Person Met/Designation</th>
+                                                        <th>Person Met/ Designation</th>
                                                         <th>Date Visited</th>
                                                         <th>Summary of findings</th>
                                                         <th>Remarks</th>
@@ -884,7 +884,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal" label="19">
                                         <ng-template mat-tab-label>
-                                            FOLLOW UP ACTIONS DETAILS
+                                            FOLLOW UP ACTIONS
                                         </ng-template>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus"
@@ -1094,11 +1094,15 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
+<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
+
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                "
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1464,10 +1468,13 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
+<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+
+                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                "
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -2364,7 +2371,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'addFinalRemarksHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveUploadFinalEndWorkPlanResults();"
+                            (click)="onClickSaveFinalRemarksAndEndProcess(finalRemarkHODForm.valid);"
                             [disabled]="!finalRemarkHODForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -3872,7 +3879,7 @@
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></input>
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
                                                 required
@@ -4043,7 +4050,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -5386,7 +5393,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -7453,13 +7460,13 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Product Recommendation Details</h4>
+                    <h4 class="modal-title">Product Follow Up Actions</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label style="color: #0082f3">Product Recommendation Details</label>
+                    <label style="color: #0082f3">Product Follow Up Actions</label>
                     <div class="panel">
                         <br>
                         <div class="row">
@@ -7527,7 +7534,7 @@
                                                 <table id="datatables78" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                     <tr>
-                                                        <th>NAME OF FOLLOW UP ACTION</th>
+                                                        <th>Follow Up Action</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -7545,6 +7552,13 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus"
+                                                  (click)="openModalAddDetails('uploadFollowUpDocument')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal5"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">OTHER FOLLOW UP DOCUMENTS</span>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
                                         <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
                                             && selectedProductRecommendation?.destructionNotificationStatus == false
                                             && selectedProductRecommendation?.destructionRecommended"
@@ -7746,7 +7760,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -8372,6 +8386,21 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadFollowUpDocument')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Follow up Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadFollowUpFiles" name="files" id="files4"
+                                                         fileslimit="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
                         <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
@@ -8535,6 +8564,11 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFollowUpDocument')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFollowUpActionDoc('FOLLOW_UP_ACTION_DOC');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

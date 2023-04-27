@@ -59,7 +59,7 @@ class MSJSONControllers(
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/work-plan/file/save")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("referenceNo") referenceNo: String,
@@ -123,6 +123,14 @@ class MSJSONControllers(
                     "CHAIN_OF_CUSTODY" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         chainOfCustodyDocID = fileDocSaved!!.id
+                    }
+                    "FOLLOW_UP_ACTION_DOC" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        followUpActionDocID = fileDocSaved!!.id
+                    }
+                    "WORKPLAN_END_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        workplanEndFileDocID = fileDocSaved!!.id
                     }
                 }
             }
