@@ -695,12 +695,18 @@ class IntStandardController(
     fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDraftDecisions) }
-
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSDraftDecisions))
 
     }
+
+    @PostMapping("/international_standard/approveInternationalStandardNSC")
+    fun approveInternationalStandardNSC(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
+    ) : ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandardNSC(iSDraftDecisions))
+
+    }
+
 
     //decision on Adoption Proposal
    // @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")

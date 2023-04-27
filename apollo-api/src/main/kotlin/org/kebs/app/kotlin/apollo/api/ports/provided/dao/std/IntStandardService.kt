@@ -1496,46 +1496,15 @@ class IntStandardService(
         comRemarks.role = "SAC"
 
         if (decision == "Yes") {
-            if(typeOfStandard=="International Standard"){
                 companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
                     with(companyStandard) {
-                        status = 9
+                        status = 15
 
                     }
                     companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
-                    var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
-                    val targetUrl = "${callUrl}/";
-                    userList.forEach { item->
-                        //val recipient="stephenmuganda@gmail.com"
-                        val recipient= item.getEmail()
-                        val subject = "New International Standard"+ standard.standardNumber
-                        val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
-                        if (recipient != null) {
-                           // notifications.sendEmail(recipient, subject, messageBody)
-                        }
-                    }
 
                 }?: throw Exception("DRAFT NOT FOUND")
-            }else if(typeOfStandard=="Kenya Standard"){
-                var kenyaStd=getKSNumber()
-                var ks= SDWorkshopStd()
-                ks.nwaStdNumber=kenyaStd
-                ks.requestId=iSDraftDecisions.draftId
-                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                    with(companyStandard) {
-                        status = 9
-                        comStdNumber=kenyaStd
-
-                    }
-                    sdWorkshopStdRepository.save(ks)
-                    companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(comRemarks)
-
-                }?: throw Exception("DRAFT NOT FOUND")
-
-
-            }
 
 
         } else if (decision == "No") {
@@ -1566,6 +1535,86 @@ class IntStandardService(
 
                 } ?: throw Exception("DRAFT NOT FOUND")
             }
+
+        }
+
+        return "Actioned"
+    }
+
+    fun approveInternationalStandardNSC(
+        iSDraftDecisions: ISDraftDecisionsStd
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val decision=iSDraftDecisions.accentTo
+        val standard= Standard()
+        val comRemarks=CompanyStandardRemarks()
+        val stdDraft= ISUploadStandard()
+        val typeOfStandard= iSDraftDecisions.standardType
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "SAC"
+
+        if (decision == "Yes") {
+            if(typeOfStandard=="International Standard"){
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 9
+
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+                    var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
+                    val targetUrl = "${callUrl}/";
+                    userList.forEach { item->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient= item.getEmail()
+                        val subject = "New International Standard"+ standard.standardNumber
+                        val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
+                        if (recipient != null) {
+                            // notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+
+                }?: throw Exception("DRAFT NOT FOUND")
+            }else if(typeOfStandard=="Kenya Standard"){
+                var kenyaStd=getKSNumber()
+                var ks= SDWorkshopStd()
+                ks.nwaStdNumber=kenyaStd
+                ks.requestId=iSDraftDecisions.draftId
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 9
+                        comStdNumber=kenyaStd
+
+                    }
+                    sdWorkshopStdRepository.save(ks)
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                }?: throw Exception("DRAFT NOT FOUND")
+
+
+            }
+
+
+        } else if (decision == "No") {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 8
+
+                }
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+
+            }?: throw Exception("DRAFT NOT FOUND")
 
         }
 

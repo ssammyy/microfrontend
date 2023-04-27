@@ -1202,6 +1202,9 @@ class ComStandardService(
     fun getAppStdPublishing(): MutableList<ComStandard> {
         return companyStandardRepository.getAppStdPublishing()
     }
+    fun getNSCStdPublishing(): MutableList<ComStandard> {
+        return companyStandardRepository.getNSCStdPublishing()
+    }
 
     fun getAppStd(): MutableList<ComStandard> {
         return companyStandardRepository.getAppStd()
