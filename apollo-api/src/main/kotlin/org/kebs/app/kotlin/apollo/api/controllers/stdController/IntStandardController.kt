@@ -53,6 +53,23 @@ class IntStandardController(
         return internationalStandardService.getEditorDetails()
     }
 
+    @GetMapping("/international_standard/getCategoriesSd")
+    @ResponseBody
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return internationalStandardService.getCategoriesSd()
+    }
+
+    @GetMapping("/international_standard/getStakeholderListSd")
+    @ResponseBody
+    fun getStakeholderListSd(@RequestParam("subCategoryId") subCategoryId: Long): List<StakeholdersSdList>? {
+        return internationalStandardService.getStakeholderListSd(subCategoryId)
+    }
+    @GetMapping("/international_standard/getSubCategoriesSd")
+    @ResponseBody
+    fun getSubCategoriesSd(@RequestParam("categoryId") categoryId: Long): List<StakeholdersSubCategories>? {
+        return internationalStandardService.getSubCategoriesSd(categoryId)
+    }
+
     @GetMapping("/international_standard/getDraughtsManDetails")
     @ResponseBody
     fun getDraughtsManDetails(): List<UserDetailHolder> {

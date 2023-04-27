@@ -1067,15 +1067,18 @@ interface SDReviewCommentsRepository : JpaRepository<SDReviewComments, Long> {
 }
 
 interface StakeholdersSdListRepository : JpaRepository<StakeholdersSdList, Long> {
-
+    @Query(value = "SELECT * FROM CFG_SD_STAKE_HOLDERS WHERE SUB_CATEGORY_ID=:id ",nativeQuery = true)
+    fun getStakeholderListSd(@Param("id") id: Long?): List<StakeholdersSdList>?
 }
 
 interface StakeholdersCategoriesRepository : JpaRepository<StakeholdersCategories, Long> {
-
+    @Query(value = "SELECT * FROM CFG_SD_SUB_CATEGORIES ",nativeQuery = true)
+    fun getCategoriesSd(): List<StakeholdersCategories>
 }
 
 interface StakeholdersSubCategoriesRepository : JpaRepository<StakeholdersSubCategories, Long> {
-
+    @Query(value = "SELECT * FROM CFG_SD_SUB_CATEGORIES WHERE CATEGORY_ID=:id ",nativeQuery = true)
+    fun getSubCategoriesSd(@Param("id") id: Long?): List<StakeholdersSubCategories>?
 }
 
 
