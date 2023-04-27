@@ -253,6 +253,21 @@ export class StdIntStandardService {
         return this.http.get<ISCheckRequirements>(url, {params}).pipe();
     }
 
+    public approveProofReadLevel(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
+
     public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_PROOFREAD_STANDARD);
         const params = new HttpParams();

@@ -69,6 +69,9 @@ class IntStandardService(
     private val standardRequestRepository: StandardRequestRepository,
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val stakeholdersSdListRepository: StakeholdersSdListRepository,
+    private val stakeholdersCategoriesRepository: StakeholdersCategoriesRepository,
+    private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository
 
 
     ) {
@@ -91,6 +94,18 @@ class IntStandardService(
 
     fun getEditorDetails(): List<UserDetailHolder> {
         return userListRepository.getEditorDetails()
+    }
+
+    fun getStakeholderListSd(id: Long): List<StakeholdersSdList>? {
+        return stakeholdersSdListRepository.getStakeholderListSd(id)
+    }
+
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return stakeholdersCategoriesRepository.getCategoriesSd()
+    }
+
+    fun getSubCategoriesSd(id: Long): List<StakeholdersSubCategories>? {
+        return stakeholdersSubCategoriesRepository.getSubCategoriesSd(id)
     }
 
     fun getDraughtsManDetails(): List<UserDetailHolder> {
@@ -759,7 +774,7 @@ class IntStandardService(
         return isJustificationUploadsRepository.save(uploads)
     }
 
-    fun getJustificationStatus(draftId: Long): Long{
+    fun getJustificationStatus(draftId: Long): JustificationStatus{
         return isAdoptionJustificationRepository.getJustificationCount(draftId)
     }
 
@@ -1257,11 +1272,13 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 6
+                //status = 6
+                status=13
                 title=isDraftDto.title
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
                 requestId=isDraftDto.proposalId
+                assignedTo=isDraftDto.assignedTo
             }
             companyStandardRepository.save(companyStandard)
 
@@ -1272,12 +1289,86 @@ class IntStandardService(
 
 
 
+    fun approveProofReadLevel(
+        iSDraftDecisions: ISDecisions
+    ) : NotificationForm {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val comRemarks=CompanyStandardRemarks()
+        val decision=iSDraftDecisions.accentTo
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val typeOfStandard= iSDraftDecisions.standardType
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
+
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
+        var url=""
+
+        if (decision == "Yes") {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                with(companyStandard) {
+                    status = 6
+
+                }
+
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
+            slFormResponse="Draft Was Approved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Approved"
+
+        } else if (decision == "No") {
+            comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+
+                with(comStdDraft) {
+                    status = 4
+                }
+                comStdDraftRepository.save(comStdDraft)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 14
+                }
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            slFormResponse="Draft Was Not Approved"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Approved"
+
+
+        }
+
+        return NotificationForm(slFormResponse,responseStatus,responseButton,response)
+    }
+
+
+
 
     fun getProofReadDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getProofReadDraft()
     }
 
-    fun approveProofReadStandard(
+    fun approveProofReadStandardx(
         iSDraftDecisions: ISDrDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1314,14 +1405,13 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedProofReadDraft()
     }
 
-    fun approveEditedStandard(
-        iSDraftDecisions: ISDraftDecisions
+    fun approveProofReadStandard(
+        iSDraftDecisions: ISHopDecision
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
-        val decision=iSDraftDecisions.accentTo
+        //val decision=iSDraftDecisions.accentTo
         val timeOfRemark= Timestamp(System.currentTimeMillis())
-        val typeOfStandard= iSDraftDecisions.standardType
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1334,20 +1424,20 @@ class IntStandardService(
         comRemarks.role = "HOP"
         var url=""
 
-        if (decision == "Yes") {
+       // if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
                 with(companyStandard) {
                     status = 8
 
                 }
-                if(typeOfStandard=="International Standard"){
+               // if(typeOfStandard=="International Standard"){
+                 //   url="intSacList"
+               // }else if(typeOfStandard=="Company Standard"){
                     url="intSacList"
-                }else if(typeOfStandard=="Company Standard"){
-                    url="intSacList"
-                }else if(typeOfStandard=="Kenya Standard"){
-                    url="intSacList"
-                }
+//                }else if(typeOfStandard=="Kenya Standard"){
+//                    url="intSacList"
+//                }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
@@ -1363,18 +1453,18 @@ class IntStandardService(
                 }
             }?: throw Exception("DRAFT NOT FOUND")
 
-        } else if (decision == "No") {
-
-            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                with(companyStandard) {
-                        status = 1
-                    }
-                companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(comRemarks)
-
-                } ?: throw Exception("DRAFT NOT FOUND")
-
-        }
+//        } else if (decision == "No") {
+//
+//            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+//                with(companyStandard) {
+//                        status = 1
+//                    }
+//                companyStandardRepository.save(companyStandard)
+//                    companyStandardRemarksRepository.save(comRemarks)
+//
+//                } ?: throw Exception("DRAFT NOT FOUND")
+//
+//        }
 
         return "Actioned"
     }

@@ -649,7 +649,7 @@
                                                         <th>Outlet Name</th>
                                                         <th>Phone Number</th>
                                                         <th>Email Address</th>
-                                                        <th>Person Met/Designation</th>
+                                                        <th>Person Met/ Designation</th>
                                                         <th>Date Visited</th>
                                                         <th>Summary of findings</th>
                                                         <th>Remarks</th>
@@ -670,6 +670,11 @@
                                                 </table>
 
                                                 <br>
+                                                <br/>
+                                                <b class="text-secondary">Summary of Findings</b>
+                                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.summaryOfFindings}}</span></p>
+                                                <br/>
 
                                                 <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                                                 <div class="table-responsive">
@@ -684,6 +689,7 @@
                                                             <th>Country of Origin</th>
                                                             <th>Expiry Date</th>
                                                             <th>Batch Number</th>
+                                                            <th>Size of Test Sample</th>
                                                             <th>Permit No. / UCR Code</th>
                                                             <th>Sampling Officer</th>
                                                             <th>Date COLLECTED</th>
@@ -700,6 +706,7 @@
                                                             <td>{{app.countryOfOrigin}}</td>
                                                             <td>{{app.lbIdExpiryDate}}</td>
                                                             <td>{{app.lbIdBatchNo}}</td>
+                                                            <td>{{app.sizeTestSample}}</td>
                                                             <td></td>
                                                             <td>{{app.sendersName}}</td>
                                                             <td>{{app.sampleCollectionDate}}</td>
@@ -877,7 +884,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal" label="19">
                                         <ng-template mat-tab-label>
-                                            FINAL RECOMMENDATION DETAILS
+                                            FOLLOW UP ACTIONS
                                         </ng-template>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus"
@@ -1087,11 +1094,15 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
+<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
+
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                "
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1457,10 +1468,13 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
+<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
+<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+
+                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                "
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -2357,7 +2371,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'addFinalRemarksHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveUploadFinalEndWorkPlanResults();"
+                            (click)="onClickSaveFinalRemarksAndEndProcess(finalRemarkHODForm.valid);"
                             [disabled]="!finalRemarkHODForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -3494,7 +3508,7 @@
                     <div  *ngIf="addProductsStatus" class="row" >
                         <div class="col">
                             <div  class="form-group">
-                                <label for="files"><b>Upload Documents Here</b></label>
+                                <label for="files"><b>Upload Data Report Here</b></label>
                                 <form #demoForm="ngForm">
                                     <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportWP"
                                                  [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
@@ -3865,7 +3879,7 @@
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></input>
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
                                                 required
@@ -4036,7 +4050,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -4055,7 +4069,22 @@
                                 </tr>
                                 </tbody>
                             </table>
-
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Summary of Findings</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.summaryOfFindings.invalid && formInvestInspectReportForm.summaryOfFindings.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="summaryOfFindings"
+                                                  name="summaryOfFindings" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <br>
 
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
@@ -4071,6 +4100,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -4087,6 +4117,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -4222,6 +4253,7 @@
         </div>
     </div>
     <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
+
 
     <!-- SEIZURE Modal -->
     <div class="modal fade" id="seizureDeclarationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -4460,7 +4492,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Quantity in KSH</b> </label>
+                                                <label><b>Quantity</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="quantity"
@@ -4492,7 +4524,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Estimated Cost</b> </label>
+                                                <label><b>Estimated Cost in KSH</b> </label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.estimatedCost.invalid && formSeizureDeclarationForm.estimatedCost.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="estimatedCost"
@@ -4507,7 +4539,7 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Current Location</b> </label>
+                                                <label><b>Current Location</b> (Upload Chain of Command Doc)</label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="currentLocation"
@@ -4630,14 +4662,24 @@
                         <div *ngIf="addSeizureProductsStatus" class="row">
                             <div class="col">
                                 <div  class="form-group">
-                                    <label for="files"><b>Upload Seizure Form and Chain of Custody Report</b></label>
+                                    <label for="files"><b>Upload Seizure Form</b></label>
                                     <form #demoForm="ngForm">
                                         <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
                                                      [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                     </form>
                                 </div>
                             </div>
-
+                        </div>
+                        <div *ngIf="addSeizureProductsStatus" class="row">
+                            <div class="col">
+                                <div  class="form-group">
+                                    <label for="files"><b>Upload Chain of Custody Document</b></label>
+                                    <form #demoForm="ngForm">
+                                        <file-upload [(ngModel)]="uploadedChainOfCustodyDoc" name="files" id="files89"
+                                                     [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </form>
                     <div class="modal-footer">
@@ -5351,7 +5393,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -5370,6 +5412,22 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Summary of Findings</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.summaryOfFindings.invalid && formInvestInspectReportForm.summaryOfFindings.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="summaryOfFindings"
+                                                  name="summaryOfFindings" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
@@ -5384,6 +5442,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -5401,6 +5460,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -6905,6 +6965,37 @@
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="dataSaveSSFUploadList.length > 0">
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesUploads"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>DOCUMENT TYPE</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveSSFUploadList; let i=index">
+                                        <td>{{r.documentType}}</td>
+                                        <td>{{r.fileName}}</td>
+                                        <td>
+                                            <button (click)="viewUploadsFileSaved(r)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">view</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <div *ngIf="addLabParamStatus == false">
                             <button mat-raised-button type="button"  class="btn btn-success"
@@ -7369,13 +7460,13 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Product Recommendation Details</h4>
+                    <h4 class="modal-title">Product Follow Up Actions</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label style="color: #0082f3">Product Recommendation Details</label>
+                    <label style="color: #0082f3">Product Follow Up Actions</label>
                     <div class="panel">
                         <br>
                         <div class="row">
@@ -7435,7 +7526,7 @@
 
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
-                                        <label style="color: #0082f3">RECOMMENDATION LIST</label>
+                                        <label style="color: #0082f3">Follow Up Actions Details</label>
                                     </div>
                                     <div>
                                         <div class="material-datatables">
@@ -7443,7 +7534,7 @@
                                                 <table id="datatables78" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                     <tr>
-                                                        <th>RECOMMENDATION NAME</th>
+                                                        <th>Follow Up Action</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -7461,6 +7552,13 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus"
+                                                  (click)="openModalAddDetails('uploadFollowUpDocument')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal5"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">OTHER FOLLOW UP DOCUMENTS</span>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
                                         <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
                                             && selectedProductRecommendation?.destructionNotificationStatus == false
                                             && selectedProductRecommendation?.destructionRecommended"
@@ -7662,7 +7760,7 @@
                                     <th>Outlet Name</th>
                                     <th>Phone Number</th>
                                     <th>Email Address</th>
-                                    <th>Person Met/Designation</th>
+                                    <th>Person Met/ Designation</th>
                                     <th>Date Visited</th>
                                     <th>Summary of findings</th>
                                     <th>Remarks</th>
@@ -7682,6 +7780,11 @@
                                 </tbody>
                             </table>
                             <br/>
+                            <b class="text-secondary">Summary of Findings</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.summaryOfFindings}}</span></p>
+                            <br/>
+                            <br/>
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
                                 <table class="table table-striped">
@@ -7695,6 +7798,7 @@
                                         <th>Country of Origin</th>
                                         <th>Expiry Date</th>
                                         <th>Batch Number</th>
+                                        <th>Size of Test Sample</th>
                                         <th>Permit No. / UCR Code</th>
                                         <th>Sampling Officer</th>
                                         <th>Date COLLECTED</th>
@@ -7712,6 +7816,7 @@
                                         <td>{{app.countryOfOrigin}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
+                                        <td>{{app.sizeTestSample}}</td>
                                         <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
@@ -8281,6 +8386,21 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadFollowUpDocument')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Follow up Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadFollowUpFiles" name="files" id="files4"
+                                                         fileslimit="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
                         <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
@@ -8444,6 +8564,11 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFollowUpDocument')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFollowUpActionDoc('FOLLOW_UP_ACTION_DOC');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

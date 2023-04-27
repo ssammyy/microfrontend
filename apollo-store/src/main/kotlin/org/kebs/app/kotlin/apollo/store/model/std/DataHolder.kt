@@ -96,6 +96,7 @@ interface SiteVisitListHolder {
     fun getId(): Long?
 }
 
+
 interface WindingUpReportListHolder {
     fun getId(): Long?
 }
@@ -829,6 +830,12 @@ interface ComStdRequest{
     fun getContactThreeTelephone(): String?
     fun getContactThreeEmail(): String?
 }
+
+interface JustificationStatus {
+    fun getStatusType(): Long?
+}
+
+
 
 
 

@@ -53,6 +53,23 @@ class IntStandardController(
         return internationalStandardService.getEditorDetails()
     }
 
+    @GetMapping("/international_standard/getCategoriesSd")
+    @ResponseBody
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return internationalStandardService.getCategoriesSd()
+    }
+
+    @GetMapping("/international_standard/getStakeholderListSd")
+    @ResponseBody
+    fun getStakeholderListSd(@RequestParam("subCategoryId") subCategoryId: Long): List<StakeholdersSdList>? {
+        return internationalStandardService.getStakeholderListSd(subCategoryId)
+    }
+    @GetMapping("/international_standard/getSubCategoriesSd")
+    @ResponseBody
+    fun getSubCategoriesSd(@RequestParam("categoryId") categoryId: Long): List<StakeholdersSubCategories>? {
+        return internationalStandardService.getSubCategoriesSd(categoryId)
+    }
+
     @GetMapping("/international_standard/getDraughtsManDetails")
     @ResponseBody
     fun getDraughtsManDetails(): List<UserDetailHolder> {
@@ -367,7 +384,7 @@ class IntStandardController(
     // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustificationStatus")
     @ResponseBody
-    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): Long
+    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): JustificationStatus
     {
         return internationalStandardService.getJustificationStatus(draftId)
     }
@@ -626,7 +643,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
-    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDrDecisions
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISHopDecision
     ) : ServerResponse
     {
 
@@ -645,12 +662,21 @@ class IntStandardController(
 
     //decision on Adoption Proposal
    // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/international_standard/approveEditedStandard")
-    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+//    @PostMapping("/international_standard/approveEditedStandard")
+//    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+//    ) : ServerResponse
+//    {
+//
+//        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
+//
+//    }
+
+    @PostMapping("/international_standard/approveProofReadLevel")
+    fun approveProofReadLevel(@RequestBody iSDraftDecisions: ISDecisions
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveProofReadLevel(iSDraftDecisions))
 
     }
 
