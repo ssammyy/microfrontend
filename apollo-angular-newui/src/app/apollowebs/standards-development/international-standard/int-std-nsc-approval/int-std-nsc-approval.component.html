@@ -45,7 +45,7 @@
                                         <td>{{isCheckRequirement.title}}</td>
                                         <td>{{isCheckRequirement.comStdNumber}}</td>
                                         <td>{{isCheckRequirement.preparedBy}}</td>
-                                        <td *ngIf="isCheckRequirement.status==8"><a  (click)="onOpenModals(isCheckRequirement,'approveStandard',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Standard</a></td>
+                                        <td *ngIf="isCheckRequirement.status==15"><a  (click)="onOpenModals(isCheckRequirement,'approveStandard',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Standard</a></td>
 
                                     </tr>
                                     </tbody>
@@ -55,7 +55,7 @@
                                 <div class="modal-dialog modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title" id="approveStandardLabel">SAC LIST DECISION</h3>
+                                            <h3 class="modal-title" id="approveStandardLabel">NSC DECISION</h3>
                                             <button type="button" #closeModalRequirements class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -139,8 +139,8 @@
                                                                             <div class="form-group col-12" >
                                                                                 <label><b>Decision On Standard</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
                                                                                 <ng-select [(ngModel)]="selectedType"  class="form-control" formControlName="accentTo" name="accentTo"  >
-                                                                                    <ng-option  [value]="approve" >Recommend </ng-option>
-                                                                                    <ng-option  [value]="reject" >Not Recommend </ng-option>
+                                                                                    <ng-option  [value]="approve" >Approve </ng-option>
+                                                                                    <ng-option  [value]="reject" >Decline </ng-option>
                                                                                 </ng-select>
                                                                             </div>
                                                                             <div class="form-group col-12">

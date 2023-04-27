@@ -615,6 +615,12 @@ export class StdComStandardService {
     return this.http.get<ISCheckRequirements>(url, {params}).pipe();
   }
 
+  public getStdApproval(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_NSC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
   public getAppStd(): any {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_APB_TASKS);
     const params = new HttpParams();

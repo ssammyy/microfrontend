@@ -319,6 +319,18 @@ export class StdIntStandardService {
             })
         );
     }
+    public approveInternationalStandardNSC(isDraftDecisionStd: ISDraftDecisionStd): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_NSC_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecisionStd>(url, isDraftDecisionStd, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
     public uploadInternationalStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_STANDARD);
         const params = new HttpParams();

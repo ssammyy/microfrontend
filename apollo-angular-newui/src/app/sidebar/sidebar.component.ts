@@ -894,6 +894,24 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '',
+        title: 'NSC SD',
+        type: 'sub',
+
+        children: [
+            {
+                path: 'isNscApproval',
+                title: 'Standards for Approval',
+                ab: 'NSC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ']
+            },
+        ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ'],
+        collapse: 'NSC',
+    },
+
+    {
+        path: '',
         title: 'Formation Of A TC',
         type: 'sub',
 
