@@ -69,6 +69,9 @@ class IntStandardService(
     private val standardRequestRepository: StandardRequestRepository,
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val stakeholdersSdListRepository: StakeholdersSdListRepository,
+    private val stakeholdersCategoriesRepository: StakeholdersCategoriesRepository,
+    private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository
 
 
     ) {
@@ -91,6 +94,18 @@ class IntStandardService(
 
     fun getEditorDetails(): List<UserDetailHolder> {
         return userListRepository.getEditorDetails()
+    }
+
+    fun getStakeholderListSd(id: Long): List<StakeholdersSdList>? {
+        return stakeholdersSdListRepository.getStakeholderListSd(id)
+    }
+
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return stakeholdersCategoriesRepository.getCategoriesSd()
+    }
+
+    fun getSubCategoriesSd(id: Long): List<StakeholdersSubCategories>? {
+        return stakeholdersSubCategoriesRepository.getSubCategoriesSd(id)
     }
 
     fun getDraughtsManDetails(): List<UserDetailHolder> {
