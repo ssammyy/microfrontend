@@ -146,11 +146,6 @@
                                                                                 <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
                                                                                 <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >
                                                                                 <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
-
-
-                                                                                <input type="hidden" formControlName="subject" name="subject" value="{{actionRequests?.subject}}" >
-                                                                                <input type="hidden" formControlName="description" name="description" value="{{actionRequests?.description}}" >
-
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -212,7 +207,7 @@
                                                                 <div class="tab-pane fade" id="nav-changes-justification-list-comments" role="tabpanel" aria-labelledby="nav-changes-justification-list-comments-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
-                                                                            <div class="container col-md-12" [hidden]="isShowCommentsTab">
+                                                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                                                                 <div class="col-12">
                                                                                     <div class="card" *ngFor="let comStdRemark of comStdRemarks">
                                                                                         <div class="card-header">

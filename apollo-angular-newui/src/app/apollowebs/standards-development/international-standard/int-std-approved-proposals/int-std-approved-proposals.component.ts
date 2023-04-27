@@ -267,7 +267,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         this.stdIntStandardService.getJustificationStatus(comStdDraftID).subscribe(
             (response: JustificationStatus)=> {
                 this.justificationStatus = response;
-
+                console.log(this.justificationStatus)
             },
             (error: HttpErrorResponse)=>{
                 console.log(error.message)

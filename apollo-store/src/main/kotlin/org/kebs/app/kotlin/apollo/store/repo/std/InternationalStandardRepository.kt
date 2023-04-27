@@ -523,10 +523,8 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
     @Query(value = "SELECT * FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  DRAFT_ID=:id ORDER BY ID DESC", nativeQuery = true)
     fun getISJustification(id: Long?): MutableList<ISAdoptionJustification>
 
-    @Query(value = "SELECT COUNT(ID) as noOfRecords  FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION WHERE DRAFT_ID=:id ", nativeQuery = true)
-    fun getJustificationCount(
-        @Param("id") id: Long
-    ): Long
+    @Query(value = "SELECT COUNT(ID) as statusType  FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION WHERE DRAFT_ID=:id ", nativeQuery = true)
+    fun getJustificationCount(@Param("id") id: Long?): JustificationStatus
 
     @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
             "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +
@@ -780,7 +778,7 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     @Query(
         value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed " +
-                "FROM SD_STANDARD_TBL WHERE STATUS='2' ",
+                "FROM SD_STANDARD_TBL WHERE STATUS='2' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getStandardsForReview(): MutableList<ReviewStandards>
@@ -812,18 +810,18 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,STANDARD_NUMBER as iSNumber,cast(DATE_FORMED as varchar(200)) AS uploadDate FROM SD_STANDARD_TBL " +
-                "WHERE  STATUS='0' AND STANDARD_TYPE='International Standard' ",
+                "WHERE  STATUS='0' AND STANDARD_TYPE='International Standard' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getStandardForGazettement(): MutableList<ISUploadedDraft>
 
-    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='International Standard' AND STATUS=0", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='International Standard' AND STATUS=0 ORDER BY ID DESC ", nativeQuery = true)
     fun getInternationalStandards(): MutableList<Standard>
 
-    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='Company Standard' AND STATUS=0", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='Company Standard' AND STATUS=0 ORDER BY ID DESC", nativeQuery = true)
     fun getCompanyStandards(): MutableList<Standard>
 
-    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE  STATUS=0", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE  STATUS=0 ORDER BY ID DESC", nativeQuery = true)
     fun getStandards(): MutableList<Standard>
 }
 
@@ -1045,7 +1043,7 @@ interface CompanyStandardRemarksRepository : JpaRepository<CompanyStandardRemark
     @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id ORDER BY ID DESC", nativeQuery = true)
     fun findCommentsOnDraft(id: Long): MutableIterable<CompanyStandardRemarks>?
 
-    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id AND STANDARD_TYPE='International Standard' ORDER BY ID DESC", nativeQuery = true)
+    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id  ORDER BY ID DESC", nativeQuery = true)
     fun getDraftComments(id: Long): MutableIterable<CompanyStandardRemarks>?
 
 
@@ -1066,6 +1064,18 @@ interface SDWorkshopStdRepository : JpaRepository<SDWorkshopStd, Long> {
 interface SDReviewCommentsRepository : JpaRepository<SDReviewComments, Long> {
     @Query(value = "SELECT * FROM SD_REVIEW_COMMENTS WHERE REVIEW_ID=:id ORDER BY ID DESC",nativeQuery = true)
     fun getProposalsComments(@Param("id") id: Long?): MutableList<SDReviewComments>
+}
+
+interface StakeholdersSdListRepository : JpaRepository<StakeholdersSdList, Long> {
+
+}
+
+interface StakeholdersCategoriesRepository : JpaRepository<StakeholdersCategories, Long> {
+
+}
+
+interface StakeholdersSubCategoriesRepository : JpaRepository<StakeholdersSubCategories, Long> {
+
 }
 
 

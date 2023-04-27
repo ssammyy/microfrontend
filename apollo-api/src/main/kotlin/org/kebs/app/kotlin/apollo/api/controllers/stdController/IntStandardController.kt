@@ -367,7 +367,7 @@ class IntStandardController(
     // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustificationStatus")
     @ResponseBody
-    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): Long
+    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): JustificationStatus
     {
         return internationalStandardService.getJustificationStatus(draftId)
     }
@@ -626,7 +626,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
-    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISHopDecision
     ) : ServerResponse
     {
 

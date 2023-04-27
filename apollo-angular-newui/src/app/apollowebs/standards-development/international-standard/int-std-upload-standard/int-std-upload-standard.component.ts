@@ -47,6 +47,7 @@ export class IntStdUploadStandardComponent implements OnInit {
     comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
     public actionRequests: ISCheckRequirements | undefined;
     documentDTOs: DocumentDTO[] = [];
+    coverDTOs: DocumentDTO[] = [];
   public uploadedFiles:  FileList;
     public uploadStandardFile:  FileList;
 
@@ -256,6 +257,15 @@ export class IntStdUploadStandardComponent implements OnInit {
                 //console.log(error.message);
             }
         );
+        this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.coverDTOs = response;
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+            }
+        );
 
         if (mode==='approveStandard'){
             this.actionRequests=iSCheckRequirement;
@@ -310,6 +320,26 @@ export class IntStdUploadStandardComponent implements OnInit {
 
     public hideModalEditedDraft() {
         this.closeModalEditedDraft?.nativeElement.click();
+    }
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getAppStdPublishing();
+            }
+        );
     }
 
 }

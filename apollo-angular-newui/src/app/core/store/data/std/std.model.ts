@@ -1055,7 +1055,12 @@ export interface ISJustificationDecision {
     approvalID: bigint;
     comments: string;
 }
-
+export interface ISHopDecision{
+    comments: string;
+    id: number;
+    requestId: number;
+    draftId: number;
+}
 export interface ISDraftDecision {
     comments: string;
     accentTo: string;

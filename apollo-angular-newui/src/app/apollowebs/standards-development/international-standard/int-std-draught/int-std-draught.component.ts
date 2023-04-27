@@ -144,11 +144,11 @@ export class IntStdDraughtComponent implements OnInit {
     toggleDisplayRemarksTab(proposalId: number){
         this.loadingText = "Loading ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getAllComments(proposalId).subscribe(
-            (response: StakeholderProposalComments[]) => {
-                this.stakeholderProposalComments = response;
+        this.stdIntStandardService.getDraftComment(proposalId).subscribe(
+            (response: ComStdRemarks[]) => {
+                this.comStdRemarks = response;
                 this.SpinnerService.hide();
-                console.log(this.stakeholderProposalComments)
+                //console.log(this.comStdRemarks)
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

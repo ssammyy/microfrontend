@@ -759,7 +759,7 @@ class IntStandardService(
         return isJustificationUploadsRepository.save(uploads)
     }
 
-    fun getJustificationStatus(draftId: Long): Long{
+    fun getJustificationStatus(draftId: Long): JustificationStatus{
         return isAdoptionJustificationRepository.getJustificationCount(draftId)
     }
 
@@ -1391,13 +1391,12 @@ class IntStandardService(
     }
 
     fun approveProofReadStandard(
-        iSDraftDecisions: ISDraftDecisions
+        iSDraftDecisions: ISHopDecision
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
-        val decision=iSDraftDecisions.accentTo
+        //val decision=iSDraftDecisions.accentTo
         val timeOfRemark= Timestamp(System.currentTimeMillis())
-        val typeOfStandard= iSDraftDecisions.standardType
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1410,20 +1409,20 @@ class IntStandardService(
         comRemarks.role = "HOP"
         var url=""
 
-        if (decision == "Yes") {
+       // if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
                 with(companyStandard) {
                     status = 8
 
                 }
-                if(typeOfStandard=="International Standard"){
+               // if(typeOfStandard=="International Standard"){
+                 //   url="intSacList"
+               // }else if(typeOfStandard=="Company Standard"){
                     url="intSacList"
-                }else if(typeOfStandard=="Company Standard"){
-                    url="intSacList"
-                }else if(typeOfStandard=="Kenya Standard"){
-                    url="intSacList"
-                }
+//                }else if(typeOfStandard=="Kenya Standard"){
+//                    url="intSacList"
+//                }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
@@ -1439,18 +1438,18 @@ class IntStandardService(
                 }
             }?: throw Exception("DRAFT NOT FOUND")
 
-        } else if (decision == "No") {
-
-            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                with(companyStandard) {
-                        status = 1
-                    }
-                companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(comRemarks)
-
-                } ?: throw Exception("DRAFT NOT FOUND")
-
-        }
+//        } else if (decision == "No") {
+//
+//            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+//                with(companyStandard) {
+//                        status = 1
+//                    }
+//                companyStandardRepository.save(companyStandard)
+//                    companyStandardRemarksRepository.save(comRemarks)
+//
+//                } ?: throw Exception("DRAFT NOT FOUND")
+//
+//        }
 
         return "Actioned"
     }

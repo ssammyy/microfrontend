@@ -78,31 +78,9 @@ export class IntStdApproveChangesComponent implements OnInit {
     this.approveRequirementsFormGroup = this.formBuilder.group({
       id:[],
       comments:null,
-      accentTo:null,
       requestId:null,
       draftId:null,
       title:null,
-      standardNumber:null,
-      scope:null,
-      normativeReference:null,
-      symbolsAbbreviatedTerms:null,
-      clause:null,
-      special:null,
-      uploadDate:null,
-      preparedBy:null,
-      documentType:null,
-      departmentId:null,
-      subject:null,
-      description:null,
-      contactOneFullName:null,
-      contactOneTelephone:null,
-      contactOneEmail:null,
-      standardType:null,
-      companyName:[],
-      companyPhone:[],
-      docName:[],
-      draughting:[],
-      requestNumber:[],
     });
   }
   ngOnDestroy(): void {
@@ -137,11 +115,11 @@ export class IntStdApproveChangesComponent implements OnInit {
   toggleDisplayRemarksTab(proposalId: number){
     this.loadingText = "Loading ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getAllComments(proposalId).subscribe(
-        (response: StakeholderProposalComments[]) => {
-          this.stakeholderProposalComments = response;
+    this.stdIntStandardService.getDraftComment(proposalId).subscribe(
+        (response: ComStdRemarks[]) => {
+          this.comStdRemarks = response;
           this.SpinnerService.hide();
-          console.log(this.stakeholderProposalComments)
+          //console.log(this.comStdRemarks)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -205,22 +183,7 @@ export class IntStdApproveChangesComponent implements OnInit {
             requestId: this.actionRequests.requestId,
             id: this.actionRequests.id,
             draftId: this.actionRequests.draftId,
-            title: this.actionRequests.title,
-            scope:this.actionRequests.scope,
-            normativeReference: this.actionRequests.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
-            clause:this.actionRequests.clause,
-            special:this.actionRequests.special,
-            standardNumber:this.actionRequests.comStdNumber,
-            departmentId:this.actionRequests.departmentId,
-            subject:this.actionRequests.subject,
-            description:this.actionRequests.description,
-            contactOneFullName:this.actionRequests.contactOneFullName,
-            contactOneTelephone:this.actionRequests.contactOneTelephone,
-            contactOneEmail:this.actionRequests.contactOneEmail,
-            companyName:this.actionRequests.companyName,
-            companyPhone:this.actionRequests.companyPhone,
-            standardType:this.actionRequests.standardType,
+
           }
       );
 

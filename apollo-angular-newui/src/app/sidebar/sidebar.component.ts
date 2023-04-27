@@ -862,12 +862,35 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'ES',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
             },
+            {
+                path: 'isUploadStd',
+                title: 'Upload Standard',
+                ab: 'US',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
 
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ'],
         collapse: 'publish',
+    },
+    {
+        path: '',
+        title: 'SAC LIST',
+        type: 'sub',
+
+        children: [
+            {
+                path: 'isSacApproval',
+                title: 'Standards for Approval',
+                ab: 'SA',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
+            },
+            ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ'],
+        collapse: 'SAC',
     },
     {
         path: '',
@@ -1132,18 +1155,6 @@ export const ROUTES: RouteInfo[] = [
                 title: 'View Justification',
                 ab: 'VJ',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
-            },
-            {
-                path: 'isSacApproval',
-                title: 'SAC Tasks',
-                ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
-            },
-            {
-                path: 'isUploadStd',
-                title: 'Upload Standard',
-                ab: 'US',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
             },
             {
                 path: 'intStandardLists',
