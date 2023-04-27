@@ -906,9 +906,9 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'hofReviewJustificationOfTC',
-                title: 'HOD Review',
-                ab: 'HOD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ']
+                title: 'HOF Review',
+                ab: 'HOF',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ','HOF_SD_READ']
             },
             {
                 path: 'reviewJustificationOfTC',

@@ -136,6 +136,12 @@ class JustificationForTC {
     @Basic
     var departmentId: Long? = null
 
+    @Column(name = "ISO_COMMITTEE")
+    @Basic
+    var isoCommittee: String? = null
+
+
+
 
 
 }

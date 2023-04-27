@@ -230,6 +230,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFilesOnly: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
+  uploadFollowUpFiles: FileList;
   uploadedFiles: FileList;
   uploadedAppealFiles: FileList;
   uploadedAppealNotSuccesFiles: FileList;
@@ -239,6 +240,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedChainOfCustodyDoc: FileList;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
+  arrayOfGeneralUploadedFiles: File[] = [];
   uploadedSSF: FileList;
   arrayOfUploadedSSF: File[] = [];
   fileToUpload: File | null = null;
@@ -1418,7 +1420,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       edit: false,
       delete: false,
       custom: [
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Follow Up Activity</i>'},
         {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">Add Remarks</i>'},
       ],
       position: 'right', // left|right
@@ -1429,13 +1431,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1493,13 +1500,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1555,13 +1567,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -2132,7 +2149,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.msCounties = this.msService.getAllCountriesList();
     this.msService.getMSNonCompliance().subscribe(
         (data)=>{
-          this.nonComplianceList = data;
+          this.nonComplianceList = data.sort((a,b)=>a.nonComplianceName > b.nonComplianceName ? 1 : -1);
           // console.log("Non Compliance Data "+ data)
         },
         error => {
@@ -2258,7 +2275,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.workPlanInspection?.sampleSubmittedStatus === false) {
       this.msService.msLaboratoriesListDetails().subscribe(
           (data1: LaboratoryEntityDto[]) => {
-            this.laboratories = data1;
+            this.laboratories = data1.sort((a,b)=>a.labName > b.labName ? 1 : -1);
             console.log(data1);
           },
           error => {
@@ -2274,7 +2291,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       case true:
         this.msService.MsRecommendationListDetails().subscribe(
             (data) => {
-              this.recommendationList = data;
+              this.recommendationList = data.sort((a,b)=>a.recommendationName > b.recommendationName ? 1 : -1);
               this.SpinnerService.hide();
               console.log(data);
             },
@@ -2571,7 +2588,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     );
     this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
         (data1: PredefinedResourcesRequired[]) => {
-          this.predefinedResourcesRequired = data1;
+          this.predefinedResourcesRequired = data1.sort((a,b)=>a.resourceName > b.resourceName ? 1 : -1);
           console.log(data1);
         },
         error => {
@@ -2590,7 +2607,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector',  'startOnsiteActivities'];
+      'approveFinalPreliminaryDirector',  'startOnsiteActivities', 'uploadFollowUpDocument'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2599,7 +2616,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3418,6 +3435,46 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         },
     );
   }
+  onClickSaveFinalRemarksAndEndProcess(valid: boolean){
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to save the details and end the MS Process?', 'You won\'t be able to Update the Details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
+            this.onClickSaveFinalRemarksHOD(valid);
+          });
+    }
+  }
+  onClickSaveFollowUpActionDoc(docName: string){
+    this.msService.showSuccessWith2Message('Are you sure your want to save this file(s)?', 'You won\'t be able to Update them after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and upload files Before Saving', 'FILE(S) UPLOADED SUCCESSFULLY ', () => {
+          this.saveFollowUpACtionDocument(docName);
+        });
+  }
+  saveFollowUpACtionDocument(docName: string){
+    this.SpinnerService.show();
+    const followUpActionsDoc = this.uploadFollowUpFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < followUpActionsDoc.length; i++) {
+      formData.append('docFile', followUpActionsDoc[i], followUpActionsDoc[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          this.SpinnerService.hide();
+          this.msService.showSuccess('FOLLOW UP ACTION FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Follow Up Actions Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
 
   saveClientAppealedSuccessfully(valid: boolean) {
     if (valid) {
@@ -3566,8 +3623,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
+            this.saveWorkPlanEndDocument("WORKPLAN_END_FILE");
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REMARKS AND FILE(S) SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3576,6 +3634,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           },
       );
     }
+  }
+
+  saveWorkPlanEndDocument(docName: string){
+    //this.SpinnerService.show();
+    const finalRemarksFileEndProcess = this.uploadedFinalRemarksFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < finalRemarksFileEndProcess.length; i++) {
+      formData.append('docFile', finalRemarksFileEndProcess[i], finalRemarksFileEndProcess[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          // this.SpinnerService.hide();
+          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Workplan End Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   onClickSaveApprovePreliminaryHOD(valid: boolean) {
