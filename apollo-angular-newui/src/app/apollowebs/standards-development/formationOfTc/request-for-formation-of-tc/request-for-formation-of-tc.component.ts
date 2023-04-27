@@ -47,16 +47,36 @@ export class RequestForFormationOfTCComponent implements OnInit {
     public dropdownSettings: IDropdownSettings = {};
     dropdownList: any[] = ['Government Lead Agency/Regulatory Authority', 'Manufacturers, producers or service providers',
         'Major corporate consumers', 'University, Research and other Technical Institutions', 'Industry Association', 'Trade Association',
-        'Professional Body', 'Consumer Organization','Non-Governmental Organization (NGO)','Renown Professionals/experts',
-        'Renown Professionals/experts','Small and Medium Enterprises (SMEs)','SME trade associations '];
+        'Professional Body', 'Consumer Organization', 'Non-Governmental Organization (NGO)', 'Renown Professionals/experts',
+        'Renown Professionals/experts', 'Small and Medium Enterprises (SMEs)', 'SME trade associations '];
 
-    isoList: any[] = ['ISO TC 72', 'ISO TC73',  'ISO TC 70', 'ISO TC69'];
+    options = [
+        {value: 'Government Lead Agency/Regulatory Authority', label: 'Government Lead Agency/Regulatory Authority'},
+        {
+            value: 'Manufacturers, producers or service providers',
+            label: 'Manufacturers, producers or service providers'
+        },
+        {
+            value: 'University, Research and other Technical Institutions',
+            label: 'University, Research and other Technical Institutions'
+        },
+        {value: 'Professional Body', label: 'Professional Body'},
+        {value: 'Consumer Organization', label: 'Consumer Organization'},
+        {value: 'Non-Governmental Organization (NGO)', label: 'Non-Governmental Organization (NGO)'},
+        {value: 'Renown Professionals/experts', label: 'Renown Professionals/experts'},
+        {value: 'Small and Medium Enterprises (SMEs)', label: 'Small and Medium Enterprises (SMEs)'},
+        {value: 'SME trade associations', label: 'SME trade associations'},
+        {value: 'Major corporate consumers', label: 'Major corporate consumers'}
+    ];
+
+    selectedOptions: string[] = [];
+
+
+    isoList: any[] = ['ISO TC 72', 'ISO TC73', 'ISO TC 70', 'ISO TC69'];
 
     tasks: JustificationForTc[] = [];
-    displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
-    displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
-
-
+    displayedColumns: string[] = ['subject',  'purpose', 'nameOfTC', 'status', 'actions'];
+    displayedColumn: string[] = ['subject', 'purpose', 'nameOfTC', 'status', 'actions'];
 
 
     dataSource!: MatTableDataSource<JustificationForTc>;
@@ -184,39 +204,34 @@ export class RequestForFormationOfTCComponent implements OnInit {
         };
 
         this.formationRequestFormGroup = this.formBuilder.group({
-            dateOfPresentation: ['', Validators.required],
             nameOfTC: ['', Validators.required],
-            proposer: ['', Validators.required],
-            referenceNumber: ['', Validators.required],
-            subject: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            proposedRepresentationArray: ['', Validators.required],
-            targetDate: ['', Validators.required],
-            programmeOfWork: ['', Validators.required],
-            liaisonOrganization: ['', Validators.required],
-            organization: ['', Validators.required],
-            departmentId: ['', Validators.required],
+            proposedRepresentationArray: [[], Validators.minLength(3)],
+            organization: ['', [Validators.required,Validators.pattern(/^([^,]+,){5}[^,]+$/)]],
             proposedRepresentation: [''],
+            departmentId: ['', Validators.required],
+            isoCommittee: [''],
+
 
 
         });
 
         this.editFormationRequestFormGroup = this.formBuilder.group({
             dateOfPresentation: ['', Validators.required],
-            nameOfTC: ['', Validators.required],
-            proposer: ['', Validators.required],
+            userDetails: ['', Validators.required],
             referenceNumber: ['', Validators.required],
-            subject: ['', Validators.required],
+            nameOfTC: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            proposedRepresentation: ['', Validators.required],
-            targetDate: ['', Validators.required],
-            programmeOfWork: ['', Validators.required],
-            liaisonOrganization: ['', Validators.required],
+            proposedRepresentationArray: [[], Validators.minLength(3)],
             organization: ['', Validators.required],
+            proposedRepresentation: [''],
             departmentId: ['', Validators.required],
+            isoCommitteeArray: [[], Validators.minLength(3)],
+            isoCommittee: [''],
             id: ['', Validators.required],
+            departmentIdOriginal: ['', Validators.required],
 
 
         });
@@ -236,7 +251,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     public uploadProposalForTC(formDirective): void {
         this.isFormSubmitted = true;
-
         if (this.formationRequestFormGroup.valid) {
             this.loadingText = "Saving Please Wait ...."
 
@@ -245,9 +259,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
             const arrayTest = this.formationRequestFormGroup.controls['proposedRepresentationArray'].value;
             const myVar1 = arrayTest.toString()
             this.formationRequestFormGroup.controls['proposedRepresentation'].setValue(myVar1);
-            console.log(this.formationRequestFormGroup.controls['proposedRepresentation'].value)
-
-
             this.formationOfTcService.uploadProposalForTC(this.formationRequestFormGroup.value).subscribe(
                 (response) => {
                     this.showToasterSuccess("Success", "Successfully submitted proposal for formation of TC")
@@ -283,17 +294,27 @@ export class RequestForFormationOfTCComponent implements OnInit {
             )
         }
     }
+    departmentIdNew: Department;
 
 
     public editProposalForTC(formDirective): void {
         this.isFormSubmitted = true;
+
 
         if (this.editFormationRequestFormGroup.valid) {
             this.loadingText = "Resubmitting Please Wait ...."
 
             this.loading = true;
             this.SpinnerService.show();
-
+            const departmentIdOriginal = this.editFormationRequestFormGroup.controls['departmentIdOriginal'].value;
+            const departmentIdNew = this.editFormationRequestFormGroup.controls['departmentId'].value;
+            if(departmentIdOriginal!=departmentIdNew.id)
+            {
+                let str = this.editFormationRequestFormGroup.controls['referenceNumber'].value;
+                str = str.replace(/^[^/]+/, departmentIdNew.name);
+                this.editFormationRequestFormGroup.controls['referenceNumber'].setValue(str);
+                this.editFormationRequestFormGroup.controls['departmentId'].setValue(departmentIdNew.id);
+            }
             this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
                 (response) => {
                     this.showToasterSuccess("Success", "Successfully edited proposal for formation of TC")
@@ -497,6 +518,9 @@ export class RequestForFormationOfTCComponent implements OnInit {
         button.setAttribute('data-target', '#editModal');
 
         this.getDepartmentName(String(this.proposalRetrieved.departmentId))
+        this.getSelectedUser(proposal.proposer)
+
+        this.selectedOptions = proposal.proposedRepresentation.split(',').slice(0, 3);
         this.getAllDocs(String(this.proposalRetrieved.id))
         this.editFormationRequestFormGroup.controls['departmentId'].setValue(this.proposalRetrieved.departmentId);
         // if(proposal.hofId!="null") {
@@ -656,8 +680,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
     }
 
 
-    display = false;
-    update(){
-        this.display = true;
-    }
+
+
 }

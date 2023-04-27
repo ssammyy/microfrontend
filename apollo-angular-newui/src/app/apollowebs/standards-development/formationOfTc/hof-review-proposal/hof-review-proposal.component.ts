@@ -23,7 +23,7 @@ export class HofReviewProposalComponent implements OnInit {
 
   tasks: JustificationForTc[] = [];
   displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
-  displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions','approve','reject'];
+  displayedColumn: string[] = ['subject', 'purpose', 'nameOfTC', 'status', 'actions','approve','reject'];
 
   dataSource!: MatTableDataSource<JustificationForTc>;
   dataSourceB!: MatTableDataSource<JustificationForTc>;
@@ -283,6 +283,10 @@ export class HofReviewProposalComponent implements OnInit {
 
     public approveProposal(formDirective): void {
         if (this.stdApproveOrRejectWithReason.valid) {
+
+
+
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -292,27 +296,29 @@ export class HofReviewProposalComponent implements OnInit {
             });
 
             swalWithBootstrapButtons.fire({
-                title: 'Are you sure your want to approve this proposal?',
+                title: 'Are you sure your want to recommend this proposal?',
                 text: 'You won\'t be able to reverse this!',
                 icon: 'success',
                 showCancelButton: true,
-                confirmButtonText: 'Approve!',
-                cancelButtonText: 'Reject!',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.SpinnerService.show();
+                    this.loading=true
+                    this.loadingText ="Recommending Proposal"
+                    this.SpinnerService.show()
                     this.formationOfTcService.approveJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
                         (response) => {
                             this.SpinnerService.hide();
                             swalWithBootstrapButtons.fire(
-                                'Approved!',
-                                'Proposal Successfully Approved!',
+                                'Recommended!',
+                                'Proposal Successfully Recommended!',
                                 'success'
                             );
                             this.SpinnerService.hide();
                             this.hideModelB()
-                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Recommended');
                             this.getAllHofJustifications(false);
                             this.getAllHofJustificationsApproved()
                             this.getAllHofJustificationsRejected()
@@ -349,7 +355,7 @@ export class HofReviewProposalComponent implements OnInit {
             });
 
             swalWithBootstrapButtons.fire({
-                title: 'Are you sure your want to reject this proposal?',
+                title: 'Are you sure you do not want to recommend this proposal?',
                 text: 'You won\'t be able to reverse this!',
                 icon: 'warning',
                 showCancelButton: true,
@@ -358,18 +364,20 @@ export class HofReviewProposalComponent implements OnInit {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.SpinnerService.show();
+                    this.loading=true
+                    this.loadingText ="Not Recommending Proposal"
+                    this.SpinnerService.show()
                     this.formationOfTcService.rejectJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
                         (response) => {
                             this.SpinnerService.hide();
                             swalWithBootstrapButtons.fire(
-                                'Rejected!',
-                                'Proposal Successfully Rejected!',
+                                'Not Recommend!',
+                                'Proposal Successfully Not Recommended!',
                                 'success'
                             );
                             this.SpinnerService.hide();
                             this.hideModelD()
-                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Not Recommended');
                             this.getAllHofJustifications(false);
                             this.getAllHofJustificationsApproved()
                             this.getAllHofJustificationsRejected()

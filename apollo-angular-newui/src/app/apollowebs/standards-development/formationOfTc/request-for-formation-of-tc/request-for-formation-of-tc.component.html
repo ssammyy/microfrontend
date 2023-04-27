@@ -54,19 +54,17 @@
                                     </div>
                                     <h4 class="card-title">Request For Formation Of Technical Committee
                                     </h4>
-                                    <div *ngFor="let role of roles">
-                                        <div *ngIf="role == 'HOF_SD_READ' || role == 'STANDARDS_DEVELOPMENT_FULL_ADMIN'">
+                                    <div *ngIf="roles?.includes('TC_SEC_SD_READ') || roles?.includes( 'TC_SEC_SD_READ')">
 
-                                            <div (click)="openModal()">
-                                                <div style="float: right; margin: inherit" class="card-icon">
-                                                    <i class="material-icons">add</i>
-                                                </div>
-                                                <div>
-                                                    <h4 style="float: right; margin-right: 12px" class="card-title">New
-                                                        Proposal</h4>
-                                                </div>
-
+                                        <div (click)="openModal()">
+                                            <div style="float: right; margin: inherit" class="card-icon">
+                                                <i class="material-icons">add</i>
                                             </div>
+                                            <div>
+                                                <h4 style="float: right; margin-right: 12px" class="card-title">New
+                                                    Proposal</h4>
+                                            </div>
+
                                         </div>
                                     </div>
 
@@ -86,15 +84,12 @@
 
                                             <!-- ID Column -->
                                             <ng-container matColumnDef="subject">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference
+                                                    Number
+                                                </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
                                             </ng-container>
 
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="proposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposer}} </td>
-                                            </ng-container>
 
                                             <!-- Name Column -->
                                             <ng-container matColumnDef="purpose">
@@ -189,15 +184,12 @@
 
                                             <!-- ID Column -->
                                             <ng-container matColumnDef="subject">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference
+                                                    Number
+                                                </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
                                             </ng-container>
 
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="proposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposer}} </td>
-                                            </ng-container>
 
                                             <!-- Name Column -->
                                             <ng-container matColumnDef="purpose">
@@ -269,46 +261,46 @@
                                         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
                                                        aria-label="Select page of users"></mat-paginator>
                                     </div>
-                                    <div class="material-datatables">
-                                        <table class="table table-striped table-bordered table-hover"
-                                               datatable
-                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                            <thead>
-                                            <tr>
-                                                <th class="task">Subject</th>
-                                                <th class="task">Proposer</th>
-                                                <th class="task">Purpose</th>
-                                                <th class="task">TC Number</th>
-                                                <th class="action">TC Name</th>
-                                                <th class="action">Status</th>
-                                                <th class="action">Actions</th>
+                                    <!--                                    <div class="material-datatables">-->
+                                    <!--                                        <table class="table table-striped table-bordered table-hover"-->
+                                    <!--                                               datatable-->
+                                    <!--                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
+                                    <!--                                            <thead>-->
+                                    <!--                                            <tr>-->
+                                    <!--                                                <th class="task">Subject</th>-->
+                                    <!--                                                <th class="task">Proposer</th>-->
+                                    <!--                                                <th class="task">Purpose</th>-->
+                                    <!--                                                <th class="task">TC Number</th>-->
+                                    <!--                                                <th class="action">TC Name</th>-->
+                                    <!--                                                <th class="action">Status</th>-->
+                                    <!--                                                <th class="action">Actions</th>-->
 
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let justification of approvedJustifications let i= index; ">
+                                    <!--                                            </tr>-->
+                                    <!--                                            </thead>-->
+                                    <!--                                            <tbody>-->
+                                    <!--                                            <tr *ngFor="let justification of approvedJustifications let i= index; ">-->
 
-                                                <td>{{justification.subject}}</td>
-                                                <td>{{justification.proposer}}</td>
-                                                <td>{{justification.purpose}}</td>
-                                                <td>{{justification.tcNumber}}</td>
-                                                <td>{{justification.nameOfTC}}</td>
-                                                <td>  <span style=" font-size: 10px;"
-                                                            class="badge badge-success">Approved</span></td>
+                                    <!--                                                <td>{{justification.subject}}</td>-->
+                                    <!--                                                <td>{{justification.proposer}}</td>-->
+                                    <!--                                                <td>{{justification.purpose}}</td>-->
+                                    <!--                                                <td>{{justification.tcNumber}}</td>-->
+                                    <!--                                                <td>{{justification.nameOfTC}}</td>-->
+                                    <!--                                                <td>  <span style=" font-size: 10px;"-->
+                                    <!--                                                            class="badge badge-success">Approved</span></td>-->
 
-                                                <td>
-                                                    <a (click)="openModalToView(justification)"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View More</a> <br>
+                                    <!--                                                <td>-->
+                                    <!--                                                    <a (click)="openModalToView(justification)"-->
+                                    <!--                                                       class="btn btn-info tooltips"-->
+                                    <!--                                                       data-placement="top"-->
+                                    <!--                                                       data-original-title="Upload NWI">View More</a> <br>-->
 
 
-                                                </td>
+                                    <!--                                                </td>-->
 
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <!--                                            </tr>-->
+                                    <!--                                            </tbody>-->
+                                    <!--                                        </table>-->
+                                    <!--                                    </div>-->
 
                                 </div>
                             </div>
@@ -342,15 +334,12 @@
 
                                             <!-- ID Column -->
                                             <ng-container matColumnDef="subject">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference
+                                                    Number
+                                                </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
                                             </ng-container>
 
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="proposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposer}} </td>
-                                            </ng-container>
 
                                             <!-- Name Column -->
                                             <ng-container matColumnDef="purpose">
@@ -439,28 +428,9 @@
                           [formGroup]="formationRequestFormGroup">
                         <div class="form-body">
                             <div class="row">
+                                <div class="form-group col-12">
 
-                                <div class="form-group col-6">
-
-                                    <label><b>Date of Presentation</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'dateOfPresentation')">
-                                        <input type="date"
-                                               matInput
-                                               id="dateOfPresentation"
-                                               placeholder="Date of Presentation *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               formControlName="dateOfPresentation">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'dateOfPresentation')"
-                                                errorMsg="Please Select Presentation Date">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Name of TC</b></label>
+                                    <label><b>Proposed Name of TC</b></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(formationRequestFormGroup, 'nameOfTC')">
                                         <input type="text"
@@ -478,67 +448,12 @@
                             </div>
                             <div class="row">
 
-                                <div class="form-group col-6">
 
-                                    <label><b>Proposer</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'proposer')">
-                                        <input type="text"
-                                               matInput
-                                               id="proposer"
-                                               placeholder="Proposer *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               formControlName="proposer">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'proposer')"
-                                                errorMsg="Please Enter Name Of Proposer">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Reference number given by Secretariat</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'referenceNumber')">
-                                        <input type="text"
-                                               matInput
-                                               id="referenceNumber"
-                                               placeholder="Reference number *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               formControlName="referenceNumber">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'referenceNumber')"
-                                                errorMsg="Please Enter Reference number">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                            <div class="row">
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Subject</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'subject')">
-                                        <input type="text"
-                                               matInput
-                                               id="subject"
-                                               placeholder="Subject *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               formControlName="subject">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'subject')"
-                                                errorMsg="Please Enter Subject">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
 
                                     <label><b>Scope</b></label>
                                     <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'referenceNumber')">
+                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'scope')">
                                         <input type="text"
                                                matInput
                                                id="scope"
@@ -552,10 +467,8 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-
-
                             <div class="row">
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
                                     <label><b>Purpose and Justification</b></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(formationRequestFormGroup, 'purpose')">
@@ -570,9 +483,9 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
-
-
-                                <div class="form-group col-6">
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
                                     <label><b>Department</b></label>
                                     <mat-form-field>
 
@@ -588,137 +501,72 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="form-group col-6">
-                                    <label><b>Target Date</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'targetDate')">
-                                        <input
-                                                matInput
-
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input" formControlName="targetDate"
-                                                placeholder="Target Date *" type="date">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'targetDate')"
-                                                errorMsg="Please Enter Target Date">
-                                        </app-field-error-display>
+                                <div class="form-group col-12">
+                                    <label><b>Proposed TC Representation</b></label>
+                                    <mat-form-field>
+                                        <mat-label>Select at least three Tc Representations</mat-label>
+                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    [class.is-invalid]="formFormationRequest.proposedRepresentationArray.invalid && formFormationRequest.proposedRepresentationArray.touched"
+                                                    formControlName="proposedRepresentationArray" multiple>
+                                            <mat-option *ngFor="let option of options"
+                                                        [value]="option.value">{{ option.label }}</mat-option>
+                                        </mat-select>
                                     </mat-form-field>
-                                </div>
-                                <div class="form-group col-6">
-                                    <label><b>Program of work</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'programmeOfWork')">
-                                        <input
-                                                matInput
-
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="programmeOfWork"
-                                                placeholder="Program of work" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'programmeOfWork')"
-                                                errorMsg="Please Enter Program Of Work">
-                                        </app-field-error-display>
-                                    </mat-form-field>
+                                    <div *ngIf="formationRequestFormGroup.get('proposedRepresentationArray').invalid && (formationRequestFormGroup.get('proposedRepresentationArray').dirty || formationRequestFormGroup.get('proposedRepresentationArray').touched)">
+                                        <div *ngIf="formationRequestFormGroup.get('proposedRepresentationArray').errors.required">
+                                            Please select at least one option.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="form-group col-6">
-                                    <label><b>Liaison Organization</b><small> (Add multiple by separating with
-                                        comma)</small></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'liaisonOrganization')">
-                                        <input
-                                                matInput
-
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="liaisonOrganization"
-                                                placeholder="Liaison Organization" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'liaisonOrganization')"
-                                                errorMsg="Please Enter Liaison Organization">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
-                                    <label><b>Organization</b></label>
+                                <div class="form-group col-12">
+                                    <label><b>Organizations</b><small> (Add multiple by separating with
+                                        comma. Minimum 6)</small></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(formationRequestFormGroup, 'organization')">
-                                        <input
+                                        <textarea
                                                 matInput
-
                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                 class="form-control one-column-input"
                                                 formControlName="organization"
-                                                placeholder="Organization" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'organization')"
-                                                errorMsg="Please Enter Organisation">
-                                        </app-field-error-display>
+                                                placeholder="Organizations" type="text"></textarea>
+                                        <mat-error
+                                                *ngIf="formationRequestFormGroup.get('organization').hasError('required')">
+                                            At least 6 items are required
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="formationRequestFormGroup.get('organization').hasError('pattern')">
+                                            Please enter exactly 6 items separated by commas
+                                        </mat-error>
+
                                     </mat-form-field>
                                 </div>
-
                             </div>
                             <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>ISO/IEE/IEC mirror committee</b></label>
+                                    <mat-form-field class="example-full-width has-label"
+                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'isoCommittee')">
+                                        <textarea
+                                                matInput
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                formControlName="isoCommittee"
+                                                placeholder="ISO/IEE/IEC Mirror Committee" type="text"></textarea>
 
-                                <div class="form-group col-6">
-                                    <label><b>SO/IEE/IEC Mirror Committee </b></label>
-                                    <ng-multiselect-dropdown
-                                            [placeholder]="'Select ISO/IEE/IEC mirror committee'"
-                                            [settings]="dropdownSettings"
-                                            [data]="dropdownList"
-                                            (onSelect)="onItemSelect($event)"
-                                            (onSelectAll)="onSelectAll($event)">
-                                    </ng-multiselect-dropdown>
-
-
-                                </div>
-                                <div class="form-group col-6">
-                                    <label><b>Proposed TC Representation</b></label>
-                                    <ng-multiselect-dropdown
-                                            [placeholder]="'Select Proposed TC Representation'"
-                                            [settings]="dropdownSettings"
-                                            [data]="dropdownList"
-                                            (onSelect)="onItemSelect($event)"
-                                            (onSelectAll)="onSelectAll($event)"
-                                            [class.is-invalid]="formFormationRequest?.proposedRepresentationArray?.errors?.required
-                                                 && formFormationRequest?.proposedRepresentationArray?.touched"
-                                            formControlName="proposedRepresentationArray"
-                                            name="proposedRepresentationArray">
-                                    </ng-multiselect-dropdown>
-
-
-                                    <span *ngIf="formFormationRequest?.proposedRepresentationArray?.errors?.required
-                                        && formFormationRequest?.proposedRepresentationArray?.touched"
-                                          style="color: red;">Proposed TC Representation is required </span>
+                                    </mat-form-field>
                                 </div>
 
                                 <input type="hidden" formControlName="proposedRepresentation">
 
 
                             </div>
-
-                            <div class="form-group">
-                                <label><b>Attach Any Relevant Documents</b></label>
-                                <form>
-                                    <file-upload [(ngModel)]="uploadedFiles" style="background: inherit"
-                                                 name="uploadedFiles" fileslimit="1"
-                                                 required
-                                                 accept=".pdf"></file-upload>
-
-                                </form>
-                            </div>
-
                             <button class="btn btn-info" type="submit">
                                 Submit
                             </button>
-
-
                         </div>
                     </form>
                 </div>
@@ -743,26 +591,44 @@
                         <div class="form-body">
                             <div class="row">
 
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
 
-                                    <label><b>Date of Presentation</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'dateOfPresentation')">
-                                        <input type="date"
-                                               matInput
-                                               placeholder="Date of Presentation *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               ngModel="{{this.proposalRetrieved?.dateOfPresentation}}"
-
-                                               formControlName="dateOfPresentation">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'dateOfPresentation')"
-                                                errorMsg="Please Select Presentation Date">
-                                        </app-field-error-display>
-                                    </mat-form-field>
+                                    <label><b>Date of Application</b></label>
+                                    <input
+                                            aria-describedby="inputGroup-sizing-sm"
+                                            aria-label="Small"
+                                            class="form-control one-column-input" readonly
+                                            formControlName="dateOfPresentation"
+                                            ngModel="{{this.proposalRetrieved?.dateOfPresentation}}"
+                                            type="text">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>Proposer</b></label>
+                                    <input
+                                            aria-describedby="inputGroup-sizing-sm"
+                                            aria-label="Small"
+                                            class="form-control one-column-input" readonly
+                                            formControlName="userDetails"
+                                            ngModel="{{userDetails?.firstName + ' ' + userDetails?.lastName}}"
+                                            type="text">
                                 </div>
 
-                                <div class="form-group col-6">
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>Reference number</b></label>
+                                    <input aria-describedby="inputGroup-sizing-sm"
+                                           aria-label="Small"
+                                           class="form-control one-column-input" readonly
+                                           formControlName="referenceNumber"
+                                           ngModel="{{this.proposalRetrieved?.referenceNumber}}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-12">
 
                                     <label><b>Name of TC</b></label>
                                     <mat-form-field class="example-full-width has-label"
@@ -780,77 +646,20 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
+
                             </div>
+
+
                             <div class="row">
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Proposer</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'proposer')">
-                                        <input type="text"
-                                               matInput
-                                               placeholder="Proposer *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               ngModel="{{this.proposalRetrieved?.proposer}}"
-
-                                               formControlName="proposer">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'proposer')"
-                                                errorMsg="Please Enter Name Of Proposer">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Reference number given by Secretariat</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'referenceNumber')">
-                                        <input type="text"
-                                               matInput
-                                               placeholder="Reference number *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               ngModel="{{this.proposalRetrieved?.referenceNumber}}"
-
-                                               formControlName="referenceNumber">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'referenceNumber')"
-                                                errorMsg="Please Enter Reference number">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                            <div class="row">
-
-                                <div class="form-group col-6">
-
-                                    <label><b>Subject</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'subject')">
-                                        <input type="text"
-                                               matInput
-                                               placeholder="Subject *"
-                                               (ngModelChange)="textValidationType($event)"
-                                               ngModel="{{this.proposalRetrieved?.subject}}"
-                                               formControlName="subject">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'subject')"
-                                                errorMsg="Please Enter Subject">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
-
+                                <div class="form-group col-12">
                                     <label><b>Scope</b></label>
                                     <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'referenceNumber')">
+                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'scope')">
                                         <input type="text"
                                                matInput
                                                placeholder="Scope *"
                                                (ngModelChange)="textValidationType($event)"
-                                               ngModel="{{this.proposalRetrieved?.referenceNumber}}"
+                                               ngModel="{{this.proposalRetrieved?.scope}}"
 
                                                formControlName="scope">
                                         <app-field-error-display
@@ -863,7 +672,7 @@
 
 
                             <div class="row">
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
                                     <label><b>Purpose and Justification</b></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'purpose')">
@@ -880,15 +689,16 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
-                                <div class="form-group col-6">
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
                                     <label><b>Proposed TC Representation</b></label>
+
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'proposedRepresentation')">
                                         <input
                                                 matInput
                                                 ngModel="{{this.proposalRetrieved?.proposedRepresentation}}"
-
-
                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                 class="form-control one-column-input"
                                                 formControlName="proposedRepresentation"
@@ -899,69 +709,13 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
+
                             </div>
 
-                            <div class="row">
-                                <div class="form-group col-6">
-                                    <label><b>Target Date</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'targetDate')">
-                                        <input
-                                                matInput
-                                                ngModel="{{this.proposalRetrieved?.targetDate}}"
-
-
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input" formControlName="targetDate"
-                                                placeholder="Target Date *" type="date">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'targetDate')"
-                                                errorMsg="Please Enter Target Date">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-                                <div class="form-group col-6">
-                                    <label><b>Program of work</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'programmeOfWork')">
-                                        <input
-                                                matInput
-                                                ngModel="{{this.proposalRetrieved?.programmeOfWork}}"
-
-
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="programmeOfWork"
-                                                placeholder="Program of work" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'programmeOfWork')"
-                                                errorMsg="Please Enter Program Of Work">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-                            </div>
 
                             <div class="row">
-                                <div class="form-group col-6">
-                                    <label><b>Liaison Organization</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'liaisonOrganization')">
-                                        <input
-                                                matInput
-                                                ngModel="{{this.proposalRetrieved?.liaisonOrganization}}"
 
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="liaisonOrganization"
-                                                placeholder="Liaison Organization" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'liaisonOrganization')"
-                                                errorMsg="Please Enter Liaison Organization">
-                                        </app-field-error-display>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
                                     <label><b>Organization</b></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'organization')">
@@ -983,9 +737,7 @@
 
                             </div>
                             <div class="row">
-
-
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
                                     <label><b>Department</b></label>
                                     <mat-form-field>
                                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
@@ -993,64 +745,39 @@
                                                     formControlName="departmentId"
                                                     name="departmentId"
                                                     placeholder="{{selectedDepartment}}"
-                                                    (selectionChange)="update()"
-
                                                     [class.is-invalid]="formEditFormationRequest.departmentId.invalid && formEditFormationRequest.departmentId.touched">
-                                            <mat-option *ngFor="let department of departments"
-                                                        value="{{department.id}}">{{department.name}}</mat-option>
+                                            <mat-option *ngFor="let department of departments" [value]="department">
+                                                {{department.name}}
+                                            </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="form-group col-6">
-                                    <div *ngIf="display">
-                                    <label><b>SO/IEE/IEC Mirror Committee </b></label>
-                                    <ng-multiselect-dropdown
-                                            [settings]="dropdownSettings"
-                                            [data]="isoList"
-                                            (onSelect)="onItemSelect($event)"
-                                            (onSelectAll)="onSelectAll($event)">
-                                    </ng-multiselect-dropdown>
-                                    </div>
-
-
-                                </div>
-
-
                             </div>
-                            <div class="form-group">
-                                <div class="material-datatables table-responsive">
-                                    <table class="table table-striped table-bordered table-hover"
-                                           datatable
-                                           [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger4">
-                                        <thead>
-                                        <tr>
-                                            <th class="task">Document Name</th>
-                                            <th class="task">Action</th>
-
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr *ngFor="let doc of docs let i= index; ">
-
-                                            <td>{{doc.name}}</td>
-                                            <td>
-                                                <button class="btn btn-info tooltips"
-                                                        style="width: inherit"
-                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                        data-placement="top"
-                                                ><i
-                                                        class="fa fa-eye"></i> View
-                                                </button>
-                                            </td>
-
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>SO/IEE/IEC Mirror Committee</b></label>
+                                    <mat-form-field class="example-full-width has-label"
+                                                    [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'proposedRepresentation')">
+                                        <input
+                                                matInput
+                                                ngModel="{{this.proposalRetrieved?.proposedRepresentation}}"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                formControlName="proposedRepresentation"
+                                                placeholder="Proposed TC Representation *" type="text">
+                                        <app-field-error-display
+                                                [displayError]="isFieldValid(editFormationRequestFormGroup, 'proposedRepresentation')"
+                                                errorMsg="Please Enter Proposed TC Representation">
+                                        </app-field-error-display>
+                                    </mat-form-field>
                                 </div>
 
                             </div>
-
                             <input hidden formControlName="id" [ngModel]="this.proposalRetrieved?.id" name="id">
+
+                            <input hidden formControlName="departmentIdOriginal" [ngModel]="this.proposalRetrieved?.departmentId" name="departmentIdOriginal">
+
+
                             <ng-container [ngSwitch]="this.proposalRetrieved?.status">
                                 <ng-container *ngSwitchCase="'3'">
                                     <div class="row">
@@ -1608,7 +1335,7 @@
                         </ng-container>
 
 
-                        <button style="float: right" #closeModalC data-dismiss="modal" class="btn btn-danger">
+                        <button style="float: right" data-dismiss="modal" class="btn btn-danger">
                             Close
                         </button>
 

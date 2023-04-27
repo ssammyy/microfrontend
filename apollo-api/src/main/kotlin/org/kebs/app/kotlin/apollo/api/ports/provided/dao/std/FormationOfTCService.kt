@@ -8,10 +8,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.DepartmentRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.JustificationForTCRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.TechnicalCommitteeRepository
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -27,6 +29,8 @@ class FormationOfTCService(
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
     private val draftDocumentService: DraftDocumentService,
+    private val departmentRepository: DepartmentRepository,
+
 
     ) {
 
@@ -40,9 +44,13 @@ class FormationOfTCService(
 
     fun submitJustificationForFormationOfTC(justificationForTC: JustificationForTC): ProcessInstanceResponseValue {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val department = departmentRepository.findByIdOrNull(justificationForTC.departmentId)
         justificationForTC.createdOn = Timestamp(System.currentTimeMillis())
+        justificationForTC.dateOfPresentation = Timestamp(System.currentTimeMillis()).toString()
         justificationForTC.createdBy = loggedInUser.id
+        justificationForTC.proposer = loggedInUser.id.toString()
         justificationForTC.version = "1"
+        justificationForTC.referenceNumber = generateRequestNumber(department?.name)
         justificationForTC.status = 1  //uploaded awaiting decision
         justificationForTCRepository.save(justificationForTC)
         return ProcessInstanceResponseValue(
@@ -252,6 +260,23 @@ class FormationOfTCService(
         }
         val year = Calendar.getInstance()[Calendar.YEAR]
         return "$departmentAbbrv/TC/$finalValue:$year"
+    }
+
+
+    fun generateRequestNumber(departmentName: String?): String {
+        val allRequests = justificationForTCRepository.findAllByOrderByIdDesc()
+        var lastId: String? = "0"
+        var finalValue = 1
+        for (item in allRequests) {
+            lastId = item.id.toString()
+            break
+        }
+        if (lastId != "0") {
+            finalValue = (lastId?.toInt()!!)
+            finalValue += 1
+        }
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        return "$departmentName/TC/$finalValue:$year"
     }
 
 
