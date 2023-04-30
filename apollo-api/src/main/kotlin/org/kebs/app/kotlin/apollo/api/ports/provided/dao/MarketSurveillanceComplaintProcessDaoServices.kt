@@ -411,7 +411,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msConsumerComplaintViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
-        val complaintList = consumerComplaintsReportViewRepo.findFilteredConsumerComplaintReport(search.startDate, search.endDate, search.refNumber, search.assignIO, search.sectorID);
+        val complaintList = consumerComplaintsReportViewRepo.findFilteredConsumerComplaintReport(search.startDate, search.endDate, search.refNumber, search.assignIO, search.sectorID, search.regionID, search.departmentID);
         val sampleProductPage: PageImpl<ConsumerComplaintsReportViewEntity>? = complaintList?.size?.let { PageImpl(complaintList, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(complaintList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
 
@@ -443,7 +443,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msFieldInspectionSummaryViewSearchLists(page: PageRequest,search: FieldInspectionSummarySearch): ApiResponseModel {
-        val fieldInspectionSummaryList = fieldInspectionSummaryReportViewRepo.findFilteredFieldInspectionSummaryReport(search.startDate, search.endDate, search.assignIO, search.sectorID, search.outletName);
+        val fieldInspectionSummaryList = fieldInspectionSummaryReportViewRepo.findFilteredFieldInspectionSummaryReport(search.startDate, search.endDate, search.assignIO, search.sectorID, search.outletName, search.divisionName);
         val sampleProductPage: PageImpl<FieldInspectionSummaryReportViewEntity>? = fieldInspectionSummaryList?.size?.let { PageImpl(fieldInspectionSummaryList, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(fieldInspectionSummaryList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
 

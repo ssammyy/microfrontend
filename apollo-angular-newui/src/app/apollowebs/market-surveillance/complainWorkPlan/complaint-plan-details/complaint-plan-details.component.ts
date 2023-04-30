@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
+  AllComplaintsDetailsDto,
   ApprovalDto,
   BSNumberSaveDto,
   ChargeSheetDto,
@@ -72,6 +73,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   nonComplianceList: NonComplianceDto[];
+  isAssignedDateValid: boolean = false;
   active: Number = 0;
   averageCompliance: number = 0;
   totalNumberOfProducts: number = 0;
@@ -1677,6 +1679,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   };
 
   public workPlanInspection: WorkPlanInspectionDto;
+  public complaintInspection: AllComplaintsDetailsDto;
   public msCounties: {name: string, code: string}[];
 
   msRegions: RegionsEntityDto[] = null;
@@ -1872,6 +1875,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       complianceInspectionParameter: ['', Validators.required],
       measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
+      importerManufacturer: ['', Validators.required],
     });
 
     this.investInspectReportInspectorsForm = this.formBuilder.group({
@@ -2559,6 +2563,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
+    // this.msService.msComplaintDetails(referenceNumber).subscribe(
+    //     (data)=>{
+    //       this.complaintInspection = data;
+    //       console.log("Assigned Date: "+this.complaintInspection.complaintsDetails.assignedIODate);
+    //     },error => {
+    //       console.log("Complaint Details not found "+ error);
+    //     }
+    // );
     this.msService.msRegionListDetails().subscribe(
         (dataRegions: RegionsEntityDto[]) => {
           this.msRegions = dataRegions;
@@ -4435,22 +4447,22 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-    if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    }
-    else{
-      this.msService.showError("Please Fill in all the fields!");
-    }
+    // }
+    // else{
+    //   this.msService.showError("Please Fill in all the fields!");
+    // }
   }
 
   saveSampleSubmitted() {
 
-    if (this.dataSaveSampleSubmitParamList.length !== 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
@@ -4497,9 +4509,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-    } else {
-      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
-    }
+    // } else {
+    //   this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    // }
   }
 
   onClickSaveBSNumber(valid: boolean) {
@@ -5441,7 +5453,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
-          //window.$('#investInspectReportModal').modal('hide');
+          window.$('#investInspectReportModal').modal('hide');
           this.saveInitialReport();
         });
   }
@@ -5895,6 +5907,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportForm.patchValue(selectedClone);
     this.dataReportForm?.get('id').setValue(0);
     const paramDetails = selectedClone.productsList;
+    for (let i = 0; i < paramDetails.length; i++){
+      paramDetails[i].id = 0;
+    }
     this.dataSaveDataReportParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveDataReportParamList.push(paramDetails[i]);
@@ -5976,4 +5991,63 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
 
   }
+
+  getEndDate28(startDateStr){
+    const holidays: Date[] = [
+      new Date('2023-05-01'), // Labour Day
+      new Date('2023-06-01'), // Madaraka Day
+      new Date('2023-10-20'), // Mashujaa Day
+      new Date('2023-12-12'), // Jamhuri Day
+    ];
+    if (startDateStr == null){
+      startDateStr = this.msService.formatDate(new Date());
+      this.isAssignedDateValid = false;
+    }else if(startDateStr){
+      this.isAssignedDateValid = true;
+      //this.showTimelines = true;
+      console.log("Assigned Date in function: "+startDateStr);
+    }
+    //console.log("Date string passed to function: "+ startDateStr);
+    const numberOfDays = 28;
+    let daysLeft = numberOfDays;
+    // Attempt to convert the start date string to a Date object
+    startDateStr = this.msService.formatDate(new Date(Date.parse(startDateStr)))
+    //console.log("Date string after format date: "+ startDateStr);
+    let startDate = new Date(Date.parse(startDateStr));
+    //console.log("Formatted Date: "+ startDate);
+    //startDate = this.msService.formatDate(startDate)
+
+    // Check if the conversion was successful and the date string was in a valid format
+    // if (isNaN(startDate.getTime())) {
+    //   console.log('Invalid date format. The date must be in the format YYYY-MM-DD');
+    //
+    // }
+
+    const endDate = new Date(startDate.getTime()); // create a new date object with the same time as the start date
+    while (daysLeft > 0) {
+      const dayOfWeek = endDate.getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+      if (!isWeekend && !isHoliday) {
+        daysLeft--;
+      }
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // Check if endDate is a weekend, and add 1 day until it's not
+    while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // console.log("End date returned: "+ endDate);
+    // console.log("End date returned as string: "+ endDate.toISOString().substr(0, 10));
+
+    return endDate.toISOString().substr(0, 10);
+  }
+
+  iSTimelinesPassed(date: string): boolean {
+    const currentDate = new Date();
+    const targetDate = new Date(date);
+
+    return targetDate < currentDate;
+  }
+
 }

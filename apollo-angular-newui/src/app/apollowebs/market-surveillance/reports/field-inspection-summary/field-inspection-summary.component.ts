@@ -116,6 +116,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
       assignIO: ['', null],
       sectorID: ['', null],
       outletName: ['', null],
+      divisionName: ['', null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

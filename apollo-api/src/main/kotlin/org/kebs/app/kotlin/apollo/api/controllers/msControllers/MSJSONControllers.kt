@@ -306,7 +306,8 @@ class MSJSONControllers(
                 batchRefNumber = batchReferenceNo
                 yearCodeName = batchDetails.yearNameId?.yearName
                 dateSubmitted = commonDaoServices.getCurrentDate()
-
+                productName = workPlanProduct.productName
+                productBrand = workPlanProduct.productBrand
             }
             workPlanProduct.destructionClientEmail?.let {
                 commonDaoServices.sendEmailWithUserEmail(it,

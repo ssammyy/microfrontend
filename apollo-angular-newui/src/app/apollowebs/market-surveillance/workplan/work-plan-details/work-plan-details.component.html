@@ -1094,15 +1094,14 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus-->
-<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
-<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
-<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
 
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
-                                                 && workPlanInspection?.msPreliminaryReportStatus
-                                                "
+                                                 && workPlanInspection?.msPreliminaryReportStatus"
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1468,13 +1467,12 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-<!--                                            && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false-->
-<!--                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false-->
-<!--                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false-->
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
 
-                                                 && workPlanInspection?.msPreliminaryReportStatus
-                                                "
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
+                                                 && workPlanInspection?.msPreliminaryReportStatus"
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -4539,7 +4537,7 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Current Location</b> (Upload Chain of Command Doc)</label>
+                                                <label><b>Current Location</b> (Upload Chain of Custody Doc)</label>
                                                 <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="currentLocation"
@@ -6477,14 +6475,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>PACKAGING</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"-->
+                                        <input
                                                class="form-control two-column-input"
-                                               formControlName="packaging" name="packaging" required type="text">
-                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="packaging" name="packaging" type="text">
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6546,7 +6545,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONTENT DECLARED</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdContDecl"
                                                name="lbIdContDecl" type="text">
@@ -6558,7 +6558,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>BATCH NO</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdBatchNo"
                                                name="lbIdBatchNo" type="text">
@@ -6569,7 +6570,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ANY OTHER MARKING</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="lbIdAnyAomarking"
                                                name="lbIdAnyAomarking" type="text">
@@ -6581,17 +6583,19 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SCF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="scfNo"
-                                               name="scfNo" required type="text">
+                                               name="scfNo" type="text">
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>FILE REF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"-->
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="fileRefNumber" disabled
                                                name="fileRefNumber"  type="text">
@@ -6683,14 +6687,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONDITION</b> </label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="condition" name="condition" required
-                                               [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                              >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6723,28 +6728,30 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DESIGNATION</b></label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="designation" name="designation" required
-                                               [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                              >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ADDRESS</b> </label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="address" name="address" required
-                                               [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6826,17 +6833,18 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DISPOSAL</b> </label>
-                                        <select [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors"
+<!--                                        [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors"-->
+                                        <select
                                                 type="text" class="form-control two-column-input" formControlName="disposal" name="disposal" required>
                                             <option [value]="" selected>Please select</option>
                                             <option  [value]="'Return Sample'" selected>Return Sample</option>
                                             <option  [value]="'Destroy Sample'" selected>Destroy Sample</option>
                                         </select>
-                                        <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6845,14 +6853,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REMARKS</b></label>
+<!--                                        [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.errors"-->
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="remarks" name="remarks" required
-                                               [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.remarks.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.remarks.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="remarks" name="remarks"
+                                              >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.remarks.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.remarks.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6888,14 +6897,15 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <label><b>PARAMETERS</b></label>
+<!--                                            [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors"-->
                                             <input type="text" class="form-control two-column-input"
                                                    formControlName="parameters" name="parameters" required
-                                                   [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors">
-                                            <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">
-                                                <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is
-                                                    required
-                                                </div>
-                                            </div>
+                                                  >
+<!--                                            <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">-->
+<!--                                                <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is-->
+<!--                                                    required-->
+<!--                                                </div>-->
+<!--                                            </div>-->
 
                                         </div>
                                     </div>

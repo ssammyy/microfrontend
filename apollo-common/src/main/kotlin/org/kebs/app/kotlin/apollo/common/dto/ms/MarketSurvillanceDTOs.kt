@@ -1094,7 +1094,9 @@ data class ConsumerComplaintViewSearchValues(
         var assignIO: Long? = null,
         var startDate: Date? = null,
         var endDate: Date? = null,
-        var sectorID: Long? = null
+        var sectorID: Long? = null,
+        var regionID: String? = null,
+        var departmentID: String? = null,
 )
 
 data class FieldInspectionSummarySearch(
@@ -1104,6 +1106,7 @@ data class FieldInspectionSummarySearch(
         var endDate: Date? = null,
         var sectorID: Long? = null,
         var outletName: String? =null,
+        var divisionName: String? =null,
 )
 
 data class SeizeViewSearchValues(
@@ -1144,6 +1147,8 @@ data class SeizedGoodsViewSearchValues(
         var region: Long? = null,
         var complaintDepartment: Long? = null,
         var division: Long? = null
+
+
 )
 
 data class ComplaintAdviceRejectDto(

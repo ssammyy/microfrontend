@@ -4524,20 +4524,20 @@ export class WorkPlanDetailsComponent implements OnInit {
      }
    }
 
-    if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    } else {
-      this.msService.showError('Please Fill in all the fields!');
-    }
+    // } else {
+    //   this.msService.showError('Please Fill in all the fields!');
+    // }
   }
 
   saveSampleSubmitted() {
-    if (this.dataSaveSampleSubmitParamList.length !== 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
@@ -4585,9 +4585,9 @@ export class WorkPlanDetailsComponent implements OnInit {
           },
       );
 
-    } else {
-      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
-    }
+    // } else {
+    //   this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    // }
   }
 
   onClickSaveBSNumber(valid: boolean) {

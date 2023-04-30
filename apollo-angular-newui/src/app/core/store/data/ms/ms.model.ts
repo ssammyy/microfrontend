@@ -698,6 +698,9 @@ export class ConsumerComplaintViewSearchValues {
     endDate: Date;
     sectorID: number;
     outletName: string;
+    departmentID: string;
+    regionID: string;
+    divisionName: string;
 }
 
 export class SubmittedSamplesSummaryViewSearchValues {
@@ -717,6 +720,7 @@ export class SeizeViewSearchValues {
     nameOutlet: string;
     productsDueForDestruction: string;
     productsDueForRelease: string;
+
 }
 
 export class MsSeizedGoodsReportViewEntity {
@@ -738,6 +742,7 @@ export class MsSeizedGoodsReportViewEntity {
     dateSeizure: Date;
     dateDestructed: Date;
     dateRelease: Date;
+
 }
 
 export class SubmittedSamplesSummaryReportViewEntity {
@@ -847,6 +852,8 @@ export class ConsumerComplaintsReportViewEntity {
     assignedIo: number;
     transactionDate: Date;
     complaintDepartment: number;
+    region: string;
+    division: string;
 }
 
 export class ComplaintViewSearchValues {

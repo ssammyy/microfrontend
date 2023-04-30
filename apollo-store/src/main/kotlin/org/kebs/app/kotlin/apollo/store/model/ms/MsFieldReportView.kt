@@ -80,6 +80,10 @@ class MsFieldReportView : Serializable {
     @Column(name = "METHODOLOGY_EMPLOYED")
     var methodologyEmployed: String? = null
 
+    @Column(name = "SUMMARY_OF_FINDINGS")
+    @Basic
+    var summaryOfFindings: String? = null
+
     @Basic
     @Column(name = "ADDITIONAL_INFORMATION")
     var additionalInformation: String? = null

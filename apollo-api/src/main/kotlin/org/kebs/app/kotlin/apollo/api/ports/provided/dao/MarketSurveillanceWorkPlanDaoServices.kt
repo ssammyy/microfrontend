@@ -5360,6 +5360,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
+            summaryOfFindings = body.summaryOfFindings
             createdUserId = user.id
             conclusion = body.conclusion
             recommendations = body.recommendations
