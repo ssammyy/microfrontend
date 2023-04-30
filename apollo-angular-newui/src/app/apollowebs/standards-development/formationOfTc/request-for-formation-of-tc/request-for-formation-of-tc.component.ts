@@ -24,6 +24,12 @@ import {IDropdownSettings} from 'ng-multiselect-dropdown';
 import {LoggedInUser, selectUserInfo} from "../../../../core/store";
 import {Store} from "@ngrx/store";
 
+interface FormField {
+    id: string;
+    label: string;
+    control: FormControl;
+}
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
@@ -41,7 +47,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
     @Input() displayError: boolean;
 
     public itemId: string = "1";
-    public groupId: string = "draft";
     public type: string = "TCRelevantDocument";
 
     public dropdownSettings: IDropdownSettings = {};
@@ -71,22 +76,12 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     selectedOptions: string[] = [];
 
+    formFields: FormField[] = [];
 
-    isoList: any[] = ['ISO TC 72', 'ISO TC73', 'ISO TC 70', 'ISO TC69'];
+
 
     tasks: JustificationForTc[] = [];
-    displayedColumns: string[] = ['subject',  'purpose', 'nameOfTC', 'status', 'actions'];
-    displayedColumn: string[] = ['subject', 'purpose', 'nameOfTC', 'status', 'actions'];
-
-
-    dataSource!: MatTableDataSource<JustificationForTc>;
-    dataSourceB!: MatTableDataSource<JustificationForTc>;
-    dataSourceC!: MatTableDataSource<JustificationForTc>;
-
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatSort) sort!: MatSort;
-
-    public uploadedFiles: Array<File> = [];
+  public uploadedFiles: Array<File> = [];
 
     emailFormControl = new FormControl('', [
         Validators.required,
@@ -138,7 +133,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
     userLoggedInID: number;
     userProfile: LoggedInUser;
 
-    approvedJustifications: JustificationForTc[] = [];
 
 
     constructor(private formationOfTcService: FormationOfTcService,
@@ -150,8 +144,18 @@ export class RequestForFormationOfTCComponent implements OnInit {
                 private masterService: MasterService,
                 private route: ActivatedRoute,
     ) {
+
+
     }
 
+    id: any = 'New Proposals';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "New Proposals") {
+            this.standardDevelopmentService.reloadCurrentRoute()
+        }
+    }
 
     isFieldValid(form: FormGroup, field: string) {
         return !form.get(field).valid && form.get(field).touched;
@@ -180,6 +184,10 @@ export class RequestForFormationOfTCComponent implements OnInit {
         this.notifyService.showSuccess(message, title)
     }
 
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+    }
+
 
     ngOnInit(): void {
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -189,8 +197,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
         });
 
         this.getAllHofJustifications(true);
-        this.getAllHofJustificationsApproved()
-        this.getAllHofJustificationsRejected()
         this.getDepartments();
 
         this.dropdownSettings = {
@@ -208,11 +214,10 @@ export class RequestForFormationOfTCComponent implements OnInit {
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
             proposedRepresentationArray: [[], Validators.minLength(3)],
-            organization: ['', [Validators.required,Validators.pattern(/^([^,]+,){5}[^,]+$/)]],
+            // organization: ['', [Validators.required,Validators.pattern(/^([^,]+,){5,}[^,]+$/)]],
             proposedRepresentation: [''],
             departmentId: ['', Validators.required],
             isoCommittee: [''],
-
 
 
         });
@@ -225,21 +230,22 @@ export class RequestForFormationOfTCComponent implements OnInit {
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
             proposedRepresentationArray: [[], Validators.minLength(3)],
-            organization: ['', Validators.required],
             proposedRepresentation: [''],
             departmentId: ['', Validators.required],
-            isoCommitteeArray: [[], Validators.minLength(3)],
             isoCommittee: [''],
             id: ['', Validators.required],
             departmentIdOriginal: ['', Validators.required],
 
 
         });
+
     }
+
 
     onItemSelect(item: ListItem) {
         // console.log(item);
     }
+
 
     onSelectAll(items: any) {
         // console.log(items);
@@ -248,6 +254,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
     onSelectItem(item: ListItem) {
         // console.log(item);
     }
+
 
     public uploadProposalForTC(formDirective): void {
         this.isFormSubmitted = true;
@@ -258,7 +265,36 @@ export class RequestForFormationOfTCComponent implements OnInit {
             this.SpinnerService.show();
             const arrayTest = this.formationRequestFormGroup.controls['proposedRepresentationArray'].value;
             const myVar1 = arrayTest.toString()
-            this.formationRequestFormGroup.controls['proposedRepresentation'].setValue(myVar1);
+            const formValues = {};
+            let numValues = 0;
+            for (const field of this.formFields) {
+                if (field.control.value?.trim()) {
+                    const value = field.control.value.trim();
+                    if (value) {
+                        numValues += value.split(',').length;
+                        formValues[field.id] = value;
+                    }
+                }
+                else {
+                    this.showToasterError("Error", "Please enter proposed representations organisations")
+                    this.isFormSubmitted = false;
+                    this.loading = false;
+                    this.SpinnerService.hide();
+                    return;
+                }
+            }
+            if (numValues < 6) {
+                this.showToasterError("Error", "Please enter at least six proposed representations organisations")
+                this.isFormSubmitted = false;
+                this.loading = false;
+                this.SpinnerService.hide();
+                return;
+            }
+            let jsonString = JSON.stringify(formValues);
+            let cleanedJsonString = jsonString.replace(/\\/g, '').replace(/^{/, '').replace(/}$/, '');
+
+
+            this.formationRequestFormGroup.controls['proposedRepresentation'].setValue(cleanedJsonString);
             this.formationOfTcService.uploadProposalForTC(this.formationRequestFormGroup.value).subscribe(
                 (response) => {
                     this.showToasterSuccess("Success", "Successfully submitted proposal for formation of TC")
@@ -267,6 +303,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
                         formDirective.resetForm();
                         this.formationRequestFormGroup.reset()
                         this.isFormSubmitted = false;
+                        this.formFields = []
 
 
                     } else {
@@ -274,6 +311,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
                         formDirective.resetForm();
                         this.isFormSubmitted = false;
                         this.formationRequestFormGroup.reset()
+                        this.formFields = []
+
                         swal.fire({
                             title: 'Your Proposal Has Been Submitted.',
                             buttonsStyling: false,
@@ -283,8 +322,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
                             icon: 'success'
                         });
                         this.getAllHofJustifications(false);
-                        this.getAllHofJustificationsApproved()
-                        this.getAllHofJustificationsRejected()
                         this.hideModel()
                     }
                 },
@@ -294,9 +331,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
             )
         }
     }
-    departmentIdNew: Department;
-
-
     public editProposalForTC(formDirective): void {
         this.isFormSubmitted = true;
 
@@ -308,8 +342,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
             this.SpinnerService.show();
             const departmentIdOriginal = this.editFormationRequestFormGroup.controls['departmentIdOriginal'].value;
             const departmentIdNew = this.editFormationRequestFormGroup.controls['departmentId'].value;
-            if(departmentIdOriginal!=departmentIdNew.id)
-            {
+            if (departmentIdOriginal != departmentIdNew.id) {
                 let str = this.editFormationRequestFormGroup.controls['referenceNumber'].value;
                 str = str.replace(/^[^/]+/, departmentIdNew.name);
                 this.editFormationRequestFormGroup.controls['referenceNumber'].setValue(str);
@@ -323,7 +356,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
                         formDirective.resetForm();
                         this.editFormationRequestFormGroup.reset()
                         this.isFormSubmitted = false;
-
 
                     } else {
                         this.SpinnerService.hide();
@@ -339,8 +371,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
                             icon: 'success'
                         });
                         this.getAllHofJustifications(false);
-                        this.getAllHofJustificationsApproved()
-                        this.getAllHofJustificationsRejected()
                         this.hideModelB()
                     }
                 },
@@ -362,29 +392,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
             (response: JustificationForTc[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide()
-                this.dataSource = new MatTableDataSource(this.tasks);
+                this.rerender()
 
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide()
-
-            }
-        );
-    }
-
-    public getAllHofJustificationsApproved(): void {
-        this.SpinnerService.show()
-        this.formationOfTcService.getAllApprovedJustifications().subscribe(
-            (response: JustificationForTc[]) => {
-                this.tasks = response;
-                this.SpinnerService.hide()
-                this.dataSourceB = new MatTableDataSource(this.tasks);
-
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -395,24 +404,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
     }
 
 
-    public getAllHofJustificationsRejected(): void {
-        this.SpinnerService.show()
-        this.formationOfTcService.getAllRejectedJustifications().subscribe(
-            (response: JustificationForTc[]) => {
-                this.tasks = response;
-                this.SpinnerService.hide()
-                this.dataSourceC = new MatTableDataSource(this.tasks);
 
-                this.dataSourceC.paginator = this.paginator;
-                this.dataSourceC.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide()
-
-            }
-        );
-    }
 
     get formFormationRequest(): any {
         return this.formationRequestFormGroup.controls;
@@ -422,20 +414,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
         return this.editFormationRequestFormGroup.controls;
     }
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
 
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-        }
-        if (this.dataSourceB.paginator) {
-            this.dataSourceB.paginator.firstPage();
-        }
-        if (this.dataSourceC.paginator) {
-            this.dataSourceC.paginator.firstPage();
-        }
-    }
 
     public openModal(): void {
         const container = document.getElementById('main-container');
@@ -444,6 +423,14 @@ export class RequestForFormationOfTCComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         button.setAttribute('data-target', '#requestModal');
+
+        this.formationRequestFormGroup.controls['proposedRepresentationArray'].valueChanges.subscribe((selectedOptionsB: string[]) => {
+            this.formFields = selectedOptionsB?.map(option => ({
+                id: option,
+                label: ` ${option}`,
+                control: new FormControl()
+            }));
+        });
 
         // @ts-ignore
         container.appendChild(button);
@@ -488,8 +475,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
                     this.SpinnerService.hide();
                     this.uploadedFiles = [];
                     this.getAllHofJustifications(false);
-                    this.getAllHofJustificationsApproved()
-                    this.getAllHofJustificationsRejected()
                     this.hideModel()
 
                     swal.fire({
@@ -518,10 +503,9 @@ export class RequestForFormationOfTCComponent implements OnInit {
         button.setAttribute('data-target', '#editModal');
 
         this.getDepartmentName(String(this.proposalRetrieved.departmentId))
-        this.getSelectedUser(proposal.proposer)
+        this.getSelectedUser(proposal.createdBy)
 
         this.selectedOptions = proposal.proposedRepresentation.split(',').slice(0, 3);
-        this.getAllDocs(String(this.proposalRetrieved.id))
         this.editFormationRequestFormGroup.controls['departmentId'].setValue(this.proposalRetrieved.departmentId);
         // if(proposal.hofId!="null") {
         //
@@ -539,34 +523,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
         button.click();
     }
 
-    public openModalApproved(proposal: JustificationForTc): void {
-        const container = document.getElementById('main-container');
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.style.display = 'none';
-        this.proposalRetrieved = proposal;
-
-        this.getSelectedUser(proposal.hofId)
-
-        if (proposal.status == "4") {
-            this.getSelectedSpc(proposal.spcId)
-        }
-        if (proposal.status == "6") {
-            this.getSelectedSac(proposal.sacId)
-
-        }
-
-        button.setAttribute('data-toggle', 'modal');
-        button.setAttribute('data-target', '#viewModal');
-
-        this.getDepartmentName(String(this.proposalRetrieved.departmentId))
-        this.getAllDocs(String(this.proposalRetrieved.id))
-
-
-        // @ts-ignore
-        container.appendChild(button);
-        button.click();
-    }
 
     rerender(): void {
         this.dtElements.forEach((dtElement: DataTableDirective) => {
@@ -679,7 +635,16 @@ export class RequestForFormationOfTCComponent implements OnInit {
         return formatDate(date, this.dateFormat, this.language);
     }
 
+    minTextsSeparatedByCommaValidator(control: FormControl): { [s: string]: boolean } {
+        const value: string = control.value;
+        const texts: string[] = value ? value.split(',') : [];
 
+        if (texts.length < 6) {
+            return {minTextsSeparatedByComma: true};
+        }
+
+        return null;
+    }
 
 
 }

@@ -1259,7 +1259,10 @@ import { SearchPermitsComponent } from './apollowebs/qualityAssuranceAdmin/searc
 import { UserAccessComponent } from './apollowebs/admin/user-access/user-access.component';
 import { UserRolesComponent } from './apollowebs/system/user-roles/user-roles.component';
 import { UserPrivilegesComponent } from './apollowebs/system/user-privileges/user-privileges.component';
+import { AllProposalsComponent } from './apollowebs/standards-development/formationOfTc/all-proposals/all-proposals.component';
 import { IntStdNscApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component';
+import { ApprovedProposalsComponent } from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
+import { RejectedProposalsComponent } from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1892,7 +1895,10 @@ import { IntStdNscApprovalComponent } from './apollowebs/standards-development/i
         UserAccessComponent,
         UserRolesComponent,
         UserPrivilegesComponent,
+        AllProposalsComponent,
         IntStdNscApprovalComponent,
+        ApprovedProposalsComponent,
+        RejectedProposalsComponent,
 
     ],
     entryComponents: [LoaderComponent],
