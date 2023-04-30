@@ -2353,7 +2353,7 @@ export const routes: Routes = [
         children: [{path: '', component: ReviewJustificationOfTCComponent}],
     },
     {
-        path: 'reviewFeedbackSAC',
+        path: 'approvedProposals',
         component: AdminLayoutComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: ReviewFeedbackSacComponent}],

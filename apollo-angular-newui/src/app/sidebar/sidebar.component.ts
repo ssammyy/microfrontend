@@ -887,7 +887,7 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'SA',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
             },
-            ],
+        ],
         icontype: 'group',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'SAC',
@@ -920,13 +920,13 @@ export const ROUTES: RouteInfo[] = [
                 path: 'requestForFormationOfTC',
                 title: 'Request For Formation',
                 ab: 'RFF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'HOF_SD_READ']
             },
             {
                 path: 'hofReviewJustificationOfTC',
                 title: 'HOF Review',
                 ab: 'HOF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ','HOF_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ']
             },
             {
                 path: 'reviewJustificationOfTC',
@@ -935,10 +935,10 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ', 'SPC_SEC_SD_READ']
             },
             {
-                path: 'reviewFeedbackSAC',
-                title: 'SAC Review',
-                ab: 'SAC',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ']
+                path: 'approvedProposals',
+                title: 'Approved Proposals ',
+                ab: 'AP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ', 'SPC_SEC_SD_READ', 'TC_SEC_SD_READ', 'HOD_TWO_SD_READ']
             },
 
 
