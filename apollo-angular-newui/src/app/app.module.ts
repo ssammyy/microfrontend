@@ -1260,6 +1260,7 @@ import { UserAccessComponent } from './apollowebs/admin/user-access/user-access.
 import { UserRolesComponent } from './apollowebs/system/user-roles/user-roles.component';
 import { UserPrivilegesComponent } from './apollowebs/system/user-privileges/user-privileges.component';
 import { IntStdNscApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component';
+import { IntStdWebProposalComponent } from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1893,6 +1894,7 @@ import { IntStdNscApprovalComponent } from './apollowebs/standards-development/i
         UserRolesComponent,
         UserPrivilegesComponent,
         IntStdNscApprovalComponent,
+        IntStdWebProposalComponent,
 
     ],
     entryComponents: [LoaderComponent],

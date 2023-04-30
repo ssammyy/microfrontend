@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.CommentForm
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -26,6 +27,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
 import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
@@ -198,14 +201,16 @@ class IntStandardService(
             val recipient = s.email
             val user = s.name
             val userId=usersRepo.getUserId(s.email)
+            val userPhone=usersRepo.getUserPhone(s.email)
 
             val shs = IStandardStakeHolders()
             shs.name=user
             shs.email=recipient
             shs.draftId=draftNumber
             shs.dateOfCreation=Timestamp(System.currentTimeMillis())
-            shs.telephone="NA"
+            shs.telephone=userPhone
             shs.userId=userId
+            shs.status=0
             iStdStakeHoldersRepository.save(shs)
 
             val messageBody= "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
@@ -214,7 +219,7 @@ class IntStandardService(
             }
         }
 
-        val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber";
+
 //                val gson = Gson()
 //        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(targetUrl2) }
         val stakeholdersTwo = isAdoptionProposalDto.addStakeholdersList
@@ -230,7 +235,10 @@ class IntStandardService(
             st.draftId=draftNumber
             st.dateOfCreation=Timestamp(System.currentTimeMillis())
             st.telephone=phoneNumber
-            iStdStakeHoldersRepository.save(st)
+            st.status=0
+            val sid= iStdStakeHoldersRepository.save(st)
+            val pid= sid.id
+            val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber/$pid";
 
             val messageBody= "Dear $userN,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
             if (rec != null) {
@@ -309,8 +317,15 @@ class IntStandardService(
         return isAdoptionProposalRepository.getProposalDetails();
     }
 
-    fun getProposals(proposalId: Long): MutableList<ProposalDetails> {
-        return isAdoptionProposalRepository.getProposals(proposalId)
+
+    fun getProposals(proposalId: Long,commentId: Long): MutableList<ProposalDetails> {
+
+        return isAdoptionProposalRepository.getProposals(proposalId,commentId)
+    }
+
+    fun getWebProposals(): MutableList<ProposalDetails> {
+
+        return isAdoptionProposalRepository.getWebProposals()
     }
 
     fun getSessionProposals(): MutableList<ProposalDetails>? {
@@ -400,6 +415,13 @@ class IntStandardService(
                 comStdDraftRepository.save(comStdDraft)
             }?: throw Exception("REQUEST NOT FOUND")
 
+        iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
+            with(stakeHolder){
+               status=1
+            }
+            iStdStakeHoldersRepository.save(stakeHolder)
+        }?: throw Exception("USER NOT FOUND")
+
         val sub = "New Adoption Proposal "
         val rec = com.emailOfRespondent
         val userN = com.nameOfRespondent
@@ -414,6 +436,89 @@ class IntStandardService(
 
 
         println("Comment Submitted")
+    }
+
+    fun submitWebsiteComments(com: ProposalCommentsDto): CommentForm{
+        val variables: MutableMap<String, Any> = HashMap()
+        var  comDraftCommentsSaved = ComDraftComments();
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
+
+        val  comDraftComments = ComDraftComments();
+        comDraftComments.reason=com.reasons
+        comDraftComments.recommendations=com.recommendations
+        comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
+        comDraftComments.requestID=com.requestId
+        comDraftComments.draftID=com.draftId
+        comDraftComments.nameOfRespondent=com.nameOfRespondent
+        comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+        comDraftComments.emailOfRespondent=com.emailOfRespondent
+        comDraftComments.nameOfOrganization=com.nameOfOrganization
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+        val commentCounts=iStdStakeHoldersRepository.countComments(com.emailOfRespondent,com.draftId)
+        val toCheckCom: Long = 0
+        if (commentCounts == toCheckCom) {
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision=="Yes"){
+            newAdopt=adoptNumber+1
+            newNotAdopt=notAdoptNumber
+
+        }else{
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber+1
+        }
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
+
+
+            val st = IStandardStakeHolders()
+            st.name=com.nameOfRespondent
+            st.email=com.emailOfRespondent
+            st.draftId=com.draftId
+            st.dateOfCreation=Timestamp(System.currentTimeMillis())
+            st.telephone=com.phoneOfRespondent
+            st.status=1
+            val sid= iStdStakeHoldersRepository.save(st)
+
+            val sub = "New Adoption Proposal "
+            val rec = com.emailOfRespondent
+            val userN = com.nameOfRespondent
+            val kebsEmail = "tim@kebs.com"
+            val messageBody= "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
+                    "If you have additional information,Send to the email provided below. $kebsEmail"
+            if (rec != null) {
+                notifications.sendEmail(rec, sub, messageBody)
+            }
+
+            slFormResponse="Comment Saved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Saved"
+        }else{
+            slFormResponse="You have already commented on this proposal you can't make another comment on it"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Saved"
+        }
+
+        return CommentForm(slFormResponse,responseStatus,responseButton,response)
+
+
     }
 
     fun submitDraftComment(com: ProposalCommentsDto){
@@ -549,10 +654,11 @@ class IntStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
+        var dateOfRemark=Timestamp(System.currentTimeMillis())
         companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
-        companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        companyStandardRemarks.dateOfRemark = dateOfRemark
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "TC Secretary"
         companyStandardRemarks.standardType = "International Standard"
@@ -566,6 +672,7 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 1
+                        tcAcceptanceDate=dateOfRemark
 
 
                     }

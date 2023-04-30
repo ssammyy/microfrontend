@@ -25,6 +25,9 @@ data class StdLevyNotificationFormDTO(
 class NotificationForm (val responseMessage: String,val responseStatus: String,val responseButton: String,val responseMsg: String) {
 }
 
+class CommentForm (val responseMessage: String,val responseStatus: String,val responseButton: String,val responseMsg: String) {
+}
+
 class PaymentStatus (val responseStatus: Long) {
 }
 //class NotificationForm (val savedRowID: Long?, val entryNumber: String,val responseMessage: String) {

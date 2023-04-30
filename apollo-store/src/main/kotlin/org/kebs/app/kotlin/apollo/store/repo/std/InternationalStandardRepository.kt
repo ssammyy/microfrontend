@@ -437,6 +437,12 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 interface IStdStakeHoldersRepository : JpaRepository<IStandardStakeHolders, Long> {
     @Query(value = "SELECT NAME as name,EMAIL as email,TELEPHONE as telephone FROM SD_IS_STAKE_HOLDERS WHERE DRAFT_ID=:draftId  ", nativeQuery = true)
     fun getStakeHoldersList(@Param("draftId") draftId: Long?): MutableList<EmailList>
+
+    @Query(value = "SELECT COUNT(ID) as noOfRecords  FROM SD_IS_STAKE_HOLDERS WHERE EMAIL=:commentEmail AND DRAFT_ID=:draftId ", nativeQuery = true)
+    fun countComments(
+        @Param("commentEmail") commentEmail: String?,
+        @Param("draftId") draftId: Long?,
+    ): Long
 }
 
 interface ComStdJointCommitteeRepository : JpaRepository<ComStandardJointCommittee, Long> {
@@ -573,22 +579,38 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName,p.TC_SEC_NAME as tcSecEmail," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
-                "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE ) AND d.ID=:id AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+                "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst," +
+                "r.REQUESTOR_NAME as requesterName," +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,st.ID as stId,st.EMAIL as stEmail,st.NAME as stName,st.STATUS as stStatus,st.TELEPHONE as stTelephone " +
+                "FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN SD_IS_STAKE_HOLDERS st ON d.ID=st.DRAFT_ID WHERE" +
+                " TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE ) AND d.ID=:proposalId AND st.ID=:commentId  AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
     )
-    fun getProposals(id: Long): MutableList<ProposalDetails>
+    fun getProposals(proposalId: Long?,commentId: Long?): MutableList<ProposalDetails>
 
     @Query(
         value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName,p.TC_SEC_NAME as tcSecEmail," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN SD_IS_STAKE_HOLDERS h ON d.ID=h.DRAFT_ID" +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,h.ID as stId,h.EMAIL as stEmail,h.NAME as stName,h.STATUS as stStatus,h.TELEPHONE as stTelephone " +
+                "FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN SD_IS_STAKE_HOLDERS h ON d.ID=h.DRAFT_ID " +
                 " WHERE TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE ) AND h.USER_ID=:id AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
     )
     fun getSessionProposals(id: Long): MutableList<ProposalDetails>
+
+    @Query(
+        value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
+                "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName,p.TC_SEC_NAME as tcSecEmail," +
+                "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
+                "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType " +
+                "FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID" +
+                " WHERE TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE )  AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getWebProposals(): MutableList<ProposalDetails>
 
     @Query(
         value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +

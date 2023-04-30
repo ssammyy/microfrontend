@@ -141,15 +141,46 @@ export class StdIntStandardService {
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
-    public getProposals(proposalId: any): Observable<any> {
+    public getProposalsT(proposalId: any,commentId:any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSALS);
-        const params = new HttpParams().set('proposalId', proposalId);
+
+        return this.http.get<ISAdoptionProposal>(url, {
+             params: {'proposalId': proposalId,'commentId':commentId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getProposals(proposalId: any,commentId:any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSALS);
+        //const params = new HttpParams().set('proposalId', proposalId);
+        const urlAndPathVariables = `${url}/${proposalId}/${commentId}`;
+        return this.http.get<ISAdoptionProposal>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+        //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getApprovedProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+        const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
 
-    public getApprovedProposals(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+    public getWebProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_WEB_PROPOSALS);
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
@@ -416,9 +447,21 @@ export class StdIntStandardService {
         );
     }
 
-
     public submitDraftComments(comDraftComment: ThisProposalComment): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
+        const params = new HttpParams();
+        return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitWebsiteComments(comDraftComment: ThisProposalComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_WEB_COMMENTS);
         const params = new HttpParams();
         return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {

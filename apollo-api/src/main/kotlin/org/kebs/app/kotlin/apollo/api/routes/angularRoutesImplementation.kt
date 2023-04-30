@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -412,6 +413,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
         }
 
     }
+
 
     @Bean
     fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler) = router {
@@ -1029,5 +1031,23 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
         }
     }
+
+//    @Bean
+//    fun StandardDevelopmentRoutes(handler: StandardsLevyHandler) = router{
+//        "/api/v1/migration".nest {
+//            "/anonymous".nest{
+//                "/international_standard".nest {
+//                    GET("/getProposals/{proposalId}/{commentId}", handler::internationalProposal)
+//
+//                }
+//
+//            }
+//            "/international_standard".nest {
+//
+//            }
+//
+//        }
+//
+//    }
 
 }

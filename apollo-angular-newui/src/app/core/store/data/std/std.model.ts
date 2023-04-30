@@ -663,6 +663,7 @@ export class ThisProposalComment{
     adoptionAcceptableAsPresented: string;
     emailOfRespondent: string;
     phoneOfRespondent: string;
+    stakeHolderId:number;
 }
 export class PredefinedSDCommentsFields {
     standardNumber: string;
@@ -734,6 +735,11 @@ export interface ISAdoptionProposal {
     requesterName: string;
     departmentName: string;
     standardType: string;
+    stId: number;
+    stEmail: string;
+    stName: string;
+    stStatus: number;
+    stTelephone: string;
 }
 
 export interface ISJustificationProposal {

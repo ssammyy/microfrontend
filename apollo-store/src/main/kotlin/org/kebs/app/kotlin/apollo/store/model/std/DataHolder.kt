@@ -479,6 +479,11 @@ interface ProposalDetails{
     fun getDepartmentName(): String?
     fun getStandardType(): String?
     fun getTcAcceptanceDate(): Timestamp?
+    fun getStId(): Long?
+    fun getStEmail(): String?
+    fun getStName(): String?
+    fun getStStatus(): Long?
+    fun getStTelephone(): String?
 }
 interface PermitsAwarded{
     fun getId(): Long?

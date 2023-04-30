@@ -1,22 +1,22 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.awt.print.Book
 import javax.servlet.http.HttpServletResponse
+
 
 @RestController
 //@CrossOrigin(origins = ["http://localhost:4200"])
@@ -180,11 +180,16 @@ class IntStandardController(
         return internationalStandardService.getProposal()
     }
 
-    @GetMapping("/anonymous/international_standard/getProposals")
+//    @RequestMapping(path = ["/mno/objectKey/{id}/{name}"], method = [RequestMethod.GET])
+//    fun getBook(@PathVariable id: Int, @PathVariable name: String?): Book? {
+//        // code here
+//    }
+
+    @GetMapping("/anonymous/international_standard/getProposal/{proposalId}/{commentId}")
     @ResponseBody
-    fun getProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    fun getProposals(@PathVariable proposalId: Long, @PathVariable commentId: Long): MutableList<ProposalDetails>
     {
-        return internationalStandardService.getProposals(proposalId)
+        return internationalStandardService.getProposals(proposalId,commentId)
     }
 
     @GetMapping("/international_standard/getSessionProposals")
@@ -192,6 +197,13 @@ class IntStandardController(
     fun getSessionProposals(): MutableList<ProposalDetails>?
     {
         return internationalStandardService.getSessionProposals()
+    }
+
+    @GetMapping("/anonymous/international_standard/getWebProposals")
+    @ResponseBody
+    fun getWebProposals(): MutableList<ProposalDetails>?
+    {
+        return internationalStandardService.getWebProposals()
     }
 
 
@@ -275,6 +287,15 @@ class IntStandardController(
     {
 
         return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(intDraftCommentDto))
+
+    }
+
+    @PostMapping("/anonymous/international_standard/submitWebsiteComments")
+    fun submitWebsiteComments(@RequestBody intDraftCommentDto: ProposalCommentsDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitWebsiteComments(intDraftCommentDto))
 
     }
 
