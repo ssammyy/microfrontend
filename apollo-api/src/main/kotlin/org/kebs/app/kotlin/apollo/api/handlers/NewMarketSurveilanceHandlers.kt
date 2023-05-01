@@ -2300,7 +2300,7 @@ class NewMarketSurveillanceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanSendingEmailDetailsApprovalHOFStatus(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanSendingEmailDetailsApprovalHODStatus(referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }

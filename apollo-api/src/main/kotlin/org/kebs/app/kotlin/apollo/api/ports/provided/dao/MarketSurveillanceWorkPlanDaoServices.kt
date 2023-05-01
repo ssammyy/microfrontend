@@ -1400,11 +1400,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             when {
                 body.approvalStatus -> {
                     hodApproveSendingEmailStatus= map.activeStatus
-                    remarkStatusValue = "APPROVED BY HOD"
+                    remarkStatusValue = "APPROVED BY HOD/RM"
                 }
                 else -> {
                     hodApproveSendingEmailStatus= map.inactiveStatus
-                    remarkStatusValue = "REJECTED BY HOD"
+                    remarkStatusValue = "REJECTED BY HOD/RM"
                 }
             }
         }

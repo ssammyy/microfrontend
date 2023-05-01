@@ -872,7 +872,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/final-remarks-seized", handler::updateWorkPlanScheduleFinalRemarkOnSized)
                         "/hof".nest {
                             PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
-                            PUT("/approval-sending-email", handler::updateWorkPlanScheduleApproval)
+                            PUT("/approval-sending-email", handler::updateWorkPlanSendingEmailApprovalHOF)
                             PUT(
                                 "/approval-preliminary-report",
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF
@@ -883,6 +883,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             )
                         }
                         "/hod".nest {
+                            PUT("/approval-sending-email", handler::updateWorkPlanSendingEmailApprovalHOD)
                             PUT("/assign-hof", handler::updateWorkPlanByAssigningHof)
                             PUT(
                                 "/approval-preliminary-report",
