@@ -142,6 +142,7 @@ export class ComplaintMonitoringComponent implements OnInit {
         this.msService.loadAllSeizeReportList(String(page), String(records)).subscribe(
             (dataResponse: ApiResponseModel) => {
                 if (dataResponse.responseCode === '00') {
+                    console.log("Seized goods found successfully");
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
                     this.loadedData = dataResponse?.data as MsSeizedGoodsReportViewEntity[];
                     this.totalCount = this.loadedData.length;

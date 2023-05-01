@@ -13,156 +13,115 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
+import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+import {formatDate} from "@angular/common";
+import {UserRegister} from "../../../../shared/models/user";
+import {MasterService} from "../../../../core/store/data/master/master.service";
+import {ActivatedRoute} from "@angular/router";
+import {Department} from "../../../../core/store/data/std/std.model";
 
 @Component({
-  selector: 'app-hof-review-proposal',
-  templateUrl: './hof-review-proposal.component.html',
-  styleUrls: ['./hof-review-proposal.component.css']
+    selector: 'app-hof-review-proposal',
+    templateUrl: './hof-review-proposal.component.html',
+    styleUrls: ['./hof-review-proposal.component.css']
 })
 export class HofReviewProposalComponent implements OnInit {
 
-  tasks: JustificationForTc[] = [];
-  displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
-  displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions','approve','reject'];
+    tasks: JustificationForTc[] = [];loading = false;
+    loadingText: string;
+    proposalRetrieved: JustificationForTc;
+    dtOptions: DataTables.Settings = {};
+    dtOptionsB: DataTables.Settings = {};
 
-  dataSource!: MatTableDataSource<JustificationForTc>;
-  dataSourceB!: MatTableDataSource<JustificationForTc>;
-  dataSourceC!: MatTableDataSource<JustificationForTc>;
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  loading = false;
-  loadingText: string;
-  proposalRetrieved: JustificationForTc;
-
-
-  dtOptions: DataTables.Settings = {};
-  dtOptionsB: DataTables.Settings = {};
-
-  @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtTrigger4: Subject<any> = new Subject<any>();
-
-  docs !: Document[];
-  blob: Blob;
+    docs !: Document[];
+    blob: Blob;
     stdApproveOrRejectWithReason: FormGroup;
 
     selectedProposal: number;
 
-
-  constructor(private formationOfTcService: FormationOfTcService,
-              private notifyService: NotificationService,
-              private SpinnerService: NgxSpinnerService,
-              private formBuilder: FormBuilder,
-  ) {
-  }
-  showToasterSuccess(title: string, message: string) {
-    this.notifyService.showSuccess(message, title)
-  }
-
-  ngOnInit(): void {
-    this.getAllHofJustifications(true);
-    this.getAllHofJustificationsApproved()
-    this.getAllHofJustificationsRejected()
-      this.stdApproveOrRejectWithReason = this.formBuilder.group({
-          comments: ['', Validators.required],
-          id: ['', Validators.required],
-
-      });
-  }
-
-  public getAllHofJustifications(pageRefresh: boolean): void {
-
-    this.loadingText = "Retrieving Please Wait ...."
-
-    this.loading = pageRefresh;
-    this.SpinnerService.show()
-    this.formationOfTcService.getAllHofJustifications().subscribe(
-        (response: JustificationForTc[]) => {
-          this.tasks = response;
-          this.SpinnerService.hide()
-          this.dataSource = new MatTableDataSource(this.tasks);
-
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-          this.SpinnerService.hide()
-
-        }
-    );
-  }
-
-  public getAllHofJustificationsApproved(): void {
-    this.SpinnerService.show()
-    this.formationOfTcService.getAllSpcJustifications().subscribe(
-        (response: JustificationForTc[]) => {
-          this.tasks = response;
-          this.SpinnerService.hide()
-          this.dataSourceB = new MatTableDataSource(this.tasks);
-
-          this.dataSourceB.paginator = this.paginator;
-          this.dataSourceB.sort = this.sort;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-          this.SpinnerService.hide()
-
-        }
-    );
-  }
+    public userDetails!: UserRegister;
+    selectedDepartment: string;
 
 
-  public getAllHofJustificationsRejected(): void {
-    this.SpinnerService.show()
-    this.formationOfTcService.getAllJustificationsRejectedBySpc().subscribe(
-        (response: JustificationForTc[]) => {
-          this.tasks = response;
-          this.SpinnerService.hide()
-          this.dataSourceC = new MatTableDataSource(this.tasks);
+    dateFormat = "yyyy-MM-dd  hh:mm";
+    language = "en";
 
-          this.dataSourceC.paginator = this.paginator;
-          this.dataSourceC.sort = this.sort;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-          this.SpinnerService.hide()
-
-        }
-    );
-  }
+    public departments !: Department[];
+    public departmentSelected !: Department[];
 
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    constructor(private formationOfTcService: FormationOfTcService,
+                private notifyService: NotificationService,
+                private SpinnerService: NgxSpinnerService,
+                private standardDevelopmentService: StandardDevelopmentService,
+                private masterService: MasterService,
+                private route: ActivatedRoute,
+                private formBuilder: FormBuilder,
+    ) {
     }
-    if (this.dataSourceB.paginator) {
-      this.dataSourceB.paginator.firstPage();
-    }
-    if (this.dataSourceC.paginator) {
-      this.dataSourceC.paginator.firstPage();
-    }
-  }
 
-  public openModal(): void {
-    const container = document.getElementById('main-container');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.style.display = 'none';
-    button.setAttribute('data-toggle', 'modal');
-    button.setAttribute('data-target', '#requestModal');
+    showToasterSuccess(title: string, message: string) {
+        this.notifyService.showSuccess(message, title)
+    }
 
-    // @ts-ignore
-    container.appendChild(button);
-    button.click();
-  }
+    ngOnInit(): void {
+        this.getAllHofJustifications(true);
+
+        this.stdApproveOrRejectWithReason = this.formBuilder.group({
+            comments: ['', Validators.required],
+            id: ['', Validators.required],
+
+        });
+    }
+
+    id: any = 'New Proposals';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "New Proposals") {
+            this.standardDevelopmentService.reloadCurrentRoute()
+        }
+    }
+
+    public getAllHofJustifications(pageRefresh: boolean): void {
+
+        this.loadingText = "Retrieving Please Wait ...."
+
+        this.loading = pageRefresh;
+        this.SpinnerService.show()
+        this.formationOfTcService.getAllHofJustifications().subscribe(
+            (response: JustificationForTc[]) => {
+                this.tasks = response;
+                this.SpinnerService.hide()
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.SpinnerService.hide()
+
+            }
+        );
+    }
+
+
+    public openModal(): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        button.setAttribute('data-target', '#requestModal');
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+    }
+
     public onOpenModalDecision(task: JustificationForTc, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -170,13 +129,13 @@ export class HofReviewProposalComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
 
-        if(mode ==="approve") {
+        if (mode === "approve") {
             this.proposalRetrieved = task;
             button.setAttribute('data-target', '#recommendation');
             this.selectedProposal = this.proposalRetrieved.id
         }
 
-        if(mode ==="reject") {
+        if (mode === "reject") {
             this.proposalRetrieved = task;
             button.setAttribute('data-target', '#rejectRecommendation');
             this.selectedProposal = this.proposalRetrieved.id
@@ -187,94 +146,98 @@ export class HofReviewProposalComponent implements OnInit {
 
     }
 
-  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
-  public hideModel() {
-    this.closeModal?.nativeElement.click();
-  }
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
 
-  @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
+    @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
 
-  public hideModelB() {
-    this.closeModalB?.nativeElement.click();
-  }
+    public hideModelB() {
+        this.closeModalB?.nativeElement.click();
+    }
 
-  @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
-  public hideModelC() {
-    this.closeModalC?.nativeElement.click();
-  }
+    @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+
+    public hideModelC() {
+        this.closeModalC?.nativeElement.click();
+    }
 
     @ViewChild('closeModalD') private closeModalD: ElementRef | undefined;
+
     public hideModelD() {
         this.closeModalD?.nativeElement.click();
     }
+
     get formApproveOrRejectWithReason(): any {
         return this.stdApproveOrRejectWithReason.controls;
     }
 
-  public openModalToView(proposal: JustificationForTc): void {
-    const container = document.getElementById('main-container');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.style.display = 'none';
-    this.proposalRetrieved = proposal;
+    public openModalToView(proposal: JustificationForTc): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        this.proposalRetrieved = proposal;
 
-    button.setAttribute('data-toggle', 'modal');
-    button.setAttribute('data-target', '#viewModal');
+        button.setAttribute('data-toggle', 'modal');
+        button.setAttribute('data-target', '#viewModal');
 
-    this.getAllDocs(String(this.proposalRetrieved.id))
+        this.getSelectedUser(proposal.createdBy)
+        this.getDepartmentName(proposal.departmentId)
 
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+    }
 
-    // @ts-ignore
-    container.appendChild(button);
-    button.click();
-  }
-
-  rerender(): void {
-    this.dtElements.forEach((dtElement: DataTableDirective) => {
-      if (dtElement.dtInstance)
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.clear();
-          dtInstance.destroy();
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.clear();
+                    dtInstance.destroy();
+                });
         });
-    });
-    setTimeout(() => {
-      this.dtTrigger.next();
-      this.dtTrigger4.next();
-    });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger4.next();
+        });
 
-  }
+    }
 
-  public getAllDocs(proposalId: string): void {
-    this.formationOfTcService.getAdditionalDocuments(proposalId).subscribe(
-        (response: Document[]) => {
-          this.docs = response;
-          this.rerender()
-
-
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-    );
-  }
+    public getAllDocs(proposalId: string): void {
+        this.formationOfTcService.getAdditionalDocuments(proposalId).subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
 
 
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.formationOfTcService.viewDocsById(pdfId).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
 
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          window.open(downloadURL, '_blank');
 
-          // this.pdfUploadsView = dataPdf;
-        },
-    );
-  }
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.formationOfTcService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
+
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
     showToasterError(title: string, message: string) {
         this.notifyService.showError(message, title)
 
@@ -283,6 +246,8 @@ export class HofReviewProposalComponent implements OnInit {
 
     public approveProposal(formDirective): void {
         if (this.stdApproveOrRejectWithReason.valid) {
+
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -292,30 +257,31 @@ export class HofReviewProposalComponent implements OnInit {
             });
 
             swalWithBootstrapButtons.fire({
-                title: 'Are you sure your want to approve this proposal?',
+                title: 'Are you sure your want to recommend this proposal?',
                 text: 'You won\'t be able to reverse this!',
                 icon: 'success',
                 showCancelButton: true,
-                confirmButtonText: 'Approve!',
-                cancelButtonText: 'Reject!',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.SpinnerService.show();
+                    this.loading = true
+                    this.loadingText = "Recommending Proposal"
+                    this.SpinnerService.show()
                     this.formationOfTcService.approveJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
                         (response) => {
                             this.SpinnerService.hide();
                             swalWithBootstrapButtons.fire(
-                                'Approved!',
-                                'Proposal Successfully Approved!',
+                                'Recommended!',
+                                'Proposal Successfully Recommended!',
                                 'success'
                             );
                             this.SpinnerService.hide();
                             this.hideModelB()
-                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Recommended');
                             this.getAllHofJustifications(false);
-                            this.getAllHofJustificationsApproved()
-                            this.getAllHofJustificationsRejected()
+
                             formDirective.resetForm()
                         },
                     );
@@ -349,7 +315,7 @@ export class HofReviewProposalComponent implements OnInit {
             });
 
             swalWithBootstrapButtons.fire({
-                title: 'Are you sure your want to reject this proposal?',
+                title: 'Are you sure you do not want to recommend this proposal?',
                 text: 'You won\'t be able to reverse this!',
                 icon: 'warning',
                 showCancelButton: true,
@@ -358,21 +324,22 @@ export class HofReviewProposalComponent implements OnInit {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.SpinnerService.show();
+                    this.loading = true
+                    this.loadingText = "Not Recommending Proposal"
+                    this.SpinnerService.show()
                     this.formationOfTcService.rejectJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
                         (response) => {
                             this.SpinnerService.hide();
                             swalWithBootstrapButtons.fire(
-                                'Rejected!',
-                                'Proposal Successfully Rejected!',
+                                'Not Recommend!',
+                                'Proposal Successfully Not Recommended!',
                                 'success'
                             );
                             this.SpinnerService.hide();
                             this.hideModelD()
-                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Not Recommended');
                             this.getAllHofJustifications(false);
-                            this.getAllHofJustificationsApproved()
-                            this.getAllHofJustificationsRejected()
+
                             formDirective.resetForm()
 
                         },
@@ -396,6 +363,47 @@ export class HofReviewProposalComponent implements OnInit {
 
     }
 
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
+    }
+
+    private getSelectedUser(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.userDetails = data;
+                }
+            );
+
+        });
+    }
+
+    public getDepartments(): void {
+        this.standardDevelopmentService.getDepartmentsb().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getDepartmentName(proposalId: string): void {
+        this.standardDevelopmentService.getDepartmentById(proposalId).subscribe(
+            (response: Department[]) => {
+                this.departmentSelected = response;
+                for (let h = 0; h < response.length; h++) {
+                    this.selectedDepartment = response[h].name;
+                }
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
 
 
 }

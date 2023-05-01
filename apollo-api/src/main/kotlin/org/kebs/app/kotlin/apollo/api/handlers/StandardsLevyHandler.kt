@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootKra
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -36,6 +38,7 @@ class StandardsLevyHandler(
     private val validator: Validator,
     private val commonDaoServices: CommonDaoServices,
     private val service: StandardsLevyDaoService,
+    private val internationalStandardService: IntStandardService
 ) : AbstractValidationHandler() {
 
 
@@ -106,7 +109,7 @@ class StandardsLevyHandler(
      * Returns:
      * @return ServerResponse with payload as @see RequestResult
      */
-     fun  processReceiveSL2Payment(req: ServerRequest): ServerResponse {
+    fun processReceiveSL2Payment(req: ServerRequest): ServerResponse {
 
         return try {
 
@@ -124,7 +127,7 @@ class StandardsLevyHandler(
             when {
                 errors.allErrors.isEmpty() -> {
 
-                    val requestBody = body.request?: throw ExpectedDataNotFound("Missing request value")
+                    val requestBody = body.request ?: throw ExpectedDataNotFound("Missing request value")
                     KotlinLogging.logger { }.info { "Payment Body 4 $requestBody" }
                     val response = service.processSl2Payments(requestBody)
                     ServerResponse.ok().body(response)
@@ -212,5 +215,27 @@ class StandardsLevyHandler(
 //            onErrors(e.message)
 //        }
 //    }
-
+//    fun internationalProposal(req: ServerRequest): ServerResponse {
+//        try {
+//            req.pathVariable("proposalId").toLongOrNull()
+//                ?.let { proposalId ->
+//                    req.pathVariable("commentId").toLongOrNull()
+//                        ?.let { commentId ->
+//                            internationalStandardService.getProposals(proposalId, commentId)
+//                                .let { return ServerResponse.ok().body(it) }
+//                        }
+//                        ?: throw InvalidValueException("Valid value for commentId required")
+//
+//                }
+//                ?: throw InvalidValueException("Valid value for proposalId required")
+//
+//
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+//
+//        }
+//
+//    }
 }

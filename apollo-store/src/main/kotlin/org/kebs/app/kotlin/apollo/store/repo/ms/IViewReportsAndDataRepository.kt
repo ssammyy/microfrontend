@@ -112,7 +112,9 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
                 "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
                 "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
                 "     (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
-                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
+                "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
+                "   (:regionID is null or a.REGION =:regionID)",
         nativeQuery = true
     )
     fun findFilteredConsumerComplaintReport(
@@ -120,7 +122,9 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
         @Param("endDate") endDate: Date?,
         @Param("refNumber") refNumber: String?,
         @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?
+        @Param("sectorID") sectorID: Long?,
+        @Param("regionID") regionID: String?,
+        @Param("departmentID") departmentID: String?
     ): List<ConsumerComplaintsReportViewEntity>?
 }
 
@@ -188,7 +192,8 @@ interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<Fiel
         value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
                 "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
-                "AND (:outletName is null or a.NAME_OUTLET =:outletName)",
+                "AND (:outletName is null or a.NAME_OUTLET =:outletName)\n" +
+                "AND (:divisionName is null or a.DIVISION =:divisionName)",
         nativeQuery = true
     )
     fun findFilteredFieldInspectionSummaryReport(
@@ -196,7 +201,8 @@ interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<Fiel
         @Param("endDate") endDate: Date?,
         @Param("assignIO") assignIO: Long?,
         @Param("sectorID") sectorID: Long?,
-        @Param("outletName") outletName: String?
+        @Param("outletName") outletName: String?,
+        @Param("divisionName") divisionName: String?
     ): List<FieldInspectionSummaryReportViewEntity>?
 }
 

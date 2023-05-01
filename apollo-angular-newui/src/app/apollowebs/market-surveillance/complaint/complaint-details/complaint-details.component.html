@@ -380,24 +380,46 @@
                                     <b class="text-secondary">{{complaintInspection?.complaintsDetails?.status}}</b>
                                 </div>
                                 <br/>
-                                <div *ngIf="complaintInspection?.complaintsDetails?.timelineEndDate!=null">
-                                    <b>TIMELINES STATUS:</b>
-                                    <div>
-                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue"
-                                           class="text-success">IN-TIME</b>
-                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false"
-                                           class="text-danger">OVER-DUE</b>
+<!--                                <div *ngIf="getEndDate28(complaintInspection?.complaintsDetails?.timelineStartDate)!=null-->
+<!--                                && complaintInspection?.complaintsDetails?.assignedIOStatus">-->
+<!--                                    <b>TIMELINES STATUS:</b>-->
+<!--                                    <div>-->
+<!--                                        <b *ngIf="!iSTimelinesPassed(getEndDate28(complaintInspection?.complaintsDetails?.timelineStartDate))"-->
+<!--                                           class="text-success">IN-TIME</b>-->
+<!--                                        <b *ngIf="iSTimelinesPassed(getEndDate28(complaintInspection?.complaintsDetails?.timelineStartDate))"-->
+<!--                                           class="text-danger">OVER-DUE</b>-->
+<!--                                    </div>-->
+<!--                                    <b>Started TimeLine</b>-->
+<!--                                    <div>-->
+<!--                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>-->
+<!--                                    </div>-->
+<!--                                    <b>Targeted TimeLine</b>-->
+<!--                                    <div>-->
+<!--                                        <b class="text-secondary">{{getEndDate28(complaintInspection?.complaintsDetails?.timelineStartDate)| date}}</b>-->
+<!--                                    </div>-->
+<!--                                    <br/>-->
+<!--                                </div>-->
+                                <div *ngIf="showTimelines && isAssignedDateValid">
+                                    <div *ngIf="complaintInspection?.complaintsDetails?.assignedIODate && complaintInspection?.complaintsDetails?.assignedIOStatus">
+                                        <b>TIMELINES STATUS:</b>
+                                        <div>
+                                            <b *ngIf="!iSTimelinesPassed(getEndDate28(complaintInspection?.complaintsDetails?.assignedIODate))"
+                                               class="text-success">IN-TIME</b>
+                                            <b *ngIf="iSTimelinesPassed(getEndDate28(complaintInspection?.complaintsDetails?.assignedIODate))"
+                                               class="text-danger">OVER-DUE</b>
+                                        </div>
+                                        <b>Started TimeLine</b>
+                                        <div>
+                                            <b class="text-secondary">{{complaintInspection?.complaintsDetails?.assignedIODate| date}}</b>
+                                        </div>
+                                        <b>Targeted TimeLine</b>
+                                        <div>
+                                            <b class="text-secondary">{{getEndDate28(complaintInspection?.complaintsDetails?.assignedIODate)| date}}</b>
+                                        </div>
+                                        <br/>
                                     </div>
-                                    <b>Started TimeLine</b>
-                                    <div>
-                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>
-                                    </div>
-                                    <b>Targeted TimeLine</b>
-                                    <div>
-                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineEndDate| date}}</b>
-                                    </div>
-                                    <br/>
                                 </div>
+
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">

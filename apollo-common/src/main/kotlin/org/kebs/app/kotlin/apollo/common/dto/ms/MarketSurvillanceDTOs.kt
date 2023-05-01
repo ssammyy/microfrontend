@@ -639,7 +639,8 @@ data class InspectionInvestigationReportDto(
         var version: Int? = null,
         var createdBy: String? = null,
         var createdOn: Timestamp? = null,
-        var changesMade: String? = null
+        var changesMade: String? = null,
+        var summaryOfFindings: String? = null
 )
 
 data class KebsOfficersName (
@@ -817,6 +818,7 @@ data class PreliminaryReportItemsDto(
 data class WorkPlanProductDto(
         var id: Long? = 0,
         var productName: String? = null,
+        var productBrand: String? = null,
         var referenceNo: String? = null,
         var recommendation: List<RecommendationDto>? = null,
         var destructionRecommended: Boolean? = null,
@@ -1100,7 +1102,9 @@ data class ConsumerComplaintViewSearchValues(
         var assignIO: Long? = null,
         var startDate: Date? = null,
         var endDate: Date? = null,
-        var sectorID: Long? = null
+        var sectorID: Long? = null,
+        var regionID: String? = null,
+        var departmentID: String? = null,
 )
 
 data class FieldInspectionSummarySearch(
@@ -1110,6 +1114,7 @@ data class FieldInspectionSummarySearch(
         var endDate: Date? = null,
         var sectorID: Long? = null,
         var outletName: String? =null,
+        var divisionName: String? =null,
 )
 
 data class SeizeViewSearchValues(
@@ -1150,6 +1155,8 @@ data class SeizedGoodsViewSearchValues(
         var region: Long? = null,
         var complaintDepartment: Long? = null,
         var division: Long? = null
+
+
 )
 
 data class ComplaintAdviceRejectDto(
@@ -1264,7 +1271,8 @@ data class ComplaintsDetailsDto(
         var timelineEndDate: Date? = null,
         var timelineOverDue: Boolean? = null,
         var standardTitle: String? = null,
-        var standardNumber: String? = null
+        var standardNumber: String? = null,
+        var assignedIODate: Date? = null
 
 
 )

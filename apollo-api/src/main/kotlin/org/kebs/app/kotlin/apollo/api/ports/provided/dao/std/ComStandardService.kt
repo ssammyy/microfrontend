@@ -922,15 +922,18 @@ class ComStandardService(
     }
 
     fun getStdEditing(): MutableList<ComStandard> {
-        return companyStandardRepository.getStdEditing()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return companyStandardRepository.getStdEditing(loggedInUser.id)
     }
 
     fun getStdEditDrafting(): MutableList<ComStandard> {
-        return companyStandardRepository.getStdEditDrafting()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return companyStandardRepository.getStdEditDrafting(loggedInUser.id)
     }
 
     fun getStdEditProofreading(): MutableList<ComStandard> {
-        return companyStandardRepository.getStdEditProofreading()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return companyStandardRepository.getStdEditProofreading(loggedInUser.id)
     }
 
     fun getStdForApproval(): MutableList<ComStandard> {
@@ -1198,6 +1201,9 @@ class ComStandardService(
 
     fun getAppStdPublishing(): MutableList<ComStandard> {
         return companyStandardRepository.getAppStdPublishing()
+    }
+    fun getNSCStdPublishing(): MutableList<ComStandard> {
+        return companyStandardRepository.getNSCStdPublishing()
     }
 
     fun getAppStd(): MutableList<ComStandard> {

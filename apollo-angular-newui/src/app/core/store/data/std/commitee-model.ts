@@ -89,6 +89,8 @@ export interface Committee_Draft {
 }
 
 export interface Committee_Draft_With_Name {
+
+    id: number;
     cdid: number;
     pdid: number;
     cdname: string;
@@ -98,6 +100,10 @@ export interface Committee_Draft_With_Name {
     approvalstatus: string;
     numberofcomments: string;
     ks_NUMBER: string;
+    organization: string;
+    proposal_TITLE: string;
+    circulation_DATE: string;
+    closing_DATE: string;
 
 }
 
@@ -118,6 +124,11 @@ export interface PublicReviewDraftWithName {
     number_OF_COMMENTS: string;
     ks_NUMBER: string;
     var_FIELD_1: string;
+
+    organization: string;
+    proposal_TITLE: string;
+    circulation_DATE: string;
+    closing_DATE: string;
 
 
 }

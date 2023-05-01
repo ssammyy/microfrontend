@@ -44,6 +44,27 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
+    public getEditorDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_EDITORS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getDraughtsManDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_DRAUGHTSMANS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getProofReaderDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_PROOFREADERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+
+
+
     public getIntStandardProposals(): Observable<NwaRequestList[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_ADOPTION_PROPOSAL_REQUEST);
         const params = new HttpParams();
@@ -120,15 +141,46 @@ export class StdIntStandardService {
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
-    public getProposals(proposalId: any): Observable<any> {
+    public getProposalsT(proposalId: any,commentId:any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSALS);
-        const params = new HttpParams().set('proposalId', proposalId);
+
+        return this.http.get<ISAdoptionProposal>(url, {
+             params: {'proposalId': proposalId,'commentId':commentId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getProposals(proposalId: any,commentId:any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSALS);
+        //const params = new HttpParams().set('proposalId', proposalId);
+        const urlAndPathVariables = `${url}/${proposalId}/${commentId}`;
+        return this.http.get<ISAdoptionProposal>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+        //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getApprovedProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+        const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
 
-    public getApprovedProposals(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+    public getWebProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_WEB_PROPOSALS);
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
@@ -232,6 +284,21 @@ export class StdIntStandardService {
         return this.http.get<ISCheckRequirements>(url, {params}).pipe();
     }
 
+    public approveProofReadLevel(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
+
     public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_PROOFREAD_STANDARD);
         const params = new HttpParams();
@@ -273,6 +340,18 @@ export class StdIntStandardService {
 
     public approveInternationalStandard(isDraftDecisionStd: ISDraftDecisionStd): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_EDITED_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecisionStd>(url, isDraftDecisionStd, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public approveInternationalStandardNSC(isDraftDecisionStd: ISDraftDecisionStd): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_NSC_STANDARD_DRAFT);
         const params = new HttpParams();
         return this.http.post<ISDraftDecisionStd>(url, isDraftDecisionStd, {params}).pipe(
             map(function (response: any) {
@@ -368,9 +447,21 @@ export class StdIntStandardService {
         );
     }
 
-
     public submitDraftComments(comDraftComment: ThisProposalComment): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
+        const params = new HttpParams();
+        return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitWebsiteComments(comDraftComment: ThisProposalComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_WEB_COMMENTS);
         const params = new HttpParams();
         return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {

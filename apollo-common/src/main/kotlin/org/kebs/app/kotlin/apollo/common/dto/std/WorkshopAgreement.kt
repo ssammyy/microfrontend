@@ -192,6 +192,14 @@ class ISJustificationDecisions(
 ){
 
 }
+class ISHopDecision(
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("requestId") val requestId: Long,
+    @JsonProperty("id") val id: Long
+){
+
+}
 class ISDraftDecisions(
     @JsonProperty("accentTo") val accentTo: String,
     @JsonProperty("proposalId") val proposalId: Long,
@@ -200,10 +208,25 @@ class ISDraftDecisions(
     @JsonProperty("comments") val comments: String,
     @JsonProperty("requestId") val requestId: Long,
     @JsonProperty("standardType") val standardType: String,
-    @JsonProperty("id") val id: Long
+    @JsonProperty("draftStatus") val draftStatus: String,
+    @JsonProperty("coverPageStatus") val coverPageStatus: String,
+    @JsonProperty("id") val id: Long,
+    @JsonProperty("assignedTo") val assignedTo: Long
 ){
 
 }
+
+class ISDecisions(
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("id") val id: Long,
+    @JsonProperty("standardType") val standardType: String,
+){
+
+}
+
 class ISDrDecisions(
     @JsonProperty("proposalId") val proposalId: Long,
     @JsonProperty("draftId") val draftId: Long,
@@ -501,6 +524,7 @@ data class ISDraftDto(
     var proposalId:Long?=null,
     var justificationNo:Long?=null,
     var id:Long,
+    var assignedTo:Long,
     var title:String?=null,
     var scope:String?=null,
     var normativeReference:String?=null,

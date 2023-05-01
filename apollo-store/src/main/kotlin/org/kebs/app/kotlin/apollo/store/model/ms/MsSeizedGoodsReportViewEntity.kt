@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "MS_SEIZED_GOODS_REPORT_VIEW", schema = "APOLLO", catalog = "")
-class   MsSeizedGoodsReportViewEntity : Serializable {
+class MsSeizedGoodsReportViewEntity : Serializable {
     @Id
     @Column(name = "ID")
     var id: Long? = null

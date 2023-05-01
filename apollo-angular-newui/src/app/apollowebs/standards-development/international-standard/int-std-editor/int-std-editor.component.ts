@@ -385,10 +385,33 @@ export class IntStdEditorComponent implements OnInit {
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;
+                    this.showToasterSuccess(data.httpStatus, `Standard Draft Uploaded`);
+                    this.onClickUploadCoverPages(comStdDraftID)
+
+                },
+            );
+
+        }
+
+    }
+
+    onClickUploadCoverPages(comStdDraftID: string) {
+        if (this.uploadedCoverPages.length > 0) {
+            const file = this.uploadedCoverPages;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.stdComStandardService.uploadCoverPages(comStdDraftID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedCoverPages = null;
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'International Standard Draft Uploaded',
+                        html:'Documents Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',

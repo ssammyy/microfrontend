@@ -52,12 +52,14 @@ class MSJSONControllers(
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
-    private val companyProfileRepo: ICompanyProfileRepository
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
+    private val sampleSubmitParameterRepo: ISampleSubmitParameterRepository,
 ){
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/work-plan/file/save")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("referenceNo") referenceNo: String,
@@ -117,6 +119,18 @@ class MSJSONControllers(
                     "SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         successfulOrUnsuccessfulAppealDocID = fileDocSaved!!.id
+                    }
+                    "CHAIN_OF_CUSTODY" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        chainOfCustodyDocID = fileDocSaved!!.id
+                    }
+                    "FOLLOW_UP_ACTION_DOC" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        followUpActionDocID = fileDocSaved!!.id
+                    }
+                    "WORKPLAN_END_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        workplanEndFileDocID = fileDocSaved!!.id
                     }
                 }
             }
@@ -292,7 +306,8 @@ class MSJSONControllers(
                 batchRefNumber = batchReferenceNo
                 yearCodeName = batchDetails.yearNameId?.yearName
                 dateSubmitted = commonDaoServices.getCurrentDate()
-
+                productName = workPlanProduct.productName
+                productBrand = workPlanProduct.productBrand
             }
             workPlanProduct.destructionClientEmail?.let {
                 commonDaoServices.sendEmailWithUserEmail(it,
@@ -503,17 +518,18 @@ class MSJSONControllers(
 
         when (SSFFileSaved.first.status) {
             map.successStatus -> {
-                val SSFLabParamList = SSFFileSaved.second.id.let { msWorkPlanDaoService.findSSFLabParamsBySSFID(it) }
+                val SSFLabParamList = SSFFileSaved.second.id.let { msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
                 SSFLabParamList?.forEach { paramRemove ->
                     val result: SampleSubmissionItemsDto? = body.parametersList?.find { actor -> actor.id == paramRemove.id }
                     if (result == null) {
-                        dataReportParameterRepo.deleteById(paramRemove.id)
+                        sampleSubmitParameterRepo.deleteById(paramRemove.id)
                     }
                 }
 
                 body.parametersList?.forEach { param ->
-                    msWorkPlanDaoService.workPlanInspectionDetailsAddSSFLabParams(param, SSFFileSaved.second, map, loggedInUser)
+                    msFuelDaoServices.addSampleSubmissionParamAdd(param, SSFFileSaved.second, map, loggedInUser)
                 }
+
                 return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {

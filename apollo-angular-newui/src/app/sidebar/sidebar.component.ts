@@ -834,15 +834,15 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'isApproveDraftStd',
-                title: 'Edit Draft',
-                ab: 'ED',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+                title: 'Editing Tasks',
+                ab: 'ET',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
             },
             {
                 path: 'isStdDraughting',
-                title: 'Drafting',
+                title: 'Draughting',
                 ab: 'SD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ', 'EDITOR_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ']
             },
             {
                 path: 'isStdProofReading',
@@ -862,6 +862,12 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'ES',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
             },
+            {
+                path: 'isUploadStd',
+                title: 'Upload Standard',
+                ab: 'US',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
 
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
@@ -869,6 +875,41 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ'],
         collapse: 'publish',
     },
+    {
+        path: '',
+        title: 'SAC LIST',
+        type: 'sub',
+
+        children: [
+            {
+                path: 'isSacApproval',
+                title: 'Standards for Approval',
+                ab: 'SA',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
+            },
+        ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ'],
+        collapse: 'SAC',
+    },
+    {
+        path: '',
+        title: 'NSC SD',
+        type: 'sub',
+
+        children: [
+            {
+                path: 'isNscApproval',
+                title: 'Standards for Approval',
+                ab: 'NSC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ']
+            },
+        ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ'],
+        collapse: 'NSC',
+    },
+
     {
         path: '',
         title: 'Formation Of A TC',
@@ -879,13 +920,13 @@ export const ROUTES: RouteInfo[] = [
                 path: 'requestForFormationOfTC',
                 title: 'Request For Formation',
                 ab: 'RFF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'HOF_SD_READ']
             },
             {
                 path: 'hofReviewJustificationOfTC',
-                title: 'HOD Review',
-                ab: 'HOD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ']
+                title: 'HOF Review',
+                ab: 'HOF',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ']
             },
             {
                 path: 'reviewJustificationOfTC',
@@ -894,10 +935,10 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ', 'SPC_SEC_SD_READ']
             },
             {
-                path: 'reviewFeedbackSAC',
-                title: 'SAC Review',
-                ab: 'SAC',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ']
+                path: 'approvedProposals',
+                title: 'Approved Proposals ',
+                ab: 'AP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ', 'SPC_SEC_SD_READ', 'TC_SEC_SD_READ', 'HOD_TWO_SD_READ']
             },
 
 
@@ -1132,18 +1173,6 @@ export const ROUTES: RouteInfo[] = [
                 title: 'View Justification',
                 ab: 'VJ',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
-            },
-            {
-                path: 'isSacApproval',
-                title: 'SAC Tasks',
-                ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ', 'SAC_SEC_SD_READ']
-            },
-            {
-                path: 'isUploadStd',
-                title: 'Upload Standard',
-                ab: 'US',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
             },
             {
                 path: 'intStandardLists',

@@ -59,6 +59,10 @@ class FieldInspectionSummaryReportViewEntity : Serializable {
     var nameOutlet: String? = null
 
     @Basic
+    @Column(name = "DIVISION")
+    var division: String? = null
+
+    @Basic
     @Column(name = "NO_SAMPLES_DRAWN_SUBMITTED")
     var noSamplesDrawnSubmitted: String? = null
 

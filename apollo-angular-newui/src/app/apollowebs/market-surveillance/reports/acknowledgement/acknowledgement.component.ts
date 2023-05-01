@@ -112,6 +112,8 @@ export class AcknowledgementComponent implements OnInit {
       refNumber: ['', null],
       assignIO: ['', null],
       sectorID: ['', null],
+      regionID: ['', null],
+      departmentID: ['', null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

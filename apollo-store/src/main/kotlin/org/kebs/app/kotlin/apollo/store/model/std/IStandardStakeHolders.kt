@@ -42,6 +42,10 @@ class IStandardStakeHolders {
     @Basic
     var userId: Long?=null
 
+    @Column(name="STATUS")
+    @Basic
+    var status: Long?=null
+
 
 
 }

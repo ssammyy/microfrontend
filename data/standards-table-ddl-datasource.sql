@@ -1138,6 +1138,111 @@ end;
 
 create index SD_STD_DRAFT_SAC_UPLOADS_idx on SD_STD_DRAFT_SAC_UPLOADS (COM_DRAFT_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
+alter table SD_COM_STANDARD
+    ADD
+        (
+        DRAFT_STATUS VARCHAR2(200),
+        COVER_PAGE_STATUS VARCHAR2(200)
+        );
+/
+alter table SD_COM_STANDARD
+    ADD
+        (
+        ASSIGNED_TO NUMBER(2)
+        );
+/
+alter table SD_COM_STD_DRAFT
+    ADD
+        (
+        DRAFT_STATUS VARCHAR2(200),
+        COVER_PAGE_STATUS VARCHAR2(200)
+        );
+/
+create  table CFG_SD_CATEGORIES
+(
+    id                   number   not null primary key,
+    NAME           varchar(350 char),
+    CREATED_ON          TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE
+)
+/
+create sequence CFG_SD_CATEGORIES_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger CFG_SD_CATEGORIES_trg
+    before
+        insert
+    on CFG_SD_CATEGORIES
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select CFG_SD_CATEGORIES_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create  table CFG_SD_SUB_CATEGORIES
+(
+    id                   number   not null primary key,
+    NAME           varchar(350 char),
+    STATUS           NUMBER(2),
+    CATEGORY_ID      NUMBER REFERENCES CFG_SD_CATEGORIES (ID),
+    CREATED_ON          TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE
+)
+/
+create sequence CFG_SD_SUB_CATEGORIES_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger CFG_SD_SUB_CATEGORIES_trg
+    before
+        insert
+    on CFG_SD_SUB_CATEGORIES
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select CFG_SD_SUB_CATEGORIES_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index CFG_SD_SUB_CATEGORIES_idx on CFG_SD_SUB_CATEGORIES (CATEGORY_ID, status) TABLESPACE qaimssdb_idx;
+
+
+create  table CFG_SD_STAKE_HOLDERS
+(
+    id                   number   not null primary key,
+    NAME           varchar(350 char),
+    EMAIL           varchar(350 char),
+    TELEPHONE           varchar(350 char),
+    STATUS           NUMBER(2),
+    SUB_CATEGORY_ID      NUMBER REFERENCES CFG_SD_SUB_CATEGORIES (ID),
+    CREATED_ON          TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE
+)
+/
+create sequence CFG_SD_STAKE_HOLDERS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger CFG_SD_STAKE_HOLDERS_trg
+    before
+        insert
+    on CFG_SD_STAKE_HOLDERS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select CFG_SD_STAKE_HOLDERS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index CFG_SD_STAKE_HOLDERS_idx on CFG_SD_STAKE_HOLDERS (SUB_CATEGORY_ID, status) TABLESPACE qaimssdb_idx;
 
 
 

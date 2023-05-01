@@ -663,6 +663,7 @@ export class ThisProposalComment{
     adoptionAcceptableAsPresented: string;
     emailOfRespondent: string;
     phoneOfRespondent: string;
+    stakeHolderId:number;
 }
 export class PredefinedSDCommentsFields {
     standardNumber: string;
@@ -734,6 +735,11 @@ export interface ISAdoptionProposal {
     requesterName: string;
     departmentName: string;
     standardType: string;
+    stId: number;
+    stEmail: string;
+    stName: string;
+    stStatus: number;
+    stTelephone: string;
 }
 
 export interface ISJustificationProposal {
@@ -936,6 +942,7 @@ export interface ComStdDraftEdit{
     companyName: string;
     companyPhone: string;
     standardType: string;
+    assignedTo: number;
 }
 
 export interface IStandardDraftEdit {
@@ -1054,7 +1061,12 @@ export interface ISJustificationDecision {
     approvalID: bigint;
     comments: string;
 }
-
+export interface ISHopDecision{
+    comments: string;
+    id: number;
+    requestId: number;
+    draftId: number;
+}
 export interface ISDraftDecision {
     comments: string;
     accentTo: string;
@@ -1064,6 +1076,9 @@ export interface ISDraftDecision {
     requestId: number;
     draftId: number;
     standardType: string;
+    draftStatus: string;
+    coverPageStatus: string;
+    assignedTo: number;
 }
 
 export interface ISDraftDecisionStd {
@@ -2710,7 +2725,7 @@ export interface RolesEntityDtos{
 }
 
 export interface JustificationStatus {
-    justificationStatus: number;
+    statusType: number;
 }
 
 

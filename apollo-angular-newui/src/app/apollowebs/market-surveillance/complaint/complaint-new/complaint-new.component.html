@@ -1210,43 +1210,43 @@
 
                 </div>
                 <div class="row input-row">
-<!--                    <div class="col">-->
-<!--                        <div class="form-group" style="margin-top: 3%">-->
-<!--                            <label class="input-placeholder" for="town">Nearest Town/Area</label>-->
-<!--                            <br>-->
-<!--                            <ng-container *ngIf="town$ | async as apps">-->
-<!--                                <select (ngModelChange)="updateSelectedTown()"-->
-<!--                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"-->
-<!--                                        formControlName="town" id="town"-->
-<!--                                        name="town" required="required" style="width: 100%; height: 60%">-->
-<!--                                    <option ngValue="null" selected>Please select</option>-->
-<!--                                    <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
-<!--                                            [ngValue]="app.id"-->
-<!--                                            class="dropdown-item">{{app.town}}</option>-->
-<!--                                </select>-->
-<!--                                <div *ngIf="submitted && formStepThreeForm.town.errors" class="invalid-feedback">-->
-<!--                                    <div *ngIf="formStepThreeForm.town.errors.required">The town is required</div>-->
-<!--                                </div>-->
-<!--                            </ng-container>-->
-<!--                        </div>-->
-<!--                    </div>-->
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder" for="town">Nearest Town/Area</label>
                             <br>
                             <ng-container *ngIf="town$ | async as apps">
-                                <input list="towns" [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
-                                       formControlName="town" id="town" name="town" required="required" style="width: 100%; height: 60%">
-                                <datalist id="towns">
-                                    <option *ngFor="let app of apps | filterPipe: {status: true, countyId: selectedCounty}"
-                                            [value]="app.town">{{app.town}}</option>
-                                </datalist>
+                                <select (ngModelChange)="updateSelectedTown()"
+                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
+                                        formControlName="town" id="town"
+                                        name="town" required="required" style="width: 100%; height: 60%">
+                                    <option ngValue="null" selected>Please select</option>
+                                    <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                            [ngValue]="app.id"
+                                            class="dropdown-item">{{app.town}}</option>
+                                </select>
                                 <div *ngIf="submitted && formStepThreeForm.town.errors" class="invalid-feedback">
                                     <div *ngIf="formStepThreeForm.town.errors.required">The town is required</div>
                                 </div>
                             </ng-container>
                         </div>
                     </div>
+<!--                    <div class="col">-->
+<!--                        <div class="form-group" style="margin-top: 3%">-->
+<!--                            <label class="input-placeholder" for="town">Nearest Town/Area</label>-->
+<!--                            <br>-->
+<!--                            <ng-container *ngIf="town$ | async as apps">-->
+<!--                                <input list="towns" [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"-->
+<!--                                       formControlName="town" id="town" name="town" required="required" style="width: 100%; height: 60%">-->
+<!--                                <datalist id="towns">-->
+<!--                                    <option *ngFor="let app of apps | filterPipe: {status: true, countyId: selectedCounty}"-->
+<!--                                            [value]="app.town">{{app.town}}</option>-->
+<!--                                </datalist>-->
+<!--                                <div *ngIf="submitted && formStepThreeForm.town.errors" class="invalid-feedback">-->
+<!--                                    <div *ngIf="formStepThreeForm.town.errors.required">The town is required</div>-->
+<!--                                </div>-->
+<!--                            </ng-container>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">

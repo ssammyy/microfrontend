@@ -48,6 +48,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
     proposalId: string;
+    commentId: string;
     documentDTOs: DocumentDTO[] = [];
     docDetails: DocView[] = [];
   constructor(
@@ -65,10 +66,11 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
       this.activatedRoute.paramMap.subscribe(
           rs => {
               this.proposalId = rs.get('proposalId');
+              this.commentId = rs.get('cid');
 
           },
       );
-      this.getProposals(this.proposalId);
+      this.getProposals(this.proposalId,this.commentId);
       //console.log(this.proposalId);
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
@@ -87,7 +89,8 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
           draftId: null,
           adoptionAcceptableAsPresented:null,
           emailOfRespondent:null,
-          phoneOfRespondent:null
+          phoneOfRespondent:null,
+          stakeHolderId:null
 
 
       });
@@ -114,10 +117,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   }
 
-    public getProposals(proposalId: string): void{
+    public getProposals(proposalId: string,commentId: string): void{
         this.loadingText = "Retrieving Proposals ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getProposals(proposalId).subscribe(
+        this.stdIntStandardService.getProposals(proposalId,commentId).subscribe(
             (response: ISAdoptionProposal[]) => {
                 this.isAdoptionProposals = response;
                // console.log(this.isAdoptionProposals);
@@ -198,7 +201,11 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 requestId: this.actionRequest.id,
                 draftId: this.actionRequest.draftId,
                 commentDocumentType: this.actionRequest.docName,
-                standardNumber: this.actionRequest.standardNumber
+                standardNumber: this.actionRequest.standardNumber,
+                nameOfRespondent: this.actionRequest.stName,
+                emailOfRespondent:this.actionRequest.stEmail,
+                phoneOfRespondent: this.actionRequest.stTelephone,
+                stakeHolderId: this.actionRequest.stId
 
             }
         );
@@ -217,7 +224,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                // console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getProposals(this.proposalId);
+                this.getProposals(this.proposalId,this.commentId);
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

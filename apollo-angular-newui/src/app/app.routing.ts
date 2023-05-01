@@ -872,6 +872,8 @@ import {
 } from "./apollowebs/standards-development/standard-request/track-request/track-request.component";
 import {UserPrivilegesComponent} from "./apollowebs/system/user-privileges/user-privileges.component";
 import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.component";
+import {IntStdNscApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component";
+import {IntStdWebProposalComponent} from "./apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component";
 
 export const routes: Routes = [
     {
@@ -1807,8 +1809,12 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProposalCommentsComponent}],
     },
     {
-        path: 'isProposalComments/:proposalId',
+        path: 'isProposalComments/:proposalId/:cid',
         component: IntStdCommentsComponent,
+    },
+    {
+        path: 'isWebProposalComments',
+        component: IntStdWebProposalComponent,
     },
 
     // {
@@ -1882,6 +1888,11 @@ export const routes: Routes = [
         path: 'isSacApproval', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdSacApprovalComponent}],
+    },
+    {
+        path: 'isNscApproval', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdNscApprovalComponent}],
     },
     {
         path: 'isStandardGazette', component: AdminLayoutComponent,
@@ -2342,7 +2353,7 @@ export const routes: Routes = [
         children: [{path: '', component: ReviewJustificationOfTCComponent}],
     },
     {
-        path: 'reviewFeedbackSAC',
+        path: 'approvedProposals',
         component: AdminLayoutComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: ReviewFeedbackSacComponent}],

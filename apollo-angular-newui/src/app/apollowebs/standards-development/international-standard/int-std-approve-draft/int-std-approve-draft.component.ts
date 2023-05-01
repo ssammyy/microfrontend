@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
@@ -6,7 +6,7 @@ import {
     ComStdRemarks,
     InternationalStandardsComments,
     ISCheckRequirements,
-    StakeholderProposalComments
+    StakeholderProposalComments, UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -23,7 +23,8 @@ import swal from "sweetalert2";
 @Component({
   selector: 'app-int-std-approve-draft',
   templateUrl: './int-std-approve-draft.component.html',
-  styleUrls: ['./int-std-approve-draft.component.css']
+  styleUrls: ['./int-std-approve-draft.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdApproveDraftComponent implements OnInit {
     @ViewChildren(DataTableDirective)
@@ -53,7 +54,9 @@ export class IntStdApproveDraftComponent implements OnInit {
     public editDraughtFormGroup!: FormGroup;
     public draughtFormGroup!: FormGroup;
     public proofReadFormGroup!: FormGroup;
+    public assignProofReaderFormGroup!: FormGroup;
     documentDTOs: DocumentDTO[] = [];
+    coverDTOs: DocumentDTO[] = [];
     fullname = '';
     blob: Blob;
     public uploadedFiles:  FileList;
@@ -62,6 +65,12 @@ export class IntStdApproveDraftComponent implements OnInit {
     public uploadProofReads:  FileList;
     public uploadStandardFile:  FileList;
     loadingText: string;
+    selectedOption = '';
+    selectedType: number;
+    draughtsMan: number;
+    proofReader: number;
+    public draughtsMans !: UsersEntity[] ;
+    public proofReaders !: UsersEntity[] ;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -77,6 +86,8 @@ export class IntStdApproveDraftComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getStdEditing();
+    this.getDraughtsManDetails();
+    this.getProofReaderDetails();
       this.editDraughtFormGroup = this.formBuilder.group({
           id:[],
           comments:null,
@@ -99,7 +110,65 @@ export class IntStdApproveDraftComponent implements OnInit {
           docName:[],
           draughting:[],
           requestNumber:[],
+          assignedTo:[]
 
+      });
+      this.assignProofReaderFormGroup = this.formBuilder.group({
+          id:[],
+          comments:null,
+          accentTo:null,
+          requestId:null,
+          draftId:null,
+          title:null,
+          standardNumber:null,
+          scope:null,
+          normativeReference:null,
+          symbolsAbbreviatedTerms:null,
+          clause:null,
+          special:null,
+          uploadDate:null,
+          preparedBy:null,
+          departmentId:null,
+          subject:null,
+          description:null,
+          standardType:null,
+          docName:[],
+          draughting:[],
+          requestNumber:[],
+          assignedTo:[]
+
+      });
+      this.approveRequirementsFormGroup = this.formBuilder.group({
+          id:[],
+          comments:null,
+          accentTo:null,
+          requestId:null,
+          draftId:null,
+          title:null,
+          standardNumber:null,
+          scope:null,
+          normativeReference:null,
+          symbolsAbbreviatedTerms:null,
+          clause:null,
+          special:null,
+          uploadDate:null,
+          preparedBy:null,
+          documentType:null,
+          departmentId:null,
+          subject:null,
+          description:null,
+          contactOneFullName:null,
+          contactOneTelephone:null,
+          contactOneEmail:null,
+          standardType:null,
+          companyName:[],
+          companyPhone:[],
+          docName:[],
+          draughting:[],
+          requestNumber:[],
+          draftStatus:[],
+          coverPageStatus:[],
+          assignedTo:[]
       });
   }
 
@@ -135,11 +204,11 @@ export class IntStdApproveDraftComponent implements OnInit {
     toggleDisplayRemarksTab(proposalId: number){
         this.loadingText = "Loading ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getAllComments(proposalId).subscribe(
-            (response: StakeholderProposalComments[]) => {
-                this.stakeholderProposalComments = response;
+        this.stdIntStandardService.getDraftComment(proposalId).subscribe(
+            (response: ComStdRemarks[]) => {
+                this.comStdRemarks = response;
                 this.SpinnerService.hide();
-                console.log(this.stakeholderProposalComments)
+                //console.log(this.comStdRemarks)
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -193,6 +262,15 @@ export class IntStdApproveDraftComponent implements OnInit {
                 //console.log(error.message);
             }
         );
+        this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.coverDTOs = response;
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+            }
+        );
         if (mode==='draftStandardEditing'){
             this.actionRequests=iSCheckRequirement;
             button.setAttribute('data-target','#draftStandardEditing');
@@ -220,6 +298,50 @@ export class IntStdApproveDraftComponent implements OnInit {
 
                 }
             );
+
+        }
+
+        if (mode==='assignProofReader') {
+            this.actionRequests = iSCheckRequirement;
+            button.setAttribute('data-target', '#assignProofReader');
+
+            this.assignProofReaderFormGroup.patchValue(
+                {
+                    requestId: this.actionRequests.requestId,
+                    draftId: this.actionRequests.draftId,
+                    id: this.actionRequests.id,
+                    title: this.actionRequests.title,
+                    docName: this.actionRequests.documentType,
+                    standardNumber: this.actionRequests.comStdNumber,
+                    standardType: this.actionRequests.standardType,
+
+                    requestNumber: this.actionRequests.requestNumber,
+                    scope: this.actionRequests.scope,
+                    normativeReference: this.actionRequests.normativeReference,
+                    symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+                    clause: this.actionRequests.clause,
+                    special: this.actionRequests.special,
+                    departmentId: this.actionRequests.departmentId,
+                    subject: this.actionRequests.subject,
+                    description: this.actionRequests.description,
+
+
+                }
+            );
+        }
+            if (mode==='approveProofReadDraft'){
+                this.actionRequests=iSCheckRequirement;
+                button.setAttribute('data-target','#approveProofReadDraft');
+
+                this.approveRequirementsFormGroup.patchValue(
+                    {
+
+                        requestId: this.actionRequests.requestId,
+                        id: this.actionRequests.id,
+                        draftId: this.actionRequests.draftId,
+                        standardType: this.actionRequests.standardType
+                    }
+                );
 
         }
         // @ts-ignore
@@ -285,7 +407,7 @@ export class IntStdApproveDraftComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Standard Draft Uploaded',
+                        html:'Standard Draft Updated',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -297,6 +419,26 @@ export class IntStdApproveDraftComponent implements OnInit {
 
         }
 
+    }
+
+    assignProofReader(): void {
+        this.loadingText = "Saving Draft...";
+        this.SpinnerService.show();
+        this.stdComStandardService.assignProofReader(this.assignProofReaderFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.getStdEditing();
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Proof Reader Assigned`);
+                this.assignProofReaderFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalProof();
     }
 
     toggleDisplayMainTab(){
@@ -372,6 +514,105 @@ export class IntStdApproveDraftComponent implements OnInit {
 
     public hideModalDraftEditing() {
         this.closeModalDraftEditing?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalProof') private closeModalProof: ElementRef | undefined;
+
+    public hideModalProof() {
+        this.closeModalProof?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalAProof') private closeModalAProof: ElementRef | undefined;
+
+    public hideModalAProof() {
+        this.closeModalAProof?.nativeElement.click();
+    }
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
+    }
+
+    public getProofReaderDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getProofReaderDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.proofReaders = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    public getDraughtsManDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getDraughtsManDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.draughtsMans = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getStdEditing();
+            }
+        );
+    }
+
+    approveProofReadLevel(): void {
+        this.loadingText = "Approving Draft...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.approveProofReadLevel(this.approveRequirementsFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.getStdEditing();
+                this.SpinnerService.hide();
+                if(response.body.responseStatus=="success"){
+                    this.showToasterSuccess('Approved', response.body.responseMessage);
+                }else if(response.body.responseStatus=="error"){
+                    this.showToasterError('Not Approved', response.body.responseMessage);
+                }
+                swal.fire({
+                    title: response.body.responseMsg,
+                    text: response.body.responseMessage,
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: response.body.responseButton,
+                    },
+                    icon: response.body.responseStatus
+                });
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                //console.log(error.message);
+            }
+        );
+        this.hideModalAProof();
     }
 
 

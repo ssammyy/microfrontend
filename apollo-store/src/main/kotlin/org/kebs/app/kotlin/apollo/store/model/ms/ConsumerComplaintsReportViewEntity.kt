@@ -31,6 +31,14 @@ class ConsumerComplaintsReportViewEntity : Serializable {
     var sector: String? = null
 
     @Basic
+    @Column(name = "DIVISION")
+    var division: String? = null
+
+    @Basic
+    @Column(name = "REGION")
+    var region: String? = null
+
+    @Basic
     @Column(name = "DATE_RECEIVED")
     var dateReceived: String? = null
 

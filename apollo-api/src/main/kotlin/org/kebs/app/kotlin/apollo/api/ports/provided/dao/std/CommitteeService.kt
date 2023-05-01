@@ -130,22 +130,48 @@ class CommitteeService(
         loggedInUser: UsersEntity
     ): Comments {
         var comment = Comments()
-        val preliminaryDraft = committeePDRepository.findByIdOrNull(preliminaryDraftId)
-        val nwi = standardNWIRepository.findByIdOrNull(preliminaryDraft?.nwiID?.toLong() ?: -1L)
+        var preliminaryDraft: CommitteePD? = null
+        var nwi: StandardNWI? = null
+
+        when (docType) {
+            "PD" -> {
+                preliminaryDraft = committeePDRepository.findByIdOrNull(preliminaryDraftId)
+                preliminaryDraft?.let {
+                    nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
+                }
+            }
+            "CD" -> {
+                val committeeDraft = committeeCDRepository.findByIdOrNull(preliminaryDraftId)
+                committeeDraft?.let {
+                    preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft.pdID)
+                    preliminaryDraft?.let {
+                        nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
+                    }
+                }
+            }
+            "PRD" -> {
+                val publicReviewDraft = publicReviewDraftRepository.findByIdOrNull(preliminaryDraftId)
+                val committeeDraft = committeeCDRepository.findByIdOrNull(publicReviewDraft?.cdID ?: -1L)
+                preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft?.pdID ?: -1L)
+                nwi = standardNWIRepository.findByIdOrNull(preliminaryDraft?.nwiID?.toLong() ?: -1L)
+
+
+            }
+        }
 
         try {
-            commentsRepository.findByIdOrNull(bodyDetails.id ?: -1L)
-                ?.let { fdr ->
-                    comment = saveComment(
-                        bodyDetails,
-                        preliminaryDraftId,
-                        docType,
-                        loggedInUser,
-                        fdr,
-                        true,
-                        nwi!!
-                    )
-                } ?: kotlin.run {
+            val existingComment = commentsRepository.findByIdOrNull(bodyDetails.id ?: -1L)
+            if (existingComment != null) {
+                comment = saveComment(
+                    bodyDetails,
+                    preliminaryDraftId,
+                    docType,
+                    loggedInUser,
+                    existingComment,
+                    true,
+                    nwi!!
+                )
+            } else {
                 comment = saveComment(
                     bodyDetails,
                     preliminaryDraftId,
@@ -154,19 +180,16 @@ class CommitteeService(
                     comment,
                     false,
                     nwi!!
-
                 )
             }
 
             comment = commentsRepository.save(comment)
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
-
-
         }
         return comment
-
     }
+
 
     fun saveComment(
         details: CommentsDto,
@@ -185,7 +208,17 @@ class CommitteeService(
             commentType = details.typeOfComment
             commentsMade = details.comment
             proposedChange = details.proposedChange
-            pdId = preliminaryDraftIdAssigned
+            when (docType) {
+                "PD" -> {
+                    pdId = preliminaryDraftIdAssigned
+                }
+                "CD" -> {
+                    cdId = preliminaryDraftIdAssigned
+                }
+                "PRD" -> {
+                    prdId = preliminaryDraftIdAssigned.toString()
+                }
+            }
             documentType = docType
             userId = loggedInUser.id!!
             status = 1.toString()
@@ -268,6 +301,15 @@ class CommitteeService(
         commentsRepository.save(commentToDelete)
 
     }
+
+
+    //get all pds pending cds
+
+    fun getAllPdPendingCds(): MutableList<PdWithUserName> {
+
+        return committeePDRepository.findPreliminaryDraftPendingCds()
+    }
+
 
     //upload Committee Draft
     fun uploadCD(
@@ -410,18 +452,18 @@ class CommitteeService(
             u.draftDocsPdStatus = "Draft Documents For PD Uploaded"
             standardNWIRepository.save(u)
         }
-        if (DocDescription == "Minutes For CD") {
-            //update documents with CDId
-            val u: CommitteePD = committeePDRepository.findById(nwi).orElse(null)
-            u.status = "Minutes Uploaded"
-            committeePDRepository.save(u)
-        }
-        if (DocDescription == "Draft Documents For CD") {
-            //update documents with CDId
-            val u: CommitteePD = committeePDRepository.findById(nwi).orElse(null)
-            u.status = "Draft Documents For CD Uploaded"
-            committeePDRepository.save(u)
-        }
+//        if (DocDescription == "Minutes For CD") {
+//            //update documents with CDId
+//            val u: CommitteeCD = committeeCDRepository.findById(nwi).orElse(null)
+//            u.status = "Minutes Uploaded"
+//            committeeCDRepository.save(u)
+//        }
+//        if (DocDescription == "Draft Documents For CD") {
+//            //update documents with CDId
+//            val u: CommitteePD = committeePDRepository.findById(nwi).orElse(null)
+//            u.status = "Draft Documents For CD Uploaded"
+//            committeePDRepository.save(u)
+//        }
         if (DocDescription == "Minutes For PRD") {
             //update documents with PRDId
             val u: CommitteeCD = committeeCDRepository.findById(nwi).orElse(null)
