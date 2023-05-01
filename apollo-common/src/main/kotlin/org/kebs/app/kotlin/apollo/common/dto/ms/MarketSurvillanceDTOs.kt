@@ -393,6 +393,14 @@ data class WorkPlanScheduleApprovalDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanSendResultsApprovalDto(
+        @NotNull(message = "Required field approvalStatus")
+        var approvalStatus: Boolean,
+        @NotNull(message = "Required field ssfID")
+        var ssfID: Long,
+        var remarks: String? = null,
+)
+
 data class WorkPlanScheduleOnsiteDto(
         @NotNull(message = "Required field")
         var startDate: Date,

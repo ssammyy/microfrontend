@@ -947,6 +947,18 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectWorkPlan}")
     val mapMSWorkPlanInspectionRejectWorkPlan: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectWorkPlan.sendingEmail.hof}")
+    val mapMSWorkPlanInspectionRejectWorkPlanSendingEmailHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approveWorkPlan.sendingEmail.hof}")
+    val mapMSWorkPlanInspectionApproveWorkPlanSendingEmailHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectWorkPlan.sendingEmail.HODRM}")
+    val mapMSWorkPlanInspectionRejectWorkPlanSendingEmailHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approveWorkPlan.sendingEmail.HODRM}")
+    val mapMSWorkPlanInspectionApproveWorkPlanSendingEmailHODRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.startMsOnSite}")
     val mapMSWorkPlanInspectionStartMsOnSite: Long = 0L
 
