@@ -3070,19 +3070,24 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm.patchValue(data);
     this.selectedSFFDetails = data;
     const refStandards = data?.referencesStandards;
-    const arrayOfStandards = refStandards.split(';');
-    this.standardsArray = [];
-    for (const arrayOfStandard of arrayOfStandards) {
-      const trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
       }
+      this.standardsInput.nativeElement.value = '';
     }
-    this.standardsInput.nativeElement.value = '';
+
     const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if(paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+      }
     }
     if (data.docList != null && data.docList.length > 0) {
       this.dataSaveSSFUploadList = [];

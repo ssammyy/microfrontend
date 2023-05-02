@@ -2997,22 +2997,26 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
     this.selectedSFFDetails = data;
-    let refStandards = data?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    const refStandards = data?.referencesStandards;
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
+      }
+      this.standardsInput.nativeElement.value = '';
+    }
+    const paramDetails = data.parametersList;
+    if(paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
       }
     }
-    this.standardsInput.nativeElement.value = '';
-    const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
-    }
-    if (data.docList != null && data.docList.length > 0){
+    if (data.docList != null && data.docList.length > 0) {
       this.dataSaveSSFUploadList = [];
       for (let i = 0; i < data.docList.length; i++) {
         const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);

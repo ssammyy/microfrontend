@@ -6387,8 +6387,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             inspectionInvestigation.additionalInformationStatus == 1,
             null,
             null,
-            null,
-            null,
+            inspectionInvestigation.createdBy,
+            inspectionInvestigation.createdOn,
             null,
             inspectionInvestigation.summaryOfFindings,
         )
