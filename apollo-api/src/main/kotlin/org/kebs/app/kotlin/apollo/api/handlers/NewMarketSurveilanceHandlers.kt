@@ -2295,8 +2295,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val body = req.body<WorkPlanScheduleApprovalDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanScheduleApprovalDto::class.java.name)
+            val body = req.body<WorkPlanSendResultsApprovalDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanSendResultsApprovalDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

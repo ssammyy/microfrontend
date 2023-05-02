@@ -2175,11 +2175,11 @@
                                         </mat-form-field>
                                         <label for="totalCompliance"><b>Projected End Date</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate" [disabled]="true">
+                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate" >
                                         </mat-form-field>
                                         <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for Picking Above Dates:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
+                                            <textarea id="remarksTest" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks">
                                             </textarea>
@@ -5414,15 +5414,14 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Summary of Findings</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.summaryOfFindings.invalid && formInvestInspectReportForm.summaryOfFindings.errors"
-                                                  class="form-control two-column-input"
+                                        <textarea required class="form-control two-column-input"
                                                   formControlName="summaryOfFindings"
                                                   name="summaryOfFindings" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+<!--                                        <div *ngIf="submitted && formInvestInspectReportForm.summaryOfFindings.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formInvestInspectReportForm.summaryOfFindings.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -6504,11 +6503,6 @@
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sampleCollectionDate" name="sampleCollectionDate" required
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sampleCollectionDate.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -6689,7 +6683,7 @@
                                         <label><b>CONDITION</b> </label>
 <!--                                        [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors"-->
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="condition" name="condition" required
+                                               formControlName="condition" name="condition"
                                               >
 <!--                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">-->
 <!--                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is-->
@@ -7986,8 +7980,9 @@
                             </div>
                             <div class="col-md-3 p-0">
                                 <b>Action:</b>
-                                <div *ngFor="let role of roles">
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+<!--                                <div *ngFor="let role of roles">-->
+                                <div *ngIf="roles.includes('MS_IO_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone == false
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
@@ -7999,8 +7994,10 @@
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
 
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailStatus
                                     && selectedLabResults?.ssfResultsList?.resultsSent == false
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
@@ -8012,18 +8009,55 @@
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
 
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+<!--                                    <button  *ngIf="workPlanInspection?.bsNumberStatus-->
+<!--                                    && selectedLabResults?.ssfResultsList?.analysisDone-->
+<!--                                    && selectedLabResults?.ssfResultsList?.resultsSent == false-->
+<!--                                    && workPlanInspection?.officerDetails?.id == userLoggedInID-->
+<!--                                    && selectedLabResults?.savedPDFFiles?.length != 0"-->
+<!--                                             (click)="onClickNotSendSSFLabResultsComplianceStatus()" mat-raised-button=""-->
+<!--                                             class="btn btn-sm btn-primary mr-3"><span-->
+<!--                                            class="mat-button-wrapper">DON'T SEND RESULTS</span>-->
+<!--                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                        <div class="mat-button-focus-overlay"></div>-->
+<!--                                    </button>-->
+                                </div>
+
+                                <div *ngIf="roles.includes('MS_HOF_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
-                                    && selectedLabResults?.ssfResultsList?.resultsSent == false
-                                    && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus == false
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailDate == null
+                                    && workPlanInspection?.hofAssignedDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
-                                             (click)="onClickNotSendSSFLabResultsComplianceStatus()" mat-raised-button=""
+                                             (click)="openModalAddDetails('hofApproveSendingEmail')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
                                              class="btn btn-sm btn-primary mr-3"><span
-                                            class="mat-button-wrapper">DON'T SEND RESULTS</span>
+                                            class="mat-button-wrapper">APPROVE/DECLINE SENDING RESULTS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
+
                                 </div>
+
+                                <div *ngIf="roles.includes('MS_HOD_MODIFY') || roles.includes('MS_RM_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
+                                    && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailStatus == false
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailDate == null
+                                    && workPlanInspection?.hodRmAssignedDetails?.id == userLoggedInID
+                                    && selectedLabResults?.savedPDFFiles?.length != 0"
+                                             (click)="openModalAddDetails('hodApproveSendingEmail')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
+                                             class="btn btn-sm btn-primary mr-3"><span
+                                            class="mat-button-wrapper">APPROVE/DECLINE SENDING RESULTS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+
+                                </div>
+
+<!--                                </div>-->
                                 <br>
                             </div>
                         </div>
@@ -8105,6 +8139,58 @@
                                             <textarea id="complianceRemarksPDF6" matInput type="text"
                                                       formControlName="complianceRemarks"
                                                       name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'hofApproveSendingEmail')">
+                        <form [formGroup]="approveSendingLabResultsForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvalStatus"
+                                                        name="approvalStatus">
+                                                <mat-option [value]="true">Approve</mat-option>
+                                                <mat-option [value]="false">Decline</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'hodApproveSendingEmail')">
+                        <form [formGroup]="approveSendingLabResultsForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvalStatus"
+                                                        name="approvalStatus">
+                                                <mat-option [value]="true">Approve</mat-option>
+                                                <mat-option [value]="false">Decline</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -8221,6 +8307,16 @@
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
                             [disabled]="!pdfSaveComplianceStatusForm.valid"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'hodApproveSendingEmail')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveHodApproveSendingEmail(approveSendingLabResultsForm.valid);"
+                            [disabled]="!approveSendingLabResultsForm.valid"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'hofApproveSendingEmail')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveHofApproveSendingEmail(approveSendingLabResultsForm.valid);"
+                            [disabled]="!approveSendingLabResultsForm.valid"
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"

@@ -113,7 +113,8 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
   averageCompliance = 0;
-  totalNumberOfProducts: number = 0;
+  totalNumberOfProducts = 0;
+  endDateSet: Date;
 
   addResourceRequiredForm!: FormGroup;
 
@@ -153,6 +154,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   sampleSubmitParamsForm!: FormGroup;
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
+  approveSendingLabResultsForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
   ssfSaveFinalComplianceStatusForm!: FormGroup;
   verificationPermitForm!: FormGroup;
@@ -1876,7 +1878,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       finalRemarkHod: null,
       // remarks: ['', Validators.required],
       changesMade: null,
-      summaryOfFindings: [''],
+      summaryOfFindings: null,
     });
 
     this.dataReportParamForm = this.formBuilder.group({
@@ -1964,27 +1966,27 @@ export class WorkPlanDetailsComponent implements OnInit {
       dataReportSelected: null,
       dataReportID: null,
       nameProduct: ['', Validators.required],
-      packaging: ['', Validators.required],
+      packaging: null,
       labellingIdentification: null,
       fileRefNumber: null,
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
-      condition: ['', Validators.required],
+      condition: null,
       sampleReferences: null,
-      sendersName: ['', Validators.required],
-      designation: ['', Validators.required],
-      address: ['', Validators.required],
-      sendersDate: null,
+      sendersName: null,
+      designation: null,
+      address: null,
+      sendersDate: ['', Validators.required],
       receiversName: null,
-      productDescription: null,
+      productDescription: ['', Validators.required],
       receiversDate: null,
       lbIdAnyAomarking: null,
-      sampleCollectionDate: null,
+      sampleCollectionDate: ['', Validators.required],
       lbIdBatchNo: null,
       lbIdContDecl: null,
       lbIdDateOfManf: null,
       lbIdExpiryDate: null,
-      lbIdTradeMark: null,
+      lbIdTradeMark: ['', Validators.required],
       noteTransResults: null,
       referencesStandards: null,
       scfNo: null,
@@ -1992,8 +1994,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       testChargesKsh: null,
       receiptLpoNumber: null,
       invoiceNumber: null,
-      disposal: ['', Validators.required],
-      remarks: ['', Validators.required],
+      disposal: null,
+      remarks: null,
       countryOfOrigin: null,
       sourceProductEvidence: null,
       sampleCollectionNumber: null,
@@ -2017,6 +2019,13 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceStatus: ['', Validators.required],
       failedParameters: [''],
       complianceRemarks: ['', Validators.required],
+
+    });
+
+    this.approveSendingLabResultsForm = this.formBuilder.group({
+      approvalStatus: ['', Validators.required],
+      ssfID: null,
+      remarks: ['', Validators.required],
 
     });
 
@@ -2152,6 +2161,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       numberOfDays: [0, Validators.required],
       remarks: null,
     });
+
     this.startOnsiteActivitiesForm.get('numberOfDays').valueChanges.subscribe(() => {
       this.calculateEndDate();
     });
@@ -2187,14 +2197,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
     this.msService.getMSNonCompliance().subscribe(
-        (data)=>{
-          this.nonComplianceList = data.sort((a,b)=>a.nonComplianceName > b.nonComplianceName ? 1 : -1);
-          //console.log("Non Compliance Data "+ data)
+        (data) => {
+          this.nonComplianceList = data.sort((a, b) => a.nonComplianceName > b.nonComplianceName ? 1 : -1);
+          // console.log("Non Compliance Data "+ data)
         },
         error => {
-          //this.SpinnerService.hide();
-          console.log("Could not get non compliance data "+error);
-          //this.msService.showError('AN ERROR OCCURRED');
+          // this.SpinnerService.hide();
+          console.log('Could not get non compliance data ' + error);
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
 // Hof Reject
@@ -2239,7 +2249,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
-            this.msDepartments = dataDep.sort((a,b)=>a.department > b.department ? 1 : -1);
+            this.msDepartments = dataDep.sort((a, b) => a.department > b.department ? 1 : -1);
             console.log(dataDep);
           },
           error => {
@@ -2249,7 +2259,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
       this.msService.msDivisionListDetails().subscribe(
           (dataDiv: MsDivisionDetails[]) => {
-            this.msDivisions = dataDiv.sort((a,b)=>a.division > b.division ? 1 : -1);
+            this.msDivisions = dataDiv.sort((a, b) => a.division > b.division ? 1 : -1);
             console.log(dataDiv);
           },
           error => {
@@ -2259,7 +2269,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
       this.msService.msProductStandardCategoryListDetails().subscribe(
           (data1: MsStandardProductCategory[]) => {
-            this.standardProductCategory = data1.sort((a,b)=>a.standardCategory > b.standardCategory ? 1 : -1);
+            this.standardProductCategory = data1.sort((a, b) => a.standardCategory > b.standardCategory ? 1 : -1);
             console.log(data1);
           },
           error => {
@@ -2313,7 +2323,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.workPlanInspection?.sampleSubmittedStatus === false) {
       this.msService.msLaboratoriesListDetails().subscribe(
           (data1: LaboratoryEntityDto[]) => {
-            this.laboratories = data1.sort((a,b)=>a.labName > b.labName ? 1 : -1);
+            this.laboratories = data1.sort((a, b) => a.labName > b.labName ? 1 : -1);
             console.log(data1);
           },
           error => {
@@ -2333,7 +2343,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       case true:
         this.msService.MsRecommendationListDetails().subscribe(
             (data) => {
-              this.recommendationList = data.sort((a,b)=>a.recommendationName > b.recommendationName ? 1 : -1);
+              this.recommendationList = data.sort((a, b) => a.recommendationName > b.recommendationName ? 1 : -1);
               this.SpinnerService.hide();
               console.log(data);
             },
@@ -2666,7 +2676,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
     this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
         (data1: PredefinedResourcesRequired[]) => {
-          this.predefinedResourcesRequired = data1.sort((a,b)=>a.resourceName > b.resourceName ? 1 : -1);
+          this.predefinedResourcesRequired = data1.sort((a, b) => a.resourceName > b.resourceName ? 1 : -1);
           console.log(data1);
         },
         error => {
@@ -2684,7 +2694,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector', 'startOnsiteActivities', 'uploadFollowUpDocument'];
+      'approveFinalPreliminaryDirector', 'startOnsiteActivities', 'uploadFollowUpDocument', 'hofApproveSendingEmail', 'hodApproveSendingEmail'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2693,7 +2703,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES', 'HOF APPROVE/DECLINE SENDING EMAIL RESULTS', 'HOD/RM  APPROVE/DECLINE SENDING EMAIL RESULTS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2712,6 +2722,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (divVal === 'dataReportDetails') {
       this.addProductsStatus = true;
     }
+
+    // if (divVal === 'startOnsiteActivities') {
+    //   this.startOnsiteActivitiesForm.get('endDate').disable();
+    // }
 
     if (divVal === 'finalLabComplianceStatus') {
       let complianceLabs = 0;
@@ -3055,12 +3069,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
     this.selectedSFFDetails = data;
-    let refStandards = data?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
+    const refStandards = data?.referencesStandards;
+    const arrayOfStandards = refStandards.split(';');
     this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+    for (const arrayOfStandard of arrayOfStandards) {
+      const trimmedStandard = arrayOfStandard.trim();
+      if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
         this.standardsArray.push(trimmedStandard);
       }
     }
@@ -3070,7 +3084,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
     }
-    if (data.docList != null && data.docList.length > 0){
+    if (data.docList != null && data.docList.length > 0) {
       this.dataSaveSSFUploadList = [];
       for (let i = 0; i < data.docList.length; i++) {
         const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
@@ -3105,7 +3119,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
     }
-    if (data.docList != null && data.docList.length > 0){
+    if (data.docList != null && data.docList.length > 0) {
       this.dataSaveSSFUploadList = [];
       for (let i = 0; i < data.docList.length; i++) {
         const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
@@ -3211,7 +3225,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
   viewProgressReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
-    console.log("ts 1 called");
+    console.log('ts 1 called');
     this.SpinnerService.show();
     this.msService.loadProgressReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
         (dataPdf: any) => {
@@ -3225,13 +3239,13 @@ export class WorkPlanDetailsComponent implements OnInit {
           link.download = `Progress-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
-          console.log("ts 1 success");
+          console.log('ts 1 success');
         },
         error => {
           this.SpinnerService.hide();
           console.log(error);
           // this.msService.showError('AN ERROR OCCURRED');
-          console.log("ts 1 fail");
+          console.log('ts 1 fail');
         },
     );
   }
@@ -3391,8 +3405,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
 
-  saveChainOfCustodyDocument(docName: string){
-    //this.SpinnerService.show();
+  saveChainOfCustodyDocument(docName: string) {
+    // this.SpinnerService.show();
     const chainOfCustodyDoc = this.uploadedChainOfCustodyDoc;
     const formData = new FormData();
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -3410,19 +3424,19 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
-          console.log("Chain of Custody Doc failed upload"+error);
+          console.log('Chain of Custody Doc failed upload' + error);
           // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
-  onClickSaveFollowUpActionDoc(docName: string){
+  onClickSaveFollowUpActionDoc(docName: string) {
     this.msService.showSuccessWith2Message('Are you sure your want to save this file(s)?', 'You won\'t be able to Update them after submission!',
         // tslint:disable-next-line:max-line-length
         'You can go back and upload files Before Saving', 'FILE(S) UPLOADED SUCCESSFULLY ', () => {
           this.saveFollowUpACtionDocument(docName);
         });
   }
-  saveFollowUpACtionDocument(docName: string){
+  saveFollowUpACtionDocument(docName: string) {
     this.SpinnerService.show();
     const followUpActionsDoc = this.uploadFollowUpFiles;
     const formData = new FormData();
@@ -3441,7 +3455,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
-          console.log("Follow Up Actions Doc failed upload"+error);
+          console.log('Follow Up Actions Doc failed upload' + error);
           // this.msService.showError('AN ERROR OCCURRED');
         },
     );
@@ -3500,9 +3514,9 @@ export class WorkPlanDetailsComponent implements OnInit {
               const formData = new FormData();
               formData.append('referenceNo', this.workPlanInspection.referenceNumber);
               formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
-              if (this.dataSaveApprovePreliminary?.approvalStatus){
+              if (this.dataSaveApprovePreliminary?.approvalStatus) {
                 formData.append('docTypeName', 'CLIENT_APPEAL_DOCUMENT');
-              }else{
+              } else {
                 formData.append('docTypeName', 'CLIENT_DID_NOT_APPEAL_DOCUMENT');
               }
               for (let i = 0; i < appealFiles.length; i++) {
@@ -3686,7 +3700,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveFinalRemarksAndEndProcess(valid: boolean){
+  onClickSaveFinalRemarksAndEndProcess(valid: boolean) {
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details and end the MS Process?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
@@ -3706,7 +3720,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.saveWorkPlanEndDocument("WORKPLAN_END_FILE");
+            this.saveWorkPlanEndDocument('WORKPLAN_END_FILE');
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('FINAL REMARKS AND FILE(S) SAVED SUCCESSFULLY');
@@ -3720,8 +3734,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  saveWorkPlanEndDocument(docName: string){
-    //this.SpinnerService.show();
+  saveWorkPlanEndDocument(docName: string) {
+    // this.SpinnerService.show();
     const finalRemarksFileEndProcess = this.uploadedFinalRemarksFiles;
     const formData = new FormData();
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -3739,7 +3753,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
-          console.log("Workplan End Doc failed upload"+error);
+          console.log('Workplan End Doc failed upload' + error);
           // this.msService.showError('AN ERROR OCCURRED');
         },
     );
@@ -3849,7 +3863,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
+    console.log(this.startOnsiteActivitiesForm.value);
+    this.calculateEndDate();
+    this.startOnsiteActivitiesForm.get('endDate').setValue(this.endDateSet);
     this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
+    console.log(this.dataSaveStartOnsiteActivities);
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveStartOnsiteActivities).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
@@ -4510,7 +4528,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (const selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
-        standardsArrayControl.setValue(valueInControl+ ';'+ selectedStandard + '; ');
+        standardsArrayControl.setValue(valueInControl + ';' + selectedStandard + '; ');
       }
     }
 
@@ -4518,7 +4536,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-   if (this.uploadedSSF){
+   if (this.uploadedSSF) {
      for ( let i = 0; i < this.uploadedSSF.length; i++) {
        this.arrayOfUploadedSSF.push(this.uploadedSSF[i]);
      }
@@ -4547,7 +4565,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'SSF_DOCUMENT');
       formData.append('data', JSON.stringify(this.dataSaveSampleSubmit));
-      if (this.uploadedSSF?.length > 0){
+      if (this.uploadedSSF?.length > 0) {
         const file = this.uploadedSSF;
         for (let i = 0; i < file.length; i++) {
           formData.append('docFile', file[i], file[i].name);
@@ -4720,6 +4738,94 @@ export class WorkPlanDetailsComponent implements OnInit {
         }
 
       }
+    }
+  }
+
+  onClickSaveHodApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHodApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHodApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHodApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveHofApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHofApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHofApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHofApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
     }
   }
 
@@ -5174,16 +5280,16 @@ export class WorkPlanDetailsComponent implements OnInit {
               this.SpinnerService.hide();
               this.dataUcrNumberSearchList = data;
 
-              if (this.dataUcrNumberSearchList?.length > 0){
+              if (this.dataUcrNumberSearchList?.length > 0) {
                 this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
                 const countries = this.msService.getAllCountriesList();
-                for (let i = 0; i < this.dataUcrNumberSearchList.length; i++){
+                for (let i = 0; i < this.dataUcrNumberSearchList.length; i++) {
                   const matchingCountry = countries.find(country => country.code === this.dataUcrNumberSearchList[i].countryOfOrigin);
                   if (matchingCountry) {
                     this.dataUcrNumberSearchList[i].countryOfOrigin = matchingCountry.name;
                   }
                 }
-              }else{
+              } else {
                 this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
               }
               this.currDiv = 'verificationUCRDetails';
@@ -5452,7 +5558,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (file === undefined) {
       this.msService.showError('Kindly Add An Attachment');
     }
-    for (let i=0; i < this.dataSaveSeizureDeclarationList.length; i++){
+    for (let i = 0; i < this.dataSaveSeizureDeclarationList.length; i++) {
       this.dataSaveSeizureDeclarationList[i].dateOfSeizure = null;
     }
 
@@ -5493,7 +5599,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];
           console.log(data);
-          this.saveChainOfCustodyDocument("CHAIN_OF_CUSTODY");
+          this.saveChainOfCustodyDocument('CHAIN_OF_CUSTODY');
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
         },
@@ -5529,15 +5635,15 @@ export class WorkPlanDetailsComponent implements OnInit {
     const reportRefinput = this.investInspectReportForm.get('reportReference');
     reportRefinput.setValue('generatedRefNumber');
     this.submitted = true;
-    if (this.investInspectReportForm.valid){
-      console.log("Initial Report Valid");
+    if (this.investInspectReportForm.valid) {
+      console.log('Initial Report Valid');
       this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
           'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
             window.$('#investInspectReportModal').modal('hide');
             this.saveInitialReport();
           });
-    }else if(this.investInspectReportForm.invalid){
-      console.log("Initial Report inValid");
+    } else if (this.investInspectReportForm.invalid) {
+      console.log('Initial Report inValid');
       const invalidControls: string[] = [];
       for (const controlName in this.investInspectReportForm.controls) {
         const control = this.investInspectReportForm.get(controlName);
@@ -5952,6 +6058,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       } else {
         this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
         this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+        this.dataSaveWorkPlan.workPlanCountiesTowns = this.dataSaveWorkPlanCountiesList;
         this.msService.msUpdateWorkPlanScheduleDetails(
             this.workPlanInspection.batchDetails.referenceNumber,
             this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(0)).subscribe(
@@ -6012,7 +6119,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportForm.patchValue(selectedClone);
     this.dataReportForm?.get('id').setValue(0);
     const paramDetails = selectedClone.productsList;
-    for (let i = 0; i < paramDetails.length; i++){
+    for (let i = 0; i < paramDetails.length; i++) {
       paramDetails[i].id = 0;
     }
     this.dataSaveDataReportParamList = [];
@@ -6031,7 +6138,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
-    //Dont clone the goods
+    // Dont clone the goods
     // for (let i = 0; i < paramDetails.length; i++) {
     //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
     // }
@@ -6082,7 +6189,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     const startDate = this.startOnsiteActivitiesForm.get('startDate').value;
     const numberOfDays = this.startOnsiteActivitiesForm.get('numberOfDays').value;
     let daysLeft = numberOfDays;
-    let endDate = new Date(startDate);
+    const endDate = new Date(startDate);
     while (daysLeft > 0) {
       const dayOfWeek = endDate.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
@@ -6098,6 +6205,6 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
-
+    this.endDateSet =  this.startOnsiteActivitiesForm.get('endDate').value;
   }
 }

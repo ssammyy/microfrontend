@@ -6408,45 +6408,46 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
-                            <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
-                                        <datalist id="SSFValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
-                                        </datalist>
+                            <div *ngIf="addLabParamStatus">
+                                <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the SSF to clone</b></label>
+                                            <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
+                                            <datalist id="SSFValueToCloneList">
+                                                <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.lbIdTradeMark}}</option>
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select the Data Report</b></label>
+                                            <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
+                                            <datalist id="availableDataReports">
+                                                <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                            </datalist>
+                                        </div>
+                                    </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                 class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
-                                        </button>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button  mat-raised-button
+                                                     class="btn btn-outline-success" type="button" >SELECT DATA REPORT
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
-                                        <datalist id="availableDataReports">
-                                            <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button  mat-raised-button
-                                                 class="btn btn-outline-success"  type="button" >SELECT DATA REPORT
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -6466,15 +6467,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>PACKAGING</b></label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="packaging" name="packaging" type="text">
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                                class="form-control two-column-input"
+                                                formControlName="packaging" name="packaging" type="text">
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6495,11 +6496,6 @@
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sampleCollectionDate" name="sampleCollectionDate" required
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sampleCollectionDate.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -6507,11 +6503,10 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>PRODUCT DESCRIPTION</b></label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.productDescription.invalid && formSampleSubmitForm.productDescription.errors"-->
-                                        <input
+                                        <label><b>PRODUCT DESCRIPTION  <span class="mandatorySSFFields">*</span></b></label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.productDescription.invalid && formSampleSubmitForm.productDescription.errors"
                                                class="form-control two-column-input"
-                                               formControlName="productDescription" name="productDescription" type="text">
+                                               formControlName="productDescription" name="productDescription" required type="text">
                                     </div>
                                 </div>
 
@@ -6537,11 +6532,11 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONTENT DECLARED</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="lbIdContDecl"
-                                               name="lbIdContDecl" type="text">
+                                                class="form-control two-column-input"
+                                                formControlName="lbIdContDecl"
+                                                name="lbIdContDecl" type="text">
                                     </div>
                                 </div>
 
@@ -6550,11 +6545,11 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>BATCH NO</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="lbIdBatchNo"
-                                               name="lbIdBatchNo" type="text">
+                                                class="form-control two-column-input"
+                                                formControlName="lbIdBatchNo"
+                                                name="lbIdBatchNo" type="text">
 
                                     </div>
                                 </div>
@@ -6562,11 +6557,11 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ANY OTHER MARKING</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="lbIdAnyAomarking"
-                                               name="lbIdAnyAomarking" type="text">
+                                                class="form-control two-column-input"
+                                                formControlName="lbIdAnyAomarking"
+                                                name="lbIdAnyAomarking" type="text">
                                     </div>
                                 </div>
 
@@ -6575,22 +6570,22 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SCF NUMBER</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="scfNo"
-                                               name="scfNo" type="text">
+                                                class="form-control two-column-input"
+                                                formControlName="scfNo"
+                                                name="scfNo" type="text">
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>FILE REF NUMBER</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"-->
                                         <input
-                                               class="form-control two-column-input"
-                                               formControlName="fileRefNumber" disabled
-                                               name="fileRefNumber"  type="text">
+                                                class="form-control two-column-input"
+                                                formControlName="fileRefNumber" disabled
+                                                name="fileRefNumber"  type="text">
                                         <!--                                        <div *ngIf="submitted && formSampleSubmitForm.fileRefNumber.errors" class="invalid-feedback">-->
                                         <!--                                            <div *ngIf="formSampleSubmitForm.fileRefNumber.errors.required">This field is-->
                                         <!--                                                required-->
@@ -6607,7 +6602,7 @@
                                         <textarea
                                                 class="form-control two-column-input"
                                                 formControlName="noteTransResults"
-                                                name="noteTransResults"  type="text"></textarea>
+                                                name="noteTransResults" required type="text"></textarea>
                                     </div>
                                 </div>
 
@@ -6617,15 +6612,13 @@
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
                                         <div class="refStandardsDesign">
-                                            <input type="text" list="refStandardsList" formControlName="referencesStandards"
+                                            <input type="text" list="refStandards" formControlName="referencesStandards"
                                                    name="referencesStandards" class="form-control two-column-input" #standardsInput>
-                                            <datalist id="refStandardsList">
+                                            <datalist id="refStandards">
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
                                         </div>
                                         <button *ngIf="addLabParamStatus" class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
-
-
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">-->
                                         <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>-->
@@ -6636,11 +6629,11 @@
                                         <!--                                            <option [value]="" selected>Please select</option>-->
                                         <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>-->
                                         <!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6662,7 +6655,7 @@
                             <div class="row" *ngIf="standardsArray.length > 0">
                                 <div class="w-100" style="border: 1px ridge #ddd">
                                     <ul class="w-100">
-                                        <li class="d-flex justify-content-between align-items-center" style="width:70%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
+                                        <li class="d-flex justify-content-between align-items-center" style="width:80%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
                                             <button *ngIf="addLabParamStatus" (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
                                         </li>
                                     </ul>
@@ -6681,15 +6674,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>CONDITION</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="condition" name="condition"
-                                               >
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        >
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6722,30 +6715,30 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DESIGNATION</b></label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="designation" name="designation" required
-                                               >
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        >
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ADDRESS</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors"-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="address" name="address" required
-                                               >
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        >
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6809,6 +6802,7 @@
                                         <label><b>RECEIPT LPO NUMBER</b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="receiptLpoNumber" name="receiptLpoNumber" >
+
                                     </div>
                                 </div>
 
@@ -6826,18 +6820,18 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DISPOSAL</b> </label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors"-->
                                         <select
                                                 type="text" class="form-control two-column-input" formControlName="disposal" name="disposal" required>
                                             <option [value]="" selected>Please select</option>
                                             <option  [value]="'Return Sample'" selected>Return Sample</option>
                                             <option  [value]="'Destroy Sample'" selected>Destroy Sample</option>
                                         </select>
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6846,15 +6840,15 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REMARKS</b></label>
-<!--                                        [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.errors"-->
+                                        <!--                                        [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.errors"-->
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="remarks" name="remarks" required
-                                               >
-<!--                                        <div *ngIf="submitted && formSampleSubmitForm.remarks.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formSampleSubmitForm.remarks.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                               formControlName="remarks" name="remarks"
+                                        >
+                                        <!--                                        <div *ngIf="submitted && formSampleSubmitForm.remarks.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formSampleSubmitForm.remarks.errors.required">This field is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -6863,7 +6857,7 @@
                                         <label><b>COUNTRY OF ORIGIN</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="countryOfOrigin" name="countryOfOrigin"
-                                               >
+                                        >
                                     </div>
                                 </div>
 
@@ -6890,15 +6884,15 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <label><b>PARAMETERS</b></label>
-<!--                                            [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors"-->
+                                            <!--                                            [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors"-->
                                             <input type="text" class="form-control two-column-input"
                                                    formControlName="parameters" name="parameters" required
-                                                  >
-<!--                                            <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">-->
-<!--                                                <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is-->
-<!--                                                    required-->
-<!--                                                </div>-->
-<!--                                            </div>-->
+                                            >
+                                            <!--                                            <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">-->
+                                            <!--                                                <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is-->
+                                            <!--                                                    required-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </div>-->
 
                                         </div>
                                     </div>
@@ -6977,7 +6971,7 @@
                                     <thead>
                                     <tr>
                                         <th>File Name</th>
-                                        <th>Document Type</th>
+                                        <th>DOCUMENT TYPE</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -7899,8 +7893,9 @@
                             </div>
                             <div class="col-md-3 p-0">
                                 <b>Action:</b>
-                                <div *ngFor="let role of roles">
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                                <!--                                <div *ngFor="let role of roles">-->
+                                <div *ngIf="roles.includes('MS_IO_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone == false
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
@@ -7911,30 +7906,71 @@
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailStatus
                                     && selectedLabResults?.ssfResultsList?.resultsSent == false
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
                                              (click)="openModalAddDetails('ssfSendResultsStatus')" mat-raised-button="" data-toggle="modal"
-                                             data-target="#myModal2"
+                                             data-target="#myModal5"
                                              class="btn btn-sm btn-primary mr-3"><span
                                             class="mat-button-wrapper">SEND RESULTS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
-                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+
+                                    <!--                                    <button  *ngIf="workPlanInspection?.bsNumberStatus-->
+                                    <!--                                    && selectedLabResults?.ssfResultsList?.analysisDone-->
+                                    <!--                                    && selectedLabResults?.ssfResultsList?.resultsSent == false-->
+                                    <!--                                    && workPlanInspection?.officerDetails?.id == userLoggedInID-->
+                                    <!--                                    && selectedLabResults?.savedPDFFiles?.length != 0"-->
+                                    <!--                                             (click)="onClickNotSendSSFLabResultsComplianceStatus()" mat-raised-button=""-->
+                                    <!--                                             class="btn btn-sm btn-primary mr-3"><span-->
+                                    <!--                                            class="mat-button-wrapper">DON'T SEND RESULTS</span>-->
+                                    <!--                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                    <!--                                        <div class="mat-button-focus-overlay"></div>-->
+                                    <!--                                    </button>-->
+                                </div>
+
+                                <div *ngIf="roles.includes('MS_HOF_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
-                                    && selectedLabResults?.ssfResultsList?.resultsSent == false
-                                    && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus == false
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailDate == null
+                                    && workPlanInspection?.hofAssignedDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
-                                             (click)="onClickNotSendSSFLabResultsComplianceStatus()" mat-raised-button=""
+                                             (click)="openModalAddDetails('hofApproveSendingEmail')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
                                              class="btn btn-sm btn-primary mr-3"><span
-                                            class="mat-button-wrapper">DON'T SEND RESULTS</span>
+                                            class="mat-button-wrapper">APPROVE/DECLINE SENDING RESULTS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
+
                                 </div>
+
+                                <div *ngIf="roles.includes('MS_HOD_MODIFY') || roles.includes('MS_RM_MODIFY')">
+                                    <button  *ngIf="workPlanInspection?.bsNumberStatus
+                                    && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailStatus == false
+                                    && selectedLabResults?.ssfResultsList?.hodApproveSendingEmailDate == null
+                                    && workPlanInspection?.hodRmAssignedDetails?.id == userLoggedInID
+                                    && selectedLabResults?.savedPDFFiles?.length != 0"
+                                             (click)="openModalAddDetails('hodApproveSendingEmail')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
+                                             class="btn btn-sm btn-primary mr-3"><span
+                                            class="mat-button-wrapper">APPROVE/DECLINE SENDING RESULTS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+
+                                </div>
+
+                                <!--                                </div>-->
                                 <br>
                             </div>
                         </div>
@@ -7992,6 +8028,251 @@
                 <div class="modal-header">
                     <h4 class="modal-title">{{currDivLabel}}</h4>
                     <button mat-button type="button" (click)="closePopUpsModal2();" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="(currDiv == 'pdfSaveCompliance')">
+                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formPdfSaveComplianceStatusForm.complianceStatus.invalid && formPdfSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'hofApproveSendingEmail')">
+                        <form [formGroup]="approveSendingLabResultsForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvalStatus"
+                                                        name="approvalStatus">
+                                                <mat-option [value]="true">Approve</mat-option>
+                                                <mat-option [value]="false">Decline</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'hodApproveSendingEmail')">
+                        <form [formGroup]="approveSendingLabResultsForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvalStatus"
+                                                        name="approvalStatus">
+                                                <mat-option [value]="true">Approve</mat-option>
+                                                <mat-option [value]="false">Decline</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'viewPdfSaveCompliance')">
+                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusPdft7">
+                                            <mat-select disabled placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <mat-form-field disabled class="example-full-width">
+                                            <textarea id="complianceRemarksPDFt9" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
+                        <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <!--                                        <mat-form-field class="example-full-width">-->
+                                        <input id="totalComplianceTest#" matInput type="text" formControlName="totalCompliance" name="totalCompliance"
+                                               ngModel="{{totalComplianceValue}}" [hidden]="true" >
+                                        <!--                                        </mat-form-field>-->
+                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusSSF4">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <!-- Failed Parameters field will only be shown if compliance status is non-compliant -->
+                                        <div *ngIf="!ssfSaveComplianceStatusForm.get('complianceStatus').value">
+                                            <label for="failedParametersSSF4"><b>Failed Parameters</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <textarea id="failedParametersSSF4" matInput type="text"
+                                                          formControlName="failedParameters"
+                                                          name="failedParameters">
+                                                </textarea>
+                                            </mat-form-field>
+                                        </div>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF4" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--                    <div *ngIf="(currDiv == 'ssfSendResultsStatus')">-->
+                    <!--                        <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">-->
+                    <!--                            <div class="form-body">-->
+                    <!--                                <h3>Choose who to send email notifications to:</h3>-->
+                    <!--                                <div class="form-group">-->
+                    <!--                                    <div>-->
+                    <!--&lt;!&ndash;                                        <div >&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                            <label for="failedParameters"><b>Failed Parameters</b></label>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                            <mat-form-field class="example-full-width">&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                                      >&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                            </mat-form-field>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+
+                    <!--                                        <label for="outLetEmail"><b>OutLet Email</b></label>-->
+                    <!--                                        <mat-form-field class="example-full-width">-->
+                    <!--                                            <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"-->
+                    <!--                                                   >-->
+                    <!--                                        </mat-form-field>-->
+                    <!--                                        <label for="manufactureEmail"><b>Manufacturer's Email</b></label>-->
+                    <!--                                        <mat-form-field class="example-full-width">-->
+                    <!--                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"-->
+                    <!--                                                   >-->
+                    <!--                                        </mat-form-field>-->
+                    <!--                                        <label for="complainantEmail"><b>Complainant Email</b></label>-->
+                    <!--                                        <mat-form-field class="example-full-width">-->
+                    <!--                                            <input id="complainantEmail" matInput type="text" placeholder="Please Enter complainant Email" formControlName="complainantEmail" name="complainantEmail">-->
+                    <!--                                        </mat-form-field>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </form>-->
+                    <!--                    </div>-->
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button"
+                            class="btn btn-danger" data-dismiss="modal" (click)="closePopUpsModal2();" >Close
+                    </button>
+                    <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
+                            [disabled]="!pdfSaveComplianceStatusForm.valid"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'hodApproveSendingEmail')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveHodApproveSendingEmail(approveSendingLabResultsForm.valid);"
+                            [disabled]="!approveSendingLabResultsForm.valid"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'hofApproveSendingEmail')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveHofApproveSendingEmail(approveSendingLabResultsForm.valid);"
+                            [disabled]="!approveSendingLabResultsForm.valid"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                            [disabled]="!ssfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'ssfSendResultsStatus')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSendSSFLabResultsComplianceStatus(ssfClientEmailNotificationForm.valid);"
+                            [disabled]="!ssfClientEmailNotificationForm.valid"
+                            data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDestructionNotificationFile')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesDestructionNotification(clientEmailNotificationForm.valid,'DESTRUCTION_FILE');"
+                            [disabled]="!clientEmailNotificationForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'clientAppealed')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealed(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" (click)="closePopUpsModal5();" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
@@ -8145,20 +8426,23 @@
                                 <h3>Choose who to send email notifications to:</h3>
                                 <div class="form-group">
                                     <div>
-<!--                                        <label for="failedParameters"><b>Failed Parameters</b></label>-->
-<!--                                        <mat-form-field class="example-full-width" >-->
-<!--                                            <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g ph levels, moisture content, etc" formControlName="failedParameters" name="failedParameters"-->
-<!--                                                  >-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                        <div >-->
+                                        <!--                                            <label for="failedParameters"><b>Failed Parameters</b></label>-->
+                                        <!--                                            <mat-form-field class="example-full-width">-->
+                                        <!--                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"-->
+                                        <!--                                                      >-->
+                                        <!--                                            </mat-form-field>-->
+                                        <!--                                        </div>-->
+
                                         <label for="outLetEmail"><b>OutLet Email</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"
-                                                   >
+                                            >
                                         </mat-form-field>
                                         <label for="manufactureEmail"><b>Manufacturer's Email</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacture Email" formControlName="manufactureEmail" name="manufactureEmail"
-                                                   >
+                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"
+                                            >
                                         </mat-form-field>
                                         <label for="complainantEmail"><b>Complainant Email</b></label>
                                         <mat-form-field class="example-full-width">
@@ -8224,7 +8508,7 @@
                                             <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
                                             <form #demoForm="ngForm">
                                                 <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
-                                                             id="appealFiles2"
+                                                             id="appealFiles"
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
@@ -8255,31 +8539,6 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'previewUploadedDocs')">
-                        <div class="form-body">
-                            <div class="form-group">
-                                <div>
-                                    <label for="files"><b>Preview Uploaded Documents</b></label>
-                                    <ul class="w-list-unstyled">
-                                        <div *ngFor="let userUpload of arrayOfGeneralUploadedFiles">
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">{{userUpload.name}}</div>
-                                                <div class="list-text-accordion" style="text-align: center">
-                                                    <a
-                                                            target="_blank"
-                                                            class="btn btn-info"
-                                                            style="color: white"
-                                                            (click)="viewFile(userUpload)"
-                                                    >VIEW</a>
-                                                </div>
-                                            </li>
-                                        </div>
-
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1546,6 +1546,10 @@ export class MSSSFComplianceStatusDetailsDto {
     complianceStatus: boolean;
     analysisDone: boolean;
     resultsSent: boolean;
+    hofApproveSendingEmailStatus: boolean;
+    hofApproveSendingEmailDate: Date;
+    hodApproveSendingEmailStatus: boolean;
+    hodApproveSendingEmailDate: Date;
 }
 
 export class SSFSendingComplianceStatus {

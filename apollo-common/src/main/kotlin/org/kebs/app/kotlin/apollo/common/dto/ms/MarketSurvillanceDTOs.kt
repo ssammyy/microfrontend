@@ -902,6 +902,10 @@ data class MSSSFComplianceStatusDetailsDto(
         var complianceStatus: Boolean? = null,
         var analysisDone: Boolean? = null,
         var resultsSent: Boolean? = null,
+        var hofApproveSendingEmailStatus: Boolean? = null,
+        var hofApproveSendingEmailDate: Date? = null,
+        var hodApproveSendingEmailStatus: Boolean? = null,
+        var hodApproveSendingEmailDate: Date? = null,
 )
 
 data class LIMSFilesFoundDto(

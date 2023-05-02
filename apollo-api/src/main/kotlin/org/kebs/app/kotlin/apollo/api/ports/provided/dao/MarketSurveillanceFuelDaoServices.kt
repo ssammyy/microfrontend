@@ -3323,7 +3323,11 @@ class MarketSurveillanceFuelDaoServices(
             ssf.complianceRemarks,
             ssf.resultsAnalysis == 1,
             ssf.analysisDone == 1,
-            ssf.resultsSent == 1
+            ssf.resultsSent == 1,
+            ssf.hofApproveSendingEmailStatus == 1,
+            ssf.hofApproveSendingEmailDate,
+            ssf.hodApproveSendingEmailStatus == 1,
+            ssf.hodApproveSendingEmailDate
         )
 
     }
