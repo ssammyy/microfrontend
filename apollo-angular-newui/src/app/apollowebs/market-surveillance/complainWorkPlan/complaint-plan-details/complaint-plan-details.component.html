@@ -1338,8 +1338,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.sampleSubmittedStatus && this.workPlanInspection?.compliantStatusAdded == false
-                                                    && this.workPlanInspection?.analysisLabCountDone == this.workPlanInspection?.sampleSubmitted.length
-                                                    && this.workPlanInspection?.analysisLabCountDoneAndSent == this.workPlanInspection?.sampleSubmitted.length"
+                                                    && this.workPlanInspection?.analysisLabCountDone == this.workPlanInspection?.sampleSubmitted.length"
                                                     (click)="openModalAddDetails('finalLabComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span

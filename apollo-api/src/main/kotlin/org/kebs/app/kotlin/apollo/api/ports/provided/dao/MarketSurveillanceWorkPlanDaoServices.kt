@@ -2718,12 +2718,12 @@ class MarketSurveillanceWorkPlanDaoServices(
                             val compliant =
                                 complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) }
 //                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
-                            compliant?.emailAddress?.let {
-                                commonDaoServices.sendEmailWithUserEmail(it,
-                                    applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
-                                    complaintDetailsFound!!, map, remarksSaved.first,
-                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc)?.absolutePath })
-                            }
+//                            compliant?.emailAddress?.let {
+//                                commonDaoServices.sendEmailWithUserEmail(it,
+//                                    applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
+//                                    complaintDetailsFound!!, map, remarksSaved.first,
+//                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc)?.absolutePath })
+//                            }
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
                             with(scheduleEmailDetails) {
@@ -2736,15 +2736,15 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 dateSubmitted = commonDaoServices.getCurrentDate()
 
                             }
-                            ioDetails?.email?.let {
-                                commonDaoServices.sendEmailWithUserEmail(
-                                    it,
-                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
-                                    scheduleEmailDetails,
-                                    map,
-                                    remarksSaved.first
-                                )
-                            }
+//                            ioDetails?.email?.let {
+//                                commonDaoServices.sendEmailWithUserEmail(
+//                                    it,
+//                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
+//                                    scheduleEmailDetails,
+//                                    map,
+//                                    remarksSaved.first
+//                                )
+//                            }
                             var taskNotify = NotificationBodyDto().apply {
                                 fromName = commonDaoServices.concatenateName(loggedInUser)
                                 toName = ioDetails?.let { commonDaoServices.concatenateName(it) }
@@ -2783,15 +2783,15 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 applicationMapProperties.mapMsNotificationNewTask,
                                 map, null, loggedInUser, hofDetails
                             )
-                            hofDetails?.email?.let {
-                                commonDaoServices.sendEmailWithUserEmail(
-                                    it,
-                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
-                                    scheduleEmailDetails,
-                                    map,
-                                    remarksSaved.first
-                                )
-                            }
+//                            hofDetails?.email?.let {
+//                                commonDaoServices.sendEmailWithUserEmail(
+//                                    it,
+//                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
+//                                    scheduleEmailDetails,
+//                                    map,
+//                                    remarksSaved.first
+//                                )
+//                            }
                             val directorDetails =
                                 workPlanScheduled.directorAssigned?.let { commonDaoServices.findUserByID(it) }
                             scheduleEmailDetails.fullName =
@@ -2814,25 +2814,25 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 applicationMapProperties.mapMsNotificationNewTask,
                                 map, null, loggedInUser, directorDetails
                             )
-                            directorDetails?.email?.let {
-                                commonDaoServices.sendEmailWithUserEmail(
-                                    it,
-                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
-                                    scheduleEmailDetails,
-                                    map,
-                                    remarksSaved.first
-                                )
-                            }
-                            scheduleEmailDetails.fullName = workPlanScheduled.destructionClientFullName
-                            workPlanScheduled.destructionClientEmail?.let {
-                                commonDaoServices.sendEmailWithUserEmail(
-                                    it,
-                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
-                                    scheduleEmailDetails,
-                                    map,
-                                    remarksSaved.first
-                                )
-                            }
+//                            directorDetails?.email?.let {
+//                                commonDaoServices.sendEmailWithUserEmail(
+//                                    it,
+//                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
+//                                    scheduleEmailDetails,
+//                                    map,
+//                                    remarksSaved.first
+//                                )
+//                            }
+//                            scheduleEmailDetails.fullName = workPlanScheduled.destructionClientFullName
+//                            workPlanScheduled.destructionClientEmail?.let {
+//                                commonDaoServices.sendEmailWithUserEmail(
+//                                    it,
+//                                    applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail,
+//                                    scheduleEmailDetails,
+//                                    map,
+//                                    remarksSaved.first
+//                                )
+//                            }
 
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }

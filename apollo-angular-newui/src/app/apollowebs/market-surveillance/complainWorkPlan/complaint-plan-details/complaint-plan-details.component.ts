@@ -4412,11 +4412,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.SpinnerService.show();
       this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
       this.msService.msWorkPlanInspectionHodApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm.value).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             // tslint:disable-next-line:max-line-length
-            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.selectedLabResults.ssfResultsList.bsNumber);
             this.approveSendingLabResultsForm.reset();
             console.log(data);
             this.SpinnerService.hide();
@@ -4454,13 +4454,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   saveHofApproveSendingEmail(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
+      console.log(this.approveSendingLabResultsForm.value);
       this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      console.log(this.approveSendingLabResultsForm.value);
       this.msService.msWorkPlanInspectionHofApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm.value).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             // tslint:disable-next-line:max-line-length
-            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.selectedLabResults.ssfResultsList.bsNumber);
             this.approveSendingLabResultsForm.reset();
             console.log(data);
             this.SpinnerService.hide();
@@ -4481,6 +4483,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
     }
   }
+
 
   endSampleSubmitted() {
     this.SpinnerService.show();

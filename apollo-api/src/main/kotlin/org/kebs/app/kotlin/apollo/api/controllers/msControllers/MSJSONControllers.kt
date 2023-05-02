@@ -751,13 +751,13 @@ class MSJSONControllers(
 
         val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
 
-        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(iOutletVisitedAndSummaryOfFindingsViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(iOutletVisitedAndSummaryOfFindingsViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID))
         map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
 
-        val summarySamplesDrawnParam = JRBeanCollectionDataSource(iSummaryOfSamplesDrawnViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(iSummaryOfSamplesDrawnViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID))
         map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
 
-        val summarySiezedGoods = JRBeanCollectionDataSource(iSeizedGoodsReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        val summarySiezedGoods = JRBeanCollectionDataSource(iSeizedGoodsReportViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID))
         map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
