@@ -4271,7 +4271,7 @@
                                     <label><b>Select the Seizure Form to clone</b></label>
                                     <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" >
                                     <datalist id="seizureFormValueToCloneList">
-                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.nameOfOutlet}}</option>
                                     </datalist>
                                 </div>
                             </div>
@@ -6602,7 +6602,7 @@
                                         <textarea
                                                 class="form-control two-column-input"
                                                 formControlName="noteTransResults"
-                                                name="noteTransResults" required type="text"></textarea>
+                                                name="noteTransResults" type="text"></textarea>
                                     </div>
                                 </div>
 
@@ -7466,7 +7466,7 @@
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
                                         <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus"
                                                   (click)="openModalAddDetails('uploadFollowUpDocument')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">OTHER FOLLOW UP DOCUMENTS</span>
                                             <div class="mat-button-focus-overlay"></div>
@@ -7475,7 +7475,7 @@
                                             && selectedProductRecommendation?.destructionNotificationStatus == false
                                             && selectedProductRecommendation?.destructionRecommended"
                                                   (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
                                             <div class="mat-button-focus-overlay"></div>
@@ -7487,7 +7487,7 @@
                                             && selectedProductRecommendation?.appealStatus == false
                                             && selectedProductRecommendation?.destructionRecommended"
                                                   (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">DID CLIENT APPEAL WITHIN 14 DAYS?</span>
 
@@ -7500,7 +7500,7 @@
                                             && selectedProductRecommendation?.appealStatus==false
                                             && workPlanInspection?.destructionRecommended"
                                                   (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">WAS APPEAL SUCCESSFUL ?</span>
 
@@ -7513,7 +7513,7 @@
                                             && selectedProductRecommendation?.destructionDocId == null
                                             && selectedProductRecommendation?.destructionRecommended"
                                                   (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
 
@@ -7526,7 +7526,7 @@
                                             && selectedProductRecommendation?.destructionDocId == null
                                             && selectedProductRecommendation?.destructionRecommended"
                                                   (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal2"
+                                                  data-target="#myModal5"
                                                   class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
 

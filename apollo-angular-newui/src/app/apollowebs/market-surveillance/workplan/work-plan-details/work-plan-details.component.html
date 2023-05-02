@@ -4272,7 +4272,7 @@
                                     <label><b>Select the Seizure Form to clone</b></label>
                                     <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" >
                                     <datalist id="seizureFormValueToCloneList">
-                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.nameOfOutlet}}</option>
                                     </datalist>
                                 </div>
                             </div>
