@@ -1317,6 +1317,135 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     }
 
+    @PreAuthorize("hasAuthority('MS_HOF_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanSendingEmailDetailsApprovalHOFStatus(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: WorkPlanSendResultsApprovalDto
+    ): WorkPlanInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID)
+        var remarkStatusValue = "N/A"
+
+        with(savedSSfComplianceStatus) {
+            hofApproveSendingEmailDate= commonDaoServices.getCurrentDate()
+            when {
+                body.approvalStatus -> {
+                    hofApproveSendingEmailStatus= map.activeStatus
+                    remarkStatusValue = "APPROVED BY HOF"
+                }
+                else -> {
+                    hofApproveSendingEmailStatus= map.inactiveStatus
+                    remarkStatusValue = "REJECTED BY HOF"
+                }
+            }
+        }
+
+        savedSSfComplianceStatus = sampleSubmissionLabRepo.save(savedSSfComplianceStatus)
+
+        with(workPlanScheduled) {
+            when {
+                body.approvalStatus -> {
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlanSendingEmailHOF
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                }
+                else -> {
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectWorkPlanSendingEmailHOF
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                }
+            }
+        }
+
+        workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto) {
+            remarksDescription = body.remarks
+            remarksStatus = remarkStatusValue
+            processID = workPlanScheduled.msProcessId
+            userId = loggedInUser.id
+        }
+
+        val remarksSaved = workPlanAddRemarksDetails(workPlanScheduled.id, remarksDto, map, loggedInUser)
+        when (remarksSaved.first.status) {
+            map.successStatus -> {
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+            }
+        }
+    }
+
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanSendingEmailDetailsApprovalHODStatus(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: WorkPlanSendResultsApprovalDto
+    ): WorkPlanInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID)
+        var remarkStatusValue = "N/A"
+
+        with(savedSSfComplianceStatus) {
+            hodApproveSendingEmailDate= commonDaoServices.getCurrentDate()
+            when {
+                body.approvalStatus -> {
+                    hodApproveSendingEmailStatus= map.activeStatus
+                    remarkStatusValue = "APPROVED BY HOD/RM"
+                }
+                else -> {
+                    hodApproveSendingEmailStatus= map.inactiveStatus
+                    remarkStatusValue = "REJECTED BY HOD/RM"
+                }
+            }
+        }
+
+        savedSSfComplianceStatus = sampleSubmissionLabRepo.save(savedSSfComplianceStatus)
+
+        with(workPlanScheduled) {
+            when {
+                body.approvalStatus -> {
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlanSendingEmailHODRM
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                }
+                else -> {
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectWorkPlanSendingEmailHODRM
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                }
+            }
+        }
+
+        workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto) {
+            remarksDescription = body.remarks
+            remarksStatus = remarkStatusValue
+            processID = workPlanScheduled.msProcessId
+            userId = loggedInUser.id
+        }
+
+        val remarksSaved = workPlanAddRemarksDetails(workPlanScheduled.id, remarksDto, map, loggedInUser)
+        when (remarksSaved.first.status) {
+            map.successStatus -> {
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+            }
+        }
+    }
+
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -3732,11 +3861,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                 commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)
                     ?.let { daysConvert -> commonDaoServices.localDateToTimestamp(daysConvert) }
             }
-
-//            if(workPlanScheduled.){
-//
-//            }
-
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }

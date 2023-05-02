@@ -121,6 +121,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   otherFinalRecommendation!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
+  approveSendingLabResultsForm!: FormGroup;
   chargeSheetForm!: FormGroup;
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
@@ -250,6 +251,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedCounty = 0;
   selectedRegion = 0;
   selectedTown = 0;
+  endDateSet: Date;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1861,7 +1863,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       statusActivity: ['', Validators.required],
       finalRemarkHod: null,
       changesMade: null,
-      summaryOfFindings: ['', Validators.required],
+      summaryOfFindings: null,
       // remarks: ['', Validators.required],
     });
 
@@ -1946,41 +1948,41 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
-      id: null,
       valueToClone: null,
+      id: null,
       dataReportSelected: null,
       dataReportID: null,
       nameProduct: ['', Validators.required],
-      packaging: [''],
+      packaging: null,
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: null,
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
-      condition: [''],
+      condition: null,
       sampleReferences: null,
-      sendersName: [''],
-      designation: [''],
-      address: [''],
-      sendersDate: this.msService.formatDate(new Date()),
+      sendersName: null,
+      designation: null,
+      address: null,
+      sendersDate: ['', Validators.required],
       receiversName: null,
-      productDescription: null,
+      productDescription: ['', Validators.required],
       receiversDate: null,
       lbIdAnyAomarking: null,
+      sampleCollectionDate: ['', Validators.required],
       lbIdBatchNo: null,
       lbIdContDecl: null,
       lbIdDateOfManf: null,
       lbIdExpiryDate: null,
-      lbIdTradeMark: null,
-      sampleCollectionDate: null,
+      lbIdTradeMark: ['', Validators.required],
       noteTransResults: null,
+      referencesStandards: null,
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
       receiptLpoNumber: null,
       invoiceNumber: null,
-      disposal: ['', Validators.required],
-      remarks: ['', Validators.required],
+      disposal: null,
+      remarks: null,
       countryOfOrigin: null,
       sourceProductEvidence: null,
       sampleCollectionNumber: null,
@@ -2089,6 +2091,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.addResourceRequiredForm = this.formBuilder.group({
       resourceName: ['', Validators.required],
+    });
+
+    this.approveSendingLabResultsForm = this.formBuilder.group({
+      approvalStatus: ['', Validators.required],
+      ssfID: null,
+      remarks: ['', Validators.required],
+
     });
 
     this.notCompliantInvoiceForm = this.formBuilder.group({
@@ -2619,7 +2628,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector',  'startOnsiteActivities', 'uploadFollowUpDocument'];
+      'approveFinalPreliminaryDirector',  'startOnsiteActivities', 'uploadFollowUpDocument', 'hofApproveSendingEmail', 'hodApproveSendingEmail'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2628,7 +2637,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES', 'HOF APPROVE/DECLINE SENDING EMAIL RESULTS', 'HOD/RM  APPROVE/DECLINE SENDING EMAIL RESULTS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3023,21 +3032,26 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   updateSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
-    let refStandards = data?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    const refStandards = data?.referencesStandards;
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
+      }
+      this.standardsInput.nativeElement.value = '';
+    }
+    const paramDetails = data.parametersList;
+    if(paramDetails && paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
       }
     }
-    this.standardsInput.nativeElement.value = '';
-    const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
-    }
+
     if (data.docList != null && data.docList.length > 0){
       this.dataSaveSSFUploadList = [];
       for (let i = 0; i < data.docList.length; i++) {
@@ -3045,7 +3059,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.dataSaveSSFUploadList.push(fileValue);
       }
     }
-
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
     window.$('#sampleSubmitModal').modal('show');
@@ -3778,7 +3791,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
+    console.log(this.startOnsiteActivitiesForm.value);
+    this.calculateEndDate();
+    this.startOnsiteActivitiesForm.get('endDate').setValue(this.endDateSet)
     this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
+    console.log(this.dataSaveStartOnsiteActivities);
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
@@ -4375,6 +4392,94 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
           this.endDataReportAdding();
         });
+  }
+
+  onClickSaveHodApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHodApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHodApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHodApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveHofApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHofApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHofApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHofApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
   }
 
   endSampleSubmitted() {
@@ -5883,21 +5988,27 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
     this.sampleSubmitForm.patchValue(selectedClone);
     let refStandards = selectedClone?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    if(refStandards){
+      let arrayOfStandards = refStandards.split(";")
+      this.standardsArray = [];
+      for (let arrayOfStandard of arrayOfStandards){
+        let trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
       }
     }
+
     this.standardsInput.nativeElement.value = '';
     this.sampleSubmitForm?.get('id').setValue(0);
     const paramDetails = selectedClone.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if (paramDetails){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+      }
     }
+
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
   }
@@ -5989,6 +6100,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       }
 
       this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
+    this.endDateSet =  this.startOnsiteActivitiesForm.get('endDate').value;
 
   }
 

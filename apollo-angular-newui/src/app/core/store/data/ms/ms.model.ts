@@ -701,6 +701,11 @@ export class ConsumerComplaintViewSearchValues {
     departmentID: string;
     regionID: string;
     divisionName: string;
+    //selectedOfficers: officersID[];
+}
+
+export class officersID{
+    officerID: number;
 }
 
 export class SubmittedSamplesSummaryViewSearchValues {
@@ -1546,6 +1551,10 @@ export class MSSSFComplianceStatusDetailsDto {
     complianceStatus: boolean;
     analysisDone: boolean;
     resultsSent: boolean;
+    hofApproveSendingEmailStatus: boolean;
+    hofApproveSendingEmailDate: Date;
+    hodApproveSendingEmailStatus: boolean;
+    hodApproveSendingEmailDate: Date;
 }
 
 export class SSFSendingComplianceStatus {

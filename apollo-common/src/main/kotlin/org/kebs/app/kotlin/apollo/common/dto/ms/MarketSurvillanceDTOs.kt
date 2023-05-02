@@ -393,6 +393,14 @@ data class WorkPlanScheduleApprovalDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanSendResultsApprovalDto(
+        @NotNull(message = "Required field approvalStatus")
+        var approvalStatus: Boolean,
+        @NotNull(message = "Required field ssfID")
+        var ssfID: Long,
+        var remarks: String? = null,
+)
+
 data class WorkPlanScheduleOnsiteDto(
         @NotNull(message = "Required field")
         var startDate: Date,
@@ -894,6 +902,10 @@ data class MSSSFComplianceStatusDetailsDto(
         var complianceStatus: Boolean? = null,
         var analysisDone: Boolean? = null,
         var resultsSent: Boolean? = null,
+        var hofApproveSendingEmailStatus: Boolean? = null,
+        var hofApproveSendingEmailDate: Date? = null,
+        var hodApproveSendingEmailStatus: Boolean? = null,
+        var hodApproveSendingEmailDate: Date? = null,
 )
 
 data class LIMSFilesFoundDto(
@@ -1097,6 +1109,11 @@ data class ConsumerComplaintViewSearchValues(
         var sectorID: Long? = null,
         var regionID: String? = null,
         var departmentID: String? = null,
+
+)
+
+data class selectedOfficersList(
+        var officerID: Long? = null
 )
 
 data class FieldInspectionSummarySearch(

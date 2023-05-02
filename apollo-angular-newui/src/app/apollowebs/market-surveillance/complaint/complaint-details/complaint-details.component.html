@@ -399,6 +399,23 @@
 <!--                                    </div>-->
 <!--                                    <br/>-->
 <!--                                </div>-->
+                                <div *ngIf="complaintInspection?.complaintsDetails?.timelineEndDate!=null && complaintInspection?.complaintsDetails?.assignedIOStatus == false">
+                                    <b>TIMELINES STATUS:</b>
+                                    <div>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue"
+                                           class="text-success">IN-TIME</b>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false"
+                                           class="text-danger">OVER-DUE</b>
+                                    </div>
+                                    <b>Started TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>
+                                    </div>
+                                    <b>Targeted TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineEndDate| date}}</b>
+                                    </div>
+                                </div>
                                 <div *ngIf="showTimelines && isAssignedDateValid">
                                     <div *ngIf="complaintInspection?.complaintsDetails?.assignedIODate && complaintInspection?.complaintsDetails?.assignedIOStatus">
                                         <b>TIMELINES STATUS:</b>
