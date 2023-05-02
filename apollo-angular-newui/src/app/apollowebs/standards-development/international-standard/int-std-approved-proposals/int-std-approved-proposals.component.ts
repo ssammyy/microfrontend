@@ -75,7 +75,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     this.edition='first'
     this.prepareJustificationFormGroup = this.formBuilder.group({
         meetingDate: ['', Validators.required],
-        department: ['', Validators.required],
+        department: [],
         tcSecName: [],
         standardNumber: [],
         title: ['', Validators.required],
@@ -102,7 +102,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
 
       this.editJustificationFormGroup = this.formBuilder.group({
           meetingDate: ['', Validators.required],
-          department: ['', Validators.required],
+          department: [],
           tcSecName: [],
           standardNumber: [],
           title: ['', Validators.required],
@@ -267,7 +267,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         this.stdIntStandardService.getJustificationStatus(comStdDraftID).subscribe(
             (response: JustificationStatus)=> {
                 this.justificationStatus = response;
-                console.log(this.justificationStatus)
+                //console.log(this.justificationStatus)
             },
             (error: HttpErrorResponse)=>{
                 console.log(error.message)
@@ -287,7 +287,8 @@ export class IntStdApprovedProposalsComponent implements OnInit {
               standardNumber: this.actionRequest.standardNumber,
               title: this.actionRequest.title,
               edition: this.edition,
-              tcAcceptanceDate: this.actionRequest.tcAcceptanceDate
+              tcAcceptanceDate: this.actionRequest.tcAcceptanceDate,
+
 
           }
       );
