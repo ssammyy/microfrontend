@@ -1293,10 +1293,12 @@ class IntStandardService(
 
             with(companyStandard) {
 
-                if(draughting =="Yes"){
+                if(draught =="Yes"){
                    status=4
-                }else if(draughting =="No"){
+
+                }else if(draught =="No"){
                     status=5
+
                 }
 //                status = if (draughting =="Yes"){
 //                    4

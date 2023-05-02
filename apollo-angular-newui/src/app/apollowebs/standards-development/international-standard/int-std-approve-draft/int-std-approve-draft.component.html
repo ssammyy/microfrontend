@@ -717,7 +717,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h3 class="modal-title" id="approveProofReadDraftLabel">Approve Draft For Publishing</h3>
-                                                <button type="button" #hideModalAProof class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" #closeModalAProof class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -801,8 +801,8 @@
                                                                                 <div class="form-group col-12" >
                                                                                     <label><b>Approve/Reject Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
                                                                                     <ng-select [(ngModel)]="selectedType"  class="form-control" formControlName="accentTo" name="accentTo"  >
-                                                                                        <ng-option  [value]="approve" >Approve </ng-option>
-                                                                                        <ng-option  [value]="reject" >Reject </ng-option>
+                                                                                        <ng-option  [value]="approve" >Recommend </ng-option>
+                                                                                        <ng-option  [value]="reject" >Not Recommend </ng-option>
                                                                                     </ng-select>
                                                                                 </div>
                                                                                 <div class="form-group col-12">
