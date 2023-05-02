@@ -4759,11 +4759,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.SpinnerService.show();
       this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
       this.msService.msWorkPlanInspectionHodApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm.value).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             // tslint:disable-next-line:max-line-length
-            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.selectedLabResults.ssfResultsList.bsNumber);
             this.approveSendingLabResultsForm.reset();
             console.log(data);
             this.SpinnerService.hide();
@@ -4790,7 +4790,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+          `You can click \'APPROVE/DECLINE SENDING RESULTS\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
             this.saveHofApproveSendingEmail(valid);
           });
     } else {
@@ -4801,13 +4801,15 @@ export class WorkPlanDetailsComponent implements OnInit {
   saveHofApproveSendingEmail(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
+      console.log(this.approveSendingLabResultsForm.value);
       this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      console.log(this.approveSendingLabResultsForm.value);
       this.msService.msWorkPlanInspectionHofApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm.value).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             // tslint:disable-next-line:max-line-length
-            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.selectedLabResults.ssfResultsList.bsNumber);
             this.approveSendingLabResultsForm.reset();
             console.log(data);
             this.SpinnerService.hide();

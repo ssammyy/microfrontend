@@ -1539,8 +1539,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled) {
             msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-            val usersEntity =
-                commonDaoServices.findUserByID(body.assignedIo ?: throw ExpectedDataNotFound("Missing Assigned IO ID"))
+            val usersEntity = commonDaoServices.findUserByID(body.assignedIo ?: throw ExpectedDataNotFound("Missing Assigned IO ID"))
             officerId = usersEntity.id
             officerName = commonDaoServices.concatenateName(usersEntity)
         }
@@ -6001,14 +6000,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 submittedForApprovalStatus = map.activeStatus
                 progressStep = "WorkPlan Generated"
                 region = complaintLocationDetails.region
-                referenceNumber = "${msType.markRef}${
-                    generateRandomText(
-                        5,
-                        map.secureRandom,
-                        map.messageDigestAlgorithm,
-                        true
-                    )
-                }".toUpperCase()
+                referenceNumber = comp.referenceNumber
                 workPlanYearId = userWorkPlan.id
                 hodRmAssigned = comp.hodAssigned
                 timelineStartDate = commonDaoServices.getCurrentDate()

@@ -8025,9 +8025,8 @@
                                 <div *ngIf="roles.includes('MS_HOF_MODIFY')">
                                     <button  *ngIf="workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
-                                    && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus == false
+                                    && !selectedLabResults?.ssfResultsList?.hofApproveSendingEmailStatus
                                     && selectedLabResults?.ssfResultsList?.hofApproveSendingEmailDate == null
-                                    && workPlanInspection?.hofAssignedDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
                                              (click)="openModalAddDetails('hofApproveSendingEmail')" mat-raised-button="" data-toggle="modal"
                                              data-target="#myModal2"
