@@ -113,7 +113,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
   averageCompliance = 0;
-  totalNumberOfProducts = 0;
+  totalNumberOfProducts: number = 0;
   endDateSet: Date;
 
   addResourceRequiredForm!: FormGroup;
@@ -3105,19 +3105,23 @@ export class WorkPlanDetailsComponent implements OnInit {
   updateSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
     const refStandards = data?.referencesStandards;
-    const arrayOfStandards = refStandards.split(';');
-    this.standardsArray = [];
-    for (const arrayOfStandard of arrayOfStandards) {
-      const trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
       }
+      this.standardsInput.nativeElement.value = '';
     }
-    this.standardsInput.nativeElement.value = '';
     const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if(paramDetails && paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+      }
     }
     if (data.docList != null && data.docList.length > 0) {
       this.dataSaveSSFUploadList = [];
@@ -6094,22 +6098,28 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
     this.sampleSubmitForm.patchValue(selectedClone);
-    const refStandards = selectedClone?.referencesStandards;
-    const arrayOfStandards = refStandards.split(';');
-    this.standardsArray = [];
-    for (const arrayOfStandard of arrayOfStandards) {
-      const trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    let refStandards = selectedClone?.referencesStandards;
+    if(refStandards){
+      let arrayOfStandards = refStandards.split(";")
+      this.standardsArray = [];
+      for (let arrayOfStandard of arrayOfStandards){
+        let trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
       }
     }
+
     this.standardsInput.nativeElement.value = '';
     this.sampleSubmitForm?.get('id').setValue(0);
     const paramDetails = selectedClone.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if (paramDetails){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+      }
     }
+
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
   }

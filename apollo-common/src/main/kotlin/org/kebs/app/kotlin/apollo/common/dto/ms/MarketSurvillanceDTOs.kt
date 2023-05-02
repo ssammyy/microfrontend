@@ -1109,6 +1109,11 @@ data class ConsumerComplaintViewSearchValues(
         var sectorID: Long? = null,
         var regionID: String? = null,
         var departmentID: String? = null,
+
+)
+
+data class selectedOfficersList(
+        var officerID: Long? = null
 )
 
 data class FieldInspectionSummarySearch(

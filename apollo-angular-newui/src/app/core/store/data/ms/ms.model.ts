@@ -701,6 +701,11 @@ export class ConsumerComplaintViewSearchValues {
     departmentID: string;
     regionID: string;
     divisionName: string;
+    //selectedOfficers: officersID[];
+}
+
+export class officersID{
+    officerID: number;
 }
 
 export class SubmittedSamplesSummaryViewSearchValues {
