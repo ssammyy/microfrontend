@@ -59,15 +59,20 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-fun generateRandomText(length: Int = 12,
-                       secureRandomAlgorithm: String = "SHA1PRNG",
-                       messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false): String {
+fun generateRandomText(
+    length: Int = 12,
+    secureRandomAlgorithm: String = "SHA1PRNG",
+    messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false, sufix: String? = null
+): String {
     var prefixText = ""
     val generator = RandomTextGenerator(length, secureRandomAlgorithm, messageDigestAlgorithm)
     when {
-        prefix -> prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+        prefix -> prefixText =
+            DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault())
+                .format(Instant.now())
     }
-    return "${prefixText}${generator.generateTransactionReference()}"
+
+    return "${prefixText}${sufix ?: ""}${generator.generateTransactionReference()}"
 }
 
 fun getRandomNumberString(): String? {

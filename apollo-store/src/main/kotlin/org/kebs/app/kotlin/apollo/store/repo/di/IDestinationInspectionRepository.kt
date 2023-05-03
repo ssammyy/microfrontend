@@ -443,6 +443,12 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
         nativeQuery = true
     )
     fun transactionStats(date: String): List<TransactionStats>
+
+    @Query(
+        "select count(*) as totalCount from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date",
+        nativeQuery = true
+    )
+    fun transactionCount(date: String): Long
 }
 
 @Repository
@@ -649,8 +655,13 @@ interface ICdStandardsTwoEntityRepository : HazelcastRepository<CdStandardsTwoEn
 }
 
 @Repository
+interface IHsCodesRepository : HazelcastRepository<HsCodeEntity, Long> {
+    fun findByHsCode(hsCode: String): HsCodeEntity?
+}
+
+@Repository
 interface ICdApplicantDefinedThirdPartyDetailsRepository :
-        HazelcastRepository<CdApplicantDefinedThirdPartyDetailsEntity, Long>
+    HazelcastRepository<CdApplicantDefinedThirdPartyDetailsEntity, Long>
 
 @Repository
 interface ICdApprovalHistoryRepository : HazelcastRepository<CdApprovalHistoryEntity, Long>
