@@ -44,6 +44,45 @@ interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollecti
 interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, String> {
     override fun findAll(pageable: Pageable): Page<MsFieldReportView>
 
+
+    @Query(
+        value = "SELECT  nvl(TO_CHAR(rep.MS_WORKPLAN_GENERATED_ID),'N/A') AS MS_WORKPLAN_GENERATED_ID,\n" +
+                "        nvl(TO_CHAR(rep.CREATED_USER_ID),'N/A') AS CREATED_USER_ID,\n" +
+                "        nvl(TO_CHAR(rep.ID),'N/A') AS ID,\n" +
+                "        nvl(rep.REPORT_REFERENCE,'N/A') AS REPORT_REFERENCE,\n" +
+                "        nvl(rep.REPORT_TO,'N/A') AS REPORT_TO,\n" +
+                "        nvl(rep.REPORT_THROUGH,'N/A') AS REPORT_THROUGH,\n" +
+                "        nvl(rep.REPORT_FROM,'N/A') AS REPORT_FROM,\n" +
+                "        nvl(rep.REPORT_SUBJECT,'N/A') AS REPORT_SUBJECT,\n" +
+                "        nvl(rep.REPORT_TITLE,'N/A') AS REPORT_TITLE,\n" +
+                "        nvl(TO_CHAR(TRUNC(rep.REPORT_DATE),'DD/MM/YYYY'),'N/A') AS REPORT_DATE,\n" +
+                "        nvl(rep.REPORT_REGION,'N/A') AS REPORT_REGION,\n" +
+                "        nvl(rep.REPORT_DEPARTMENT,'N/A') AS REPORT_DEPARTMENT,\n" +
+                "        nvl(rep.REPORT_FUNCTION,'N/A') AS REPORT_FUNCTION,\n" +
+                "        nvl(rep.BACKGROUND_INFORMATION,'N/A') AS BACKGROUND_INFORMATION,\n" +
+                "        nvl(rep.OBJECTIVE_INVESTIGATION,'N/A') AS OBJECTIVE_INVESTIGATION,\n" +
+                "        nvl(TO_CHAR(TRUNC(rep.START_DATE_INVESTIGATION_INSPECTION),'DD/MM/YYYY'),'N/A') AS START_DATE_INVESTIGATION_INSPECTION,\n" +
+                "        nvl(TO_CHAR(TRUNC(rep.END_DATE_INVESTIGATION_INSPECTION),'DD/MM/YYYY'),'N/A') AS END_DATE_INVESTIGATION_INSPECTION,\n" +
+                "        nvl(rep.METHODOLOGY_EMPLOYED,'N/A') AS METHODOLOGY_EMPLOYED,\n" +
+                "        nvl(rep.SUMMARY_OF_FINDINGS,'N/A') AS SUMMARY_OF_FINDINGS,\n" +
+                "        nvl(rep.ADDITIONAL_INFORMATION,'N/A') AS ADDITIONAL_INFORMATION,\n" +
+                "        nvl(rep.CONCLUSION,'N/A') AS CONCLUSION,\n" +
+                "        nvl(rep.RECOMMENDATIONS,'N/A') AS RECOMMENDATIONS,\n" +
+                "        nvl(rep.STATUS_ACTIVITY,'N/A') AS STATUS_ACTIVITY,\n" +
+                "        nvl(rep.FINAL_REMARK_HOD,'N/A') AS FINAL_REMARK_HOD,\n" +
+                "        nvl(rep.KEBS_INSPECTORS,'N/A') AS KEBS_INSPECTORS,\n" +
+                "        nvl(rep.VAR_FIELD_1,'N/A') AS VAR_FIELD_1,\n" +
+                "        nvl(TO_CHAR(TRUNC(rep.CREATED_ON),'DD/MM/YYYY'),'N/A') AS CREATED_ON,\n" +
+                "        nvl(rep.CREATED_BY,'N/A') AS CREATED_BY,\n" +
+                "        nvl(rep.MODIFIED_BY,'N/A') AS MODIFIED_BY,\n" +
+                "        nvl(TO_CHAR(TRUNC(rep.MODIFIED_ON),'DD/MM/YYYY'),'N/A') AS MODIFIED_ON,\n" +
+                "        nvl(rep.REPORT_CLASSIFICATION,'N/A') AS REPORT_CLASSIFICATION,\n" +
+                "       nvl(rep.CHANGES_MADE,'N/A') AS CHANGES_MADE \n" +
+                "FROM DAT_KEBS_MS_INSPECTION_INVESTIGATION_REPORT rep WHERE TO_CHAR(rep.MS_WORKPLAN_GENERATED_ID)=:msWorkplanGeneratedId",
+        nativeQuery = true
+    )
+    fun findMsWorkplanGeneratedId(@Param("msWorkplanGeneratedId") msWorkplanGeneratedId: String): List<MsFieldReportView>
+
     fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsFieldReportView>
 }
 

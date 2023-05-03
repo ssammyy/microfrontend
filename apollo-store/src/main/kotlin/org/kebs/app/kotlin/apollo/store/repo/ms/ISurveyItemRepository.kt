@@ -326,6 +326,7 @@ interface IMSInvestInspectReportRepository : HazelcastRepository<MsInspectionInv
     override fun findAll( pageable: Pageable): Page<MsInspectionInvestigationReportEntity>
 
     fun findByWorkPlanGeneratedIDAndIsPreliminaryReport(workPlanGeneratedID: Long, isPreliminaryReport: Int):MsInspectionInvestigationReportEntity?
+    fun findByIsPreliminaryReportAndWorkPlanGeneratedID(workPlanGeneratedID: Long, isPreliminaryReport: Int):List<MsInspectionInvestigationReportEntity>?
     fun findTopByWorkPlanGeneratedIDAndIsPreliminaryReportOrderByIdDesc(workPlanGeneratedID: Long, isPreliminaryReport: Int):MsInspectionInvestigationReportEntity?
     fun findByIsPreliminaryReportAndWorkPlanGeneratedID(isPreliminaryReport: Int, workPlanGeneratedID: Long): List<MsInspectionInvestigationReportEntity>?
 //    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long):MsInspectionInvestigationReportEntity?

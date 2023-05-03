@@ -6630,10 +6630,8 @@ class MarketSurveillanceWorkPlanDaoServices(
         val inspectionInvestigationDto = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
 
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduledDetails.id)
-        val sampleCollectedParamList =
-            sampleCollected?.id?.let { msFuelDaoServices.findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
-        val sampleCollectedDtoValues =
-            sampleCollectedParamList?.let { msFuelDaoServices.mapSampleCollectedParamListDto(it) }
+        val sampleCollectedParamList =sampleCollected?.id?.let { msFuelDaoServices.findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
+        val sampleCollectedDtoValues =sampleCollectedParamList?.let { msFuelDaoServices.mapSampleCollectedParamListDto(it) }
                 ?.let { msFuelDaoServices.mapSampleCollectedDto(sampleCollected, it) }
 
         val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDto>()
