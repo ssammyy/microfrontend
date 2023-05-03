@@ -1185,7 +1185,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun updateWorkPlanScheduleInspectionDetailsApprovalStatus(
         referenceNo: String,
         batchReferenceNo: String,
-        body: WorkPlanScheduleApprovalDto
+        body: WorkPlanSendResultsApprovalDto
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
