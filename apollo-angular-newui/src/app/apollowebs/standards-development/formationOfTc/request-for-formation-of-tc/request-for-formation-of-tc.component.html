@@ -471,16 +471,16 @@
                                             <div class="form-group col-12">
                                                 <label><b>SO/IEE/IEC Mirror Committee</b></label>
                                                 <mat-form-field class="example-full-width has-label"
-                                                                [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'proposedRepresentation')">
+                                                                [ngClass]="displayFieldCss(editFormationRequestFormGroup, 'isoCommittee')">
                                                     <input
                                                             matInput
-                                                            ngModel="{{this.proposalRetrieved?.proposedRepresentation}}"
+                                                            ngModel="{{this.proposalRetrieved?.isoCommittee}}"
                                                             aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                             class="form-control one-column-input"
-                                                            formControlName="proposedRepresentation"
+                                                            formControlName="isoCommittee"
                                                             placeholder="Proposed TC Representation *" type="text">
                                                     <app-field-error-display
-                                                            [displayError]="isFieldValid(editFormationRequestFormGroup, 'proposedRepresentation')"
+                                                            [displayError]="isFieldValid(editFormationRequestFormGroup, 'isoCommittee')"
                                                             errorMsg="Please Enter Proposed TC Representation">
                                                     </app-field-error-display>
                                                 </mat-form-field>

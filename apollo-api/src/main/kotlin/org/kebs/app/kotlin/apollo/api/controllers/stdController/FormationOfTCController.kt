@@ -130,15 +130,15 @@ class FormationOfTCController(
     }
 
 
-    @PostMapping("/approveJustificationSAC")
-    @ResponseBody
-    fun approveJustificationSAC(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
-        return ServerResponse(
-            HttpStatus.OK,
-            "Recommendation Approved",
-            formationOfTCService.approveJustificationSAC(justificationForTC)
-        )
-    }
+//    @PostMapping("/approveJustificationSAC")
+//    @ResponseBody
+//    fun approveJustificationSAC(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Recommendation Approved",
+//            formationOfTCService.approveJustificationSAC(justificationForTC)
+//        )
+//    }
 
     @PostMapping("/rejectJustificationSAC")
     @ResponseBody

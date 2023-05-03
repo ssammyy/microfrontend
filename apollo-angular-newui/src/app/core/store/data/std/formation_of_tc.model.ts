@@ -30,6 +30,8 @@ export interface JustificationForTc {
 
     commentsSac: string;
 
+    isoCommittee: string;
+
 
 }
 

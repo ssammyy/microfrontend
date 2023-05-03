@@ -113,16 +113,30 @@ class FormationOfTCService(
     fun approveJustificationSPC(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 4   //approved by SPC
         u.spcId = loggedInUser.id
         u.spcReviewDate = Timestamp(System.currentTimeMillis())
         u.commentsSpc= justificationForTC.commentsSpc
-
+        u.status = 6   //approved by SPC and advertised to Website
+        u.tcNumber = generateTCNumber("KEBS")
+        u.commentsSac= justificationForTC.commentsSac
         justificationForTCRepository.save(u)
+
+        val tc = TechnicalCommittee()
+        tc.departmentId = u.departmentId!!
+        tc.title = u.nameOfTC
+        tc.createdOn = Timestamp(System.currentTimeMillis())
+        tc.status = 1.toString()
+        tc.createdBy = loggedInUser.id.toString()
+        tc.technicalCommitteeNo = u.tcNumber
+        tc.advertisingStatus = "1"
+
+        technicalCommitteeRepository.save(tc)
         return ServerResponse(
             HttpStatus.OK,
-            "Approved", "Justification Approved."
+            "Success", "Technical Committee Saved."
         )
+
+
     }
 
     fun rejectJustificationSPC(justificationForTC: JustificationForTC): ServerResponse {
@@ -149,31 +163,31 @@ class FormationOfTCService(
         return justificationForTCRepository.findAllByStatus(5)
     }
 
-    fun approveJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 6   //approved by SAC and advertised to Website
-        u.sacId = loggedInUser.id
-        u.sacReviewDate = Timestamp(System.currentTimeMillis())
-        u.tcNumber = generateTCNumber("KEBS")
-        u.commentsSac= justificationForTC.commentsSac
-        justificationForTCRepository.save(u)
-
-        val tc = TechnicalCommittee()
-        tc.departmentId = u.departmentId!!
-        tc.title = u.nameOfTC
-        tc.createdOn = Timestamp(System.currentTimeMillis())
-        tc.status = 1.toString()
-        tc.createdBy = loggedInUser.id.toString()
-        tc.technicalCommitteeNo = u.tcNumber
-        tc.advertisingStatus = "1"
-
-        technicalCommitteeRepository.save(tc)
-        return ServerResponse(
-            HttpStatus.OK,
-            "Success", "Technical Committee Saved."
-        )
-    }
+//    fun approveJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
+//        u.status = 6   //approved by SAC and advertised to Website
+//        u.sacId = loggedInUser.id
+//        u.sacReviewDate = Timestamp(System.currentTimeMillis())
+//        u.tcNumber = generateTCNumber("KEBS")
+//        u.commentsSac= justificationForTC.commentsSac
+//        justificationForTCRepository.save(u)
+//
+//        val tc = TechnicalCommittee()
+//        tc.departmentId = u.departmentId!!
+//        tc.title = u.nameOfTC
+//        tc.createdOn = Timestamp(System.currentTimeMillis())
+//        tc.status = 1.toString()
+//        tc.createdBy = loggedInUser.id.toString()
+//        tc.technicalCommitteeNo = u.tcNumber
+//        tc.advertisingStatus = "1"
+//
+//        technicalCommitteeRepository.save(tc)
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Success", "Technical Committee Saved."
+//        )
+//    }
 
     fun rejectJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
