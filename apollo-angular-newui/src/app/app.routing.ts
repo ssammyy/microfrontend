@@ -867,6 +867,13 @@ import {
 import {
     IntStdApproveChangesComponent
 } from "./apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component";
+import {
+    TrackRequestComponent
+} from "./apollowebs/standards-development/standard-request/track-request/track-request.component";
+import {UserPrivilegesComponent} from "./apollowebs/system/user-privileges/user-privileges.component";
+import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.component";
+import {IntStdNscApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component";
+import {IntStdWebProposalComponent} from "./apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component";
 
 export const routes: Routes = [
     {
@@ -1684,6 +1691,15 @@ export const routes: Routes = [
                 path: 'inspection/fees',
                 component: InspectionFeesComponent,
             },
+            {
+                path: 'privileges',
+                children: [{path: '', component: UserPrivilegesComponent}],
+            },
+            {
+                path: 'user-roles',
+                children: [{path: '', component: UserRolesComponent}],
+            },
+
         ],
     },
     {
@@ -1788,13 +1804,17 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProposalsComponent}],
     },
     {
-        path: 'isPropComments/:proposalId', component: AdminLayoutComponent,
+        path: 'isPropComments', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdProposalCommentsComponent}],
     },
     {
-        path: 'isProposalComments/:proposalId',
+        path: 'isProposalComments/:proposalId/:cid',
         component: IntStdCommentsComponent,
+    },
+    {
+        path: 'isWebProposalComments',
+        component: IntStdWebProposalComponent,
     },
 
     // {
@@ -1868,6 +1888,11 @@ export const routes: Routes = [
         path: 'isSacApproval', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdSacApprovalComponent}],
+    },
+    {
+        path: 'isNscApproval', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdNscApprovalComponent}],
     },
     {
         path: 'isStandardGazette', component: AdminLayoutComponent,
@@ -2122,6 +2147,12 @@ export const routes: Routes = [
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}],
     },
+
+    {
+        // Track Standard Requests
+        path: 'ms-track', component: AdminLayoutComponent,
+        children: [{path: '', component: TrackRequestComponent}],
+    },
     {
         // Prepare New Work Item
         path: 'std-tsc-sec-task', component: AdminLayoutComponent,
@@ -2322,7 +2353,7 @@ export const routes: Routes = [
         children: [{path: '', component: ReviewJustificationOfTCComponent}],
     },
     {
-        path: 'reviewFeedbackSAC',
+        path: 'approvedProposals',
         component: AdminLayoutComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: ReviewFeedbackSacComponent}],
@@ -3009,6 +3040,9 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyRejectedChangesComponent}],
     },
+
+
+
 
 
     /****************MS COMPONENTS ENDS HERE**********************************/

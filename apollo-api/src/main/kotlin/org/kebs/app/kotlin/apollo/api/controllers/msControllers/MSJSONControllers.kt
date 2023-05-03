@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -33,6 +34,9 @@ class MSJSONControllers(
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
     private val iComplaintPdfViewRepo: IMsComplaintPdfGenerationViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
+    private val iSeizedGoodsReportViewRepo: IMsSeizedGoodsReportViewRepository,
+    private val iOutletVisitedAndSummaryOfFindingsViewRepo: IOutletVisitedAndSummaryOfFindingsViewRepository,
+    private val iSummaryOfSamplesDrawnViewRepo: ISummaryOfSamplesDrawnViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
@@ -43,16 +47,19 @@ class MSJSONControllers(
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val seizureDeclarationRepo: IMsSeizureRepository,
     private val dataReportParameterRepo: IDataReportParameterRepository,
+    private val ssfLabParametersRepo: ISSFLabParameterRepository,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
-    private val companyProfileRepo: ICompanyProfileRepository
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
+    private val sampleSubmitParameterRepo: ISampleSubmitParameterRepository,
 ){
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/work-plan/file/save")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("referenceNo") referenceNo: String,
@@ -112,6 +119,18 @@ class MSJSONControllers(
                     "SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         successfulOrUnsuccessfulAppealDocID = fileDocSaved!!.id
+                    }
+                    "CHAIN_OF_CUSTODY" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        chainOfCustodyDocID = fileDocSaved!!.id
+                    }
+                    "FOLLOW_UP_ACTION_DOC" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        followUpActionDocID = fileDocSaved!!.id
+                    }
+                    "WORKPLAN_END_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        workplanEndFileDocID = fileDocSaved!!.id
                     }
                 }
             }
@@ -287,7 +306,8 @@ class MSJSONControllers(
                 batchRefNumber = batchReferenceNo
                 yearCodeName = batchDetails.yearNameId?.yearName
                 dateSubmitted = commonDaoServices.getCurrentDate()
-
+                productName = workPlanProduct.productName
+                productBrand = workPlanProduct.productBrand
             }
             workPlanProduct.destructionClientEmail?.let {
                 commonDaoServices.sendEmailWithUserEmail(it,
@@ -455,6 +475,65 @@ class MSJSONControllers(
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(dataReportFileSaved.first))
+            }
+        }
+
+    }
+
+    @PostMapping("/workPlan/inspection/add/sample-submission")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanInspectionSSF(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, SampleSubmissionDto::class.java)
+
+        if (docFile!=null) {
+            body.docList?.forEach { fileDel->
+                msUploadRepo.deleteById(fileDel)
+            }
+        }
+
+        val fileDocList = mutableListOf<Long>()
+        docFile?.forEach { fileDoc ->
+            val fileDocSaved =   msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,"SAMPLE SUBMISSION FORM",workPlanScheduled)
+            fileDocSaved.second.id?.let { fileDocList.add(it) }
+        }
+
+
+        with(body){
+            docList = fileDocList
+        }
+
+        val SSFFileSaved = msWorkPlanDaoService.workPlanInspectionDetailsAddSSF(body, workPlanScheduled, map, loggedInUser)
+
+        when (SSFFileSaved.first.status) {
+            map.successStatus -> {
+                val SSFLabParamList = SSFFileSaved.second.id.let { msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
+                SSFLabParamList?.forEach { paramRemove ->
+                    val result: SampleSubmissionItemsDto? = body.parametersList?.find { actor -> actor.id == paramRemove.id }
+                    if (result == null) {
+                        sampleSubmitParameterRepo.deleteById(paramRemove.id)
+                    }
+                }
+
+                body.parametersList?.forEach { param ->
+                    msFuelDaoServices.addSampleSubmissionParamAdd(param, SSFFileSaved.second, map, loggedInUser)
+                }
+
+                return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(SSFFileSaved.first))
             }
         }
 
@@ -670,11 +749,20 @@ class MSJSONControllers(
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        var fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(iOutletVisitedAndSummaryOfFindingsViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
+
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(iSummaryOfSamplesDrawnViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
+
+        val summarySiezedGoods = JRBeanCollectionDataSource(iSeizedGoodsReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
-        var officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        val officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
         var officersNames:String? = null
         var numberTest = 1
         officersList?.forEach { of->
@@ -723,7 +811,7 @@ class MSJSONControllers(
         response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; Field-Report-${fieldReport[0].reportReference}.pdf;")
+        response.addHeader("Content-Dispostion", "inline; Initial-Report-${fieldReport[0].reportReference}.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()
@@ -731,50 +819,78 @@ class MSJSONControllers(
         }
     }
 
-//    @RequestMapping(value = ["/report/initial-report"], method = [RequestMethod.GET])
-//    @Throws(Exception::class)
-//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-//    fun msSampleSubmissionPDF(
-//        response: HttpServletResponse,
-//        @RequestParam(value = "ssfID") ssfID: Long
-//    ) {
-//        val map = hashMapOf<String, Any>()
-//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
-//
-//        val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
-//
-//        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
-//
-//        if (user != null) {
-//            val mySignature: ByteArray?
-//            val image: ByteArrayInputStream?
-//            println("UserID is" + user.id)
-//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
-//            if (signatureFromDb != null) {
-//                mySignature= signatureFromDb.signature
-//                image = ByteArrayInputStream(mySignature)
-//                map["signaturePath"] = image
-//
-//            }
-//        }
-////        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
-//
-//        val pdfReportStream = reportsDaoService.extractReport(
-//            map,
-//            applicationMapProperties.mapMSSampleSubmissionPath,
-//            ssfFile
-//        )
-//
-//        response.contentType = "text/html"
-//        response.contentType = "application/pdf"
-//        response.setHeader("Content-Length", pdfReportStream.size().toString())
-//        response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
-//        response.outputStream.let { responseOutputStream ->
-//            responseOutputStream.write(pdfReportStream.toByteArray())
-//            responseOutputStream.close()
-//            pdfReportStream.close()
-//        }
-//    }
+    @RequestMapping(value = ["/report/ms-progress-report"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msProgressReportPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
+        map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
+//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        var progressReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val user = progressReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+        var officersList = progressReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        var officersNames:String? = null
+        var numberTest = 1
+        officersList?.forEach { of->
+            officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
+            numberTest++
+        }
+
+        progressReport[0].kebsInspectors = officersNames
+        progressReport[0].reportClassification?.uppercase()
+
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["signaturePath"] = image
+
+            }
+        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+        var pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+        when (progressReport[0].reportClassification) {
+            "TOP SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+            }
+            "SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathSecret
+            }
+            "CONFIDENTIAL" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathConfidential
+            }
+            "RESTRICTED" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathRestricted
+            }
+        }
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            pathFileToSelect,
+            progressReport
+        )
+
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Progress-Report-${progressReport[0].reportReference}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
 
 
 

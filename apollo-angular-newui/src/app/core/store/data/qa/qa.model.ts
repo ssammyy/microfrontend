@@ -18,6 +18,14 @@ export class QRCodeScannedQADto {
     dateOfExpiry: Date;
 }
 
+export class PermitSearchValues {
+    refNumber: string;
+    productName: string;
+    tradeMark: string;
+
+    firmName: string;
+}
+
 export class CompanyTurnOverUpdateDto {
     companyProfileID: bigint;
     selectedFirmTypeID: bigint;
@@ -331,6 +339,16 @@ export class PermitEntityDetails {
     pcmApprovalStatus: boolean;
     paidStatus: boolean;
     changesMadeStatus: boolean;
+    justificationReportStatus: boolean;
+    justificationReportApproved: boolean;
+    assignAssessorStatus: boolean;
+    hodApproveAssessmentStatus: boolean;
+    pacDecisionStatus: boolean;
+    assessmentReportAddedStatus: boolean;
+    leadAssessorId: number;
+    userTaskId: number;
+    assignLeadAssessor: string;
+    labResultsOutsideAddedStatus: boolean;
 }
 
 
@@ -438,6 +456,12 @@ export class CompanyUpgradeStatusDto {
     firmType: string;
 }
 
+export class SaveSSFComplianceApplyDto {
+    ssfID: number;
+    resultsAnalysis: boolean;
+    complianceRemarks: string;
+}
+
 export class AllPermitDetailsDto {
     companyStatusDetails: CompanyUpgradeStatusDto;
     permitDetails: PermitEntityDetails;
@@ -467,7 +491,10 @@ export class AllPermitDetailsDto {
     schemeOfSuperVisionList: FilesListDto[];
     remarksDetailsList: RemarksAndStatusDto[];
     inspectionInvoiceUpload: InspectionInvoiceUploadedDto;
-
+    assessorList: UserEntityDto[];
+    assessmentVisionList: FilesListDto[];
+    justificationVisionList: FilesListDto[];
+    labResultsExternalVisionList: FilesListDto[];
 }
 
 
@@ -701,7 +728,7 @@ export class AllInspectionDetailsApplyDto {
     inspectionDetailsDtoB: InspectionDetailsDtoB;
     productLabelling: ProductLabellingDto[];
 
-    standardizationMarkScheme: StandardizationMarkSchemeDto
+    standardizationMarkScheme: StandardizationMarkSchemeDto;
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;

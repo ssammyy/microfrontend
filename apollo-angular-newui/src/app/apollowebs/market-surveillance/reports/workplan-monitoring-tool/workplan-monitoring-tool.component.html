@@ -90,6 +90,23 @@
                             </div>
                         </div>
 
+                        <div class="row border-0 box-shadow m-3 p-1">
+                            <div class="col border border-secondary m-1 p-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>% Compliance to Workplan</th>
+<!--                                        <th>Sum of All Months</th>-->
+<!--                                        <th>Number of rows</th>-->
+                                    </thead>
+                                    <tbody>
+                                        <td>{{complianceToWorkplan}}%</td>
+<!--                                        <td>{{sumOfAllMonths}}</td>-->
+<!--                                        <td>{{numberOfRows}}</td>-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
@@ -23,7 +23,8 @@ import {StdComStandardService} from "../../../../core/store/data/std/std-com-sta
 @Component({
   selector: 'app-int-std-sac-approval',
   templateUrl: './int-std-sac-approval.component.html',
-  styleUrls: ['./int-std-sac-approval.component.css']
+  styleUrls: ['./int-std-sac-approval.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdSacApprovalComponent implements OnInit {
   @ViewChildren(DataTableDirective)
@@ -50,6 +51,8 @@ export class IntStdSacApprovalComponent implements OnInit {
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   public actionRequests: ISCheckRequirements | undefined;
   documentDTOs: DocumentDTO[] = [];
+    coverDTOs: DocumentDTO[] = [];
+    selectedType: number;
   constructor(private publishingService: PublishingService, private notifyService: NotificationService,
               private SpinnerService: NgxSpinnerService, private committeeService: CommitteeService,
               private stdComStandardService:StdComStandardService,
@@ -285,6 +288,15 @@ export class IntStdSacApprovalComponent implements OnInit {
           //console.log(error.message);
         }
     );
+      this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.coverDTOs = response;
+              this.SpinnerService.hide();
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+          }
+      );
 
     if (mode==='approveStandard'){
       this.actionRequests=iSCheckRequirement;
@@ -333,6 +345,26 @@ export class IntStdSacApprovalComponent implements OnInit {
 
     public hideModalEditedDraft() {
         this.closeModalEditedDraft?.nativeElement.click();
+    }
+    viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCoverPages(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getAppStdPublishing();
+            }
+        );
     }
 
 }

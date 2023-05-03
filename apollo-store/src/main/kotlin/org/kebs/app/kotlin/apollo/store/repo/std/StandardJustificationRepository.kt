@@ -8,9 +8,12 @@ import org.springframework.stereotype.Repository
 interface StandardJustificationRepository : JpaRepository<StandardJustification,Long> {
     fun findByRequestNo( requestNo: String?) : StandardJustification
 
-    fun findByStatus( status: String?) : List<StandardJustification>
+    fun findByStatusOrderByIdAsc( status: String?) : List<StandardJustification>
 
     fun findByStatusAndTcSecretary( status: String?, tcSecretary:String?) : List<StandardJustification>
+
+    fun findByTcSecretary( tcSecretary:String?) : List<StandardJustification>
+
 
 
     fun findByNwiId(nwiId: String?):List<StandardJustification>

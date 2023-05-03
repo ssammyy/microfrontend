@@ -102,7 +102,6 @@ class QualityAssuranceInternalUserHandler(
     fun putAllPermitSearchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")
-            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
             val body = req.body<PermitSearchValues>()
             val errors: Errors = BeanPropertyBindingResult(body, PermitSearchValues::class.java.name)
             validator.validate(body, errors)
@@ -110,7 +109,7 @@ class QualityAssuranceInternalUserHandler(
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.findLoggedInUserSearch(page,body)
                         .let {
-                            ServerResponse.ok().body(it)
+                            ok().body(it)
                         }
                 }
                 else -> {
@@ -120,7 +119,7 @@ class QualityAssuranceInternalUserHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
 

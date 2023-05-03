@@ -41,3 +41,7 @@ class ProcessInstanceDraft (val savedRowID: Long?,val processId: String, val isE
 }
 class PrepareJustification (val savedRowID: Long?,val requestNumber: String) {
 }
+
+class DraftDecision(val responseMessage: String){
+
+}

@@ -136,6 +136,7 @@ class QaInvoiceCalculationDaoServices(
         when {
             applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == selectedRate.id -> {
                 calculatePaymentSMarkLargeFirm(permit, invoiceMaster, map, user, plantDetail, selectedRate)
+                invoiceMaster.varField8 = "Check If the Details Passed to check if LARGE"
             }
             applicationMapProperties.mapQASmarkMediumTurnOverId == selectedRate.id -> {
                 calculatePaymentSMarkMediumOrSmallFirm(
@@ -147,6 +148,7 @@ class QaInvoiceCalculationDaoServices(
                     selectedRate,
                     productNumber
                 )
+                invoiceMaster.varField8 = "Check If the Details Passed to check if MEDIUM"
             }
             applicationMapProperties.mapQASmarkJuakaliTurnOverId == selectedRate.id -> {
                 calculatePaymentSMarkMediumOrSmallFirm(
@@ -158,6 +160,7 @@ class QaInvoiceCalculationDaoServices(
                     selectedRate,
                     productNumber
                 )
+                invoiceMaster.varField8 = "Check If the Details Passed to check if SMALL"
             }
         }
 
@@ -243,7 +246,14 @@ class QaInvoiceCalculationDaoServices(
 
         with(invoiceMaster) {
             varField10 = 1.toString()
-            paymentStatus = 0
+            paymentStatus = when (totalAmountPayable) {
+                BigDecimal.ZERO -> {
+                    10
+                }
+                else -> {
+                    0
+                }
+            }
             taxAmount = totalAmountTaxPayable
             subTotalBeforeTax = totalAmountPayable
             totalAmount = totalAmountPayable.plus(totalAmountTaxPayable)

@@ -62,13 +62,8 @@ export class IntStdProposalCommentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.proposalId = rs.get('proposalId');
 
-        },
-    );
-    this.getSessionProposals(this.proposalId);
+    this.getSessionProposals();
     //console.log(this.proposalId);
 
     this.uploadCommentsFormGroup = this.formBuilder.group({
@@ -116,10 +111,10 @@ export class IntStdProposalCommentsComponent implements OnInit {
 
   }
 
-  public getSessionProposals(proposalId: string): void{
+  public getSessionProposals(): void{
     this.loadingText = "Retrieving Proposals ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getSessionProposals(proposalId).subscribe(
+    this.stdIntStandardService.getSessionProposals().subscribe(
         (response: ISAdoptionProposal[]) => {
           this.isAdoptionProposals = response;
           console.log(this.isAdoptionProposals);
@@ -211,7 +206,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getSessionProposals(this.proposalId);
+                this.getSessionProposals();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

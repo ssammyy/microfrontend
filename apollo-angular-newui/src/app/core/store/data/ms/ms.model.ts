@@ -154,6 +154,9 @@ export class PermitUcrSearch {
     ucrNumber: string;
     productName: string;
     validityStatus: boolean;
+    companyName: string;
+    brandName: string;
+    commodityDescription: string;
 }
 
 export class UcrNumberSearch {
@@ -165,6 +168,9 @@ export class UcrNumberSearch {
     itemGrossWeight: string;
     hsDescription: string;
     itemHsCode: string;
+    countryOfOrigin: string;
+    cocNumber: string;
+    importerCD: number;
 }
 
 export class NotificationBodyDto {
@@ -414,6 +420,7 @@ export class ComplaintDetailsDto {
     timelineOverDue: boolean;
     standardTitle: string;
     standardNumber: string;
+    assignedIODate: Date;
 }
 
 
@@ -660,6 +667,7 @@ export class InspectionInvestigationReportDto {
     createdBy: string;
     createdOn: Date;
     changesMade: string;
+    summaryOfFindings: string;
 }
 
 export class FieldReportAdditionalInfo {
@@ -690,6 +698,14 @@ export class ConsumerComplaintViewSearchValues {
     endDate: Date;
     sectorID: number;
     outletName: string;
+    departmentID: string;
+    regionID: string;
+    divisionName: string;
+    //selectedOfficers: officersID[];
+}
+
+export class officersID{
+    officerID: number;
 }
 
 export class SubmittedSamplesSummaryViewSearchValues {
@@ -709,6 +725,7 @@ export class SeizeViewSearchValues {
     nameOutlet: string;
     productsDueForDestruction: string;
     productsDueForRelease: string;
+
 }
 
 export class MsSeizedGoodsReportViewEntity {
@@ -730,6 +747,7 @@ export class MsSeizedGoodsReportViewEntity {
     dateSeizure: Date;
     dateDestructed: Date;
     dateRelease: Date;
+
 }
 
 export class SubmittedSamplesSummaryReportViewEntity {
@@ -839,6 +857,8 @@ export class ConsumerComplaintsReportViewEntity {
     assignedIo: number;
     transactionDate: Date;
     complaintDepartment: number;
+    region: string;
+    division: string;
 }
 
 export class ComplaintViewSearchValues {
@@ -1068,6 +1088,7 @@ export class WorkPlanInspectionDto {
     latestFinalPreliminaryReport: number;
     complaintReferenceNumber: string;
     overAllCompliance: number;
+
 }
 
 export class CountryListDto {
@@ -1078,6 +1099,7 @@ export class CountryListDto {
 export class WorkPlanProductDto {
         id: number;
         productName: string;
+        productBrand: string;
         referenceNo: string;
         recommendation: RecommendationDto[];
         destructionRecommended: boolean;
@@ -1153,6 +1175,7 @@ export class WorkPlanScheduleOnsiteDto {
         startDate: Date;
         endDate: Date;
         remarks: string;
+        numberOfDays: number;
 }
 
 export class SeizureListDto {
@@ -1187,6 +1210,7 @@ export class SeizureDto {
     productsDestruction: string;
     additionalOutletDetails: string;
     remarks: string;
+    dateOfSeizure: Date;
 }
 
 export class DataReportDto {
@@ -1206,12 +1230,14 @@ export class DataReportDto {
     phoneNumber: string;
     outletDetails: string;
     mostRecurringNonCompliant: string;
+    additionalNonComplianceDetails: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
     samplesDrawnAndSubmitted: string;
     sourceOfProductAndEvidence: string;
     finalActionSeizedGoods: string;
     totalComplianceScore: number;
+    numberOfProducts: string;
     remarks: string;
     productsList: DataReportParamsDto[];
     docList: number[];
@@ -1230,6 +1256,7 @@ export class DataReportParamsDto {
     complianceInspectionParameter: number;
     measurementsResults: string;
     remarks: string;
+    importerManufacturer: string;
 }
 
 export class DataInspectorInvestDto {
@@ -1271,6 +1298,13 @@ export class FuelBatchDetailsDto {
 export class LaboratoryDto {
     id: number;
     labName: string;
+    description: string;
+    status: boolean;
+}
+
+export class NonComplianceDto {
+    id: number;
+    nonComplianceName: string;
     description: string;
     status: boolean;
 }
@@ -1517,6 +1551,10 @@ export class MSSSFComplianceStatusDetailsDto {
     complianceStatus: boolean;
     analysisDone: boolean;
     resultsSent: boolean;
+    hofApproveSendingEmailStatus: boolean;
+    hofApproveSendingEmailDate: Date;
+    hodApproveSendingEmailStatus: boolean;
+    hodApproveSendingEmailDate: Date;
 }
 
 export class SSFSendingComplianceStatus {
@@ -1637,6 +1675,7 @@ export class SampleSubmissionDto {
     parametersList: SampleSubmissionItemsDto[];
     dataReportID: number;
     nameOutlet: string;
+    docList: number[];
 }
 
 export class SampleSubmissionItemsDto {

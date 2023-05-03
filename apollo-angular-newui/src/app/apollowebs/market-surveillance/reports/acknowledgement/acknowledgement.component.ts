@@ -66,6 +66,18 @@ export class AcknowledgementComponent implements OnInit {
   totalCount = 12;
   dataSet: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
+  complaintsReceived: number;
+  complaintsClosed: number;
+  percentageComplaintsClosed: number;
+  noFeedbackWithin5days: number;
+  percentageComplianceWithTimelines: number;
+  averageFeedbackTimeDays: number;
+  sumOfDaysTakenToProvideFeedback: number;
+  noComplaintsAddressedWithin28Days: number;
+  percentageComplianceTo28Days: number;
+  averageTimeToAddressComplaints: number;
+  sumOfTimeTakenToAddressComplaints: number;
+  alphanumericString = '/^[0-9a-zA-Z]+$/';
 
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
@@ -100,9 +112,13 @@ export class AcknowledgementComponent implements OnInit {
       refNumber: ['', null],
       assignIO: ['', null],
       sectorID: ['', null],
+      regionID: ['', null],
+      departmentID: ['', null],
+      // selectedOfficers: [[], null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
+
   }
 
   get formSearch(): any {
@@ -135,6 +151,7 @@ export class AcknowledgementComponent implements OnInit {
             this.loadedData = dataResponse?.data as ConsumerComplaintsReportViewEntity[];
             this.totalCount = this.loadedData.length;
             this.rerender();
+            this.calculateSummary();
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
                   this.msOfficerLists = dataOfficer;
@@ -186,6 +203,7 @@ export class AcknowledgementComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.calculateSummary();
             this.rerender();
           }
           this.SpinnerService.hide();
@@ -215,4 +233,46 @@ export class AcknowledgementComponent implements OnInit {
       // this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
     }
   }
+
+  calculateSummary(){
+    this.complaintsReceived = this.loadedData.length;
+    let resolutionSum = 0;
+    let count = 0;
+    let arrayOfFeedbackWithin5days = [];
+    let arrayOfNumberOfComplaintsAddressedWithin28days = [];
+    let arrayOfDaysTakenToAddressComplaints = [];
+    for(let i=0; i < this.loadedData.length; i++){
+      resolutionSum += Number(this.loadedData[i].resolution);
+      this.noFeedbackWithin5days += Number(this.loadedData[i].feedbackWithin5DaysCompInvestigation);
+      arrayOfFeedbackWithin5days.push(Number(this.loadedData[i].feedbackWithin5DaysCompInvestigation));
+      arrayOfNumberOfComplaintsAddressedWithin28days.push(Number(this.loadedData[i].addressedWithin28DaysReceipt));
+      if(isNaN(Number(this.loadedData[i].timeTakenAddressComplaint))){
+        this.loadedData[i].timeTakenAddressComplaint = '0';
+        arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)));
+      }else{
+        arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)));
+      }
+      count++;
+    }
+    //console.log(arrayOfFeedbackWithin5days);
+    this.sumOfDaysTakenToProvideFeedback = arrayOfFeedbackWithin5days.reduce((a,b)=> a + b, 0);
+    //console.log("Sum of Days taken to give feedback: "+this.sumOfDaysTakenToProvideFeedback);
+    this.noComplaintsAddressedWithin28Days = arrayOfNumberOfComplaintsAddressedWithin28days.reduce((a,b)=> a + b, 0);
+    // console.log("Array of complaints addressed within 28 days"+arrayOfNumberOfComplaintsAddressedWithin28days);
+    // console.log("Sum of Complaints addressed within 28 days: "+this.noComplaintsAddressedWithin28Days);
+    this.sumOfTimeTakenToAddressComplaints = arrayOfDaysTakenToAddressComplaints.reduce((a,b)=> a + b, 0);
+    // console.log("Array of Days Taken to address complains"+arrayOfDaysTakenToAddressComplaints);
+    // console.log("Sum of number of days taken to address complains: "+this.sumOfTimeTakenToAddressComplaints);
+    // console.log("Count "+ count);
+    this.complaintsClosed = resolutionSum;
+    this.percentageComplaintsClosed = (this.complaintsClosed/this.complaintsReceived)*100
+
+    this.percentageComplianceWithTimelines = (this.sumOfDaysTakenToProvideFeedback/this.complaintsReceived)*100
+    this.averageFeedbackTimeDays = this.sumOfDaysTakenToProvideFeedback/this.complaintsReceived
+
+    this.percentageComplianceTo28Days = (this.noComplaintsAddressedWithin28Days/this.complaintsReceived)*100
+    this.averageTimeToAddressComplaints = this.sumOfTimeTakenToAddressComplaints/this.complaintsReceived
+
+  }
+
 }

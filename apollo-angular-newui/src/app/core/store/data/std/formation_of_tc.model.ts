@@ -5,7 +5,7 @@ export interface JustificationForTc {
     purpose: string;
     nameOfTC: string;
     scope: number;
-    proposedRepresentation: number;
+    proposedRepresentation: string;
     programmeOfWork: number;
     liaisonOrganization: number;
     organization: string;
@@ -29,6 +29,8 @@ export interface JustificationForTc {
     departmentId: string;
 
     commentsSac: string;
+
+    isoCommittee: string;
 
 
 }

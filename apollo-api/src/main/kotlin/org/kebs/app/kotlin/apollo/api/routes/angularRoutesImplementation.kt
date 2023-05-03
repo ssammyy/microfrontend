@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -413,6 +414,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
     }
 
+
     @Bean
     fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler) = router {
         "/api/v1/migration/anonymous".nest {
@@ -587,13 +589,13 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
-                        GET("/view-details", handler::permitViewSTA10AllDetailsMigration)
-                        GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)
+                        GET("/view_details", handler::permitViewSTA10AllDetailsMigration)
+                        GET("/firm_details", handler::permitViewSTA10FirmDetailsMigration)
                         GET("/personnel_details", handler::permitViewSTA10PersonnelMigration)
-                        GET("/products-being-manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
-                        GET("/raw-material", handler::permitViewSTA10RawMaterialsMigration)
-                        GET("/machinery-plant", handler::permitViewSTA10MachineryAndPlantMigration)
-                        GET("/manufacturing-process", handler::permitViewSTA10ManufacturingProcessMigration)
+                        GET("/products_being_manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
+                        GET("/raw_material", handler::permitViewSTA10RawMaterialsMigration)
+                        GET("/machinery_plant", handler::permitViewSTA10MachineryAndPlantMigration)
+                        GET("/manufacturing_process", handler::permitViewSTA10ManufacturingProcessMigration)
                     }
                     "/invoice".nest {
                         GET("/list", handler::invoiceListMigration)
@@ -767,6 +769,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)
                 GET("/laboratories", handler::msLaboratories)
+                GET("/non-compliance-list", handler::msNonCompliance)
                 GET("/standards", handler::standardsList)
                 GET("/standardProductCategory", handler::msStandardsCategory)
                 GET("/predefinedResourcesRequired", handler::msPredefinedResources)
@@ -871,6 +874,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/final-remarks-seized", handler::updateWorkPlanScheduleFinalRemarkOnSized)
                         "/hof".nest {
                             PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
+                            PUT("/approval-sending-email", handler::updateWorkPlanSendingEmailApprovalHOF)
                             PUT(
                                 "/approval-preliminary-report",
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF
@@ -881,6 +885,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             )
                         }
                         "/hod".nest {
+                            PUT("/approval-sending-email", handler::updateWorkPlanSendingEmailApprovalHOD)
                             PUT("/assign-hof", handler::updateWorkPlanByAssigningHof)
                             PUT(
                                 "/approval-preliminary-report",
@@ -917,7 +922,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)
                         POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
                         POST("/sample-collect", handler::addWorkPlanScheduleSampleCollection)
-                        POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
+                        //POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
                         POST("/end-sample-submission", handler::addWorkPlanScheduleEndSampleSubmission)
                         PUT("/sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionBsNumber)
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
@@ -925,10 +930,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         PUT("/ssf-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusSend)
                         PUT("/ssf-not-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusNotSend)
-                        PUT(
-                            "/final-ssf-compliance-status-save",
-                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
-                        )
+                        PUT("/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         POST(
                             "/preliminary-report-hod-hof-director",
@@ -1028,5 +1030,23 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
         }
     }
+
+//    @Bean
+//    fun StandardDevelopmentRoutes(handler: StandardsLevyHandler) = router{
+//        "/api/v1/migration".nest {
+//            "/anonymous".nest{
+//                "/international_standard".nest {
+//                    GET("/getProposals/{proposalId}/{commentId}", handler::internationalProposal)
+//
+//                }
+//
+//            }
+//            "/international_standard".nest {
+//
+//            }
+//
+//        }
+//
+//    }
 
 }

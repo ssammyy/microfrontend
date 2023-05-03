@@ -298,6 +298,32 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long, permitAwardStatus: Int, pageable: Pageable
     ): Page<PermitApplicationsEntity>?
 
+    @Query(
+        value = " SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a where\n" +
+                "     ((:refNumber is null or lower(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%')) or\n" +
+                "     (:refNumber is null or upper(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%'))) and\n" +
+                "     (:assignedIo is null or a.QAO_ID =TO_NUMBER(:assignedIo)) and\n" +
+                "     (:region is null or a.REGION =TO_NUMBER(:region)) and\n" +
+                "     ((:productName is null or lower(a.PRODUCT_NAME) like CONCAT(CONCAT('%',:productName),'%')) or\n" +
+                "     (:productName is null or upper(a.PRODUCT_NAME) like CONCAT(CONCAT('%',:productName),'%'))) and\n" +
+                "     ((:tradeMark is null or lower(a.TRADE_MARK) like CONCAT(CONCAT('%',:tradeMark),'%')) or\n" +
+                "     (:tradeMark is null or upper(a.TRADE_MARK) like CONCAT(CONCAT('%',:tradeMark),'%'))) and\n" +
+                "     (:division is null or a.DIVISION_ID =TO_NUMBER(:division)) and\n" +
+                "     (:firmName is null or lower(a.FIRM_NAME) like CONCAT(CONCAT('%',:firmName),'%')) and\n" +
+                "     (:permitType is null or a.PERMIT_TYPE =TO_NUMBER(:permitType))",
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReport(
+        @Param("refNumber") refNumber: String?,
+        @Param("productName") productName: String?,
+        @Param("tradeMark") tradeMark: String?,
+        @Param("assignedIo") assignedIo: Long?,
+        @Param("region") region: Long?,
+        @Param("division") division: Long?,
+        @Param("permitType") permitType: Long?,
+        @Param("firmName") firmName: String?
+    ): List<PermitApplicationsEntity>?
+
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
     ): List<PermitApplicationsEntity>?
@@ -706,7 +732,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
                 "JOIN DAT_KEBS_QA_INVOICE_DETAILS c ON c.INVOICE_MASTER_ID = b.ID\n" +
                 "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
                 "AND b.BATCH_INVOICE_NO IS NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
-                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.SEND_APPLICATION=:sendApplication AND a.PERMIT_AWARD_STATUS IS NULL\n" +
                 "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
         nativeQuery = true
     )
@@ -714,6 +740,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long,
         @Param("companyId") companyId: Long,
         @Param("invoiceGenerated") invoiceGenerated: Int,
+        @Param("sendApplication") sendApplication: Int,
     ): List<PermitApplicationsEntity>?
 
     @Query(
@@ -723,7 +750,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
                 "JOIN DAT_KEBS_QA_BATCH_INVOICE d ON d.ID = b.BATCH_INVOICE_NO\n" +
                 "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
                 "AND b.BATCH_INVOICE_NO IS NOT NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
-                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.SEND_APPLICATION=:sendApplication AND a.PERMIT_AWARD_STATUS IS NULL\n" +
                 "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
         nativeQuery = true
     )
@@ -731,6 +758,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long,
         @Param("companyId") companyId: Long,
         @Param("invoiceGenerated") invoiceGenerated: Int,
+        @Param("sendApplication") sendApplication: Int,
     ): List<PermitApplicationsEntity>?
 
     @Query(
@@ -863,6 +891,8 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     fun findByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
     fun findTopByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
 
+    fun findByPermitId(permitId: Long): List<QaInvoiceMasterDetailsEntity>?
+    fun findByPermitIdAndPaymentStatus(permitId: Long, paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?
     fun findByPermitIdAndVarField10(permitId: Long, varField10: String): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(
         batchInvoiceNo: Long
@@ -1077,7 +1107,6 @@ interface IQaInspectionReportRecommendationRepository :
     ): QaInspectionReportRecommendationEntity?
 
 
-
     @Query(
         value = "INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
                 "(\n" +
@@ -1102,13 +1131,13 @@ interface IQaInspectionReportRecommendationRepository :
     ): List<QaInspectionReportRecommendationEntity>?
 
 
-
     @Query(
-        value = "SELECT a.*, b.COMPANY_ID From DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION a INNER JOIN DAT_KEBS_PERMIT_TRANSACTION b on a.PERMIT_ID = b.id WHERE b.COMPANY_ID=:companyId and a.SUBMITTED_INSPECTION_REPORT_STATUS =1 and a.FILLED_QPSMS_STATUS =1 and a.FILLED_INSPECTION_TESTING_STATUS=1 and a.FILLED_OPC_STATUS =1 and a.FILLED_HACCP_IMPLEMENTATION_STATUS=1", nativeQuery = true
+        value = "SELECT a.*, b.COMPANY_ID From DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION a INNER JOIN DAT_KEBS_PERMIT_TRANSACTION b on a.PERMIT_ID = b.id WHERE b.COMPANY_ID=:companyId and a.SUBMITTED_INSPECTION_REPORT_STATUS =1 and a.FILLED_QPSMS_STATUS =1 and a.FILLED_INSPECTION_TESTING_STATUS=1 and a.FILLED_OPC_STATUS =1 and a.FILLED_HACCP_IMPLEMENTATION_STATUS=1",
+        nativeQuery = true
     )
     fun getInspectionReportsForCompany(
         @Param("companyId") companyId: Long,
-    ):  List<QaInspectionReportRecommendationEntity>?
+    ): List<QaInspectionReportRecommendationEntity>?
 
     fun findByIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionReportRecommendationEntity?
 
@@ -1348,6 +1377,18 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
         sscStatus: Int
     ): List<QaUploadsEntity>?
 
+    fun findByPermitRefNumberAndPermitIdAndAssessmentReportStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        assessmentReportStatus: Int
+    ): List<QaUploadsEntity>?
+
+    fun findByPermitRefNumberAndPermitIdAndLabResultsReportStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        labResultsReportStatus: Int
+    ): List<QaUploadsEntity>?
+
 
     fun findByPermitIdAndInspectionReportId(
         permitId: Long,
@@ -1422,7 +1463,7 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 
 @Repository
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
 
@@ -1443,7 +1484,7 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
 @Repository
 interface IPermitMigrationApplicationsFmarkEntityRepository :
     HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
 
     fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
@@ -1471,7 +1512,7 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
 
         ): List<PermitMigrationApplicationsEntityDmark>?
 
-    fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
+    fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
 
 
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?

@@ -181,5 +181,17 @@ class ComStdDraft {
     @Basic
     var notAdopt: Long? = null
 
+    @Column(name="TC_ACCEPTANCE_DATE")
+    @Basic
+    var tcAcceptanceDate: Timestamp?=null
+
+    @Column(name="DRAFT_STATUS")
+    @Basic
+    var draftStatus: String?=null
+
+    @Column(name="COVER_PAGE_STATUS")
+    @Basic
+    var coverPageStatus: String?=null
+
 
 }

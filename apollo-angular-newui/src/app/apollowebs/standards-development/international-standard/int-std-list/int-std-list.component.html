@@ -32,28 +32,24 @@
                                     <tr>
                                         <th>#</th>
                                         <th class="knw">Title</th>
-                                        <th class="sl">Scope</th>
-                                        <th class="sl">Clause</th>
                                         <th class="requestNumber">Standard Type </th>
                                         <th class="knw">Standard Number</th>
                                         <th>Date</th>
                                         <th>View Standard</th>
-                                        <th class="action">Action</th>
+<!--                                        <th class="action">Action</th>-->
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr  *ngFor="let standardBody of standardBodys let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{standardBody.title}}</td>
-                                        <td>{{standardBody.scope}}</td>
-                                        <td>{{standardBody.clause}}</td>
                                         <td>{{standardBody.standardType}}</td>
                                         <td>{{standardBody.standardNumber}}</td>
                                         <td>{{standardBody.dateFormed | date: 'dd/MM/yyyy' }}</td>
                                         <td><button mat-raised-button type="button" data-toggle="modal"
                                                     (click)="viewStandard( standardBody.id,'Standard'+standardBody.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
                                             <i class="fa fa-download"></i> Download Standard</button></td>
-                                        <td ><a  (click)="onOpenModal(standardBody,'approveStandard')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">View Summary</a></td>
+<!--                                        <td ><a  (click)="onOpenModal(standardBody,'approveStandard')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">View Summary</a></td>-->
 
                                     </tr>
                                     </tbody>

@@ -77,6 +77,22 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var resultsAnalysis: Int? = null
 
+    @Column(name = "HOF_APPROVE_SENDING_EMAIL_DATE")
+    @Basic
+    var hofApproveSendingEmailDate: Date? = null
+
+    @Column(name = "HOF_APPROVE_SENDING_EMAIL_STATUS")
+    @Basic
+    var hofApproveSendingEmailStatus: Int? = null
+
+    @Column(name = "HOD_APPROVE_SENDING_EMAIL_DATE")
+    @Basic
+    var hodApproveSendingEmailDate: Date? = null
+
+    @Column(name = "HOD_APPROVE_SENDING_EMAIL_STATUS")
+    @Basic
+    var hodApproveSendingEmailStatus: Int? = null
+
     @Column(name = "ANALYSIS_DONE")
     @Basic
     var analysisDone: Int? = null

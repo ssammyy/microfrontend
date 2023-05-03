@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     CommentMadeRetrieved,
-    PublicReviewDraftWithName,
+    PublicReviewDraftWithName, StandardDocuments,
 } from "../../../../core/store/data/std/commitee-model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -16,6 +16,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
 import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
+import {CommentsDto} from "../../../../core/store/data/std/std.model";
 
 declare const $: any;
 
@@ -46,6 +47,25 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
 
+    loading = false;
+    loadingText: string;
+
+    commentsMadeFormGroup: FormGroup;
+
+    commentsDto: CommentsDto
+
+    commentsDtos: CommentsDto[] = [];
+
+    levelOfStandards: string[] = ['General', 'Technical', 'Editorial']
+
+    standardDocuments !: StandardDocuments[];
+
+    documentType = "Public Review Draft";
+
+    displayUsers: boolean = false;
+
+    loadingDocsTable= false;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -60,22 +80,14 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
         this.getAllPrds();
         this.getAllUserLoggedInCommentsMadeOnPd();
 
-
-        this.commentFormGroup = this.formBuilder.group({
-            prdId: ['', Validators.required],
-            recipientId: ['', Validators.required],
-            title: ['', Validators.required],
-            documentType: ['', Validators.required],
-            circulationDate: ['', Validators.required],
-            closingDate: ['', Validators.required],
-            organization: ['', Validators.required],
+        this.commentsMadeFormGroup = this.formBuilder.group({
             clause: ['', Validators.required],
             paragraph: ['', Validators.required],
-            commentType: ['', Validators.required],
+            typeOfComment: ['', Validators.required],
             proposedChange: ['', Validators.required],
-            observation: ['', Validators.required],
-            commentsMade: ['', Validators.required],
+            comment: ['', Validators.required],
         });
+
 
         this.editCommentFormGroup = this.formBuilder.group({
             recipientId: ['', Validators.required],
@@ -146,6 +158,80 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
                 console.log(error.message);
             }
         );
+    }
+
+    onClickAddComment() {
+
+        if (this.commentsMadeFormGroup?.get('clause')?.value == null || this.commentsMadeFormGroup?.get('clause')?.value == '') {
+            this.showToasterError("Error", "Please Enter Clause")
+        } else if (this.commentsMadeFormGroup?.get('paragraph')?.value == null || this.commentsMadeFormGroup?.get('paragraph')?.value == '') {
+            this.showToasterError("Error", "Please Enter Paragraph")
+        } else if (this.commentsMadeFormGroup?.get('typeOfComment')?.value == null || this.commentsMadeFormGroup?.get('typeOfComment')?.value == '') {
+            this.showToasterError("Error", "Please Select Comment Type")
+        } else if (this.commentsMadeFormGroup?.get('comment')?.value == null || this.commentsMadeFormGroup?.get('comment')?.value == '') {
+            this.showToasterError("Error", "Please Enter Your Comment")
+        } else if (this.commentsMadeFormGroup?.get('proposedChange')?.value == null || this.commentsMadeFormGroup?.get('proposedChange')?.value == '') {
+            this.showToasterError("Error", "Please Enter Proposed Change")
+        } else {
+            this.commentsDto = this.commentsMadeFormGroup.value;
+            this.commentsDtos.push(this.commentsDto);
+            this.commentsMadeFormGroup?.get('clause')?.reset();
+            this.commentsMadeFormGroup?.get('paragraph')?.reset();
+            this.commentsMadeFormGroup?.get('typeOfComment')?.reset();
+            this.commentsMadeFormGroup?.get('comment')?.reset();
+            this.commentsMadeFormGroup?.get('proposedChange')?.reset();
+        }
+        // this.sta10FormA.reset();
+    }
+
+    removeProductLabelling(index) {
+        //(index);
+        if (index === 0) {
+            this.commentsDtos.splice(index, 1);
+        } else {
+            this.commentsDtos.splice(index, index);
+        }
+    }
+
+    onClickSaveCommentsMade(public_review_draft_id: number) {
+        this.loading = true
+        if (this.commentsDtos.length > 0) {
+            this.loadingText = "Saving Comment"
+            this.SpinnerService.show();
+
+            //(this.sta10Details.id.toString());
+            this.committeeService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
+                (data) => {
+
+                    this.SpinnerService.hide();
+                    this.loading = false
+                    this.commentsMadeFormGroup.reset()
+                    this.hideModel()
+                    this.commentsDtos = []
+                    this.getAllUserLoggedInCommentsMadeOnPd();
+
+                    swal.fire({
+                        title: 'Comments Saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+            );
+        } else {
+            this.loading = false
+
+            swal.fire({
+                title: 'Comments missing!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'error'
+            });
+        }
     }
 
     editComment(): void {
@@ -239,6 +325,12 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
             this.publicReviewDraftsB = publicReviewDraft;
             button.setAttribute('data-target', '#makeComment');
         }
+        if (mode === 'viewCd') {
+            this.publicReviewDraftsB = publicReviewDraft;
+            this.getAllCdDocs(publicReviewDraft.id)
+            button.setAttribute('data-target', '#viewCd');
+        }
+
 
 
         // @ts-ignore
@@ -317,13 +409,16 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
         this.closeModalB?.nativeElement.click();
     }
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading= true
+        this.loadingText="Downloading Document"
         this.SpinnerService.show();
-        this.committeeService.viewDocs(pdfId, doctype).subscribe(
+        this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
+                this.loading=false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
-
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');
@@ -354,6 +449,32 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
         // Do not forget to unsubscribe the event
         this.dtTrigger1.unsubscribe();
         this.dtTrigger2.unsubscribe();
+    }
+
+    public getAllCdDocs(cdID: number) {
+        this.loadingDocsTable = true
+        this.displayUsers = false;
+        this.SpinnerService.show("loader2");
+
+
+        this.publicReviewService.getAllDocumentsOnPrd(cdID).subscribe(
+            (response: StandardDocuments[]) => {
+                console.log(response)
+                this.standardDocuments = response;
+                // this.rerender()
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+            }
+        );
     }
 
 }

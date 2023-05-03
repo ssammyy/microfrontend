@@ -107,6 +107,9 @@ class ProposalCommentsDto(
     var requestId: Long?=null,
     var draftId: Long?=null,
     var adoptionAcceptableAsPresented: String?=null,
+    var emailOfRespondent: String?=null,
+    var phoneOfRespondent: String?=null,
+    var stakeHolderId: Long?=null
 ){}
 
 class IntDraftCommentDto(

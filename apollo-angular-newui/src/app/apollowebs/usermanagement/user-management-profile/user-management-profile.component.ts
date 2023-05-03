@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserEntityService} from '../../../core/store';
@@ -20,7 +20,8 @@ import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.
 @Component({
     selector: 'app-user-management-profile',
     templateUrl: './user-management-profile.component.html',
-    styleUrls: ['./user-management-profile.component.css']
+    styleUrls: ['./user-management-profile.component.css','../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class UserManagementProfileComponent implements OnInit {
     diDepartmentID = ApiEndpointService.ADMIN_APPLICATION_MAP_PROPERTIES.DI_DEPARTMENT_ID;
@@ -52,6 +53,7 @@ export class UserManagementProfileComponent implements OnInit {
     division: DivisionDetails[] = [];
     sectionEntity: SectionsEntityDto[] = [];
     userTypeEntity: UserTypeEntityDto[] = [];
+    selectedRole: number;
 
     constructor(
         private route: ActivatedRoute,

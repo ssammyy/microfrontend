@@ -26,7 +26,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
-import {formatDate} from "@angular/common";
+import {DatePipe, formatDate} from "@angular/common";
 import {VoteNwiRetrieved, VotesNwiTally} from "../../../../core/store/data/std/commitee-model";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 import {MatTableDataSource} from "@angular/material/table";
@@ -120,6 +120,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     //selectedItems = "";
 
     public dropdownSettings: IDropdownSettings = {};
+    private datePipe: DatePipe;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -194,7 +195,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         });
         this.stdNwiFormGroup.get('circulationDate').valueChanges.subscribe(circulationDate => {
             const closingDate = new Date(circulationDate);
-            closingDate.setDate(closingDate.getDate() + 14);
+            closingDate.setDate(closingDate.getDate() + 30);
             const closingDateString = closingDate.toISOString().substring(0, 10);
 
             this.stdNwiFormGroup.patchValue({
@@ -346,6 +347,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
@@ -607,6 +609,10 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             this.router.navigate([currentUrl]);
         });
     }
+
+
+    todayDate = new DatePipe("En-US").transform(new Date(), "dd-MM-yyyy")
+
 
 
 }

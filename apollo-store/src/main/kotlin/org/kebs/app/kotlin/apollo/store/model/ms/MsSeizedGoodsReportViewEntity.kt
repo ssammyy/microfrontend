@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "MS_SEIZED_GOODS_REPORT_VIEW", schema = "APOLLO", catalog = "")
-class   MsSeizedGoodsReportViewEntity : Serializable {
+class MsSeizedGoodsReportViewEntity : Serializable {
     @Id
     @Column(name = "ID")
     var id: Long? = null
@@ -16,6 +16,10 @@ class   MsSeizedGoodsReportViewEntity : Serializable {
     @Basic
     @Column(name = "DATEOF_SEIZURE")
     var dateofSeizure: String? = null
+
+    @Basic
+    @Column(name = "PRODUCT_FIELD")
+    var product: String? = null
 
     @Basic
     @Column(name = "MARKET_CENTRE")
@@ -80,5 +84,9 @@ class   MsSeizedGoodsReportViewEntity : Serializable {
     @Basic
     @Column(name = "DATE_RELEASE")
     var dateRelease: Date? = null
+
+    @Basic
+    @Column(name = "MS_WORKPLAN_GENERATED_ID")
+    var msWorkplanGeneratedId: String? = null
 
 }

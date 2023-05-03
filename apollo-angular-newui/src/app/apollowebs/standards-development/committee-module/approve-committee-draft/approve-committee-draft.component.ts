@@ -61,6 +61,13 @@ export class ApproveCommitteeDraftComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
 
+    displayUsers: boolean = false;
+
+    loadingDocsTable= false;
+
+    loading = false;
+    loadingText: string;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -93,20 +100,32 @@ export class ApproveCommitteeDraftComponent implements OnInit {
         );
 
     }
+    public getAllCdDocs(cdID: number) {
+        this.loadingDocsTable = true
+        this.displayUsers = false;
+        this.SpinnerService.show("loader2");
 
-    public getAllCdDocs(pdID: number) {
-        this.committeeService.getDocsOnCd(pdID).subscribe(
+
+        this.committeeService.getDocsOnCd(cdID).subscribe(
             (response: StandardDocuments[]) => {
-
+                console.log(response)
                 this.standardDocuments = response;
-                this.rerender()
+                // this.rerender()
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
             }
         );
     }
+
 
     public getAllComments(pdID: number) {
         this.committeeService.getCommentsOnCd(pdID).subscribe(
@@ -269,13 +288,15 @@ export class ApproveCommitteeDraftComponent implements OnInit {
     }
 
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading= true
+        this.loadingText="Downloading Document"
         this.SpinnerService.show();
-        this.committeeService.viewDocs(pdfId, doctype).subscribe(
+        this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
+                this.loading=false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
-
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');

@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.*
 
 
 @ExtendWith(SpringExtension::class)
@@ -77,14 +78,41 @@ class MpesaTest {
     }
 
     @Test
+    fun hashStrings() {
+        val plainText = listOf("Kims-Kebs")
+        val password = "password@1"
+        val loginid = "KEBSUSER"
+        val hashedPass = jasyptStringEncryptor.encrypt(password)
+        val hashedId = jasyptStringEncryptor.encrypt(loginid)
+        val decriptedId = jasyptStringEncryptor.decrypt(hashedId)
+        val decriptedPassword = jasyptStringEncryptor.decrypt(hashedPass)
+        KotlinLogging.logger { }.info { "my hashed value =$password =  $hashedPass" }
+        KotlinLogging.logger { }.info { "my hashed value =$loginid =  $hashedId" }
+        KotlinLogging.logger { }.info { "my Decrypted password =$hashedPass =  $decriptedId" }
+        KotlinLogging.logger { }.info { "my Decrypted uid =$hashedPass =  $decriptedPassword" }
+
+
+    }
+
+    @Test
     fun kra256Hashing() {
         val plainText = listOf("KEBSUSER", "password@1")
         val numberRecords = "2"
         val password = "password@1"
         val loginid = "KEBSUSER"
+        val str = "p052088221y"
+        val strH=str.uppercase()
+        //println(str.uppercase(Locale.getDefault())) //prints "HELLO WORLD!"
+
+
 //        plainText.forEach {
+        val hPass=entryNumberKraServices.kraDataEncryption(password)
+        val hLogin=entryNumberKraServices.kraDataEncryption(loginid)
             val hashed = entryNumberKraServices.kraDataEncryption(numberRecords+password+loginid)
+            KotlinLogging.logger { }.info { "my hashed Password   $hPass" }
+            KotlinLogging.logger { }.info { "my hashed Login   $hLogin" }
             KotlinLogging.logger { }.info { "my hashed value   $hashed" }
+            KotlinLogging.logger { }.info { "my uppercase value   $strH" }
 //        }
     }
 

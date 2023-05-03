@@ -113,10 +113,21 @@ interface PdWithUserName {
 
     fun getNUMBER_OF_COMMENTS(): String?
 
+    fun getPROPOSAL_TITLE(): String?
+
+    fun getCIRCULATION_DATE(): String?
+
+    fun getCLOSING_DATE(): String?
+
+    fun getORGANIZATION(): String?
+
 
 }
 
 interface CdWithUserName {
+
+    fun getId(): Long?
+
     fun getCDID(): Long
     fun getPDID(): Long
     fun getCDBY(): String?
@@ -128,9 +139,20 @@ interface CdWithUserName {
     fun getNUMBEROFCOMMENTS(): String?
     fun getKS_NUMBER(): String?
 
+    fun getPROPOSAL_TITLE(): String?
+
+    fun getCIRCULATION_DATE(): String?
+
+    fun getCLOSING_DATE(): String?
+
+    fun getORGANIZATION(): String?
+
 }
 
 interface CommentsWithCdId {
+
+    fun getId(): Long?
+
     fun getCommentsId(): Long?
     fun getTitle(): String?
     fun getDocument_type(): String?
@@ -172,6 +194,14 @@ interface PrdWithUserName {
 
     fun getVAR_FIELD_1(): String?
 
+    fun getPROPOSAL_TITLE(): String?
+
+    fun getCIRCULATION_DATE(): String?
+
+    fun getCLOSING_DATE(): String?
+
+    fun getORGANIZATION(): String?
+
 }
 
 interface CommentsWithPrdId {
@@ -205,6 +235,15 @@ interface CommentsWithPrdId {
 
 
 }
+data class CommentsCdDto(
+    var id: Long? = null,
+    var clause: String? = null,
+    var paragraph: String? = null,
+    var typeOfComment: String? = null,
+    var comment: String? = null,
+    var proposedChange: String? = null,
+
+    )
 
 interface BallotWithUserName {
     fun getId(): Long?
@@ -272,6 +311,9 @@ interface VotesWithNWIId {
 
 interface NwiVotesTally {
     fun getNWI_ID(): Long?
+
+    fun getREFERENCE_NUMBER(): String?
+
     fun getNWINAME(): String?
     fun getAPPROVED(): Long?
     fun getNOTAPPROVED(): Long?
@@ -301,3 +343,14 @@ interface SampleSubmissionDTO {
     fun getRESULTS_DATE(): String?
 
 }
+
+data class CommentsDto(
+    var id: Long? = null,
+    var clause: String? = null,
+    var paragraph: String? = null,
+    var typeOfComment: String? = null,
+    var comment: String? = null,
+    var proposedChange: String? = null,
+
+    )
+

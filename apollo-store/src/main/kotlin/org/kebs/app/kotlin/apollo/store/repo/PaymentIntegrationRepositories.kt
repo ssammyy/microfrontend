@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository
 interface IStagingPaymentReconciliationRepo : HazelcastRepository<StagingPaymentReconciliation, Long> {
     fun findByReferenceCode(referenceCode: String): StagingPaymentReconciliation?
     fun findBySageInvoiceNumber(sageInvoiceNumber: String): StagingPaymentReconciliation?
+//    fun findBySageInvoiceNumberAndInvoiceAmount_ZeroIsNot(sageInvoiceNumber: String): StagingPaymentReconciliation?
+    fun findByTransactionId(transactionId: String): StagingPaymentReconciliation?
     fun findByReferenceCodeAndInvoiceId(referenceCode: String, invoiceId: Long): StagingPaymentReconciliation?
     fun findByPaymentTablesUpdatedStatus(paymentTablesUpdatedStatus: Int): List<StagingPaymentReconciliation>?
     fun findByPaymentTablesUpdatedStatusAndReferenceCodeIsNotNull(paymentTablesUpdatedStatus: Int): List<StagingPaymentReconciliation>?

@@ -209,6 +209,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var resourcesRequired: String? = null
 
+    @Column(name = "WORKPLAN_COUNTIES_TOWNS")
+    @Basic
+    var workPlanCountiesTowns: String? = null
+
     @Column(name = "BUDGET")
     @Basic
     var budget: String? = null
@@ -628,6 +632,18 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var clientAppealDocID: Long? = null
 
+    @Column(name = "CHAIN_OF_CUSTODY_DOC_ID")
+    @Basic
+    var chainOfCustodyDocID: Long? = null
+
+    @Column(name = "FOLLOW_UP_ACTION_DOC_ID")
+    @Basic
+    var followUpActionDocID: Long? = null
+
+    @Column(name = "WORKPLAN_END_FILE_DOC_ID")
+    @Basic
+    var workplanEndFileDocID: Long? = null
+
     @Column(name = "SUCCESSFUL_UNSUCCESSFUL_APPEAL_DOCUMENT_ID")
     @Basic
     var successfulOrUnsuccessfulAppealDocID: Long? = null
@@ -639,6 +655,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "COMPLAINT_DEPARTMENT")
     @Basic
     var complaintDepartment: Long? = null
+
+    @Column(name = "NUMBER_OF_DAYS")
+    @Basic
+    var numberOfDays: Long? = null
 
 
     @Column(name = "REFERENCE_NUMBER")

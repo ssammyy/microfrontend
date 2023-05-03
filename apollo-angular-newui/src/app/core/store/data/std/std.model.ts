@@ -424,6 +424,19 @@ export interface HOPTasks {
     taskData: HOPTaskData;
 }
 
+export class CommentsDto {
+    id: number;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+
+
+}
+
+
+
 export interface HOPTaskData {
     title: number;
     referenceMaterial: string;
@@ -633,7 +646,7 @@ export class PredefinedSdIntCommentsFields{
     requestID: number;
     draftID: number;
 }
-export class ProposalComments{
+export class ThisProposalComment{
     commentDocumentType: string;
     circulationDate: Timestamp<any>;
     closingDate: Timestamp<any>;
@@ -648,6 +661,9 @@ export class ProposalComments{
     requestId: number;
     draftId: number;
     adoptionAcceptableAsPresented: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
+    stakeHolderId:number;
 }
 export class PredefinedSDCommentsFields {
     standardNumber: string;
@@ -696,6 +712,7 @@ export interface ISAdoptionProposal {
     //addStakeholdersList: string[];
     iStandardNumber: string;
     deadlineDate: Timestamp<any>;
+    tcAcceptanceDate: Timestamp<any>;
     noOfComments: number;
     preparedDate: Timestamp<any>;
     draftId: number;
@@ -717,29 +734,40 @@ export interface ISAdoptionProposal {
     voteAgainst: number;
     requesterName: string;
     departmentName: string;
+    standardType: string;
+    stId: number;
+    stEmail: string;
+    stName: string;
+    stStatus: number;
+    stTelephone: string;
 }
 
 export interface ISJustificationProposal {
     id: number;
-    meetingDate: string;
+    meetingDate: Timestamp<any>;
     tcId: string;
-    cSec: string;
+    tcSec_id: string;
+    tcSecName: string;
     slNumber: string;
     edition: string;
     requestNumber: string;
     requestedBy: string;
     issuesAddressed: string;
-    tcAcceptanceDate: string;
+    tcAcceptanceDate: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
     referenceMaterial: string;
     department: number;
     remarks: string;
-    submissionDate: string;
+    submissionDate: Timestamp<any>;
     tcCommittee: string;
     departmentName: string;
     positiveVotes: number;
     negativeVotes: number;
     title: string;
     scope: string;
+    purposeAndApplication: string;
+    intendedUsers: string;
     normativeReference: string;
     symbolsAbbreviatedTerms: string;
     clause: string;
@@ -914,6 +942,7 @@ export interface ComStdDraftEdit{
     companyName: string;
     companyPhone: string;
     standardType: string;
+    assignedTo: number;
 }
 
 export interface IStandardDraftEdit {
@@ -958,6 +987,7 @@ export interface ISProposalJustification{
     tcAcceptanceDate : string;
     proposalId : number;
     draftId : number;
+    justificationId : number;
     tcSecName: string;
     standardNumber: string;
     title: string;
@@ -1031,7 +1061,12 @@ export interface ISJustificationDecision {
     approvalID: bigint;
     comments: string;
 }
-
+export interface ISHopDecision{
+    comments: string;
+    id: number;
+    requestId: number;
+    draftId: number;
+}
 export interface ISDraftDecision {
     comments: string;
     accentTo: string;
@@ -1041,6 +1076,9 @@ export interface ISDraftDecision {
     requestId: number;
     draftId: number;
     standardType: string;
+    draftStatus: string;
+    coverPageStatus: string;
+    assignedTo: number;
 }
 
 export interface ISDraftDecisionStd {
@@ -2669,6 +2707,25 @@ export interface HistoricalPayments{
     levyPenaltiesPaid: number;
     overallNetAmt: number;
     levyPenaltyPaymentDate: Timestamp<any>;
+}
+
+export interface AuthoritiesEntityDtos{
+    id: number;
+    name: string;
+    descriptions: string;
+    status: boolean;
+
+}
+export interface RolesEntityDtos{
+    id: number;
+    roleName: string;
+    descriptions: string;
+    status: boolean;
+
+}
+
+export interface JustificationStatus {
+    statusType: number;
 }
 
 

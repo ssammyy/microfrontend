@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
+  AllComplaintsDetailsDto,
   ApprovalDto,
   BSNumberSaveDto,
   ChargeSheetDto,
@@ -16,7 +17,7 @@ import {
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
-  MsStandardProductCategory,
+  MsStandardProductCategory, NonComplianceDto,
   PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
@@ -27,7 +28,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus,
+  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus, UcrNumberSearch,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
@@ -71,8 +72,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
+  nonComplianceList: NonComplianceDto[];
+  isAssignedDateValid: boolean = false;
   active: Number = 0;
   averageCompliance: number = 0;
+  totalNumberOfProducts: number = 0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   showOther: boolean = false;
@@ -117,6 +121,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   otherFinalRecommendation!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
+  approveSendingLabResultsForm!: FormGroup;
   chargeSheetForm!: FormGroup;
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
@@ -170,10 +175,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSaveDataReportUploadsList: WorkPlanFilesFoundDto[] = [];
+  dataSaveSSFUploadList: WorkPlanFilesFoundDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
   laboratories: LaboratoryDto[] = [];
+  dataUcrNumberSearchList: UcrNumberSearch[] = [];
   standards: KebsStandardsDto[] = [];
   standardsOriginal: KebsStandardsDto[] = [];
 
@@ -226,19 +233,25 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFilesOnly: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
+  uploadFollowUpFiles: FileList;
   uploadedFiles: FileList;
   uploadedAppealFiles: FileList;
   uploadedAppealNotSuccesFiles: FileList;
   uploadedFinalRemarksFiles: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
+  uploadedChainOfCustodyDoc: FileList;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
+  arrayOfGeneralUploadedFiles: File[] = [];
+  uploadedSSF: FileList;
+  arrayOfUploadedSSF: File[] = [];
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
   selectedRegion = 0;
   selectedTown = 0;
+  endDateSet: Date;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1122,11 +1135,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1140,6 +1148,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1179,11 +1192,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      referenceNumber: {
-        title: 'FORM REFERENCE NO',
-        type: 'string',
-        filter: false,
-      },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
         type: 'string',
@@ -1197,6 +1205,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
+        filter: false,
+      },
+      numberOfProducts: {
+        title: 'Number Of Products Inspected',
+        type: 'string',
         filter: false,
       },
       totalComplianceScore: {
@@ -1411,7 +1424,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       edit: false,
       delete: false,
       custom: [
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Follow Up Activity</i>'},
         {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">Add Remarks</i>'},
       ],
       position: 'right', // left|right
@@ -1422,13 +1435,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1486,13 +1504,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1548,13 +1571,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
       productName: {
         title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
-      referenceNo: {
-        title: 'REFERENCE NO',
+      productBrand: {
+        title: 'PRODUCT BRAND',
         type: 'string',
         filter: false,
       },
@@ -1653,6 +1681,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   };
 
   public workPlanInspection: WorkPlanInspectionDto;
+  public complaintInspection: AllComplaintsDetailsDto;
   public msCounties: {name: string, code: string}[];
 
   msRegions: RegionsEntityDto[] = null;
@@ -1708,7 +1737,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.startOnsiteActivitiesForm = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      numberOfDays: [0, Validators.required],
       remarks: null,
+    });
+    this.startOnsiteActivitiesForm.get('numberOfDays').valueChanges.subscribe(() => {
+      this.calculateEndDate();
     });
 
     this.clientEmailNotificationForm = this.formBuilder.group({
@@ -1779,7 +1812,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportForm = this.formBuilder.group({
       id: null,
       dataReportValueToClone: null,
-      referenceNumber: ['', Validators.required],
+      referenceNumber: null,
       inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
@@ -1788,19 +1821,21 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
-      outletDetails: ['', Validators.required],
+      outletDetails: null,
       outletName: ['', Validators.required],
       physicalLocation: ['', Validators.required],
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
+      additionalNonComplianceDetails: [''],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
       sourceOfProductAndEvidence: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      numberOfProducts: ['', Validators.required],
+      remarks: ['', Validators.required],
     });
 
     this.investInspectReportForm = this.formBuilder.group({
@@ -1828,6 +1863,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       statusActivity: ['', Validators.required],
       finalRemarkHod: null,
       changesMade: null,
+      summaryOfFindings: null,
       // remarks: ['', Validators.required],
     });
 
@@ -1841,6 +1877,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       complianceInspectionParameter: ['', Validators.required],
       measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
+      importerManufacturer: ['', Validators.required],
     });
 
     this.investInspectReportInspectorsForm = this.formBuilder.group({
@@ -1859,12 +1896,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
-      seizureSerial: ['', Validators.required],
+      seizureSerial: null,
       quantity: ['', Validators.required],
       unit: ['', Validators.required],
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+      dateOfSeizure: [new Date(), Validators.required],
     });
 
     this.seizureForm = this.formBuilder.group({
@@ -1910,41 +1948,41 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
-      id: null,
       valueToClone: null,
+      id: null,
       dataReportSelected: null,
       dataReportID: null,
       nameProduct: ['', Validators.required],
-      packaging: ['', Validators.required],
+      packaging: null,
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: null,
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
-      condition: ['', Validators.required],
+      condition: null,
       sampleReferences: null,
-      sendersName: ['', Validators.required],
-      designation: ['', Validators.required],
-      address: ['', Validators.required],
-      sendersDate: this.msService.formatDate(new Date()),
+      sendersName: null,
+      designation: null,
+      address: null,
+      sendersDate: ['', Validators.required],
       receiversName: null,
-      productDescription: null,
+      productDescription: ['', Validators.required],
       receiversDate: null,
       lbIdAnyAomarking: null,
+      sampleCollectionDate: ['', Validators.required],
       lbIdBatchNo: null,
       lbIdContDecl: null,
       lbIdDateOfManf: null,
       lbIdExpiryDate: null,
-      lbIdTradeMark: null,
-      sampleCollectionDate: null,
+      lbIdTradeMark: ['', Validators.required],
       noteTransResults: null,
+      referencesStandards: null,
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
       receiptLpoNumber: null,
       invoiceNumber: null,
-      disposal: ['', Validators.required],
-      remarks: ['', Validators.required],
+      disposal: null,
+      remarks: null,
       countryOfOrigin: null,
       sourceProductEvidence: null,
       sampleCollectionNumber: null,
@@ -1990,6 +2028,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       ucrNumber: null,
       productName: null,
       validityStatus: null,
+      companyName: null,
+      brandName: null,
+      commodityDescription: null,
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -2052,6 +2093,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       resourceName: ['', Validators.required],
     });
 
+    this.approveSendingLabResultsForm = this.formBuilder.group({
+      approvalStatus: ['', Validators.required],
+      ssfID: null,
+      remarks: ['', Validators.required],
+
+    });
+
     this.notCompliantInvoiceForm = this.formBuilder.group({
       remarks: ['', Validators.required],
       volumeFuelRemediated: ['', Validators.required],
@@ -2112,6 +2160,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
+    this.msService.getMSNonCompliance().subscribe(
+        (data)=>{
+          this.nonComplianceList = data.sort((a,b)=>a.nonComplianceName > b.nonComplianceName ? 1 : -1);
+          // console.log("Non Compliance Data "+ data)
+        },
+        error => {
+          //this.SpinnerService.hide();
+          // console.log("Could not get non compliance data "+error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+
 // Hof Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatus === false
@@ -2228,7 +2288,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.workPlanInspection?.sampleSubmittedStatus === false) {
       this.msService.msLaboratoriesListDetails().subscribe(
           (data1: LaboratoryEntityDto[]) => {
-            this.laboratories = data1;
+            this.laboratories = data1.sort((a,b)=>a.labName > b.labName ? 1 : -1);
             console.log(data1);
           },
           error => {
@@ -2244,7 +2304,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       case true:
         this.msService.MsRecommendationListDetails().subscribe(
             (data) => {
-              this.recommendationList = data;
+              this.recommendationList = data.sort((a,b)=>a.recommendationName > b.recommendationName ? 1 : -1);
               this.SpinnerService.hide();
               console.log(data);
             },
@@ -2512,6 +2572,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
+    // this.msService.msComplaintDetails(referenceNumber).subscribe(
+    //     (data)=>{
+    //       this.complaintInspection = data;
+    //       console.log("Assigned Date: "+this.complaintInspection.complaintsDetails.assignedIODate);
+    //     },error => {
+    //       console.log("Complaint Details not found "+ error);
+    //     }
+    // );
     this.msService.msRegionListDetails().subscribe(
         (dataRegions: RegionsEntityDto[]) => {
           this.msRegions = dataRegions;
@@ -2541,7 +2609,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     );
     this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
         (data1: PredefinedResourcesRequired[]) => {
-          this.predefinedResourcesRequired = data1;
+          this.predefinedResourcesRequired = data1.sort((a,b)=>a.resourceName > b.resourceName ? 1 : -1);
           console.log(data1);
         },
         error => {
@@ -2560,7 +2628,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector',  'startOnsiteActivities'];
+      'approveFinalPreliminaryDirector',  'startOnsiteActivities', 'uploadFollowUpDocument', 'hofApproveSendingEmail', 'hodApproveSendingEmail'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2569,7 +2637,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES', 'UPLOAD EVIDENCE OF OTHER FOLLOW UP ACTIVITIES', 'HOF APPROVE/DECLINE SENDING EMAIL RESULTS', 'HOD/RM  APPROVE/DECLINE SENDING EMAIL RESULTS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2909,6 +2977,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewDataReportRecord(data: DataReportDto) {
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
+    console.log(data.remarks);
     this.totalCompliantValue = data?.totalComplianceScore;
     const paramDetails = data.productsList;
     this.dataSaveDataReportParamList = [];
@@ -2928,20 +2997,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
     this.selectedSFFDetails = data;
-    let refStandards = data?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    const refStandards = data?.referencesStandards;
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
+      }
+      this.standardsInput.nativeElement.value = '';
+    }
+    const paramDetails = data.parametersList;
+    if(paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
       }
     }
-    this.standardsInput.nativeElement.value = '';
-    const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if (data.docList != null && data.docList.length > 0) {
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
     }
     this.sampleSubmitForm.disable();
     this.addLabParamStatus = false;
@@ -2956,20 +3036,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   updateSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
-    let refStandards = data?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    const refStandards = data?.referencesStandards;
+    if(refStandards && refStandards != null){
+      const arrayOfStandards = refStandards.split(';');
+      this.standardsArray = [];
+      for (const arrayOfStandard of arrayOfStandards) {
+        const trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== '' && trimmedStandard !== ' ' && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
+      }
+      this.standardsInput.nativeElement.value = '';
+    }
+    const paramDetails = data.parametersList;
+    if(paramDetails && paramDetails.length > 0){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
       }
     }
-    this.standardsInput.nativeElement.value = '';
-    const paramDetails = data.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+
+    if (data.docList != null && data.docList.length > 0){
+      this.dataSaveSSFUploadList = [];
+      for (let i = 0; i < data.docList.length; i++) {
+        const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
+        this.dataSaveSSFUploadList.push(fileValue);
+      }
     }
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
@@ -3058,7 +3150,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = `Field-Report-${fileName}`;
+          link.download = `Initial-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
@@ -3066,6 +3158,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewProgressReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    console.log("ts 1 called");
+    this.SpinnerService.show();
+    this.msService.loadProgressReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Progress-Report-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+          console.log("ts 1 success");
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+          console.log("ts 1 fail");
         },
     );
   }
@@ -3322,6 +3440,70 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         },
     );
   }
+  saveChainOfCustodyDocument(docName: string){
+    //this.SpinnerService.show();
+    const chainOfCustodyDoc = this.uploadedChainOfCustodyDoc;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < chainOfCustodyDoc.length; i++) {
+      formData.append('docFile', chainOfCustodyDoc[i], chainOfCustodyDoc[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          // this.SpinnerService.hide();
+          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Chain of Custody Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+  onClickSaveFinalRemarksAndEndProcess(valid: boolean){
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to save the details and end the MS Process?', 'You won\'t be able to Update the Details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
+            this.onClickSaveFinalRemarksHOD(valid);
+          });
+    }
+  }
+  onClickSaveFollowUpActionDoc(docName: string){
+    this.msService.showSuccessWith2Message('Are you sure your want to save this file(s)?', 'You won\'t be able to Update them after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and upload files Before Saving', 'FILE(S) UPLOADED SUCCESSFULLY ', () => {
+          this.saveFollowUpACtionDocument(docName);
+        });
+  }
+  saveFollowUpACtionDocument(docName: string){
+    this.SpinnerService.show();
+    const followUpActionsDoc = this.uploadFollowUpFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < followUpActionsDoc.length; i++) {
+      formData.append('docFile', followUpActionsDoc[i], followUpActionsDoc[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          this.SpinnerService.hide();
+          this.msService.showSuccess('FOLLOW UP ACTION FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Follow Up Actions Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
 
   saveClientAppealedSuccessfully(valid: boolean) {
     if (valid) {
@@ -3470,8 +3652,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
+            this.saveWorkPlanEndDocument("WORKPLAN_END_FILE");
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REMARKS AND FILE(S) SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3480,6 +3663,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           },
       );
     }
+  }
+
+  saveWorkPlanEndDocument(docName: string){
+    //this.SpinnerService.show();
+    const finalRemarksFileEndProcess = this.uploadedFinalRemarksFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < finalRemarksFileEndProcess.length; i++) {
+      formData.append('docFile', finalRemarksFileEndProcess[i], finalRemarksFileEndProcess[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // this.uploadedChainOfCustodyDoc = new FileList();
+          // this.SpinnerService.hide();
+          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log("Workplan End Doc failed upload"+error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   onClickSaveApprovePreliminaryHOD(valid: boolean) {
@@ -3577,7 +3785,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
 
   onClickStartOnsiteActivities(valid: boolean) {
-    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
+    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be starting the timelines for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
           this.startOnsiteActivities(valid);
@@ -3587,7 +3795,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
+    console.log(this.startOnsiteActivitiesForm.value);
+    this.calculateEndDate();
+    this.startOnsiteActivitiesForm.get('endDate').setValue(this.endDateSet)
     this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
+    console.log(this.dataSaveStartOnsiteActivities);
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
@@ -4186,6 +4398,94 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         });
   }
 
+  onClickSaveHodApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHodApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHodApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHodApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveHofApproveSendingEmail(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.saveHofApproveSendingEmail(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  saveHofApproveSendingEmail(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.approveSendingLabResultsForm.get('ssfID').setValue(this.selectedLabResults.ssfResultsList.sffId);
+      this.msService.msWorkPlanInspectionHofApproveSendingEmail(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.approveSendingLabResultsForm).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // tslint:disable-next-line:max-line-length
+            this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+            this.approveSendingLabResultsForm.reset();
+            console.log(data);
+            this.SpinnerService.hide();
+            window.$('#myModal2').modal('hide');
+            // window.$('.modal').remove();
+            window.$('body').removeClass('modal-open');
+            window.$('.modal-backdrop').remove();
+            window.$('#sampleLabResultsModal').modal('hide');
+            this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
   endSampleSubmitted() {
     this.SpinnerService.show();
     this.msService.msWorkPlanScheduleEndSampleSubmitted(
@@ -4234,7 +4534,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
     const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
-    console.log("Data in the form control before: "+standardsArrayControl.value);
+    this.sampleSubmitForm.get('sendersDate').setValue(null);
+    this.sampleSubmitForm.get('receiversDate').setValue(null);
+    this.sampleSubmitForm.get('lbIdDateOfManf').setValue(null);
+    this.sampleSubmitForm.get('lbIdExpiryDate').setValue(null);
+    this.sampleSubmitForm.get('sampleCollectionDate').setValue(null);
 
     for (let selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
@@ -4242,37 +4546,66 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           standardsArrayControl.setValue(valueInControl+ ';'+ selectedStandard + '; ');
       }
     }
-
+    if (this.uploadedSSF){
+      for ( let i = 0; i < this.uploadedSSF.length; i++) {
+        this.arrayOfUploadedSSF.push(this.uploadedSSF[i]);
+      }
+    }
 
     if(this.standardsArray.length < 1 && (standardsArrayControl.value != null || standardsArrayControl.value != '')){
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-    console.log("Data in the form control after: "+standardsArrayControl.value);
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+      window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    }
-    else{
-      this.msService.showError("Please Fill in all the fields!");
-    }
+    // }
+    // else{
+    //   this.msService.showError("Please Fill in all the fields!");
+    // }
   }
 
   saveSampleSubmitted() {
 
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+    // if (this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'SSF_DOCUMENT');
+      formData.append('data', JSON.stringify(this.dataSaveSampleSubmit));
+      if (this.uploadedSSF?.length > 0){
+        const file = this.uploadedSSF;
+        for (let i = 0; i < file.length; i++) {
+          formData.append('docFile', file[i], file[i].name);
+        }
+      }
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveSampleSubmit).subscribe(
+      // this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
+      //     this.workPlanInspection.batchDetails.referenceNumber,
+      //     this.workPlanInspection.referenceNumber,
+      //     this.dataSaveSampleSubmit).subscribe(
+      //     (data: any) => {
+      //       this.workPlanInspection = data;
+      //       console.log(data);
+      //       this.SpinnerService.hide();
+      //       this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
+      //     },
+      //     error => {
+      //       this.SpinnerService.hide();
+      //       console.log(error);
+      //       this.msService.showError('AN ERROR OCCURRED');
+      //     },
+      // );
+
+      this.msService.msWorkPlanScheduleSaveSSF(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -4285,9 +4618,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-    } else {
-      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
-    }
+    // } else {
+    //   this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    // }
   }
 
   onClickSaveBSNumber(valid: boolean) {
@@ -4788,7 +5121,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.viewSeizedProductsFileSaved(event.data);
         break;
       case 'downloadRecord':
-        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
+        this.viewProgressReportPdfFile(this.workPlanInspection?.id, event.data.reportReference, 'application/pdf');
         break;
     }
   }
@@ -4855,7 +5188,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               this.currDiv = 'verificationPermitDetails';
               this.verificationPermitForm.disabled;
 
-              window.$('#dataReportModalUCR').modal('show');
+              window.$('#myModal3').modal('show');
 
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
@@ -4868,24 +5201,35 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         );
         break;
       case 'Import':
-        // this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
-        //     (data: any) => {
-        //       this.SpinnerService.hide();
-        //       // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
-        //       this.verificationPermitForm.patchValue(data);
-        //       this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
-        //       this.currDiv = 'verificationPermitDetails';
-        //       this.verificationPermitForm.disabled;
-        //
-        //       window.$('#myModal3').modal('show');
-        //
-        //     },
-        //     error => {
-        //       this.SpinnerService.hide();
-        //       console.log(error);
-        //       // this.msService.showError('AN ERROR OCCURRED');
-        //     },
-        // );
+        this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
+            (data: UcrNumberSearch[]) => {
+              this.SpinnerService.hide();
+              this.dataUcrNumberSearchList = data;
+              if (this.dataUcrNumberSearchList?.length > 0){
+                this.currDivLabel = `UCR NUMBER ITEMS FOUND WITH FOLLOWING DETAILS`;
+                const countries = this.msService.getAllCountriesList();
+                for (let i = 0; i < this.dataUcrNumberSearchList.length; i++){
+                  const matchingCountry = countries.find(country => country.code === this.dataUcrNumberSearchList[i].countryOfOrigin);
+                  if (matchingCountry) {
+                    this.dataUcrNumberSearchList[i].countryOfOrigin = matchingCountry.name;
+                  }
+                }
+              }else{
+                this.currDivLabel = `NO ITEMS FOUND WITH UCR NUMBER ${this.dataSaveDataReportParam.ucrNumber}`;
+              }
+
+              this.currDiv = 'verificationUCRDetails';
+              // this.verificationPermitForm.disabled;
+
+              window.$('#dataReportModalUCR').modal('show');
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
         break;
     }
   }
@@ -5073,6 +5417,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   onClickSaveDataReport() {
     //need permanent solution for picking user input
     const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    console.log("Remarks: "+this.dataReportForm.get("remarks").value);
+    console.log("Number of products: "+this.dataReportForm.get("numberOfProducts").value);
     inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
@@ -5080,7 +5426,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       }
     }
     this.submitted = true;
-    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+    if (this.dataReportForm.valid ) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
@@ -5092,7 +5438,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   saveDataReport() {
-    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+    if (this.dataReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
@@ -5139,6 +5485,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
+    for (let i=0; i < this.dataSaveSeizureDeclarationList.length; i++){
+      this.dataSaveSeizureDeclarationList[i].dateOfSeizure = null;
+    }
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods?.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
@@ -5175,6 +5524,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];
           console.log(data);
+          this.saveChainOfCustodyDocument("CHAIN_OF_CUSTODY");
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
         },
@@ -5212,6 +5562,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          window.$('#investInspectReportModal').modal('hide');
           this.saveInitialReport();
         });
   }
@@ -5641,21 +5992,27 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
     this.sampleSubmitForm.patchValue(selectedClone);
     let refStandards = selectedClone?.referencesStandards;
-    let arrayOfStandards = refStandards.split(";")
-    this.standardsArray = [];
-    for (let arrayOfStandard of arrayOfStandards){
-      let trimmedStandard = arrayOfStandard.trim();
-      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
-        this.standardsArray.push(trimmedStandard);
+    if(refStandards){
+      let arrayOfStandards = refStandards.split(";")
+      this.standardsArray = [];
+      for (let arrayOfStandard of arrayOfStandards){
+        let trimmedStandard = arrayOfStandard.trim();
+        if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+          this.standardsArray.push(trimmedStandard);
+        }
       }
     }
+
     this.standardsInput.nativeElement.value = '';
     this.sampleSubmitForm?.get('id').setValue(0);
     const paramDetails = selectedClone.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    if (paramDetails){
+      this.dataSaveSampleSubmitParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+      }
     }
+
     this.sampleSubmitForm.enable();
     this.addLabParamStatus = true;
   }
@@ -5665,6 +6022,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportForm.patchValue(selectedClone);
     this.dataReportForm?.get('id').setValue(0);
     const paramDetails = selectedClone.productsList;
+    for (let i = 0; i < paramDetails.length; i++){
+      paramDetails[i].id = 0;
+    }
     this.dataSaveDataReportParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveDataReportParamList.push(paramDetails[i]);
@@ -5681,9 +6041,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
-    }
+    //dont clone products
+    // for (let i = 0; i < paramDetails.length; i++) {
+    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    // }
     this.seizureForm.enable();
     this.addLabParamStatus = true;
   }
@@ -5691,8 +6052,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   calculateAverageCompliance() {
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
+    this.totalNumberOfProducts = 0;
     for (let i = 0; i < dataReportData?.length; i++) {
       sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      this.totalNumberOfProducts += Number(dataReportData[i].numberOfProducts);
       //console.log(i + " " + dataReportData[i].totalComplianceScore);
       //console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
@@ -5713,4 +6076,94 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     link.download = fileUploaded.name;
     link.click();
   }
+
+
+  calculateEndDate() {
+      const holidays: Date[] = [
+        new Date('2023-05-01'), // Labour Day
+        new Date('2023-06-01'), // Madaraka Day
+        new Date('2023-10-20'), // Mashujaa Day
+        new Date('2023-12-12'), // Jamhuri Day
+      ];
+      const startDate = this.startOnsiteActivitiesForm.get('startDate').value;
+      const numberOfDays = this.startOnsiteActivitiesForm.get('numberOfDays').value;
+      let daysLeft = numberOfDays;
+      let endDate = new Date(startDate);
+      while (daysLeft > 0) {
+        const dayOfWeek = endDate.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+        const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+        if (!isWeekend && !isHoliday) {
+          daysLeft--;
+        }
+        endDate.setDate(endDate.getDate() + 1);
+      }
+      // Check if endDate is a weekend, and add 1 day until it's not
+      while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+        endDate.setDate(endDate.getDate() + 1);
+      }
+
+      this.startOnsiteActivitiesForm.get('endDate').setValue(endDate.toISOString().substr(0, 10));
+    this.endDateSet =  this.startOnsiteActivitiesForm.get('endDate').value;
+
+  }
+
+  getEndDate28(startDateStr){
+    const holidays: Date[] = [
+      new Date('2023-05-01'), // Labour Day
+      new Date('2023-06-01'), // Madaraka Day
+      new Date('2023-10-20'), // Mashujaa Day
+      new Date('2023-12-12'), // Jamhuri Day
+    ];
+    if (startDateStr == null){
+      startDateStr = this.msService.formatDate(new Date());
+      this.isAssignedDateValid = false;
+    }else if(startDateStr){
+      this.isAssignedDateValid = true;
+      //this.showTimelines = true;
+      console.log("Assigned Date in function: "+startDateStr);
+    }
+    //console.log("Date string passed to function: "+ startDateStr);
+    const numberOfDays = 28;
+    let daysLeft = numberOfDays;
+    // Attempt to convert the start date string to a Date object
+    startDateStr = this.msService.formatDate(new Date(Date.parse(startDateStr)))
+    //console.log("Date string after format date: "+ startDateStr);
+    let startDate = new Date(Date.parse(startDateStr));
+    //console.log("Formatted Date: "+ startDate);
+    //startDate = this.msService.formatDate(startDate)
+
+    // Check if the conversion was successful and the date string was in a valid format
+    // if (isNaN(startDate.getTime())) {
+    //   console.log('Invalid date format. The date must be in the format YYYY-MM-DD');
+    //
+    // }
+
+    const endDate = new Date(startDate.getTime()); // create a new date object with the same time as the start date
+    while (daysLeft > 0) {
+      const dayOfWeek = endDate.getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isHoliday = holidays.some((holiday) => holiday.getTime() === endDate.getTime());
+      if (!isWeekend && !isHoliday) {
+        daysLeft--;
+      }
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // Check if endDate is a weekend, and add 1 day until it's not
+    while (endDate.getDay() === 0 || endDate.getDay() === 6) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // console.log("End date returned: "+ endDate);
+    // console.log("End date returned as string: "+ endDate.toISOString().substr(0, 10));
+
+    return endDate.toISOString().substr(0, 10);
+  }
+
+  iSTimelinesPassed(date: string): boolean {
+    const currentDate = new Date();
+    const targetDate = new Date(date);
+
+    return targetDate < currentDate;
+  }
+
 }

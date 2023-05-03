@@ -103,7 +103,6 @@ export class IsProposalFormComponent implements OnInit {
           textField: 'name',
           selectAllText: 'Select All',
           unSelectAllText: 'UnSelect All',
-          itemsShowLimit: 1,
           allowSearchFilter: true
       };
 
@@ -331,6 +330,7 @@ export class IsProposalFormComponent implements OnInit {
 
         this.isProposalFormGroup?.get('stakeHolderName')?.reset();
         this.isProposalFormGroup?.get('stakeHolderEmail')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderPhone')?.reset();
     }
 
     removeDataResource(index) {

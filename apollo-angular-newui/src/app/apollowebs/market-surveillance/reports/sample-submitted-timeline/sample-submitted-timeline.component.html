@@ -114,6 +114,33 @@
                             </div>
                         </div>
 
+                        <div class="row border-0 box-shadow m-3 p-1">
+                            <div class="col border border-secondary m-1 p-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <th>Number of Samples Tested</th>
+                                    <th>Average Testing Compliance (TC)</th>
+<!--                                    <th>Sum of TC*B</th>-->
+<!--                                    <th>Average Time Taken To Submit Samples (Days)</th>-->
+                                    <th>% Compliance to Submission Within 2 days</th>
+<!--                                    <th>Average Time Taken To Forward Letters</th>-->
+                                    <th>% Compliance To Forwarding Within 14 Days</th>
+                                    </thead>
+                                    <tbody>
+                                    <td>{{totalEntries}}</td>
+                                    <td>{{averageTestingCompliance}}</td>
+<!--                                    <td>{{sumOfTCTimesB}}</td>-->
+<!--                                    <td>{{averageTimeTakenToSubmitSamples}}</td>-->
+                                    <td>{{percentageComplianceToSubmissionWithin2days}}%</td>
+<!--                                    <td>{{averageTimeTakenToForwardLetters}}</td>-->
+                                    <td>{{percentageComplianceToForwardingWithin14Days}}%</td>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">

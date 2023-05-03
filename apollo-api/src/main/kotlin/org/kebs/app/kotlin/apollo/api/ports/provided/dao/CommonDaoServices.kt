@@ -59,6 +59,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
@@ -177,7 +178,7 @@ class CommonDaoServices(
     private val apiClientRepo: ApiClientRepo,
     private val tokenService: JwtTokenService,
     private val authenticationProperties: AuthenticationProperties,
-    private val usersEntityRepository: UsersEntityRepository,
+    private val usersEntityRepository: UsersEntityRepository
 ) {
 
     @Value("\${common.page.view.name}")
@@ -550,7 +551,7 @@ class CommonDaoServices(
 
     fun extractPageRequest(req: ServerRequest, field: String = "id"): PageRequest {
         var page = 0
-        var records = 20
+        var records = 50
         // get page
         req.param("page").ifPresent { p ->
             p.toIntOrNull()?.let {
@@ -560,10 +561,10 @@ class CommonDaoServices(
         // Get page size
         req.param("records").ifPresent { p ->
             p.toIntOrNull()?.let {
-                records = if (it in 1..100) {
+                records = if (it in 1..1000) {
                     it
                 } else {
-                    20
+                    50
                 }
             }
         }
@@ -1268,6 +1269,14 @@ class CommonDaoServices(
                 return userCompanyDetails
             }
             ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
+    }
+
+    fun findCompanyProfileWithKraPins(kraPin: String): CompanyProfileEntity {
+        companyProfileRepo.findByKraPin(kraPin)
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with KRA PIN= ${kraPin}, does not Exist")
     }
 
     fun findCompanyProfileWithProfileID(id: Long): CompanyProfileEntity? {
@@ -2673,6 +2682,8 @@ class CommonDaoServices(
 
         return usersEntityRepository.getUserEmailById(userId) ?: throw ExpectedDataNotFound("No Email Address Found")
     }
+
+
 
 
 }

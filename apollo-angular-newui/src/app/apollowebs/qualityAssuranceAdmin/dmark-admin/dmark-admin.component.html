@@ -62,6 +62,12 @@
                                             <i class="material-icons">assignment</i>All Applications
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab"
+                                           (click)="tabChange('Search Applications')" role="tablist">
+                                            <i class="material-icons">search</i>Search Applications
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <ng-template #normal>
@@ -98,6 +104,15 @@
                                             <i class="material-icons">assignment</i>All Applications
                                         </a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab"
+                                           (click)="tabChange('Search Applications')" role="tablist">
+                                            <i class="material-icons">search</i>Search Applications
+                                        </a>
+                                    </li>
+
+
                                 </ul>
                             </ng-template>
 
@@ -220,6 +235,12 @@
                             <div *ngIf="id == 'PSC Tasks'" class="w-100">
 
                                 <app-psc-dmark-tasks></app-psc-dmark-tasks>
+
+                            </div>
+
+                            <div *ngIf="id == 'Search Applications'" class="w-100">
+
+                                <app-search-permits></app-search-permits>
 
                             </div>
 

@@ -147,7 +147,8 @@
                                                                     <a class="nav-item nav-link active" id="nav-jProposal-tab" data-toggle="tab" href="#nav-jProposal" role="tab" aria-controls="nav-jProposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-jProposal-comments-tab" (click)=displayDraftComments(actionRequest?.draftId) data-toggle="tab" href="#nav-jProposal-comments" role="tab" aria-controls="nav-jProposal-comments" aria-selected="false">Stakeholders Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequest?.draftId) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
-                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">SPC Justification</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false" *ngIf="justificationStatus?.statusType==0">Prepare Justification</a>
+                                                                     <a class="nav-item nav-link" id="nav-edit-justification-tab" data-toggle="tab" (click)=getISJustification(actionRequest?.draftId) href="#nav-edit-justification" role="tab" aria-controls="nav-edit-justification" aria-selected="false" *ngIf="justificationStatus?.statusType==1">Edit Justification</a>
                                                                 </div>
                                                             </nav>
                                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent-pj">
@@ -334,19 +335,18 @@
                                                                             <div class="form-body">
                                                                                 <div class="row col-12">
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>SPC Meeting Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>Justification Preparation Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
-                                                                                                [class.is-invalid]="formPrepareJustification.meetingDate.invalid && formPrepareJustification.meetingDate.touched"
+                                                                                                [class.is-invalid]="formPrepareJustification.meetingDate.invalid "
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                 class="form-control one-column-input" formControlName="meetingDate" name="meetingDate"
                                                                                                 placeholder="Date" type="date">
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label>Department/Sector</label>
-                                                                                        <select class="form-control" formControlName="department" name="department" required   >
-                                                                                            <option value="" disabled>Choose a Category</option>
-                                                                                            <option value="{{actionRequest?.departmentId}}" [selected]>{{actionRequest?.departmentName}}</option>
-                                                                                            <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                                                                                        <select class="form-control" formControlName="department" name="department"     >
+
+                                                                                            <option *ngFor="let department of departments" value="{{department.id}}" [selected]="department.id==actionRequest?.departmentId">{{department.name}}</option>
                                                                                         </select>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
@@ -367,7 +367,7 @@
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.title.invalid "
                                                                                                   class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="title" name="title"
                                                                                                   placeholder="International Standard Title" type="text" ></textarea>
 
@@ -375,7 +375,7 @@
 
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
+                                                                                        <input [class.is-invalid]="formPrepareJustification.edition.invalid "
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{edition}}" formControlName="edition" name="edition"
                                                                                                 placeholder="Edition" type="text">
                                                                                     </div>
@@ -384,34 +384,34 @@
                                                                                         <label><b>Requested By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.requesterName}}" formControlName="requestedBy" name="requestedBy"
-                                                                                                placeholder="Name" type="text">
+                                                                                                placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <hr>
                                                                                     <h3>Issues Addressed</h3>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.scope.invalid "
                                                                                                   class="form-control one-column-input" value="{{actionRequest?.scope}}" formControlName="scope" name="scope"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Purpose and Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.purposeAndApplication.invalid "
                                                                                                   class="form-control one-column-input"  formControlName="purposeAndApplication" name="purposeAndApplication"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Intended Users</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.intendedUsers.invalid "
                                                                                                   class="form-control one-column-input"  formControlName="intendedUsers" name="intendedUsers"
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formPrepareJustification.referenceMaterial.invalid "
                                                                                                   class="form-control one-column-input"  formControlName="referenceMaterial" name="referenceMaterial"
                                                                                                   placeholder="Reference Material" type="text" ></textarea>
 
@@ -435,10 +435,10 @@
                                                                                                 placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>TC Acceptance Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>TC Acceptance Date</b></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="tcAcceptanceDate" name="tcAcceptanceDate"
-                                                                                                placeholder="Name" type="date" >
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.tcAcceptanceDate | date: 'yyyy-MM-dd'}}"  formControlName="tcAcceptanceDate" name="tcAcceptanceDate"
+                                                                                                placeholder="Name" type="text" disabled>
                                                                                     </div>
 
 
@@ -450,8 +450,133 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                                            <button *ngIf="prepareJustificationFormGroup.valid" [disabled]="!prepareJustificationFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="tab-pane fade" id="nav-edit-justification" role="tabpanel" aria-labelledby="nav-edit-justification-tab">
+                                                                    <form (ngSubmit)="editJustification()" [formGroup]="editJustificationFormGroup" class="form">
+                                                                        <div class="modal-body">
+                                                                            <div class="form-body" *ngFor="let iSJustificationProposal of iSJustificationProposals">
+                                                                                <div class="row col-12">
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Justification Preparation Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                class="form-control one-column-input" ngModel="{{iSJustificationProposal.meetingDate | date: 'yyyy-MM-dd'}}" value="{{iSJustificationProposal.meetingDate | date: 'yyyy-MM-dd'}}" formControlName="meetingDate" name="meetingDate"
+                                                                                                placeholder="Date" type="text" disabled>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
+                                                                                        <label>Department/Sector </label>
+                                                                                        <select class="form-control" formControlName="department" name="department" required    >
+
+                                                                                            <option *ngFor="let department of departments" value="{{department.id}}" [selected]="department.id==iSJustificationProposal.department">{{department.name}}</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Name of officer</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{actionRequest?.tcSecName}}" value="{{actionRequest?.tcSecName}}" formControlName="tcSecName" name="tcSecName"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <h3>STANDARDS DEVELOPED</h3>
+                                                                                <div class="row col-12">
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>KS Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{actionRequest?.standardNumber}}" value="{{actionRequest?.standardNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                                                placeholder="Name" type="text">
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" ngModel="{{iSJustificationProposal.title}}" value="{{iSJustificationProposal.title}}" formControlName="title" name="title"
+                                                                                                  placeholder="International Standard Title" type="text" ></textarea>
+
+                                                                                    </div>
+
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                               aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{iSJustificationProposal.edition}}" value="{{iSJustificationProposal.edition}}" formControlName="edition" name="edition"
+                                                                                               placeholder="Edition" type="text">
+                                                                                    </div>
+
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Requested By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{iSJustificationProposal.requestedBy}}" value="{{iSJustificationProposal.requestedBy}}" formControlName="requestedBy" name="requestedBy"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+                                                                                    <hr>
+                                                                                    <h3>Issues Addressed</h3>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" ngModel="{{iSJustificationProposal.scope}}" value="{{iSJustificationProposal.scope}}" formControlName="scope" name="scope"
+                                                                                                  placeholder="International Standard Scope" type="text" ></textarea>
+
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Purpose and Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" ngModel="{{iSJustificationProposal.purposeAndApplication}}" value="{{iSJustificationProposal.purposeAndApplication}}" formControlName="purposeAndApplication" name="purposeAndApplication"
+                                                                                                  placeholder="International Standard Scope" type="text" ></textarea>
+
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Intended Users</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" ngModel="{{iSJustificationProposal.intendedUsers}}" value="{{iSJustificationProposal.intendedUsers}}" formControlName="intendedUsers" name="intendedUsers"
+                                                                                                  placeholder="International Standard Scope" type="text" ></textarea>
+
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" ngModel="{{iSJustificationProposal.referenceMaterial}}" value="{{iSJustificationProposal.referenceMaterial}}" formControlName="referenceMaterial" name="referenceMaterial"
+                                                                                                  placeholder="Reference Material" type="text" ></textarea>
+
+                                                                                    </div>
+
+                                                                                </div>
+                                                                                <hr>
+                                                                                <h2>Background Information</h2>
+                                                                                <h3>Date of Circulation of Adoption Proposal Form</h3>
+                                                                                <div class="row">
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Circulation Date</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}" value="{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}" formControlName="circulationDate" name="circulationDate"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Closing Date</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}" value="{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}" formControlName="closingDate" name="closingDate"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>TC Acceptance Date</b></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" ngModel="{{actionRequest?.tcAcceptanceDate | date: 'yyyy-MM-dd'}}" value="{{actionRequest?.tcAcceptanceDate | date: 'yyyy-MM-dd'}}"  formControlName="tcAcceptanceDate" name="tcAcceptanceDate"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+
+
+                                                                                    <input type="hidden" formControlName="proposalId" name="proposalId" ngModel="{{actionRequest?.id}}" value="{{actionRequest?.id}}" >
+                                                                                    <input type="hidden" formControlName="draftId" name="draftId" ngModel="{{actionRequest?.draftId}}" value="{{actionRequest?.draftId}}" >
+                                                                                    <input type="hidden" formControlName="justificationId" name="justificationId" ngModel="{{iSJustificationProposal.id}}" value="{{iSJustificationProposal.id}}" >
+                                                                                    <input type="hidden" formControlName="slNumber" name="slNumber" ngModel="{{actionRequest?.proposalNumber}}" value="{{actionRequest?.proposalNumber}}" >
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button *ngIf="editJustificationFormGroup.valid" [disabled]="!editJustificationFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Edit and Submit</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

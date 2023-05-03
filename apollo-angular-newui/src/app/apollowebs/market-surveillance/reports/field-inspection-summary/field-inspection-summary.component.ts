@@ -70,6 +70,18 @@ export class FieldInspectionSummaryComponent implements OnInit {
   dataSet: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
 
+  sumOfSamplesPhysicallyInspected: number;
+  sumOfVisitAsPerSchedule: number;
+  percentageComplianceToVisitAsPerSchedule: number;
+  sumOfNumberOfSamplesDrawnAndSubmitted: number;
+  sumOfComplianceToPhysicalInspectionSumOfPC:number;
+  averageComplianceToPhysicalInspection: number;
+  sumOfPCTimesA: number;
+  sumOfTimeTakenToFillSurveillanceReport: number;
+  averageTimeTakenToFillSurveillanceReport: number;
+  sumOfFilingWithin1DayAfterVisit: number;
+  percentageFilingWithin1DayAfterVisit: number;
+
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
               private activatedRoute: ActivatedRoute,
@@ -104,6 +116,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
       assignIO: ['', null],
       sectorID: ['', null],
       outletName: ['', null],
+      divisionName: ['', null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
@@ -138,6 +151,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.loadedData = dataResponse?.data as FieldInspectionSummaryReportViewEntity[];
             this.totalCount = this.loadedData.length;
+            this.calculateFieldInspectionSummary();
             this.rerender();
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
@@ -190,6 +204,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.calculateFieldInspectionSummary()
             this.rerender();
           }
           this.SpinnerService.hide();
@@ -219,4 +234,103 @@ export class FieldInspectionSummaryComponent implements OnInit {
       // this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
     }
   }
+
+  // calculateFieldInspectionSummary(){
+  //   let count = 0;
+  //   for(let i=0; i < this.loadedData.length; i++){
+  //     count++;
+  //     console.log("Count "+count);
+  //     this.sumOfSamplesPhysicallyInspected += this.loadedData[i].noOfSamplesPhysicallyInspected;
+  //     console.log("Number of samples Physically Inspected per count: "+this.loadedData[i].noOfSamplesPhysicallyInspected);
+  //     this.sumOfVisitAsPerSchedule += Number(this.loadedData[i].visitAspermsSchedule);
+  //     console.log("Number of Visits per schedule per count: "+Number(this.loadedData[i].visitAspermsSchedule));
+  //     this.sumOfNumberOfSamplesDrawnAndSubmitted += Number(this.loadedData[i].noSamplesDrawnSubmitted);
+  //     console.log("Number of Samples Drawn and Submitted: "+Number(this.loadedData[i].noSamplesDrawnSubmitted));
+  //     this.sumOfComplianceToPhysicalInspectionSumOfPC += Number(this.loadedData[i].compliancePhysicalInspection);
+  //     console.log("Compliance to physical inspection: "+Number(this.loadedData[i].compliancePhysicalInspection));
+  //     this.sumOfPCTimesA += Number(this.loadedData[i].pcxa);
+  //     console.log("pc * a: "+ Number(this.loadedData[i].pcxa));
+  //     this.sumOfTimeTakenToFillSurveillanceReport += Number(this.loadedData[i].timeTakenFileSurveillanceReport);
+  //     console.log("Time taken to fill surveillance report: "+ Number(this.loadedData[i].timeTakenFileSurveillanceReport));
+  //     this.sumOfFilingWithin1DayAfterVisit += Number(this.loadedData[i].filingWithin1DayafterVisit);
+  //     console.log("Filing within 1 day of Visit" +Number(this.loadedData[i].filingWithin1DayafterVisit));
+  //   }
+  //   console.log("Count of Field Inspection Summary: "+count);
+  //   this.percentageComplianceToVisitAsPerSchedule = (this.sumOfVisitAsPerSchedule/this.loadedData.length)*100
+  //   console.log("Percentage visit as per schedule: "+ this.percentageComplianceToVisitAsPerSchedule);
+  //   this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/this.loadedData.length;
+  //   console.log("Average time to fill surveillance report "+ this.averageTimeTakenToFillSurveillanceReport);
+  //   this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/this.loadedData.length)*100
+  //   console.log("Percentage Filling within 1 day of visit "+ this.percentageFilingWithin1DayAfterVisit);
+  //
+  // }
+
+  calculateFieldInspectionSummary(){
+
+    let arrayOfSamplesPhysicallyInspected = [];
+    let arrayOfVisitAsPerSchedule = [];
+    let arrayOfSamplesDrawnAndSubmitted = [];
+    let arrayOfComplianceToPhysicalInspection = [];
+    let arrayOfPCXA = [];
+    let arrayOfTimeTakenToFillSurveillanceReport = [];
+    let arrayOfFilingWithin1DayAfterVisit = [];
+
+    for (let i=0; i<this.loadedData.length; i++){
+      if(isNaN(Number(this.loadedData[i].noOfSamplesPhysicallyInspected))){
+        this.loadedData[i].noOfSamplesPhysicallyInspected = 0
+      }
+      arrayOfSamplesPhysicallyInspected.push(Number(this.loadedData[i].noOfSamplesPhysicallyInspected));
+
+      if(isNaN(Number(this.loadedData[i].visitAspermsSchedule))){
+        this.loadedData[i].visitAspermsSchedule = '0'
+      }
+      arrayOfVisitAsPerSchedule.push(Number(this.loadedData[i].visitAspermsSchedule));
+
+      if(isNaN(Number(this.loadedData[i].noSamplesDrawnSubmitted))){
+        this.loadedData[i].noSamplesDrawnSubmitted = '0'
+      }
+      arrayOfSamplesDrawnAndSubmitted.push(Number(this.loadedData[i].noSamplesDrawnSubmitted));
+
+      if(isNaN(Number(this.loadedData[i].compliancePhysicalInspection))){
+        this.loadedData[i].compliancePhysicalInspection = '0'
+      }
+      arrayOfComplianceToPhysicalInspection.push(Number(this.loadedData[i].compliancePhysicalInspection));
+
+      if(isNaN(Number(this.loadedData[i].pcxa))){
+        this.loadedData[i].pcxa = '0'
+      }
+      arrayOfPCXA.push(Number(this.loadedData[i].pcxa));
+
+      if(isNaN(Number(this.loadedData[i].timeTakenFileSurveillanceReport))){
+        arrayOfTimeTakenToFillSurveillanceReport.push(0);
+      }else{
+        arrayOfTimeTakenToFillSurveillanceReport.push(Number(this.loadedData[i].timeTakenFileSurveillanceReport)+1);
+      }
+
+      if(isNaN(Number(this.loadedData[i].filingWithin1DayafterVisit))){
+        this.loadedData[i].filingWithin1DayafterVisit = '0'
+      }
+      arrayOfFilingWithin1DayAfterVisit.push(Number(this.loadedData[i].filingWithin1DayafterVisit));
+
+    }
+    this.sumOfSamplesPhysicallyInspected = arrayOfSamplesPhysicallyInspected.reduce((a,b)=> a + b, 0);
+    this.sumOfVisitAsPerSchedule = arrayOfVisitAsPerSchedule.reduce((a,b)=> a + b, 0);
+    this.percentageComplianceToVisitAsPerSchedule = (this.sumOfSamplesPhysicallyInspected/this.loadedData.length)*100;
+    this.sumOfNumberOfSamplesDrawnAndSubmitted = arrayOfSamplesDrawnAndSubmitted.reduce((a,b)=> a + b, 0);
+    this.sumOfComplianceToPhysicalInspectionSumOfPC = arrayOfComplianceToPhysicalInspection.reduce((a,b)=> a + b, 0);
+    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/this.loadedData.length;
+    this.sumOfPCTimesA = arrayOfPCXA.reduce((a,b)=> a + b, 0);
+    this.sumOfTimeTakenToFillSurveillanceReport = arrayOfTimeTakenToFillSurveillanceReport.reduce((a,b)=> a + b, 0);
+    this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/this.loadedData.length;
+    this.sumOfFilingWithin1DayAfterVisit = arrayOfFilingWithin1DayAfterVisit.reduce((a,b)=> a + b, 0);
+    this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/this.loadedData.length)*100;
+
+
+
+
+
+  }
+
+
+
 }

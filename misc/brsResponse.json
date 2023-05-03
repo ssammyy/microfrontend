@@ -1,44 +1,23 @@
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "98677466f9e0e1962dedf91ef2d5e437b3d64d27c987317d29016d397b0c1779",
+"noOfRecords": "1",
+"transmissionDate": "25-04-2023T10:31:08"
+},
+"DETAILS": [
 {
-  "REQUEST": {
-    "header": {
-      "loginId": "KEBSUSER",
-      "password": "password@1",
-      "hash": "b66c0b0f5a82154fc7e902b398403e5744da64496a392dc5ddf80e773d0563a9",
-      "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T19:57:52"
-    },
-    "penaltyinfo": [
-      {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "penaltyOrderNo": 33864,
-        "PenaltyOrderNo": 33864
-      }
-    ],
-    "HEADER": {
-      "loginId": "KEBSUSER",
-      "password": "password@1",
-      "hash": "b66c0b0f5a82154fc7e902b398403e5744da64496a392dc5ddf80e773d0563a9",
-      "noOfRecords": "1",
-      "transmissionDate": "03-02-2023T19:57:52"
-    },
-    "PENALTYINFO": [
-      {
-        "entryNo": "22435",
-        "periodTo": "31-12-2022",
-        "periodFrom": "01-12-2022",
-        "penaltyPayable": 100,
-        "kraPin": "P051399927T",
-        "penaltyGenDate": "03-02-2023T15:24:04",
-        "manufacName": "CABLE CONNECT LIMITED",
-        "penaltyOrderNo": 33864,
-        "PenaltyOrderNo": 33864
-      }
-    ]
-  }
+"entryNumber": "20230425000049",
+"kraPin": "P000606199J",
+"manufacturerName": "EASTERN FLOUR MILLS LIMITED",
+"registrationDate": "24-04-2023T08:20:16",
+"status": "Active"
 }
+]
+}
+}'

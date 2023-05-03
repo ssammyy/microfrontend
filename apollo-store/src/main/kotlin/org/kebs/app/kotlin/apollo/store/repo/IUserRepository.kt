@@ -206,6 +206,12 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     )
     fun getUserId(@Param("email") email: String?): Long?
 
+    @Query(
+        value = "SELECT CELL_PHONE  FROM DAT_KEBS_USERS WHERE EMAIL= :email",
+        nativeQuery = true
+    )
+    fun getUserPhone(@Param("email") email: String?): String?
+
 
 
 }

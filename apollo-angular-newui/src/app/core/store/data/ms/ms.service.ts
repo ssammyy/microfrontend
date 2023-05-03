@@ -89,7 +89,7 @@ import {
     ConsumerComplaintViewSearchValues,
     SeizeViewSearchValues,
     SubmittedSamplesSummaryViewSearchValues,
-    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch,
+    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch, NonComplianceDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -1294,6 +1294,24 @@ export class MsService {
         );
     }
 
+    public msWorkPlanScheduleSaveSSF(data: FormData): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveSeizureDeclaration(batchReferenceNo: string, referenceNo: string, data: SeizureDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
@@ -2083,23 +2101,23 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<WorkPlanInspectionDto> {
-        console.log(data);
-        // tslint:disable-next-line:max-line-length
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
-        const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
-        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
-            map(function (response: WorkPlanInspectionDto) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
-                return throwError(fault);
-            }),
-        );
-    }
+    // public msWorkPlanInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<WorkPlanInspectionDto> {
+    //     console.log(data);
+    //     // tslint:disable-next-line:max-line-length
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION);
+    //     const params = new HttpParams()
+    //         .set('batchReferenceNo', batchReferenceNo)
+    //         .set('referenceNo', referenceNo);
+    //     return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+    //         map(function (response: WorkPlanInspectionDto) {
+    //             return response;
+    //         }),
+    //         catchError((fault: HttpErrorResponse) => {
+    //             // console.warn(`getAllFault( ${fault.message} )`);
+    //             return throwError(fault);
+    //         }),
+    //     );
+    // }
 
     public msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber
     (batchReferenceNo: string,
@@ -2183,6 +2201,42 @@ export class MsService {
         console.log(data);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msWorkPlanInspectionHodApproveSendingEmail(batchReferenceNo: string, referenceNo: string, data: any): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.HOD_APPROVAL_SENDING_EMAIL);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msWorkPlanInspectionHofApproveSendingEmail(batchReferenceNo: string, referenceNo: string, data: any): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.HOF_APPROVAL_SENDING_EMAIL);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -2283,6 +2337,21 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_LABORATORIES);
         return this.http.get<LaboratoryEntityDto[]>(url).pipe(
             map(function (response: LaboratoryEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public getMSNonCompliance(): Observable<NonComplianceDto[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NON_COMPLIANCE_LIST);
+        return this.http.get<NonComplianceDto[]>(url).pipe(
+            map(function (response: NonComplianceDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -3022,6 +3091,26 @@ export class MsService {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadProgressReportDetailsPDF(workPlanGeneratedID: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        console.log("service 2 called");
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_PROGRESS_REPORT);
+        const params = new HttpParams()
+            .set('workPlanGeneratedID', workPlanGeneratedID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                console.log("service 2 success");
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                console.log("service 2 fail");
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             }),

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -11,6 +12,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
@@ -829,6 +831,10 @@ class SystemsAdministrationHandler(
         }
 
     }
+
+
+
+
 
 //    @PreAuthorize("hasAuthority('TITLES_LIST')")
     fun titlesListing(req: ServerRequest): ServerResponse {

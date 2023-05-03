@@ -63,6 +63,7 @@ export class ReportSubmittedTimelineComponent implements OnInit {
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
+
   public settingsSeizedGoods = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -290,4 +291,5 @@ export class ReportSubmittedTimelineComponent implements OnInit {
       this.loadData(this.defaultPage, this.defaultPageSize);
     }
   }
+
 }

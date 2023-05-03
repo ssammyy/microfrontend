@@ -393,11 +393,20 @@ data class WorkPlanScheduleApprovalDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanSendResultsApprovalDto(
+        @NotNull(message = "Required field approvalStatus")
+        var approvalStatus: Boolean,
+        @NotNull(message = "Required field ssfID")
+        var ssfID: Long,
+        var remarks: String? = null,
+)
+
 data class WorkPlanScheduleOnsiteDto(
         @NotNull(message = "Required field")
         var startDate: Date,
         @NotNull(message = "Required field")
         var endDate: Date,
+        var numberOfDays: Long? = null,
         var remarks: String? = null,
 )
 
@@ -560,12 +569,14 @@ data class DataReportDto(
         var phoneNumber: String? = null,
         var emailAddress: String? = null,
         var mostRecurringNonCompliant: String? = null,
+        var additionalNonComplianceDetails: String? = null,
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
         var samplesDrawnAndSubmitted: String? = null,
         var sourceOfProductAndEvidence: String? = null,
         var finalActionSeizedGoods: String? = null,
         var totalComplianceScore: String? = null,
+        var numberOfProducts: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
         var docList: List<Long>? = null,
@@ -581,6 +592,7 @@ data class DataReportParamsDto(
         var complianceInspectionParameter: Int? = null,
         var measurementsResults: String? = null,
         var remarks: String? = null,
+        var importerManufacturer: String? = null
 )
 
 data class FieldReportBackDto(
@@ -627,7 +639,8 @@ data class InspectionInvestigationReportDto(
         var version: Int? = null,
         var createdBy: String? = null,
         var createdOn: Timestamp? = null,
-        var changesMade: String? = null
+        var changesMade: String? = null,
+        var summaryOfFindings: String? = null
 )
 
 data class KebsOfficersName (
@@ -671,6 +684,7 @@ data class SeizureDto(
         var dateSeizure: Date?=null,
         var dateDestructed: Date?=null,
         var dateRelease: Date?=null,
+        var dateOfSeizure: Date?=null,
 
 )
 
@@ -780,6 +794,7 @@ data class SampleSubmissionDto(
         var parametersList: List<SampleSubmissionItemsDto>? = null,
         var dataReportID: Long?= null,
         var nameOutlet: String?= null,
+        var docList: List<Long>? = null,
 )
 
 data class SampleSubmissionItemsDto(
@@ -803,6 +818,7 @@ data class PreliminaryReportItemsDto(
 data class WorkPlanProductDto(
         var id: Long? = 0,
         var productName: String? = null,
+        var productBrand: String? = null,
         var referenceNo: String? = null,
         var recommendation: List<RecommendationDto>? = null,
         var destructionRecommended: Boolean? = null,
@@ -886,6 +902,10 @@ data class MSSSFComplianceStatusDetailsDto(
         var complianceStatus: Boolean? = null,
         var analysisDone: Boolean? = null,
         var resultsSent: Boolean? = null,
+        var hofApproveSendingEmailStatus: Boolean? = null,
+        var hofApproveSendingEmailDate: Date? = null,
+        var hodApproveSendingEmailStatus: Boolean? = null,
+        var hodApproveSendingEmailDate: Date? = null,
 )
 
 data class LIMSFilesFoundDto(
@@ -1086,7 +1106,14 @@ data class ConsumerComplaintViewSearchValues(
         var assignIO: Long? = null,
         var startDate: Date? = null,
         var endDate: Date? = null,
-        var sectorID: Long? = null
+        var sectorID: Long? = null,
+        var regionID: String? = null,
+        var departmentID: String? = null,
+
+)
+
+data class selectedOfficersList(
+        var officerID: Long? = null
 )
 
 data class FieldInspectionSummarySearch(
@@ -1096,6 +1123,7 @@ data class FieldInspectionSummarySearch(
         var endDate: Date? = null,
         var sectorID: Long? = null,
         var outletName: String? =null,
+        var divisionName: String? =null,
 )
 
 data class SeizeViewSearchValues(
@@ -1136,6 +1164,8 @@ data class SeizedGoodsViewSearchValues(
         var region: Long? = null,
         var complaintDepartment: Long? = null,
         var division: Long? = null
+
+
 )
 
 data class ComplaintAdviceRejectDto(
@@ -1250,7 +1280,8 @@ data class ComplaintsDetailsDto(
         var timelineEndDate: Date? = null,
         var timelineOverDue: Boolean? = null,
         var standardTitle: String? = null,
-        var standardNumber: String? = null
+        var standardNumber: String? = null,
+        var assignedIODate: Date? = null
 
 
 )
@@ -1389,7 +1420,11 @@ data class PermitUcrSearch(
         var permitNumber: String? = null,
         var ucrNumber: String? = null,
         var productName: String? = null,
-        val validityStatus: Boolean? = null
+        var companyName: String? = null,
+        var brandName: String? = null,
+        var commodityDescription: String? = null,
+        val validityStatus: Boolean? = null,
+
 )
 
 data class MsUsersDto(

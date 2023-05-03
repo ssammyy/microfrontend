@@ -13,6 +13,8 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.CommentForm
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
 import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
@@ -68,6 +72,9 @@ class IntStandardService(
     private val standardRequestRepository: StandardRequestRepository,
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val stakeholdersSdListRepository: StakeholdersSdListRepository,
+    private val stakeholdersCategoriesRepository: StakeholdersCategoriesRepository,
+    private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository
 
 
     ) {
@@ -87,6 +94,31 @@ class IntStandardService(
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
         return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
     }
+
+    fun getEditorDetails(): List<UserDetailHolder> {
+        return userListRepository.getEditorDetails()
+    }
+
+    fun getStakeholderListSd(id: Long): List<StakeholdersSdList>? {
+        return stakeholdersSdListRepository.getStakeholderListSd(id)
+    }
+
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return stakeholdersCategoriesRepository.getCategoriesSd()
+    }
+
+    fun getSubCategoriesSd(id: Long): List<StakeholdersSubCategories>? {
+        return stakeholdersSubCategoriesRepository.getSubCategoriesSd(id)
+    }
+
+    fun getDraughtsManDetails(): List<UserDetailHolder> {
+        return userListRepository.getDraughtsManDetails()
+    }
+
+    fun getProofReaderDetails(): List<UserDetailHolder> {
+        return userListRepository.getProofReaderDetails()
+    }
+
     //find stakeholder
     fun findStandardStakeholders(): List<UserDetailHolder>? {
         return userListRepository.findStandardStakeholders()
@@ -169,14 +201,16 @@ class IntStandardService(
             val recipient = s.email
             val user = s.name
             val userId=usersRepo.getUserId(s.email)
+            val userPhone=usersRepo.getUserPhone(s.email)
 
             val shs = IStandardStakeHolders()
             shs.name=user
             shs.email=recipient
             shs.draftId=draftNumber
             shs.dateOfCreation=Timestamp(System.currentTimeMillis())
-            shs.telephone="NA"
+            shs.telephone=userPhone
             shs.userId=userId
+            shs.status=0
             iStdStakeHoldersRepository.save(shs)
 
             val messageBody= "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
@@ -185,7 +219,7 @@ class IntStandardService(
             }
         }
 
-        val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber";
+
 //                val gson = Gson()
 //        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(targetUrl2) }
         val stakeholdersTwo = isAdoptionProposalDto.addStakeholdersList
@@ -201,7 +235,10 @@ class IntStandardService(
             st.draftId=draftNumber
             st.dateOfCreation=Timestamp(System.currentTimeMillis())
             st.telephone=phoneNumber
-            iStdStakeHoldersRepository.save(st)
+            st.status=0
+            val sid= iStdStakeHoldersRepository.save(st)
+            val pid= sid.id
+            val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber/$pid";
 
             val messageBody= "Dear $userN,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
             if (rec != null) {
@@ -280,8 +317,20 @@ class IntStandardService(
         return isAdoptionProposalRepository.getProposalDetails();
     }
 
-    fun getProposals(proposalId: Long): MutableList<ProposalDetails> {
-        return isAdoptionProposalRepository.getProposals(proposalId)
+
+    fun getProposals(proposalId: Long,commentId: Long): MutableList<ProposalDetails> {
+
+        return isAdoptionProposalRepository.getProposals(proposalId,commentId)
+    }
+
+    fun getWebProposals(): MutableList<ProposalDetails> {
+
+        return isAdoptionProposalRepository.getWebProposals()
+    }
+
+    fun getSessionProposals(): MutableList<ProposalDetails>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return loggedInUser.id?.let { isAdoptionProposalRepository.getSessionProposals(it) }
     }
 
     //Submit Adoption Proposal comments
@@ -336,6 +385,8 @@ class IntStandardService(
             comDraftComments.requestID=com.requestId
             comDraftComments.draftID=com.draftId
             comDraftComments.nameOfRespondent=com.nameOfRespondent
+            comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+            comDraftComments.emailOfRespondent=com.emailOfRespondent
             comDraftComments.nameOfOrganization=com.nameOfOrganization
             comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
             comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
@@ -363,6 +414,154 @@ class IntStandardService(
                 }
                 comStdDraftRepository.save(comStdDraft)
             }?: throw Exception("REQUEST NOT FOUND")
+
+        iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
+            with(stakeHolder){
+               status=1
+            }
+            iStdStakeHoldersRepository.save(stakeHolder)
+        }?: throw Exception("USER NOT FOUND")
+
+        val sub = "New Adoption Proposal "
+        val rec = com.emailOfRespondent
+        val userN = com.nameOfRespondent
+        val kebsEmail = "tim@kebs.com"
+        val messageBody= "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
+                "If you have additional information,Send to the email provided below. $kebsEmail"
+        if (rec != null) {
+            notifications.sendEmail(rec, sub, messageBody)
+        }
+
+
+
+
+        println("Comment Submitted")
+    }
+
+    fun submitWebsiteComments(com: ProposalCommentsDto): CommentForm{
+        val variables: MutableMap<String, Any> = HashMap()
+        var  comDraftCommentsSaved = ComDraftComments();
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
+
+        val  comDraftComments = ComDraftComments();
+        comDraftComments.reason=com.reasons
+        comDraftComments.recommendations=com.recommendations
+        comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
+        comDraftComments.requestID=com.requestId
+        comDraftComments.draftID=com.draftId
+        comDraftComments.nameOfRespondent=com.nameOfRespondent
+        comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+        comDraftComments.emailOfRespondent=com.emailOfRespondent
+        comDraftComments.nameOfOrganization=com.nameOfOrganization
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+        val commentCounts=iStdStakeHoldersRepository.countComments(com.emailOfRespondent,com.draftId)
+        val toCheckCom: Long = 0
+        if (commentCounts == toCheckCom) {
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision=="Yes"){
+            newAdopt=adoptNumber+1
+            newNotAdopt=notAdoptNumber
+
+        }else{
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber+1
+        }
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
+
+
+            val st = IStandardStakeHolders()
+            st.name=com.nameOfRespondent
+            st.email=com.emailOfRespondent
+            st.draftId=com.draftId
+            st.dateOfCreation=Timestamp(System.currentTimeMillis())
+            st.telephone=com.phoneOfRespondent
+            st.status=1
+            val sid= iStdStakeHoldersRepository.save(st)
+
+            val sub = "New Adoption Proposal "
+            val rec = com.emailOfRespondent
+            val userN = com.nameOfRespondent
+            val kebsEmail = "tim@kebs.com"
+            val messageBody= "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
+                    "If you have additional information,Send to the email provided below. $kebsEmail"
+            if (rec != null) {
+                notifications.sendEmail(rec, sub, messageBody)
+            }
+
+            slFormResponse="Comment Saved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Saved"
+        }else{
+            slFormResponse="You have already commented on this proposal you can't make another comment on it"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Saved"
+        }
+
+        return CommentForm(slFormResponse,responseStatus,responseButton,response)
+
+
+    }
+
+    fun submitDraftComment(com: ProposalCommentsDto){
+        val variables: MutableMap<String, Any> = HashMap()
+        var  comDraftCommentsSaved = ComDraftComments();
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val  comDraftComments = ComDraftComments();
+        comDraftComments.reason=com.reasons
+        comDraftComments.recommendations=com.recommendations
+        comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
+        comDraftComments.requestID=com.requestId
+        comDraftComments.draftID=com.draftId
+        comDraftComments.nameOfRespondent=com.nameOfRespondent
+        comDraftComments.phoneOfRespondent=loggedInUser.cellphone
+        comDraftComments.emailOfRespondent=loggedInUser.email
+        comDraftComments.nameOfOrganization=com.nameOfOrganization
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision=="Yes"){
+            newAdopt=adoptNumber+1
+            newNotAdopt=notAdoptNumber
+
+        }else{
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber+1
+        }
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
 
 
 
@@ -455,10 +654,11 @@ class IntStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
+        var dateOfRemark=Timestamp(System.currentTimeMillis())
         companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
-        companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        companyStandardRemarks.dateOfRemark = dateOfRemark
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "TC Secretary"
         companyStandardRemarks.standardType = "International Standard"
@@ -472,6 +672,8 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 1
+                        tcAcceptanceDate=dateOfRemark
+
 
                     }
                     comStdDraftRepository.save(comStdDraft)
@@ -525,6 +727,7 @@ class IntStandardService(
 
         val justification= ISAdoptionJustification();
         val variables: MutableMap<String, Any> = HashMap()
+        justification.standardNumber=isProposalJustification.standardNumber
         justification.meetingDate=isProposalJustification.meetingDate
         justification.slNumber=isProposalJustification.slNumber
         justification.edition=isProposalJustification.edition
@@ -541,6 +744,7 @@ class IntStandardService(
         justification.closingDate=isProposalJustification.closingDate
         justification.tcSec_id=isProposalJustification.tcSecName
         justification.title=isProposalJustification.title
+        justification.standardNumber=isProposalJustification.standardNumber
         justification.referenceMaterial=isProposalJustification.referenceMaterial
         justification.status= 0.toString()
 
@@ -581,6 +785,73 @@ class IntStandardService(
 
     }
 
+    fun editJustification(isProposalJustification: ISProposalJustification) : String
+    {
+
+
+        val variables: MutableMap<String, Any> = HashMap()
+        isAdoptionJustificationRepository.findByIdOrNull(isProposalJustification.justificationId)?.let { justification ->
+
+            with(justification) {
+        standardNumber=isProposalJustification.standardNumber
+        meetingDate=isProposalJustification.meetingDate
+        slNumber=isProposalJustification.slNumber
+        edition=isProposalJustification.edition
+        requestedBy=isProposalJustification.requestedBy
+        issuesAddressed=isProposalJustification.issuesAddressed
+        tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
+        department=isProposalJustification.department
+        proposalId=isProposalJustification.proposalId
+        draftId=isProposalJustification.draftId
+        scope=isProposalJustification.scope
+        purposeAndApplication=isProposalJustification.purposeAndApplication
+        intendedUsers=isProposalJustification.intendedUsers
+        circulationDate=isProposalJustification.circulationDate
+        closingDate=isProposalJustification.closingDate
+        tcSec_id=isProposalJustification.tcSecName
+        title=isProposalJustification.title
+        standardNumber=isProposalJustification.standardNumber
+        referenceMaterial=isProposalJustification.referenceMaterial
+        status= 0.toString()
+
+
+        departmentName = departmentListRepository.findNameById(isProposalJustification.department?.toLong())
+
+            }
+            isAdoptionJustificationRepository.save(justification)
+
+        } ?: throw Exception("JUSTIFICATION NOT FOUND")
+
+        comStdDraftRepository.findByIdOrNull(isProposalJustification.draftId)?.let { comStdDraft ->
+
+            with(comStdDraft) {
+                status = 3
+            }
+            comStdDraftRepository.save(comStdDraft)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        //variables["ID"] = ispDetails.id
+
+        var userList= companyStandardRepository.getHopEmailList()
+
+        //email to Head of publishing
+        val targetUrl = "${callUrl}/";
+        userList.forEach { item->
+            //  val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
+            val subject = "Justification"
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been prepared."
+            if (recipient != null) {
+                // notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
+
+        return "Justification Uploaded"
+
+    }
+
     fun getJustification(): MutableList<ProposalDetails>{
         return isAdoptionProposalRepository.getISJustification();
     }
@@ -610,8 +881,11 @@ class IntStandardService(
         return isJustificationUploadsRepository.save(uploads)
     }
 
+    fun getJustificationStatus(draftId: Long): JustificationStatus{
+        return isAdoptionJustificationRepository.getJustificationCount(draftId)
+    }
 
-    fun getISJustification(draftId: Long): MutableList<ISAdoptionProposalJustification>{
+    fun getISJustification(draftId: Long): MutableList<ISAdoptionJustification>{
         return isAdoptionJustificationRepository.getISJustification(draftId);
     }
 
@@ -659,7 +933,7 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                     with(comStdDraft) {
-                        status = 5
+                        status = 1
                     }
                     comStdDraftRepository.save(comStdDraft)
                     companyStandardRemarksRepository.save(companyStandardRemarks)
@@ -912,7 +1186,7 @@ class IntStandardService(
 
     fun checkRequirements(
         iSDraftDecisions: ISDraftDecisions
-    ) : String {
+    ) : NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
 
@@ -929,6 +1203,10 @@ class IntStandardService(
         comRemarks.dateOfRemark = timeOfRemark
         comRemarks.remarkBy = usersName
         comRemarks.role = "HOP"
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
         val deadline: Timestamp = Timestamp.valueOf(timeOfRemark.toLocalDateTime().plusMonths(5))
 
 
@@ -936,11 +1214,19 @@ class IntStandardService(
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
                 with(companyStandard) {
                     status = 3
+                    draftStatus=iSDraftDecisions.draftStatus
+                    coverPageStatus=iSDraftDecisions.coverPageStatus
+                    assignedTo=iSDraftDecisions.assignedTo
 
                 }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
             }?: throw Exception("DRAFT NOT FOUND")
+
+            slFormResponse="Draft Was Approved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Approved"
 
         } else if (decision == "No") {
             if(typeOfStandard=="Company Standard"){
@@ -948,6 +1234,8 @@ class IntStandardService(
 
                     with(companyStandard) {
                         status = 0
+                        draftStatus=iSDraftDecisions.draftStatus
+                        coverPageStatus=iSDraftDecisions.coverPageStatus
                     }
                     companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
@@ -957,6 +1245,8 @@ class IntStandardService(
                 comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 4
+                        draftStatus=iSDraftDecisions.draftStatus
+                        coverPageStatus=iSDraftDecisions.coverPageStatus
 
                     }
                     comStdDraftRepository.save(comStdDraft)
@@ -973,10 +1263,14 @@ class IntStandardService(
                 }?: throw Exception("DRAFT NOT FOUND")
             }
 
+            slFormResponse="Draft Was Not Approved"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse,responseStatus,responseButton,response)
     }
 
     fun getApprovedDraft(): MutableList<ISUploadedDraft> {
@@ -998,23 +1292,27 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = if (draughting =="Yes"){
-                    4
-                }else{
-                    5
+
+                if(draught =="Yes"){
+                   status=4
+
+                }else if(draught =="No"){
+                    status=5
+
                 }
+//                status = if (draughting =="Yes"){
+//                    4
+//                }else{
+//                    5
+//                }
 
                 requestId=isDraftDto.proposalId
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
                 draughting=isDraftDto.draughting
                 requestNumber=isDraftDto.requestNumber
+                assignedTo=isDraftDto.assignedTo
 
             }
             companyStandardRepository.save(companyStandard)
@@ -1037,17 +1335,31 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 5
+                status = 12
                 requestId=isDraftDto.proposalId
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
-                draughting=isDraftDto.draughting
+                assignedTo=isDraftDto.assignedTo
+            }
+            companyStandardRepository.save(companyStandard)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        return standard
+    }
+
+    fun assignProofReader(isDraftDto: ISDraftDto) : ISUploadStandard {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val standard= ISUploadStandard()
+
+
+        companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
+
+            with(companyStandard) {
+                status = 5
+                assignedTo=isDraftDto.assignedTo
             }
             companyStandardRepository.save(companyStandard)
 
@@ -1069,17 +1381,13 @@ class IntStandardService(
         companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 6
+                //status = 6
+                status=13
                 title=isDraftDto.title
-                scope=isDraftDto.scope
-                normativeReference=isDraftDto.normativeReference
-                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-                clause=isDraftDto.clause
                 documentType=isDraftDto.docName
                 comStdNumber=isDraftDto.standardNumber
-                special=isDraftDto.special
-                draughting=isDraftDto.draughting
                 requestId=isDraftDto.proposalId
+                assignedTo=isDraftDto.assignedTo
             }
             companyStandardRepository.save(companyStandard)
 
@@ -1090,12 +1398,86 @@ class IntStandardService(
 
 
 
+    fun approveProofReadLevel(
+        iSDraftDecisions: ISDecisions
+    ) : NotificationForm {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val comRemarks=CompanyStandardRemarks()
+        val decision=iSDraftDecisions.accentTo
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val typeOfStandard= iSDraftDecisions.standardType
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+
+        var slFormResponse=""
+        var responseStatus=""
+        var responseButton=""
+        var response=""
+
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
+        var url=""
+
+        if (decision == "Yes") {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                with(companyStandard) {
+                    status = 6
+
+                }
+
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
+            slFormResponse="Draft Was Approved"
+            responseStatus="success"
+            responseButton="btn btn-success form-wizard-next-btn"
+            response="Approved"
+
+        } else if (decision == "No") {
+            comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+
+                with(comStdDraft) {
+                    status = 4
+                }
+                comStdDraftRepository.save(comStdDraft)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 14
+                }
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            slFormResponse="Draft Was Not Approved"
+            responseStatus="error"
+            responseButton="btn btn-danger form-wizard-next-btn"
+            response="Not Approved"
+
+
+        }
+
+        return NotificationForm(slFormResponse,responseStatus,responseButton,response)
+    }
+
+
+
 
     fun getProofReadDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getProofReadDraft()
     }
 
-    fun approveProofReadStandard(
+    fun approveProofReadStandardx(
         iSDraftDecisions: ISDrDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1132,14 +1514,13 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedProofReadDraft()
     }
 
-    fun approveEditedStandard(
-        iSDraftDecisions: ISDraftDecisions
+    fun approveProofReadStandard(
+        iSDraftDecisions: ISHopDecision
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks=CompanyStandardRemarks()
-        val decision=iSDraftDecisions.accentTo
+        //val decision=iSDraftDecisions.accentTo
         val timeOfRemark= Timestamp(System.currentTimeMillis())
-        val typeOfStandard= iSDraftDecisions.standardType
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1152,20 +1533,20 @@ class IntStandardService(
         comRemarks.role = "HOP"
         var url=""
 
-        if (decision == "Yes") {
+       // if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
                 with(companyStandard) {
                     status = 8
 
                 }
-                if(typeOfStandard=="International Standard"){
+               // if(typeOfStandard=="International Standard"){
+                 //   url="intSacList"
+               // }else if(typeOfStandard=="Company Standard"){
                     url="intSacList"
-                }else if(typeOfStandard=="Company Standard"){
-                    url="intSacList"
-                }else if(typeOfStandard=="Kenya Standard"){
-                    url="intSacList"
-                }
+//                }else if(typeOfStandard=="Kenya Standard"){
+//                    url="intSacList"
+//                }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
@@ -1181,18 +1562,18 @@ class IntStandardService(
                 }
             }?: throw Exception("DRAFT NOT FOUND")
 
-        } else if (decision == "No") {
-
-            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                with(companyStandard) {
-                        status = 1
-                    }
-                companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(comRemarks)
-
-                } ?: throw Exception("DRAFT NOT FOUND")
-
-        }
+//        } else if (decision == "No") {
+//
+//            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+//                with(companyStandard) {
+//                        status = 1
+//                    }
+//                companyStandardRepository.save(companyStandard)
+//                    companyStandardRemarksRepository.save(comRemarks)
+//
+//                } ?: throw Exception("DRAFT NOT FOUND")
+//
+//        }
 
         return "Actioned"
     }
@@ -1203,6 +1584,73 @@ class IntStandardService(
 
 
     fun approveInternationalStandard(
+        iSDraftDecisions: ISDraftDecisionsStd
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val decision=iSDraftDecisions.accentTo
+        val standard= Standard()
+        val comRemarks=CompanyStandardRemarks()
+        val stdDraft= ISUploadStandard()
+        val typeOfStandard= iSDraftDecisions.standardType
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "SAC"
+
+        if (decision == "Yes") {
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 15
+
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                }?: throw Exception("DRAFT NOT FOUND")
+
+
+        } else if (decision == "No") {
+            if(typeOfStandard=="International Standard"){
+                standardRequestRepository.findByIdOrNull(iSDraftDecisions.requestId)?.let { standard ->
+
+                    with(standard) {
+                        status="Prepare Preliminary Draft"
+
+                    }
+                    standardRequestRepository.save(standard)
+                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                        with(companyStandard) {
+                            status = 11
+                        }
+                        companyStandardRepository.save(companyStandard)
+                        companyStandardRemarksRepository.save(comRemarks)
+
+                    } ?: throw Exception("DRAFT NOT FOUND")
+                }?: throw Exception("REQUEST NOT FOUND")
+            }else if(typeOfStandard=="Kenya Standard") {
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 1
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }
+
+        }
+
+        return "Actioned"
+    }
+
+    fun approveInternationalStandardNSC(
         iSDraftDecisions: ISDraftDecisionsStd
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1240,7 +1688,7 @@ class IntStandardService(
                         val subject = "New International Standard"+ standard.standardNumber
                         val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
                         if (recipient != null) {
-                           // notifications.sendEmail(recipient, subject, messageBody)
+                            // notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
 
@@ -1267,33 +1715,15 @@ class IntStandardService(
 
 
         } else if (decision == "No") {
-            if(typeOfStandard=="International Standard"){
-                standardRequestRepository.findByIdOrNull(iSDraftDecisions.requestId)?.let { standard ->
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 8
 
-                    with(standard) {
-                        status="Prepare Preliminary Draft"
+                }
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
 
-                    }
-                    standardRequestRepository.save(standard)
-                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                        with(companyStandard) {
-                            status = 11
-                        }
-                        companyStandardRepository.save(companyStandard)
-                        companyStandardRemarksRepository.save(comRemarks)
-
-                    } ?: throw Exception("DRAFT NOT FOUND")
-                }?: throw Exception("REQUEST NOT FOUND")
-            }else if(typeOfStandard=="Kenya Standard") {
-                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                    with(companyStandard) {
-                        status = 1
-                    }
-                    companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(comRemarks)
-
-                } ?: throw Exception("DRAFT NOT FOUND")
-            }
+            }?: throw Exception("DRAFT NOT FOUND")
 
         }
 

@@ -213,6 +213,11 @@ class StandardRequestController(
         return standardRequestService.getAllNwiSUnderVote()
     }
 
+    @GetMapping("standard/getAllNwisLoggedInUserToVoteFor")
+    fun getAllNwisLoggedInUserToVoteFor(): List<StandardNWI> {
+        return standardRequestService.getAllNwisLoggedInUserToVoteFor()
+    }
+
     @GetMapping("standard/getAllApprovedNwiS")
     fun getAllApprovedNwiS(): List<StandardNWI> {
         return standardRequestService.getAllNwiSApproved()
@@ -236,8 +241,14 @@ class StandardRequestController(
         return (standardRequestService.decisionOnNWI(voteOnNWI))
     }
 
+    @PostMapping("standard/reVoteOnNWI")
+    @ResponseBody
+    fun reVoteOnNWI(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
+        return (standardRequestService.reVoteOnNWI(voteOnNWI))
+    }
+
     @GetMapping("standard/getUserLoggedInBallots")
-    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+    fun getUserLoggedInBallots(): List<VotesDto> {
         return standardRequestService.getUserLoggedInBallots()
     }
 
@@ -271,6 +282,16 @@ class StandardRequestController(
         )
     }
 
+    @PostMapping("standard/deferJustification")
+    @ResponseBody
+    fun deferJustification(@RequestBody nwi: StandardNWI): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully deferred justification",
+            standardRequestService.deferNWI(nwi)
+        )
+    }
+
     @GetMapping("standard/tc-sec/tasks")
     fun getTCSecTasks(): List<TaskDetails> {
         return standardRequestService.getTCSecTasks()
@@ -295,6 +316,12 @@ class StandardRequestController(
     fun getApprovedJustifications(): List<StandardJustification> {
         return standardRequestService.getApprovedJustifications()
     }
+
+    @GetMapping("standard/getAllMyJustifications")
+    fun getAllMyJustifications(): List<StandardJustification> {
+        return standardRequestService.getAllMyJustifications()
+    }
+
 
     @GetMapping("standard/getRejectedJustifications")
     fun getRejectedJustifications(): List<StandardJustification> {
@@ -350,7 +377,7 @@ class StandardRequestController(
         @RequestParam("itemId") itemId: String,
         @RequestParam("type") type: String
     ): ResponseEntity<ResponseMessage> {
-        var message: String? = null
+        var message: String?
 
 
 
@@ -578,8 +605,8 @@ class StandardRequestController(
 
         var docDescription: String;
 
-        val application = standardRequestRepository.findByIdOrNull(requestId)
-            ?: throw Exception("APPLICATION DOES NOT EXIST")
+        val application =
+            standardRequestRepository.findByIdOrNull(requestId) ?: throw Exception("APPLICATION DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()
@@ -634,7 +661,7 @@ class StandardRequestController(
 
     @GetMapping("standard/getDepartmentById")
     @ResponseBody
-    fun getDepartment(  @RequestParam("departmentId") departmentId: String,): MutableList<Department> {
+    fun getDepartment(@RequestParam("departmentId") departmentId: String): MutableList<Department> {
         return standardRequestService.getDepartment(departmentId.toLong())
     }
 

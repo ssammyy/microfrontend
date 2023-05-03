@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
-    ApprovedNwiS, CommentMadeRetrieved, Committee_Draft_With_Name,
-    Preliminary_Draft,
-    Preliminary_Draft_With_Name, StandardDocuments
+    CommentMadeRetrieved,
+    Committee_Draft_With_Name,
+    StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
@@ -14,8 +14,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
-import {formatDate} from "@angular/common";
 import Swal from "sweetalert2";
+import {formatDate} from "@angular/common";
 import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
 
 declare const $: any;
@@ -38,14 +38,13 @@ export class PreparePublicReviewDraftComponent implements OnInit {
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
 
 
-
     dateFormat = "yyyy-MM-dd";
     language = "en";
 
     blob: Blob;
-    public uploadedFiles: FileList;
-    public uploadedFilesB: FileList;
-    public uploadedFilesC: FileList;
+    public uploadedFiles: Array<File> = [];
+    public uploadedFilesB: Array<File> = [];
+    public uploadedFilesC: Array<File> = [];
 
     dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
@@ -53,6 +52,14 @@ export class PreparePublicReviewDraftComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
+    displayUsers: boolean = false;
+
+    loadingDocsTable = false;
+
+    loading = false;
+    loadingText: string;
+    validTextType: boolean = false;
+
 
 
     constructor(private formBuilder: FormBuilder,
@@ -63,14 +70,40 @@ export class PreparePublicReviewDraftComponent implements OnInit {
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService) {
     }
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+    textValidationType(e) {
+        this.validTextType = !!e;
+    }
+
 
     ngOnInit(): void {
         this.getAllCds();
         this.publicReview_draftFormGroup = this.formBuilder.group({
             prdName: ['', Validators.required],
-            ksNumber:['', Validators.required]
+            ksNumber: ['', Validators.required]
         });
 
+    }
+
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
     }
 
     public getAllCds(): void {
@@ -89,16 +122,28 @@ export class PreparePublicReviewDraftComponent implements OnInit {
 
     }
 
-    public getAllCdDocs(pdID: number) {
-        this.committeeService.getDocsOnCd(pdID).subscribe(
-            (response: StandardDocuments[]) => {
+    public getAllCdDocs(cdID: number) {
+        this.loadingDocsTable = true
+        this.displayUsers = false;
+        this.SpinnerService.show("loader2");
 
+
+        this.committeeService.getDocsOnCd(cdID).subscribe(
+            (response: StandardDocuments[]) => {
+                console.log(response)
                 this.standardDocuments = response;
-                this.rerender()
+                // this.rerender()
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
+
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.displayUsers = true;
+                this.loadingDocsTable = false
+                this.SpinnerService.hide();
             }
         );
     }
@@ -184,41 +229,72 @@ export class PreparePublicReviewDraftComponent implements OnInit {
     }
 
 
-    uploadPublicReviewDraft(): void {
-        if (this.uploadedFilesC != null) {
-            this.SpinnerService.show();
-            this.publicReviewService.preparePublicReviewDraft(this.publicReview_draftFormGroup.value, String(this.committee_draftsB.cdid)).subscribe(
-                (response) => {
-                    console.log(response)
-                    this.SpinnerService.hide();
-                    this.showToasterSuccess(response.httpStatus, `Successfully Submitted Public Review Draft`);
-                    this.uploadPrDDoc(response.body.savedRowID)
-                    this.publicReview_draftFormGroup.reset();
-                },
-                (error: HttpErrorResponse) => {
-                    this.SpinnerService.hide();
-                    console.log(error.message);
-                }
-            );
+    uploadPublicReviewDraft(formDirective): void {
+        if (this.publicReview_draftFormGroup.valid) {
+
+            if (this.uploadedFilesC != null && this.uploadedFilesC.length > 0) {
+                this.loading = true
+                this.loadingText = "Submitting  ...."
+                this.SpinnerService.show();
+
+                this.publicReviewService.preparePublicReviewDraft(this.publicReview_draftFormGroup.value, String(this.committee_draftsB.cdid)).subscribe(
+                    (response) => {
+                        console.log(response)
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, `Successfully Submitted Public Review Draft`);
+                        this.uploadPrDDoc(response.body.savedRowID)
+                        this.publicReview_draftFormGroup.reset();
+                        formDirective.reset();
+
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+                        console.log(error.message);
+                    }
+                );
+            } else {
+                this.showToasterError("Error", `Please Upload all the documents.`);
+            }
         } else {
-            this.showToasterError("Error", `Please Upload all the documents.`);
+            this.validateAllFormFields(this.publicReview_draftFormGroup);
         }
     }
 
     public uploadPrDDoc(prdId: string) {
+
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.publicReviewService.uploadMinutesForPrd(String(prdId), formData, "Minutes PRD", "Minutes PRD").subscribe();
+        }
+        if (this.uploadedFilesB.length > 0) {
+            const file = this.uploadedFilesB;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.publicReviewService.uploadPrdDraftDocuments(String(prdId), formData, "Drafts And Other Relevant Documents PRD", "Drafts And Other Relevant Documents PRD").subscribe();
+        }
+
+
         if (this.uploadedFilesC.length > 0) {
             const file = this.uploadedFilesC;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
             this.publicReviewService.uploadPRDDocument(prdId, formData, "PRD Document", "PRD Document").subscribe(
                 (data: any) => {
+                    this.loading = false
                     this.SpinnerService.hide();
-                    this.uploadedFilesC = null;
-                    console.log(data);
+                    this.uploadedFiles = [];
+                    this.uploadedFilesB = [];
+                    this.uploadedFilesC = [];
+                    this.publicReview_draftFormGroup.reset()
                     this.hideModelC()
                     swal.fire({
                         title: 'Public Review Draft Document Uploaded Successfully.',
@@ -234,6 +310,7 @@ export class PreparePublicReviewDraftComponent implements OnInit {
             );
         }
     }
+
     approveCD(committeeDraft): void {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -281,7 +358,6 @@ export class PreparePublicReviewDraftComponent implements OnInit {
     }
 
 
-
     public onOpenModal(committeeDraft: Committee_Draft_With_Name, mode: string): void {
 
         const container = document.getElementById('main-container');
@@ -298,9 +374,9 @@ export class PreparePublicReviewDraftComponent implements OnInit {
             this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#prepareCd');
         }
-        if (mode === 'uploadMinutes') {
+        if (mode === 'preparePrd') {
             this.committee_draftsB = committeeDraft;
-            button.setAttribute('data-target', '#uploadMinutes');
+            button.setAttribute('data-target', '#preparePrd');
         }
         if (mode === 'moreDetails') {
             this.committee_draftsB = committeeDraft;
@@ -401,13 +477,15 @@ export class PreparePublicReviewDraftComponent implements OnInit {
         this.closeModalE?.nativeElement.click();
     }
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading = true
+        this.loadingText = "Downloading Document"
         this.SpinnerService.show();
-        this.committeeService.viewDocs(pdfId, doctype).subscribe(
+        this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
+                this.loading = false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
-
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');

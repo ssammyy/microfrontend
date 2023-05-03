@@ -702,20 +702,89 @@ export class SmarkComponent implements OnInit {
 
     }
 
+    submitPermitGenerateDifferenceInspectionInvoicePaid(): void {
+        const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
+        if (companyStatusDetails.updateDetailsStatus) {
+            this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
+        } else {
+            this.SpinnerService.show();
+            if (companyStatusDetails.firmType === 'LARGE' && this.allPermitDetails?.inspectionNeeded) {
+                if (this.allPermitDetails?.inspectionFeeInvoice === null) {
+                    this.qaService.showWarning(`YOU ARE  REQUIERD TO GENERATE INSPECTION INVOICE/UPLOAD PAID INSPECTION INVOICE BEFORE YOU GENERATE THE DIFFERENCE`);
+                } else {
+                    // tslint:disable-next-line:max-line-length
+                    this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data: PermitEntityDetails) => {
+                            this.allPermitDetails.permitDetails = data;
+                            this.SpinnerService.hide();
+                            this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                        },
+                    );
+                }
+            } else {
+                // tslint:disable-next-line:max-line-length
+                this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.allPermitDetails.permitDetails = data;
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                    },
+                );
+            }
+            this.SpinnerService.hide();
+        }
+
+    }
+
+    submitPermitGenerateDifferenceUploadPaid(): void {
+        const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
+        if (companyStatusDetails.updateDetailsStatus) {
+            this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
+        } else {
+            this.SpinnerService.show();
+            if (companyStatusDetails.firmType === 'LARGE' && this.allPermitDetails?.inspectionNeeded) {
+                if (this.allPermitDetails?.inspectionInvoiceUploaded == null) {
+                    this.qaService.showWarning(`YOU ARE  REQUIERD TO GENERATE INSPECTION INVOICE/UPLOAD PAID INSPECTION INVOICE BEFORE YOU GENERATE THE DIFFERENCE`);
+                } else {
+                    // tslint:disable-next-line:max-line-length
+                    this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data: PermitEntityDetails) => {
+                            this.allPermitDetails.permitDetails = data;
+                            this.SpinnerService.hide();
+                            this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                        },
+                    );
+                }
+            } else {
+                // tslint:disable-next-line:max-line-length
+                this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.allPermitDetails.permitDetails = data;
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                    },
+                );
+            }
+            this.SpinnerService.hide();
+        }
+
+    }
+
     submitPermitGenerateDifference(): void {
         const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
         if (companyStatusDetails.updateDetailsStatus) {
             this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
         } else {
             this.SpinnerService.show();
-            // tslint:disable-next-line:max-line-length
-            this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data: PermitEntityDetails) => {
-                    this.allPermitDetails.permitDetails = data;
-                    this.SpinnerService.hide();
-                    this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
-                },
-            );
+                // tslint:disable-next-line:max-line-length
+                this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.allPermitDetails.permitDetails = data;
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                    },
+                );
+            this.SpinnerService.hide();
         }
 
     }
@@ -726,14 +795,30 @@ export class SmarkComponent implements OnInit {
             this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
         } else {
             this.SpinnerService.show();
-            // tslint:disable-next-line:max-line-length
-            this.qaService.submitPermitReGenerateInvoice(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data: PermitEntityDetails) => {
-                    this.allPermitDetails.permitDetails = data;
-                    this.SpinnerService.hide();
-                    this.qaService.showSuccess(`INVOICE  RE-GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
-                },
-            );
+            if (companyStatusDetails.firmType === 'LARGE' && this.allPermitDetails?.inspectionNeeded) {
+                if (this.allPermitDetails?.inspectionFeeInvoice === null || this.allPermitDetails?.inspectionInvoiceUploaded == null) {
+                    this.qaService.showWarning(`YOU ARE  REQUIERD TO GENERATE INSPECTION INVOICE/UPLOAD PAID INSPECTION INVOICE BEFORE YOU GENERATE THE DIFFERENCE`);
+                } else {
+                    // tslint:disable-next-line:max-line-length
+                    this.qaService.submitPermitReGenerateInvoice(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data: PermitEntityDetails) => {
+                            this.allPermitDetails.permitDetails = data;
+                            this.SpinnerService.hide();
+                            this.qaService.showSuccess(`INVOICE  RE-GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                        },
+                    );
+                }
+            } else {
+                // tslint:disable-next-line:max-line-length
+                this.qaService.submitPermitReGenerateInvoice(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.allPermitDetails.permitDetails = data;
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess(`INVOICE  RE-GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                    },
+                );
+            }
+            this.SpinnerService.hide();
         }
 
     }

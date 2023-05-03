@@ -385,13 +385,17 @@ font-family: ui-monospace;">
 
                                             <div>
                                                 <label><b>Select Role</b></label>
-                                                <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"
-                                                        class="form-control mt-2" formControlName="roleID"
-                                                        name="roleID">
-                                                    <option label="--select something --"></option>
-                                                    <option *ngFor="let rle of rolesEntity"
-                                                            [value]="rle.id"> {{ rle.roleName }} </option>
-                                                </select>
+                                                <ng-select [(ngModel)]="selectedRole" [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched" formControlName="roleID"  class="form-control"  name="roleID" >
+                                                    <ng-option *ngFor="let rle of rolesEntity" [value]="rle.id" >{{rle.roleName}}</ng-option>
+                                                </ng-select>
+
+<!--                                                <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"-->
+<!--                                                        class="form-control mt-2" formControlName="roleID"-->
+<!--                                                        name="roleID">-->
+<!--                                                    <option label="&#45;&#45;select something &#45;&#45;"></option>-->
+<!--                                                    <option *ngFor="let rle of rolesEntity"-->
+<!--                                                            [value]="rle.id"> {{ rle.roleName }} </option>-->
+<!--                                                </select>-->
                                             </div>
                                         </div>
                                     </div>

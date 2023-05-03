@@ -94,6 +94,11 @@ class WorkPlanScheduledDTO {
     var yearCodeName: String? = null
 
     var dateSubmitted: Date? = null
+
+    var productName: String? = null
+    var productBrand: String? = null
+
+
 }
 
 class FuelScheduledDTO {

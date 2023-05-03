@@ -39,6 +39,24 @@
                                                         >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
                                                     </select>
                                                 </div>
+
+                                            </div>
+<!--                                            <div class="col-6 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Multiple Officers </b></label>-->
+<!--                                                    <mat-select multiple class="form-control" formControlName="selectedOfficers" name="selectedOfficers">-->
+<!--                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>-->
+<!--                                                    </mat-select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Region</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="regionID" name="regionID">
+                                                        <option *ngFor="let app of msRegions | filterPipe: {status: true}" [value]="app.region">{{app.region}}</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
@@ -47,6 +65,23 @@
                                                             class="form-control" formControlName="sectorID" name="sectorID">
                                                         <option  selected>Please select</option>
                                                         <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="departmentID" name="departmentID">
+<!--                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true}" [value]="app.division">{{app.division}}</option>-->
+                                                        <option [value]="'Agriculture'" >Agriculture</option>
+                                                        <option [value]="'Chemical'" >Chemical</option>
+                                                        <option [value]="'Civil'" >Civil</option>
+                                                        <option [value]="'Electrical'" >Electrical</option>
+                                                        <option [value]="'Food'" >Food</option>
+                                                        <option [value]="'Mechanical'" >Mechanical</option>
+                                                        <option [value]="'Textile'" >Textile</option>
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -90,6 +125,70 @@
                             </div>
                         </div>
 
+                        <div class="row border-0 box-shadow m-3 p-1">
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Summary</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Complaints Received</th>
+                                            <th>Complaints Resolved/Closed</th>
+                                            <th>% Compliance (% closed)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{complaintsReceived}}</td>
+                                            <td>{{complaintsClosed}}</td>
+                                            <td>{{percentageComplaintsClosed}}%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Compliance with Timelines (5 days Feedback)</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>No. Feedback Provided Within 5 Days</th>
+                                        <th>% Compliance</th>
+<!--                                        <th>Average Feedback Time (Days)</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{sumOfDaysTakenToProvideFeedback}}</td>
+                                        <td>{{percentageComplianceWithTimelines}}%</td>
+<!--                                        <td>{{averageFeedbackTimeDays}}</td>-->
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col border border-secondary m-1 p-3">
+                                <label>Compliance With Timelines (28 Days for Addressing Complaints)</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>No. of Complaints Addressed Within 28 Days</th>
+                                        <th>%Compliance to 28-Day Timeline</th>
+<!--                                        <th>Average Time To Address Complaints (Days)</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{noComplaintsAddressedWithin28Days}}</td>
+                                        <td>{{percentageComplianceTo28Days}}%</td>
+<!--                                        <td>{{averageTimeToAddressComplaints}}</td>-->
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">
@@ -100,20 +199,22 @@
                                         <tr>
                                             <th>#</th>
                                             <th class="knw">COMPLAINANT</th>
-                                            <th class="knw">NATURE COMPLAINT</th>
-                                            <th class="knw">SECTOR</th>
+                                            <th class="knw">NATURE OF COMPLAINT</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">DIVISION</th>
                                             <th class="knw">DATE RECEIVED</th>
                                             <th class="knw">DATE ACKNOWLEDGED</th>
                                             <th class="knw">INVESTIGATING OFFICER</th>
-                                            <th class="knw">DATE COMPLETION INVESTIGATION</th>
+                                            <th class="knw">DATE OF COMPLETION OF INVESTIGATION</th>
                                             <th class="knw">DATE FEEDBACK COMPLAINANT</th>
                                             <th class="knw">RESOLUTION</th>
-                                            <th class="knw">TIME TAKEN ACKNOWLEDGE</th>
-                                            <th class="knw">ACKNOWLEDGED WITHIN 2 DAYS RECEIPT</th>
-                                            <th class="knw">TIME TAKEN PROVIDE FEEDBACK</th>
-                                            <th class="knw">FEEDBACK WITHIN 5 DAYS COMP INVESTIGATION</th>
-                                            <th class="knw">TIME TAKEN ADDRESS COMPLAINT</th>
-                                            <th class="knw">ADDRESSED WITHIN 28 DAYS RECEIPT</th>
+<!--                                            <th class="knw">TIME TAKEN TO ACKNOWLEDGE</th>-->
+<!--                                            <th class="knw">ACKNOWLEDGED WITHIN 2 DAYS RECEIPT</th>-->
+<!--                                            <th class="knw">TIME TAKEN PROVIDE FEEDBACK</th>-->
+<!--                                            <th class="knw">FEEDBACK WITHIN 5 DAYS COMP INVESTIGATION</th>-->
+<!--                                            <th class="knw">TIME TAKEN ADDRESS COMPLAINT</th>-->
+<!--                                            <th class="knw">ADDRESSED WITHIN 28 DAYS RECEIPT</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -121,19 +222,21 @@
                                             <td >{{i+1}} </td>
                                             <td>{{companyModel?.complainant}}</td>
                                             <td>{{companyModel?.natureComplaint }}</td>
+                                            <td>{{companyModel?.region}}</td>
                                             <td>{{companyModel?.sector}}</td>
+                                            <td>{{companyModel?.division}}</td>
                                             <td>{{companyModel?.dateReceived}}</td>
                                             <td>{{companyModel?.dateAcknowledged}}</td>
                                             <td>{{companyModel?.investigatingOfficer}}</td>
                                             <td>{{companyModel?.dateCompletionInvestigation}}</td>
                                             <td>{{companyModel?.dateFeedbackComplainant}}</td>
                                             <td>{{companyModel?.resolution}}</td>
-                                            <td>{{companyModel?.timeTakenAcknowledge}}</td>
-                                            <td>{{companyModel?.acknowledgedWithin2DaysReceipt}}</td>
-                                            <td>{{companyModel?.timeTakenProvideFeedback}}</td>
-                                            <td>{{companyModel?.feedbackWithin5DaysCompInvestigation}}</td>
-                                            <td>{{companyModel?.timeTakenAddressComplaint}}</td>
-                                            <td>{{companyModel?.addressedWithin28DaysReceipt}}</td>
+<!--                                            <td>{{companyModel?.timeTakenAcknowledge}}</td>-->
+<!--                                            <td>{{companyModel?.acknowledgedWithin2DaysReceipt}}</td>-->
+<!--                                            <td>{{companyModel?.timeTakenProvideFeedback}}</td>-->
+<!--                                            <td>{{companyModel?.feedbackWithin5DaysCompInvestigation}}</td>-->
+<!--                                            <td>{{companyModel?.timeTakenAddressComplaint}}</td>-->
+<!--                                            <td>{{companyModel?.addressedWithin28DaysReceipt}}</td>-->
 
                                         </tr>
                                         </tbody>

@@ -96,6 +96,7 @@ interface SiteVisitListHolder {
     fun getId(): Long?
 }
 
+
 interface WindingUpReportListHolder {
     fun getId(): Long?
 }
@@ -476,6 +477,13 @@ interface ProposalDetails{
     fun getRequesterName(): String?
     fun getDepartmentId(): Long?
     fun getDepartmentName(): String?
+    fun getStandardType(): String?
+    fun getTcAcceptanceDate(): Timestamp?
+    fun getStId(): Long?
+    fun getStEmail(): String?
+    fun getStName(): String?
+    fun getStStatus(): Long?
+    fun getStTelephone(): String?
 }
 interface PermitsAwarded{
     fun getId(): Long?
@@ -827,6 +835,12 @@ interface ComStdRequest{
     fun getContactThreeTelephone(): String?
     fun getContactThreeEmail(): String?
 }
+
+interface JustificationStatus {
+    fun getStatusType(): Long?
+}
+
+
 
 
 

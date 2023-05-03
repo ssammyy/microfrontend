@@ -179,14 +179,15 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getHOFTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.tasks = response;
+                this.loading = false
                 this.SpinnerService.hide()
                 this.rerender()
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false
                 this.SpinnerService.hide()
-
             }
         );
     }

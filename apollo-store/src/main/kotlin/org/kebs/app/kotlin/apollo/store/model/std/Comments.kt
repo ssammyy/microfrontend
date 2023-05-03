@@ -17,11 +17,11 @@ class Comments {
 
     @Column(name = "PD_ID")
     @Basic
-    val pdId: Long = 0
+    var pdId: Long = 0
 
     @Column(name = "CD_ID")
     @Basic
-    val cdId: Long = 0
+    var cdId: Long = 0
 
     @Column(name = "RECIPIENT_ID")
     @Basic

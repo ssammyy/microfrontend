@@ -1,22 +1,22 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.awt.print.Book
 import javax.servlet.http.HttpServletResponse
+
 
 @RestController
 //@CrossOrigin(origins = ["http://localhost:4200"])
@@ -46,6 +46,41 @@ class IntStandardController(
 //        return ServerResponse(HttpStatus.OK,"Successfully Started server", HttpStatus.OK)
 //    }
 //    *****************************************Find Stake Holders***********************************
+
+    @GetMapping("/international_standard/getEditorDetails")
+    @ResponseBody
+    fun getEditorDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getEditorDetails()
+    }
+
+    @GetMapping("/international_standard/getCategoriesSd")
+    @ResponseBody
+    fun getCategoriesSd(): List<StakeholdersCategories> {
+        return internationalStandardService.getCategoriesSd()
+    }
+
+    @GetMapping("/international_standard/getStakeholderListSd")
+    @ResponseBody
+    fun getStakeholderListSd(@RequestParam("subCategoryId") subCategoryId: Long): List<StakeholdersSdList>? {
+        return internationalStandardService.getStakeholderListSd(subCategoryId)
+    }
+    @GetMapping("/international_standard/getSubCategoriesSd")
+    @ResponseBody
+    fun getSubCategoriesSd(@RequestParam("categoryId") categoryId: Long): List<StakeholdersSubCategories>? {
+        return internationalStandardService.getSubCategoriesSd(categoryId)
+    }
+
+    @GetMapping("/international_standard/getDraughtsManDetails")
+    @ResponseBody
+    fun getDraughtsManDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getDraughtsManDetails()
+    }
+
+    @GetMapping("/international_standard/getProofReaderDetails")
+    @ResponseBody
+    fun getProofReaderDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getProofReaderDetails()
+    }
 
     @GetMapping("/international_standard/findStandardStakeholders")
     @ResponseBody
@@ -145,18 +180,30 @@ class IntStandardController(
         return internationalStandardService.getProposal()
     }
 
-    @GetMapping("/anonymous/international_standard/getProposals")
+//    @RequestMapping(path = ["/mno/objectKey/{id}/{name}"], method = [RequestMethod.GET])
+//    fun getBook(@PathVariable id: Int, @PathVariable name: String?): Book? {
+//        // code here
+//    }
+
+    @GetMapping("/anonymous/international_standard/getProposal/{proposalId}/{commentId}")
     @ResponseBody
-    fun getProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    fun getProposals(@PathVariable proposalId: Long, @PathVariable commentId: Long): MutableList<ProposalDetails>
     {
-        return internationalStandardService.getProposals(proposalId)
+        return internationalStandardService.getProposals(proposalId,commentId)
     }
 
     @GetMapping("/international_standard/getSessionProposals")
     @ResponseBody
-    fun getSessionProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    fun getSessionProposals(): MutableList<ProposalDetails>?
     {
-        return internationalStandardService.getProposals(proposalId)
+        return internationalStandardService.getSessionProposals()
+    }
+
+    @GetMapping("/anonymous/international_standard/getWebProposals")
+    @ResponseBody
+    fun getWebProposals(): MutableList<ProposalDetails>?
+    {
+        return internationalStandardService.getWebProposals()
     }
 
 
@@ -243,12 +290,21 @@ class IntStandardController(
 
     }
 
+    @PostMapping("/anonymous/international_standard/submitWebsiteComments")
+    fun submitWebsiteComments(@RequestBody intDraftCommentDto: ProposalCommentsDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitWebsiteComments(intDraftCommentDto))
+
+    }
+
     @PostMapping("/international_standard/submitDraftComment")
     fun submitDraftComment(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(intDraftCommentDto))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComment(intDraftCommentDto))
 
     }
 
@@ -329,6 +385,14 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(isProposalJustification))
     }
 
+    @PostMapping("/international_standard/editJustification")
+    @ResponseBody
+    fun editJustification(@RequestBody isProposalJustification: ISProposalJustification): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.editJustification(isProposalJustification))
+    }
+
+
+
     //@PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustification")
     @ResponseBody
@@ -337,10 +401,19 @@ class IntStandardController(
         return internationalStandardService.getJustification()
     }
 
+
+    // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getJustificationStatus")
+    @ResponseBody
+    fun getJustificationStatus(@RequestParam("draftId") draftId: Long): JustificationStatus
+    {
+        return internationalStandardService.getJustificationStatus(draftId)
+    }
+
    // @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getISJustification")
     @ResponseBody
-    fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionProposalJustification>
+    fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionJustification>
     {
         return internationalStandardService.getISJustification(draftId)
     }
@@ -554,6 +627,14 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(isDraftDto))
     }
 
+    @PostMapping("/international_standard/assignProofReader")
+    @ResponseBody
+    fun assignProofReader(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.assignProofReader(isDraftDto))
+    }
+
     //@PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getDraughtedDraft")
     @ResponseBody
@@ -583,7 +664,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
-    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDrDecisions
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISHopDecision
     ) : ServerResponse
     {
 
@@ -602,12 +683,21 @@ class IntStandardController(
 
     //decision on Adoption Proposal
    // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/international_standard/approveEditedStandard")
-    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+//    @PostMapping("/international_standard/approveEditedStandard")
+//    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+//    ) : ServerResponse
+//    {
+//
+//        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
+//
+//    }
+
+    @PostMapping("/international_standard/approveProofReadLevel")
+    fun approveProofReadLevel(@RequestBody iSDraftDecisions: ISDecisions
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveProofReadLevel(iSDraftDecisions))
 
     }
 
@@ -626,12 +716,18 @@ class IntStandardController(
     fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDraftDecisions) }
-
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSDraftDecisions))
 
     }
+
+    @PostMapping("/international_standard/approveInternationalStandardNSC")
+    fun approveInternationalStandardNSC(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
+    ) : ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandardNSC(iSDraftDecisions))
+
+    }
+
 
     //decision on Adoption Proposal
    // @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")

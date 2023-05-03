@@ -95,8 +95,7 @@
                                                     <a (click)="onOpenModal(secTask,'edit')"
                                                        class="btn btn-info tooltips"
                                                        data-placement="top"
-                                                       data-original-title="Upload NWI">Add New work
-                                                        Item/Justification </a>
+                                                       data-original-title="Upload NWI">Prepare New work Item </a>
 
                                                 </td>
 
@@ -482,6 +481,7 @@
                                                        matInput
                                                        id="targetDate"
                                                        placeholder="Target Date"
+                                                       [min]="todayDate"
                                                        formControlName="targetDate">
                                                 <app-field-error-display
                                                         [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"

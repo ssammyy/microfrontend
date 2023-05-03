@@ -42,4 +42,16 @@ class WorkPlanViewUcrNumberItemsEntity : Serializable {
     @Column(name = "ITEM_HS_CODE")
     var itemHsCode: String? = null
 
+    @Basic
+    @Column(name = "COUNTRY_OF_ORGIN")
+    var countryOfOrigin: String? = null
+
+    @Basic
+    @Column(name = "COC_NUMBER")
+    var cocNumber: String? = null
+
+    @Basic
+    @Column(name = "CD_IMPORTER")
+    var importerCD: Long? = null
+
 }

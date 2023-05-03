@@ -79,9 +79,17 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var mostRecurringNonCompliant: String? = null
 
+    @Column(name = "ADDITIONAL_NON_COMPLIANCE_DETAILS")
+    @Basic
+    var additionalNonComplianceDetails: String? = null
+
     @Column(name = "PERSON_MET")
     @Basic
     var personMet: String? = null
+
+    @Column(name = "REMARKS")
+    @Basic
+    var remarks: String? = null
 
     @Column(name = "SUMMARY_FINDINGS_ACTIONS_TAKEN")
     @Basic
@@ -102,6 +110,10 @@ class MsDataReportEntity  : Serializable {
     @Column(name = "TOTAL_COMPLIANCE_SCORE")
     @Basic
     var totalComplianceScore: String? = null
+
+    @Column(name = "NUMBER_OF_PRODUCTS")
+    @Basic
+    var numberOfProducts: String? = null
 
     @Column(name = "STATUS")
     @Basic

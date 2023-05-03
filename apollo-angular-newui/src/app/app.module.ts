@@ -5,7 +5,7 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
-import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 // @ts-ignore
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
@@ -1252,6 +1252,18 @@ import { PscDmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/dmark
 import { PscFmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/psc-fmark-tasks/psc-fmark-tasks.component';
 import { ReviewApplicationsRejectedSacComponent } from './apollowebs/standards-development/membershipToTc/review-applications-rejected-sac/review-applications-rejected-sac.component';
 import { TcMemberAllVotesComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/tc-member-all-votes/tc-member-all-votes.component';
+import { TrackRequestComponent } from './apollowebs/standards-development/standard-request/track-request/track-request.component';
+import { AllJustificationsComponent } from './apollowebs/standards-development/standard-request/std-justification/all-justifications/all-justifications.component';
+import { AllTasksPdComponent } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/all-tasks-pd/all-tasks-pd.component';
+import { SearchPermitsComponent } from './apollowebs/qualityAssuranceAdmin/search-permits/search-permits.component';
+import { UserAccessComponent } from './apollowebs/admin/user-access/user-access.component';
+import { UserRolesComponent } from './apollowebs/system/user-roles/user-roles.component';
+import { UserPrivilegesComponent } from './apollowebs/system/user-privileges/user-privileges.component';
+import { AllProposalsComponent } from './apollowebs/standards-development/formationOfTc/all-proposals/all-proposals.component';
+import { IntStdNscApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component';
+import { IntStdWebProposalComponent } from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
+import { ApprovedProposalsComponent } from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
+import { RejectedProposalsComponent } from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1339,6 +1351,8 @@ import { TcMemberAllVotesComponent } from './apollowebs/standards-development/st
             provide: RECAPTCHA_SETTINGS,
             useValue: {siteKey: ApiEndpointService.QA_SITE_VERIFICATION.siteKey} as RecaptchaSettings,
         },
+        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+
     ],
 
     declarations: [
@@ -1875,6 +1889,18 @@ import { TcMemberAllVotesComponent } from './apollowebs/standards-development/st
         PscFmarkTasksComponent,
         ReviewApplicationsRejectedSacComponent,
         TcMemberAllVotesComponent,
+        TrackRequestComponent,
+        AllJustificationsComponent,
+        AllTasksPdComponent,
+        SearchPermitsComponent,
+        UserAccessComponent,
+        UserRolesComponent,
+        UserPrivilegesComponent,
+        AllProposalsComponent,
+        IntStdNscApprovalComponent,
+        IntStdWebProposalComponent,
+        ApprovedProposalsComponent,
+        RejectedProposalsComponent,
 
     ],
     entryComponents: [LoaderComponent],

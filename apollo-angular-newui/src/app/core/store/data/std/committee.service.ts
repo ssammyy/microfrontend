@@ -11,6 +11,7 @@ import {
     Preliminary_Draft,
     StandardDocuments
 } from "./commitee-model";
+import {CommentsDto} from "./std.model";
 
 @Injectable({
     providedIn: 'root'
@@ -33,18 +34,22 @@ export class CommitteeService {
         return this.http.get<any>(`${this.apiServerUrl}getAllNwiSApprovedForPd`)
     }
 
+    public getAllNwiSApprovedForPdPendingTasks(): any {
+        return this.http.get<any>(`${this.apiServerUrl}getAllNwiSApprovedForPdPendingTasks`)
+    }
+
     public getAllSdUsers(): any {
         return this.http.get<any>(`${this.apiServerUrl}getAllSdUsers`)
     }
 
 
     //upload  Minutes For PD
-    public uploadMinutesForPd(NWIID: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadMinutesForPd(pdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/minutes`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'nwiId': NWIID, 'type': doctype, 'docName': docName}
+            }, params: {'pdId': pdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -56,12 +61,12 @@ export class CommitteeService {
     }
 
     //upload Draft Documents For PD
-    public uploadDraftDocumentsForPd(NWIID: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadDraftDocumentsForPd(pdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/draftDocuments`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'nwiId': NWIID, 'type': doctype, 'docName': docName}
+            }, params: {'pdId': pdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -101,7 +106,20 @@ export class CommitteeService {
         return this.http.get<any>(`${this.apiServerUrl}getAllPds`)
     }
 
+
+    //get all preliminary drafts pending Cds
+    public getAllPdPendingCds(): any {
+        return this.http.get<any>(`${this.apiServerUrl}getAllPdPendingCds`)
+    }
+
     //make comment
+    public makeCommentB(comment: CommentsDto[], preliminary_draft_id, doctype: string): Observable<any> {
+        const params = new HttpParams()
+            .set('docType', doctype)
+            .set('preliminary_draft_id', preliminary_draft_id)
+        return this.http.post<CommentsDto[]>(`${this.apiServerUrl}` + 'makeComment', comment, {params})
+
+    }
     public makeComment(comment: CommentMade, doctype: string): Observable<any> {
         const params = new HttpParams()
             .set('docType', doctype)
@@ -202,12 +220,12 @@ export class CommitteeService {
 
 
     //upload  Minutes For CD
-    public uploadMinutesForCd(pdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadMinutesForCd(cdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/cdMinutes`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'pdId': pdId, 'type': doctype, 'docName': docName}
+            }, params: {'cdId': cdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -219,12 +237,12 @@ export class CommitteeService {
     }
 
     //upload Draft Documents For CD
-    public uploadCdDraftDocuments(pdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadCdDraftDocuments(cdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/cdDraftDocuments`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'pdId': pdId, 'type': doctype, 'docName': docName}
+            }, params: {'cdId': cdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
