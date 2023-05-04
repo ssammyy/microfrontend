@@ -1,6 +1,7 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
+  ApiResponseModel,
   BatchFileFuelSaveDto,
   ComplaintsTaskAndAssignedDto, MsBroadProductCategory,
   MsDepartment,
@@ -61,11 +62,11 @@ export class ComplaintPlanListComponent implements OnInit {
   selectedBatchRefNo: string;
   searchStatus: any;
   personalTasks = 'false';
-  defaultPageSize = 20;
+  defaultPageSize = 10;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  totalCount = 12;
+  totalCount = 20;
   public settings = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -194,10 +195,13 @@ export class ComplaintPlanListComponent implements OnInit {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
     this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake, 'true').subscribe(
-        (data) => {
-          console.log(`TEST DATA===${data}`);
-          this.loadedData = data;
-          this.totalCount = this.loadedData.workPlanList.length;
+        (dataResponse: ApiResponseModel) => {
+          if (dataResponse.responseCode === '00') {
+            // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+            this.loadedData = dataResponse?.data as WorkPlanScheduleListDetailsDto;
+            this.totalCount = dataResponse.totalCount;
+          }
+          // this.totalCount = this.loadedData.workPlanList.length;
           this.dataSet.load(this.loadedData.workPlanList);
 
           switch (this.loadedData.createdWorkPlan.batchClosed) {

@@ -880,12 +880,67 @@ class MSJSONControllers(
         response: HttpServletResponse,
         @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
     ) {
+        val mapValue = commonDaoServices.serviceMapDetails(appId)
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        var progressReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val inspectionInvestigation =investInspectReportRepo.findByIsPreliminaryReportAndWorkPlanGeneratedID( mapValue.inactiveStatus, workPlanGeneratedID.toLong(),)
+        val progressReport = mutableListOf<InspectionInvestigationReportJSPDto>()
+        val fieldReportList = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
+        if (fieldReportList != null) {
+            progressReport.add(fieldReportList)
+        }
+
+//        val fieldReport = iFieldReportViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val dataReportDtoList = mutableListOf<DataReportJSPDto>()
+        msWorkPlanDaoService.findDataReportListByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { dataReport ->
+                val dataReportParameters = dataReport.id.let { msWorkPlanDaoService.findDataReportParamsByDataReportID(it) }
+                val dataReportParametersDto = dataReportParameters?.let { msWorkPlanDaoService.mapDataReportParamListDto(it) }
+                val dataReportDto = dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+                if (dataReportDto != null) {
+                    dataReportDtoList.add(dataReportDto)
+                }
+            }
+
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(dataReportDtoList)
+        map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
+
+        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDtoPDF>()
+        msWorkPlanDaoService.findSampleSubmissionDetailByWorkPlanGeneratedID(workPlanGeneratedID.toLong())
+            ?.forEach { sampleSubmitted ->
+                val sampleSubmittedParamList = sampleSubmitted.id.let {
+                    msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it)
+                }
+                val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
+                    ?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
+                if (sampleSubmittedDtoValues != null) {
+                    sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
+                }
+            }
+
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(sampleSubmittedDtoList)
+        map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
+
+        val seizureDtoList = mutableListOf<SeizureDto>()
+        msWorkPlanDaoService.findSeizureByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { seizure ->
+                val seizureDeclarationList = msWorkPlanDaoService.findSeizureDeclarationByWorkPlanInspectionID(workPlanGeneratedID.toLong(), seizure.id)
+                val seizureDeclarationDtoList = seizureDeclarationList?.let { msWorkPlanDaoService.mapSeizureDeclarationDetailsDto(it) }
+                if (seizureDeclarationDtoList != null) {
+                    seizureDtoList.addAll(seizureDeclarationDtoList)
+                }
+//                val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
+//                if (seizureDto != null) {
+//                    seizureDtoList.add(seizureDto)
+//                }
+            }
+
+        val summarySiezedGoods = JRBeanCollectionDataSource(seizureDtoList)
+        map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = progressReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
@@ -896,6 +951,8 @@ class MSJSONControllers(
             officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
             numberTest++
         }
+
+        map["officersList"] =JRBeanCollectionDataSource(officersList)
 
         progressReport[0].kebsInspectors = officersNames
         progressReport[0].reportClassification?.uppercase()

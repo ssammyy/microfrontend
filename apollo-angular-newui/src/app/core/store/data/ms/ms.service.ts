@@ -1142,7 +1142,7 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public loadMSWorkPlanList(page: string, records: string, referenceNo: string, routeTake: string, complaintStatus: string): Observable<WorkPlanScheduleListDetailsDto> {
+    public loadMSWorkPlanList(page: string, records: string, referenceNo: string, routeTake: string, complaintStatus: string): Observable<ApiResponseModel> {
         // console.log(data);
         let url = null;
         switch (routeTake) {
@@ -1171,8 +1171,8 @@ export class MsService {
             .set('batchReferenceNo', referenceNo)
             .set('page', page)
             .set('records', records);
-        return this.http.get<WorkPlanScheduleListDetailsDto>(url, {params}).pipe(
-            map(function (response: WorkPlanScheduleListDetailsDto) {
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -2215,6 +2215,7 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionHodApproveSendingEmail(batchReferenceNo: string, referenceNo: string, data: any): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -2233,6 +2234,7 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionHofApproveSendingEmail(batchReferenceNo: string, referenceNo: string, data: any): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -3099,18 +3101,18 @@ export class MsService {
 
     public loadProgressReportDetailsPDF(workPlanGeneratedID: string): Observable<any> {
         // tslint:disable-next-line:max-line-length
-        console.log("service 2 called");
+        console.log('service 2 called');
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_PROGRESS_REPORT);
         const params = new HttpParams()
             .set('workPlanGeneratedID', workPlanGeneratedID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
-                console.log("service 2 success");
+                console.log('service 2 success');
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
-                console.log("service 2 fail");
+                console.log('service 2 fail');
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             }),
