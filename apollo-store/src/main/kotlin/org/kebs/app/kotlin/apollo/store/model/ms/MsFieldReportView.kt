@@ -5,7 +5,7 @@ import java.sql.Date
 import javax.persistence.*
 
 @Entity
-@Table(name = "MS_FIELD_REPORT", schema = "APOLLO", catalog = "")
+//@Table(name = "MS_FIELD_REPORT_VIEW", schema = "APOLLO", catalog = "")
 class MsFieldReportView : Serializable {
 
     @Basic
@@ -138,3 +138,4 @@ class MsFieldReportView : Serializable {
     var changesMade: String? = null
 
 }
+

@@ -19,6 +19,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.api.service.reports.DIReports
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
@@ -82,6 +83,10 @@ class DITest {
 
     @Autowired
     lateinit var invoiceDaoService: InvoiceDaoService
+
+    @Autowired
+    lateinit var invoiceService: InvoicePaymentService
+
 
     @Autowired
     lateinit var qaDaoServices: QADaoServices
@@ -665,6 +670,13 @@ class DITest {
     fun startDIProcess() {
         consignmentDocumentDaoService.cdDownload()
 
+    }
+
+    @Test
+    fun startGenerateDemandNoteNumber() {
+        val references = invoiceService.generateDemandNoteReference("DN")
+        KotlinLogging.logger { }.info("INVOICE DN number${references.first}")
+        print("SAGE REF number${references.second}")
     }
 
     @Test

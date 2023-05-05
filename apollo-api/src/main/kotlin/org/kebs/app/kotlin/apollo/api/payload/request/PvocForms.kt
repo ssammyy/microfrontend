@@ -17,6 +17,25 @@ import java.sql.Date
 import java.sql.Timestamp
 import javax.validation.Valid
 import javax.validation.constraints.*
+class PvocContainerDetails {
+    @Min(value = 0, message = "Weight should not be negative, minimum is 0")
+    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: Double? = null
+
+    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
+    @Size(max = 200, message = "Description should be upto 200 characters")
+    var shipmentContainerNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
+    @JsonAlias("SHIPMENT_SEAL_NUMBERS")
+    var shipmentSealNumbers: String? = null
+
+    @NotNull(message = "Required field")
+    @Min(value = 0, message = "Should not be negative, minimum is 0")
+    @JsonAlias("SHIPMENT_PARTIAL_NUMBER")
+    var shipmentPartialNumber: Long = 0
+}
 
 class PvocPartnersForms {
     @NotNull(message = "Partner Ref Number is required")
@@ -387,6 +406,10 @@ class CocEntityForm {
     @NotEmpty(message = "Required field")
     @JsonAlias("PRODUCT")
     var cocItems: List<CocItem>? = null
+
+    @Size(max = 80, message = "should be upto 80 containers")
+    @JsonAlias("SHIPMENT_CONTAINERS")
+    var shipmentContainers: List<PvocContainerDetails>? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Version should be greater than or equal to one")

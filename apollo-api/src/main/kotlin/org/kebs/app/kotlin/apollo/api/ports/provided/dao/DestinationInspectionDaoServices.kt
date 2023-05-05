@@ -36,7 +36,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -90,6 +89,7 @@ data class CdInspectionStatusEvent(
 
 @Service
 class DestinationInspectionDaoServices(
+    private val hsCodesRepository: IHsCodesRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
@@ -2383,16 +2383,23 @@ class DestinationInspectionDaoServices(
         return Pair(sr, saveSSF)
     }
 
-    fun checkHasVehicle(cd: ConsignmentDocumentDetailsEntity): String? {
+    /** A document with chasis number is consindered a vehicle, however, if hs code is categorized otherwise, then
+     *   The document is categorized as categorized on the HS codes table.
+     *
+     *   @return Chassis Number and whether this is a vehicle (L/F COR document)
+     * */
+    fun checkHasVehicle(cd: ConsignmentDocumentDetailsEntity): Pair<String?, Boolean> {
         try {
-            var item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
+            val item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
             if (item.isPresent) {
-                return item.get().chassisNumber
+                return this.hsCodesRepository.findByHsCode(item.get().itemHsCode ?: "")?.let {
+                    Pair(item.get().chassisNumber, it.hscategory.equals("VEHICLE", true))
+                } ?: Pair(item.get().chassisNumber, true)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Not Vehicle with", ex)
         }
-        return null
+        return Pair(null, false)
     }
 
     fun findVehicleFromCd(cd: ConsignmentDocumentDetailsEntity): CdItemDetailsEntity? {
@@ -2488,18 +2495,21 @@ class DestinationInspectionDaoServices(
         cdDetailsEntity: ConsignmentDocumentDetailsEntity
     ): ConsignmentDocumentDetailsEntity {
         val ucrNumber = cdDetailsEntity.ucrNumber ?: ""
-        val chassisNumber = checkHasVehicle(cdDetailsEntity)
+        val documentTypeAndChassis = checkHasVehicle(cdDetailsEntity)
+
         // Add Local COC Type
         cdDetailsEntity.cdStandardsTwo?.localCocType
             ?.let {
                 cdDetailsEntity.cdCocLocalTypeId = findLocalCocTypeWithCocTypeCode(it).id
             }
-        KotlinLogging.logger { }.info("Map CD Type with Chassis Number: $chassisNumber")
         //  Add CD Type to Document
+        val chassisNumber = documentTypeAndChassis.first
+        KotlinLogging.logger { }.info("Map CD Type with Chassis Number: $chassisNumber")
+        // Consider document type when it is overridden, only applicable to categorize COR as COC documents
         when (documentCode) {
             "TIMP" -> {
                 // Temporary imports
-                if (StringUtils.hasLength(chassisNumber)) {
+                if (documentTypeAndChassis.second) {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORTS.code)
                 } else {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.TEMPORARY_IMPORT_VEHICLES.code)
@@ -2507,7 +2517,7 @@ class DestinationInspectionDaoServices(
             }
             "AG" -> {
                 // Auction Goods
-                if (StringUtils.hasLength(chassisNumber)) {
+                if (documentTypeAndChassis.second) {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_VEHICLE.code)
                 } else {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.AUCTION_GOODS.code)
@@ -2515,7 +2525,7 @@ class DestinationInspectionDaoServices(
             }
             "DG", "DMSG", "UPERR", "EXE", "MWG", "EAC", "RIMP" -> {
                 // goods Exempted from COC
-                if (StringUtils.hasLength(chassisNumber)) {
+                if (documentTypeAndChassis.second) {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_VEHICLES.code)
                 } else {
                     cdDetailsEntity.cdType = findCdTypeDetailsWithName(CdTypeCodes.EXEMPTED_GOODS.code)
@@ -2526,7 +2536,7 @@ class DestinationInspectionDaoServices(
             }
             else ->
                 when {
-                    StringUtils.hasLength(chassisNumber) -> {
+                    documentTypeAndChassis.second -> {
                         KotlinLogging.logger { }.info("Map COR")
                         // COR, NO_COR_PVOC or NO_COR Goods
                         this.updateConsignmentCorDetails(

@@ -10,12 +10,16 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.MsDataReportEntity
+import org.kebs.app.kotlin.apollo.store.model.MsInspectionInvestigationReportEntity
 import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
+import org.kebs.app.kotlin.apollo.store.model.MsSeizureDeclarationEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.core.io.ResourceLoader
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -23,6 +27,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
+import java.math.BigDecimal
 import javax.servlet.http.HttpServletResponse
 
 
@@ -34,6 +39,7 @@ class MSJSONControllers(
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
     private val iComplaintPdfViewRepo: IMsComplaintPdfGenerationViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
+    private val dataReportRepo: IDataReportRepository,
     private val iSeizedGoodsReportViewRepo: IMsSeizedGoodsReportViewRepository,
     private val iOutletVisitedAndSummaryOfFindingsViewRepo: IOutletVisitedAndSummaryOfFindingsViewRepository,
     private val iSummaryOfSamplesDrawnViewRepo: ISummaryOfSamplesDrawnViewRepository,
@@ -744,20 +750,66 @@ class MSJSONControllers(
         response: HttpServletResponse,
         @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
     ) {
+        val mapValue = commonDaoServices.serviceMapDetails(appId)
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val inspectionInvestigation =investInspectReportRepo.findByIsPreliminaryReportAndWorkPlanGeneratedID( mapValue.inactiveStatus, workPlanGeneratedID.toLong(),)
+        val fieldReport = mutableListOf<InspectionInvestigationReportJSPDto>()
+        val fieldReportList = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
+        if (fieldReportList != null) {
+            fieldReport.add(fieldReportList)
+        }
 
-        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(iOutletVisitedAndSummaryOfFindingsViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+//        val fieldReport = iFieldReportViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val dataReportDtoList = mutableListOf<DataReportJSPDto>()
+        msWorkPlanDaoService.findDataReportListByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { dataReport ->
+                val dataReportParameters = dataReport.id.let { msWorkPlanDaoService.findDataReportParamsByDataReportID(it) }
+                val dataReportParametersDto = dataReportParameters?.let { msWorkPlanDaoService.mapDataReportParamListDto(it) }
+                val dataReportDto = dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+                if (dataReportDto != null) {
+                    dataReportDtoList.add(dataReportDto)
+                }
+            }
+
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(dataReportDtoList)
         map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
 
-        val summarySamplesDrawnParam = JRBeanCollectionDataSource(iSummaryOfSamplesDrawnViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDtoPDF>()
+        msWorkPlanDaoService.findSampleSubmissionDetailByWorkPlanGeneratedID(workPlanGeneratedID.toLong())
+            ?.forEach { sampleSubmitted ->
+                val sampleSubmittedParamList = sampleSubmitted.id.let {
+                    msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it)
+                }
+                val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
+                    ?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
+                if (sampleSubmittedDtoValues != null) {
+                    sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
+                }
+            }
+
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(sampleSubmittedDtoList)
         map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
 
-        val summarySiezedGoods = JRBeanCollectionDataSource(iSeizedGoodsReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID))
+        val seizureDtoList = mutableListOf<SeizureDto>()
+        msWorkPlanDaoService.findSeizureByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { seizure ->
+                val seizureDeclarationList = msWorkPlanDaoService.findSeizureDeclarationByWorkPlanInspectionID(workPlanGeneratedID.toLong(), seizure.id)
+                val seizureDeclarationDtoList = seizureDeclarationList?.let { msWorkPlanDaoService.mapSeizureDeclarationDetailsDto(it) }
+                if (seizureDeclarationDtoList != null) {
+                    seizureDtoList.addAll(seizureDeclarationDtoList)
+                }
+//                val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
+//                if (seizureDto != null) {
+//                    seizureDtoList.add(seizureDto)
+//                }
+            }
+
+        val summarySiezedGoods = JRBeanCollectionDataSource(seizureDtoList)
         map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
@@ -769,6 +821,8 @@ class MSJSONControllers(
             officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
             numberTest++
         }
+
+        map["officersList"] =JRBeanCollectionDataSource(officersList)
 
         fieldReport[0].kebsInspectors = officersNames
         fieldReport[0].reportClassification?.uppercase()
@@ -826,12 +880,67 @@ class MSJSONControllers(
         response: HttpServletResponse,
         @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
     ) {
+        val mapValue = commonDaoServices.serviceMapDetails(appId)
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        var progressReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        val inspectionInvestigation =investInspectReportRepo.findByIsPreliminaryReportAndWorkPlanGeneratedID( mapValue.inactiveStatus, workPlanGeneratedID.toLong(),)
+        val progressReport = mutableListOf<InspectionInvestigationReportJSPDto>()
+        val fieldReportList = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
+        if (fieldReportList != null) {
+            progressReport.add(fieldReportList)
+        }
+
+//        val fieldReport = iFieldReportViewRepo.findMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val dataReportDtoList = mutableListOf<DataReportJSPDto>()
+        msWorkPlanDaoService.findDataReportListByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { dataReport ->
+                val dataReportParameters = dataReport.id.let { msWorkPlanDaoService.findDataReportParamsByDataReportID(it) }
+                val dataReportParametersDto = dataReportParameters?.let { msWorkPlanDaoService.mapDataReportParamListDto(it) }
+                val dataReportDto = dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+                if (dataReportDto != null) {
+                    dataReportDtoList.add(dataReportDto)
+                }
+            }
+
+        val outletsVisitedSummaryfindings = JRBeanCollectionDataSource(dataReportDtoList)
+        map["OutletsVisitedSummaryfindingsParam"] =outletsVisitedSummaryfindings
+
+        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDtoPDF>()
+        msWorkPlanDaoService.findSampleSubmissionDetailByWorkPlanGeneratedID(workPlanGeneratedID.toLong())
+            ?.forEach { sampleSubmitted ->
+                val sampleSubmittedParamList = sampleSubmitted.id.let {
+                    msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it)
+                }
+                val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
+                    ?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
+                if (sampleSubmittedDtoValues != null) {
+                    sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
+                }
+            }
+
+        val summarySamplesDrawnParam = JRBeanCollectionDataSource(sampleSubmittedDtoList)
+        map["SummarySamplesDrawnParam"] =summarySamplesDrawnParam
+
+        val seizureDtoList = mutableListOf<SeizureDto>()
+        msWorkPlanDaoService.findSeizureByWorkPlanInspectionID(workPlanGeneratedID.toLong())
+            ?.forEach { seizure ->
+                val seizureDeclarationList = msWorkPlanDaoService.findSeizureDeclarationByWorkPlanInspectionID(workPlanGeneratedID.toLong(), seizure.id)
+                val seizureDeclarationDtoList = seizureDeclarationList?.let { msWorkPlanDaoService.mapSeizureDeclarationDetailsDto(it) }
+                if (seizureDeclarationDtoList != null) {
+                    seizureDtoList.addAll(seizureDeclarationDtoList)
+                }
+//                val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
+//                if (seizureDto != null) {
+//                    seizureDtoList.add(seizureDto)
+//                }
+            }
+
+        val summarySiezedGoods = JRBeanCollectionDataSource(seizureDtoList)
+        map["SummarySiezedGoods"] =summarySiezedGoods
 
         val user = progressReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
@@ -842,6 +951,8 @@ class MSJSONControllers(
             officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
             numberTest++
         }
+
+        map["officersList"] =JRBeanCollectionDataSource(officersList)
 
         progressReport[0].kebsInspectors = officersNames
         progressReport[0].reportClassification?.uppercase()
@@ -937,7 +1048,7 @@ class MSJSONControllers(
             data.sendersName,
             data.designation,
             data.address,
-            data.sendersDate.toString(),
+            data.sendersDate?.let { commonDaoServices.convertDateToKraSqlDate(it) },
             data.receiversName,
             data.testChargesKsh.toString(),
             data.receiptLpoNumber,
@@ -948,10 +1059,107 @@ class MSJSONControllers(
             data.sampleCollectionNumber.toString(),
             null,
             data.bsNumber,
+            dataReportRepo.findByIdOrNull(data.dataReportID?: -1L)?.outletName,
+            data.lbIdTradeMark,
+            data.lbIdExpiryDate?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+            data.sampleCollectionDate?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+            data.lbIdBatchNo,
             data2
         )
     }
 
+
+    fun mapSeizureDetailsDto(
+        data: MsSeizureDeclarationEntity,
+        data2: List<SeizureDto>
+    ): SeizureListJSPDto {
+        return SeizureListJSPDto(
+            data.id.toString(),
+            data.docId.toString(),
+            data.marketTownCenter,
+            data.productField,
+            data.serialNumber,
+            data.nameOfOutlet,
+            data.nameSeizingOfficer,
+            data.additionalOutletDetails,
+            data2
+        )
+
+    }
+
+    fun mapDataReportDetailsDto(
+        dataReport: MsDataReportEntity,
+        dataReportParam: List<DataReportParamsDto>
+    ): DataReportJSPDto {
+        return DataReportJSPDto(
+            dataReport.id.toString(),
+            dataReport.referenceNumber,
+            dataReport.inspectionDate?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+            dataReport.inspectorName,
+            dataReport.function,
+            dataReport.department,
+            dataReport.regionName,
+            dataReport.town,
+            dataReport.marketCenter,
+            dataReport.outletDetails,
+            dataReport.physicalLocation,
+            dataReport.outletName,
+            dataReport.phoneNumber,
+            dataReport.emailAddress,
+            dataReport.mostRecurringNonCompliant,
+            dataReport.additionalNonComplianceDetails,
+            dataReport.personMet,
+            dataReport.summaryFindingsActionsTaken,
+            dataReport.samplesDrawnAndSubmitted,
+            dataReport.sourceOfProductAndEvidence,
+            dataReport.finalActionSeizedGoods,
+            dataReport.totalComplianceScore,
+            dataReport.numberOfProducts,
+            dataReport.remarks,
+            dataReportParam,
+            dataReport.docList?.let { msWorkPlanDaoService.mapUploadListListDto(it) }
+        )
+    }
+
+
+    fun mapInspectionInvestigationDetailsDto(
+        inspectionInvestigation: List<MsInspectionInvestigationReportEntity>
+    ): InspectionInvestigationReportJSPDto {
+        return InspectionInvestigationReportJSPDto(
+          inspectionInvestigation[0].workPlanGeneratedID.toString(),
+          inspectionInvestigation[0].createdUserId.toString(),
+          inspectionInvestigation[0].id.toString(),
+          inspectionInvestigation[0].reportReference,
+          inspectionInvestigation[0].reportTo,
+          inspectionInvestigation[0].reportThrough,
+          inspectionInvestigation[0].reportFrom,
+          inspectionInvestigation[0].reportSubject,
+          inspectionInvestigation[0].reportTitle,
+          inspectionInvestigation[0].reportDate?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+          inspectionInvestigation[0].reportRegion,
+          inspectionInvestigation[0].reportDepartment,
+          inspectionInvestigation[0].reportFunction,
+          inspectionInvestigation[0].backgroundInformation,
+          inspectionInvestigation[0].objectiveInvestigation,
+          inspectionInvestigation[0].startDateInvestigationInspection?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+          inspectionInvestigation[0].endDateInvestigationInspection?.let { commonDaoServices.convertDateToKraSqlDate(it) },
+          inspectionInvestigation[0].methodologyEmployed,
+          inspectionInvestigation[0].summaryOfFindings,
+          inspectionInvestigation[0].additionalInformation,
+          inspectionInvestigation[0].conclusion,
+          inspectionInvestigation[0].recommendations,
+          inspectionInvestigation[0].statusActivity,
+          inspectionInvestigation[0].finalRemarkHod,
+          inspectionInvestigation[0].kebsInspectors,
+          inspectionInvestigation[0].varField1,
+          inspectionInvestigation[0].createdOn?.let { commonDaoServices.convertDateToKraSqlTimeStamp(it) },
+          inspectionInvestigation[0].createdBy,
+          inspectionInvestigation[0].modifiedBy,
+          inspectionInvestigation[0].modifiedOn?.let { commonDaoServices.convertDateToKraSqlTimeStamp(it) },
+          inspectionInvestigation[0].reportClassification,
+          inspectionInvestigation[0].changesMade,
+        )
+    }
 
 
 }

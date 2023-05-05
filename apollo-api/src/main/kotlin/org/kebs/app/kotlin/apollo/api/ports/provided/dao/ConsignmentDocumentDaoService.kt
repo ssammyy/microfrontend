@@ -207,7 +207,7 @@ class ConsignmentDocumentDaoService(
         val datePath: String = applicationMapProperties.mapSftpDownloadFileReplaceDatePath.split(",").toPath()
         doc.setNested(datePath, XMLDocument(newDate))
 
-        print(doc.toSerializable())
+        //print(doc.toSerializable())
 
         return doc.toSerializable()
     }
@@ -852,7 +852,7 @@ class ConsignmentDocumentDaoService(
     }
 
     fun downloadAttachment(attachment: DiUploadsEntity) {
-
+        // TODO: Download attachments to local file location or network storage
     }
 
     fun standards2ProcessingFee(

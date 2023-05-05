@@ -39,6 +39,7 @@ import java.math.RoundingMode
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.ceil
@@ -272,8 +273,8 @@ class InvoicePaymentService(
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             if (demandNote.varField5.isNullOrEmpty()) {
-                demandNote.varField5 =
-                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                val refs = generateDemandNoteReference("DN")
+                demandNote.varField5 = refs.second
             }
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
@@ -342,6 +343,7 @@ class InvoicePaymentService(
                 response.responseCode = "Demand note is already posted"
                 return response
             } else if (demandNote.varField5.isNullOrEmpty()) {
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 demandNote.varField5 =
                     "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             }
@@ -790,6 +792,15 @@ class InvoicePaymentService(
         return formItem
     }
 
+    fun generateDemandNoteReference(invoicePrefix: String): Pair<String, String> {
+        val todayCount = iDemandNoteRepo.transactionCount(dateTimeFormat.format(LocalDate.now())) + 1
+        val prefixText = DateTimeFormatter.ofPattern("yyyyMMddss").format(LocalDateTime.now())
+        val genNumber = String.format("%06d", todayCount)
+        val demandNote = "KIMS${invoicePrefix}${prefixText}${genNumber}".toUpperCase()
+        val sageRef = "SAGEREF${prefixText}${genNumber}"
+        return Pair(demandNote, sageRef)
+    }
+
     @Transactional
     fun generateDemandNoteWithItemList(
         form: DemandNoteRequestForm,
@@ -854,16 +865,7 @@ class InvoicePaymentService(
                     courierPin = form.courierPin
                     ucrNumber = form.ucrNumber
                     cfvalue = BigDecimal.ZERO
-                    //Generate Demand note number
-                    demandNoteNumber =
-                        "KIMS${form.invoicePrefix}${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
+                    // Other details
                     paymentStatus = PaymentStatus.DRAFT.code
                     paymentPurpose = purpose.code
                     dateGenerated = commonDaoServices.getCurrentDate()
@@ -873,7 +875,11 @@ class InvoicePaymentService(
                     createdOn = commonDaoServices.getTimestamp()
                     createdBy = commonDaoServices.getUserName(user)
                 }
+                //Generate Demand note number and sage reference and save
                 if (!form.presentment) {
+                    val references = generateDemandNoteReference(form.invoicePrefix)
+                    demandNote.demandNoteNumber = references.first
+                    demandNote.varField5 = references.second
                     demandNote = iDemandNoteRepo.save(demandNote)
                 }
                 //Call Function to add Item Details To be attached To The Demand note
