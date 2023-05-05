@@ -106,6 +106,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
+  viewProgressReport = false;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -5091,6 +5092,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   viewPreliminaryReportDetails(data: InspectionInvestigationReportDto) {
     this.seizureForm.patchValue(data);
     this.selectedPreliminaryReportDetails = data;
+    this.viewProgressReport = true;
 
     window.$('#msProgressReportViewModal').modal('show');
   }
