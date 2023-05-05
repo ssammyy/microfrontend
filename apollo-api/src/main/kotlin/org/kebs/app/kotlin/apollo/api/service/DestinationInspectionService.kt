@@ -40,7 +40,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 enum class ConsignmentCertificatesIssues(val nameDesc: String) {
-    COC("COC"), NCR("NCR"), COI("COI"), COR("COR"), OTHERS("OTHER");
+    COC("COC"), NCR("NCR"), NCR_COR("NCR_COR"), COI("COI"), COR("COR"), OTHERS("OTHER");
 }
 
 enum class ConsignmentDocumentStatus(val code: String) {

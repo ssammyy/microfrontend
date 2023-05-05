@@ -30,6 +30,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+enum class QueryStatuses(val code: Int) {
+    INITIAL(0), ACTIVE(1), IN_ACTIVE(2)
+}
+
 enum class ComplaintStatus(val code: Int) {
     NEW(0), PVOC_APPROVED(1), PVOC_REJECTED(4)
 }
@@ -524,9 +528,9 @@ class PvocAgentService(
                 query.idfNumber = form.idfNumber
                 query.invoiceNumber = form.invoiceNumber
                 query.queryDetails = form.partnerQuery
-                query.pvocAgentReplyStatus = 1
-                query.kebsReplyReplyStatus = 0
-                query.conclusionStatus = 0
+                query.pvocAgentReplyStatus = QueryStatuses.ACTIVE.code
+                query.kebsReplyReplyStatus = QueryStatuses.INITIAL.code
+                query.conclusionStatus = QueryStatuses.INITIAL.code
                 query.status = 1
                 query.modifiedBy = auth.name
                 query.createdBy = auth.name
@@ -620,7 +624,7 @@ class PvocAgentService(
                     val data = KebsQueryResponse()
                     if ("CONCLUSION".equals(form.responseType, true)) {
                         query.conclusion = form.responseData
-                        query.conclusionStatus = 1
+                        query.conclusionStatus = QueryStatuses.ACTIVE.code
                         query.responseAnalysis = form.queryAnalysis
                         query.modifiedOn = Timestamp.from(Instant.now())
                         query.modifiedBy = commonDaoServices.loggedInUserAuthentication().name
@@ -677,9 +681,13 @@ class PvocAgentService(
 
     fun documentExists(documentType: String, ucrNumber: String, certNumber: String): Boolean {
         return when (documentType.toUpperCase()) {
-            "COC" -> daoServices.findCocByUcrNumber(ucrNumber) != null
-            "COI" -> daoServices.findCoiByUcrNumber(ucrNumber) != null
-            "COR" -> daoServices.findCORByCorNumber(certNumber) != null
+            ConsignmentCertificatesIssues.COC.name, ConsignmentCertificatesIssues.NCR.name -> daoServices.findCocByUcrNumber(
+                ucrNumber
+            ) != null
+            ConsignmentCertificatesIssues.COI.name -> daoServices.findCoiByUcrNumber(ucrNumber) != null
+            ConsignmentCertificatesIssues.COR.name, ConsignmentCertificatesIssues.NCR_COR.name -> daoServices.findCORByCorNumber(
+                certNumber
+            ) != null
             else -> throw ExpectedDataNotFound("Invalid document type: $documentType")
         }
     }
@@ -708,8 +716,9 @@ class PvocAgentService(
                         query.ucrNumber = form.ucrNumber
                         query.rfcNumber = form.rfcNumber
                         query.queryDetails = form.kebsQuery
-                        query.pvocAgentReplyStatus = 0
-                        query.kebsReplyReplyStatus = 1
+                        query.pvocAgentReplyStatus = QueryStatuses.INITIAL.code
+                        query.kebsReplyReplyStatus = QueryStatuses.ACTIVE.code
+                        query.conclusionStatus = QueryStatuses.INITIAL.code
                         query.createdBy = commonDaoServices.loggedInUserAuthentication().name
                         query.createdOn = Timestamp.from(Instant.now())
                         query.modifiedOn = Timestamp.from(Instant.now())

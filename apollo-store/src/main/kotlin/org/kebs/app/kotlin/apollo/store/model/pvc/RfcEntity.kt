@@ -175,7 +175,7 @@ class RfcEntity : Serializable {
     @Basic
     var assemblyState: String? = null
 
-    @Column(name = "LINK_TO_ATTACHED_DOCUMENTS")
+    @Column(name = "LINK_TO_ATTACHED_DOCUMENTS", length = 4000)
     @Basic
     var linkToAttachedDocuments: String? = null
 
