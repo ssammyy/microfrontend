@@ -6,7 +6,6 @@ import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "DAT_KEBS_COC_ITEMS")
@@ -17,7 +16,6 @@ class CocItemsEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_COC_ITEMS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @NotNull(message = "Required field")
     @Column(name = "COC_ID", nullable = false, length = 50)
     @Basic
     var cocId: Long = 0
@@ -35,28 +33,25 @@ class CocItemsEntity : Serializable {
     @Column(name = "SHIPMENT_GROSS_WEIGHT")
     var shipmentGrossWeight: Double? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_NUMBER", nullable = false, precision = 2)
     @Basic
     var shipmentLineNumber: Long = 0
 
-    @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_LINE_HSCODE", nullable = false, length = 50)
     @Basic
     var shipmentLineHscode: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_QUANTITY", nullable = false, precision = 2)
     @Basic
     var shipmentLineQuantity: BigDecimal = BigDecimal.ZERO
 
     @NotEmpty(message = "Required field")
-    @Column(name = "SHIPMENT_LINE_UNITOF_MEASURE", nullable = false, length = 400)
+    @Column(name = "SHIPMENT_LINE_UNITOF_MEASURE", nullable = true, length = 400)
     @Basic
     var shipmentLineUnitofMeasure: String? = null
 
     @NotEmpty(message = "Required field")
-    @Column(name = "SHIPMENT_LINE_DESCRIPTION", nullable = false, length = 4000)
+    @Column(name = "SHIPMENT_LINE_DESCRIPTION", nullable = true, length = 4000)
     @Basic
     var shipmentLineDescription: String? = null
 
@@ -76,8 +71,7 @@ class CocItemsEntity : Serializable {
     @Basic
     var shipmentLineIcs: String? = null
 
-    @NotEmpty(message = "Required field")
-    @Column(name = "SHIPMENT_LINE_STANDARDS_REFERENCE", nullable = false, length = 4000)
+    @Column(name = "SHIPMENT_LINE_STANDARDS_REFERENCE", nullable = true, length = 4000)
     @Basic
     var shipmentLineStandardsReference: String? = null
 
@@ -173,8 +167,7 @@ class CocItemsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
-    @Column(name = "SHIPMENT_LINE_BRANDNAME", nullable = false, length = 100)
+    @Column(name = "SHIPMENT_LINE_BRANDNAME", nullable = true, length = 100)
     @Basic
     var shipmentLineBrandName: String? = null
 
