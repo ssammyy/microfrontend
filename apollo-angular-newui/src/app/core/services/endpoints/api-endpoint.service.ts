@@ -530,7 +530,7 @@ export class ApiEndpointService {
         ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
         ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/view/comDraft`,
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
-        ICT_VIEW_COVER_PAGES: `${ApiEndpointService.SD_ICT_CONTEXT}/company_standard/view/cover_pages`,
+        ICT_VIEW_COVER_PAGES: `${ApiEndpointService.SD_ICT_CONTEXT}/view/cover_pages`,
         ICT_STD_SAC_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCoverPagesList`,
         ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnStdDraft`,
         ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/decisionOnComStdDraft`,

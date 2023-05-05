@@ -2,11 +2,11 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ComStdCommitteeRemarks,
-  ComStdRemarks,
-  InternationalStandardsComments,
-  ISCheckRequirements,
-  StakeholderProposalComments
+    ComStdCommitteeRemarks,
+    ComStdRemarks,
+    InternationalStandardsComments,
+    ISCheckRequirements, ISJustificationProposal,
+    StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
@@ -33,6 +33,7 @@ export class IntStdNscApprovalComponent implements OnInit {
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
+    iSJustificationProposals: ISJustificationProposal[] = [];
   public actionRequest: ISCheckRequirements | undefined;
   comStdRemarks: ComStdRemarks[] = [];
   loadingText: string;
@@ -111,7 +112,27 @@ export class IntStdNscApprovalComponent implements OnInit {
     );
   }
 
-  toggleDisplayMainTab(){
+  toggleDisplayMainTab(comStdDraftID: number){
+      this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.documentDTOs = response;
+              this.SpinnerService.hide();
+              //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              //console.log(error.message);
+          }
+      );
+      this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.coverDTOs = response;
+              this.SpinnerService.hide();
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+          }
+      );
     this.isShowMainTab = !this.isShowMainTab;
     this.isShowRemarksTab= true;
     this.isShowCommentsTab= true;
@@ -273,26 +294,16 @@ export class IntStdNscApprovalComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-        (response: DocumentDTO[]) => {
-          this.documentDTOs = response;
-          this.SpinnerService.hide();
-          //console.log(this.documentDTOs)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          //console.log(error.message);
-        }
-    );
-    this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
-        (response: DocumentDTO[]) => {
-          this.coverDTOs = response;
-          this.SpinnerService.hide();
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-        }
-    );
+      this.stdIntStandardService.getISJustification(comStdDraftID).subscribe(
+          (response: ISJustificationProposal[]) => {
+              this.iSJustificationProposals = response;
+
+          },
+          (error: HttpErrorResponse)=>{
+              console.log(error.message);
+          }
+      );
+
 
     if (mode==='approveStandard'){
       this.actionRequests=iSCheckRequirement;

@@ -740,6 +740,7 @@ export interface ISAdoptionProposal {
     stName: string;
     stStatus: number;
     stTelephone: string;
+    tcSecAssigned:string;
 }
 
 export interface ISJustificationProposal {

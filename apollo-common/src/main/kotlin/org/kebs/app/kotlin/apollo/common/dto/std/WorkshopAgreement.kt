@@ -396,7 +396,8 @@ data class ISAdoptionProposalDto(
     //var addStakeholdersList: List<String>?=null,
     var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
     var departmentId: Long?=null,
-    var departmentName: String?=null
+    var departmentName: String?=null,
+    var tcSecAssigned: String?=null
 
 ){
 

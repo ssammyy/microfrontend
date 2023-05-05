@@ -99,8 +99,6 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
         this.stdIntStandardService.getISJustification(draftId).subscribe(
                 (response: ISJustificationProposal[]) => {
                 this.iSJustificationProposals = response;
-                console.log(this.iSJustificationProposals)
-               // this.rerender();
                 this.SpinnerService.hide();
 
             },

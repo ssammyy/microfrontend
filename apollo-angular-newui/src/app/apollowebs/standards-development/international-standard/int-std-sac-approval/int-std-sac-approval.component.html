@@ -67,12 +67,208 @@
                                                     <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
                                                         <nav>
                                                             <div class="nav nav-tabs nav-fill" id="nav-changes-tab" role="tablist">
-                                                                <a class="nav-item nav-link active" id="nav-changes-view-tab" (click)=toggleDisplayMainTab() data-toggle="tab" href="#nav-changes-view" role="tab" aria-controls="nav-changes-view" aria-selected="false">Decision on Standard</a>
+                                                                <a class="nav-item nav-link active" id="nav-changes-summary-tab"  data-toggle="tab" href="#nav-changes-summary" role="tab" aria-controls="nav-changes-summary" aria-selected="false">SAC Summary</a>
+                                                                <a class="nav-item nav-link " id="nav-changes-view-tab" (click)=toggleDisplayMainTab(actionRequests?.draftId) data-toggle="tab" href="#nav-changes-view" role="tab" aria-controls="nav-changes-view" aria-selected="false">Decision on Standard</a>
                                                                 <a class="nav-item nav-link " id="nav-changes-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.draftId) data-toggle="tab" href="#nav-changes-justification-list-comments" role="tab" aria-controls="nav-changes-justification-list-comments" aria-selected="false">Remarks</a>
                                                             </div>
                                                         </nav>
                                                         <div class="tab-content py-3 px-3 px-sm-0" id="nav-changes-justification-content">
-                                                            <div class="tab-pane fade show active" id="nav-changes-view" role="tabpanel" aria-labelledby="nav-changes-view-tab">
+                                                            <div class="tab-pane fade show active" id="nav-changes-summary" role="tabpanel" aria-labelledby="nav-changes-summary-tab">
+                                                                <div  class="row container col-md-12" >
+                                                                    <div class="list-group list-group-flush" *ngFor="let iSJustificationProposal of iSJustificationProposals">
+
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Justification Preparation Date</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.meetingDate}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Prepared By</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.tcSec_id}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.requestNumber}}.</p>
+                                                                        </a>
+                                                                        <hr>
+                                                                        <h3>STANDARDS DEVELOPED</h3>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Standard Number</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{actionRequests?.comStdNumber}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal?.title}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Edition</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.edition}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.requestedBy}}.</p>
+                                                                        </a>
+                                                                        <hr>
+                                                                        <h3>Issues Addressed</h3>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.scope}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Purpose and Application</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.purposeAndApplication}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Intended Users</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.intendedUsers}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Reference Material</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.referenceMaterial}}.</p>
+                                                                        </a>
+                                                                        <hr>
+                                                                        <h2>Background Information</h2>
+                                                                        <h3>Date of Circulation of Adoption Proposal Form</h3>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Circulation Date</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.circulationDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Closing Date</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.closingDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                        </a>
+
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>TC Acceptance Date</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.tcAcceptanceDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                        </a>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between">
+                                                                                <div>
+                                                                                    <div class="d-flex w-100 align-items-center">
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Department</b></h5>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.departmentName}}.</p>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade show " id="nav-changes-view" role="tabpanel" aria-labelledby="nav-changes-view-tab">
                                                                 <form (ngSubmit)="approveInternationalStandard()" [formGroup]="approveRequirementsFormGroup" class="form">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">

@@ -20,15 +20,12 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
@@ -132,7 +129,8 @@ class IntStandardService(
 
     fun getIntStandardProposals(): MutableList<StandardRequest>
     {
-        return standardRequestRepository.getIntStandardProposals()
+        val loggedInUser = commonDaoServices.loggedInUserDetails().id
+        return standardRequestRepository.getIntStandardProposals(loggedInUser)
     }
 
 
@@ -153,9 +151,17 @@ class IntStandardService(
         iSAdoptionProposal.tcSecEmail=loggedInUser.email
         iSAdoptionProposal.title=isAdoptionProposalDto.title
         iSAdoptionProposal.scope=isAdoptionProposalDto.scope
-        iSAdoptionProposal.iStandardNumber=isAdoptionProposalDto.iStandardNumber
+        var standardString="KS "+isAdoptionProposalDto.iStandardNumber
+
+        //val str = "abcdefgh"
+        var firstChar = standardString?.get(0)
+        var secondChar = standardString?.get(1)
+        var thirdChar = standardString?.get(0)
+
+        iSAdoptionProposal.iStandardNumber=standardString
         iSAdoptionProposal.requestId=isAdoptionProposalDto.requestId
         iSAdoptionProposal.adoptionProposalLink=isAdoptionProposalDto.adoptionProposalLink
+        iSAdoptionProposal.tcSecAssigned=isAdoptionProposalDto.tcSecAssigned
 
         iSAdoptionProposal.uploadedBy=isAdoptionProposalDto.uploadedBy
         iSAdoptionProposal.preparedDate = datePrepared
@@ -563,6 +569,13 @@ class IntStandardService(
             comStdDraftRepository.save(comStdDraft)
         }?: throw Exception("REQUEST NOT FOUND")
 
+        iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
+            with(stakeHolder){
+                status=1
+            }
+            iStdStakeHoldersRepository.save(stakeHolder)
+        }?: throw Exception("USER NOT FOUND")
+
 
 
         println("Comment Submitted")
@@ -948,7 +961,8 @@ class IntStandardService(
     }
 
     fun getApprovedJustification(): MutableList<ProposalDetails>{
-        return isAdoptionProposalRepository.getApprovedJustification();
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return isAdoptionProposalRepository.getApprovedJustification(loggedInUser.id);
     }
 
 

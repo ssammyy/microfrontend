@@ -180,6 +180,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   prepareJustification(): void {
     this.loadingText = "Saving...";
     this.SpinnerService.show();
+    console.log(this.prepareJustificationFormGroup.value);
     this.stdIntStandardService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
@@ -288,6 +289,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
               title: this.actionRequest.title,
               edition: this.edition,
               tcAcceptanceDate: this.actionRequest.tcAcceptanceDate,
+              department: this.actionRequest.departmentId
 
 
           }

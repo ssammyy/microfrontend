@@ -118,6 +118,10 @@ class ISAdoptionProposal {
     @Basic
     var status: Long? = null
 
+    @Column(name = "TC_SEC_ASSIGNED")
+    @Basic
+    var tcSecAssigned: String? = null
+
     @Column(name = "STANDARD_NUMBER")
     @Basic
     var iStandardNumber: String? = null

@@ -80,7 +80,8 @@ export class IntStdProposalCommentsComponent implements OnInit {
         nameOfOrganization: null,
         requestId: null,
         draftId: null,
-        adoptionAcceptableAsPresented:null
+        adoptionAcceptableAsPresented:null,
+        stakeHolderId: null
     });
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -187,6 +188,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
               nameOfRespondent:this.fullname,
               emailOfRespondent:this.email,
               nameOfOrganization:this.organization,
+              stakeHolderId: this.actionRequest.stId
 
           }
       );
