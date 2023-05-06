@@ -379,6 +379,9 @@ class IntStandardService(
 //
 //        println("Comment Submitted")
 //    }
+    fun getProposalComment(id: Long): MutableIterable<ComDraftComments>? {
+        return comStandardDraftCommentsRepository.findAllById(id)
+    }
 
     fun submitDraftComments(com: ProposalCommentsDto){
         val variables: MutableMap<String, Any> = HashMap()
@@ -390,6 +393,7 @@ class IntStandardService(
             comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
             comDraftComments.requestID=com.requestId
             comDraftComments.draftID=com.draftId
+            comDraftComments.positionOfRespondent=com.positionOfRespondent
             comDraftComments.nameOfRespondent=com.nameOfRespondent
             comDraftComments.phoneOfRespondent=com.phoneOfRespondent
             comDraftComments.emailOfRespondent=com.emailOfRespondent
@@ -424,6 +428,7 @@ class IntStandardService(
         iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
             with(stakeHolder){
                status=1
+               commentId= comDraftCommentsSaved.id
             }
             iStdStakeHoldersRepository.save(stakeHolder)
         }?: throw Exception("USER NOT FOUND")
@@ -446,7 +451,7 @@ class IntStandardService(
 
     fun submitWebsiteComments(com: ProposalCommentsDto): CommentForm{
         val variables: MutableMap<String, Any> = HashMap()
-        var  comDraftCommentsSaved = ComDraftComments();
+        //var  comDraftCommentsSaved = ComDraftComments();
         var slFormResponse=""
         var responseStatus=""
         var responseButton=""
@@ -458,12 +463,13 @@ class IntStandardService(
         comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
         comDraftComments.requestID=com.requestId
         comDraftComments.draftID=com.draftId
+        comDraftComments.positionOfRespondent=com.positionOfRespondent
         comDraftComments.nameOfRespondent=com.nameOfRespondent
         comDraftComments.phoneOfRespondent=com.phoneOfRespondent
         comDraftComments.emailOfRespondent=com.emailOfRespondent
         comDraftComments.nameOfOrganization=com.nameOfOrganization
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
         val adoptDecision=com.adoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
@@ -499,6 +505,7 @@ class IntStandardService(
             st.dateOfCreation=Timestamp(System.currentTimeMillis())
             st.telephone=com.phoneOfRespondent
             st.status=1
+            st.commentId= comDraftCommentsSaved.id
             val sid= iStdStakeHoldersRepository.save(st)
 
             val sub = "New Adoption Proposal "
@@ -529,7 +536,7 @@ class IntStandardService(
 
     fun submitDraftComment(com: ProposalCommentsDto){
         val variables: MutableMap<String, Any> = HashMap()
-        var  comDraftCommentsSaved = ComDraftComments();
+        //var  comDraftCommentsSaved = ComDraftComments();
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val  comDraftComments = ComDraftComments();
@@ -538,12 +545,13 @@ class IntStandardService(
         comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
         comDraftComments.requestID=com.requestId
         comDraftComments.draftID=com.draftId
+        comDraftComments.positionOfRespondent=com.positionOfRespondent
         comDraftComments.nameOfRespondent=com.nameOfRespondent
         comDraftComments.phoneOfRespondent=loggedInUser.cellphone
         comDraftComments.emailOfRespondent=loggedInUser.email
         comDraftComments.nameOfOrganization=com.nameOfOrganization
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
         val adoptDecision=com.adoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
@@ -572,6 +580,7 @@ class IntStandardService(
         iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
             with(stakeHolder){
                 status=1
+                commentId= comDraftCommentsSaved.id
             }
             iStdStakeHoldersRepository.save(stakeHolder)
         }?: throw Exception("USER NOT FOUND")
@@ -579,6 +588,63 @@ class IntStandardService(
 
 
         println("Comment Submitted")
+    }
+
+    fun editSubmitDraftComment(com: EditProposalCommentsDto){
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var selectedDecision=" "
+        if(adoptDecision=="Yes"){
+            selectedDecision="Yes"
+        }else{
+            selectedDecision="No"
+        }
+
+        comStandardDraftCommentsRepository.findByIdOrNull(com.commentId)?.let { comDraftComments ->
+            with(comDraftComments) {
+                reason=com.reasons
+                recommendations=com.recommendations
+                adoptDraft=selectedDecision
+                positionOfRespondent=com.positionOfRespondent
+                nameOfRespondent=com.nameOfRespondent
+                nameOfOrganization=com.nameOfOrganization
+                commentTime = Timestamp(System.currentTimeMillis())
+
+            }
+            comStandardDraftCommentsRepository.save(comDraftComments)
+        }?: throw Exception("DRAFT NOT FOUND")
+
+
+        val initialDecision=com.intialAdoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision==initialDecision){
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber
+        }else{
+            if(adoptDecision=="Yes"){
+                newAdopt=adoptNumber-1
+                newNotAdopt=notAdoptNumber+1
+
+            }else{
+                newAdopt=adoptNumber+1
+                newNotAdopt=notAdoptNumber-1
+            }
+        }
+
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("DRAFT NOT FOUND")
+
+        println("Comment Updated")
     }
 
 

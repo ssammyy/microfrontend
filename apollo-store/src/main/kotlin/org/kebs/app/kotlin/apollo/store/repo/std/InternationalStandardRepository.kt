@@ -496,6 +496,8 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
 }
 interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, Long> {
     fun findByDraftIDOrderByIdDesc(id: Long): MutableIterable<ComDraftComments>?
+    fun findByIdOrderByIdDesc(id: Long): MutableIterable<ComDraftComments>?
+    fun findAllById(id: Long):MutableIterable<ComDraftComments>?
 
     @Query(
         value = "SELECT ID as id  FROM SD_COM_DRAFT_COMMENTS  WHERE DRAFT_ID= :id ",
@@ -593,7 +595,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName,p.TC_SEC_NAME as tcSecEmail," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,h.ID as stId,h.EMAIL as stEmail,h.NAME as stName,h.STATUS as stStatus,h.TELEPHONE as stTelephone " +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,h.ID as stId,h.EMAIL as stEmail,h.NAME as stName,h.STATUS as stStatus,h.COMMENT_ID as commentId,h.TELEPHONE as stTelephone " +
                 "FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN SD_IS_STAKE_HOLDERS h ON d.ID=h.DRAFT_ID " +
                 " WHERE TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE ) AND h.USER_ID=:id AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true

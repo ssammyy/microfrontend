@@ -2,11 +2,11 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {Subject} from "rxjs";
 import {
     DocView,
-    ISAdoptionProposal,
+    ISAdoptionProposal, ISComments,
     PredefinedSDCommentsFields,
     ProposalComments
 } from "../../../../core/store/data/std/std.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DataTableDirective} from "angular-datatables";
 import {Store} from "@ngrx/store";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
@@ -39,13 +39,16 @@ export class IntStdProposalCommentsComponent implements OnInit {
   tasks: ProposalComments[] = [];
   isAdoptionProposals: ISAdoptionProposal[] = [];
   public uploadCommentsFormGroup!: FormGroup;
+  public uploadCommentFormGroup!: FormGroup;
   loadingText: string;
   isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
   proposalId: string;
   documentDTOs: DocumentDTO[] = [];
   docDetails: DocView[] = [];
+    isComments: ISComments[] = [];
     selectedOption = '';
+    valueString:AbstractControl
     dataSaveResourcesRequired: PredefinedSDCommentsFields;
     dataSaveResourcesRequiredList: PredefinedSDCommentsFields[] = [];
     predefinedSDCommentsDataAdded: boolean = false
@@ -64,7 +67,6 @@ export class IntStdProposalCommentsComponent implements OnInit {
   ngOnInit(): void {
 
     this.getSessionProposals();
-    //console.log(this.proposalId);
 
     this.uploadCommentsFormGroup = this.formBuilder.group({
         commentDocumentType: null,
@@ -83,6 +85,25 @@ export class IntStdProposalCommentsComponent implements OnInit {
         adoptionAcceptableAsPresented:null,
         stakeHolderId: null
     });
+
+      this.uploadCommentFormGroup = this.formBuilder.group({
+          commentDocumentType: null,
+          circulationDate: null,
+          closingDate: null,
+          standardNumber: null,
+          commentTitle: null,
+          scope: null,
+          reasons: null,
+          recommendations: null,
+          nameOfRespondent: null,
+          positionOfRespondent: null,
+          nameOfOrganization: null,
+          requestId: null,
+          draftId: null,
+          adoptionAcceptableAsPresented:null,
+          stakeHolderId: null,
+          commentId: null
+      });
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.fullname = u.fullName;
@@ -153,7 +174,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
     );
   }
 
-  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void{
+  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,commentId: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -162,17 +183,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
     if (mode==='comment'){
       this.actionRequest=isAdoptionProposal;
       button.setAttribute('data-target','#commentModal');
-      // this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-      //     (response: DocumentDTO[]) => {
-      //       this.documentDTOs = response;
-      //       this.SpinnerService.hide();
-      //       //console.log(this.documentDTOs)
-      //     },
-      //     (error: HttpErrorResponse) => {
-      //       this.SpinnerService.hide();
-      //       //console.log(error.message);
-      //     }
-      // );
+
       this.uploadCommentsFormGroup.patchValue(
           {
 
@@ -193,6 +204,42 @@ export class IntStdProposalCommentsComponent implements OnInit {
           }
       );
     }
+      if (mode==='comments'){
+          this.actionRequest=isAdoptionProposal;
+          button.setAttribute('data-target','#commentsModal');
+          this.stdIntStandardService.getProposalComments(commentId).subscribe(
+              (response: ISComments[]) => {
+                  this.isComments = response;
+                  this.valueString=this.uploadCommentFormGroup.get("adoptionAcceptableAsPresented")
+                  console.log(this.isComments);
+              }
+          );
+
+          this.uploadCommentFormGroup.patchValue(
+              {
+
+                  commentTitle: this.actionRequest.title,
+                  circulationDate:this.actionRequest.circulationDate,
+                  closingDate: this.actionRequest.closingDate,
+                  title:this.actionRequest.title,
+                  scope:this.actionRequest.scope,
+                  requestId: this.actionRequest.id,
+                  draftId: this.actionRequest.draftId,
+                  commentDocumentType: this.actionRequest.docName,
+                  standardNumber: this.actionRequest.standardNumber,
+                  nameOfRespondent:this.fullname,
+                  emailOfRespondent:this.email,
+                  nameOfOrganization:this.organization,
+                  commentId:this.actionRequest.commentId,
+                  stakeHolderId: this.actionRequest.stId,
+                  adoptionAcceptableAsPresented:this.actionRequest.adoptionAcceptableAsPresented,
+                  reasons:this.actionRequest.reasons,
+                  recommendations:this.actionRequest.recommendations,
+                  positionOfRespondent:this.actionRequest.positionOfRespondent
+
+              }
+          );
+      }
     // @ts-ignore
     container.appendChild(button);
     button.click();
@@ -219,7 +266,34 @@ export class IntStdProposalCommentsComponent implements OnInit {
         this.hideModalComment();
     }
 
+    onSubmitChanges(): void {
+        this.loadingText = "Updating Comment...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.editSubmitDraftComment(this.uploadCommentFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Comment Updated`);
+                this.getSessionProposals();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalComments();
+    }
+    proposals = [
+        { value: "Yes", name: "Adoption acceptable as presented" },
+        { value: "No", name: "Adoption proposal not acceptable because of the reason(s) below" }
+    ];
 
+    @ViewChild('closeModalComments') private closeModalComments: ElementRef | undefined;
+
+    public hideModalComments() {
+        this.closeModalComments?.nativeElement.click();
+    }
 
   @ViewChild('closeModalComment') private closeModalComment: ElementRef | undefined;
 
@@ -307,6 +381,24 @@ export class IntStdProposalCommentsComponent implements OnInit {
     }
     onSelected(value:string): void {
         this.selectedOption = value;
+    }
+
+    public getProposalComments(draftId: number): void {
+        this.loadingText = "Loading...";
+        this.SpinnerService.show();
+        this.stdIntStandardService.getProposalComments(draftId).subscribe(
+            (response: ISComments[]) => {
+                this.isComments = response;
+                this.rerender();
+                this.SpinnerService.hide();
+
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+
     }
 
 }

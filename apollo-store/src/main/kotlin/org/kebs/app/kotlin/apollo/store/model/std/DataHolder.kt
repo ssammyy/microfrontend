@@ -484,6 +484,7 @@ interface ProposalDetails{
     fun getStName(): String?
     fun getStStatus(): Long?
     fun getStTelephone(): String?
+    fun getCommentId(): Long?
 }
 interface PermitsAwarded{
     fun getId(): Long?

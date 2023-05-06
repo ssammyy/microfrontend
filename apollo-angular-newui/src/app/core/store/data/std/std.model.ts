@@ -665,6 +665,27 @@ export class ThisProposalComment{
     phoneOfRespondent: string;
     stakeHolderId:number;
 }
+
+export class EditProposalComment{
+    commentDocumentType: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    standardNumber: string;
+    commentTitle: string;
+    scope: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    requestId: number;
+    draftId: number;
+    adoptionAcceptableAsPresented: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
+    stakeHolderId:number;
+}
+
 export class PredefinedSDCommentsFields {
     standardNumber: string;
     commentTitle: string;
@@ -699,12 +720,7 @@ export interface ISAdoptionProposal {
     scope: string;
     clause: string;
     standardNumber: string;
-    adoptionAcceptableAsPresented: string;
     reasonsForNotAcceptance: string;
-    recommendations: string;
-    nameOfRespondent: string;
-    positionOfRespondent: string;
-    nameOfOrganization: string;
     dateOfApplication: string;
     proposalNumber: string;
     stakeholdersList: string[];
@@ -741,6 +757,28 @@ export interface ISAdoptionProposal {
     stStatus: number;
     stTelephone: string;
     tcSecAssigned:string;
+
+    adoptionAcceptableAsPresented: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    commentId: number;
+
+}
+export interface ISComments{
+    id: number;
+    draftComment: string;
+    nameOfOrganization: string;
+    proposedChange: string;
+    adoptStandard: string;
+    adoptDraft: string;
+    reason: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    observation: string;
 }
 
 export interface ISJustificationProposal {
