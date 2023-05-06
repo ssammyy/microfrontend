@@ -5182,7 +5182,7 @@ class QADaoServices(
         when (assignOfficerStatus) {
             1 -> {
                 return commonDaoServices.concatenateName(
-                    commonDaoServices.findUserByID(qaoId ?: 1L)
+                    commonDaoServices.findUserByID(qaoId)
                 )
             }
         }
