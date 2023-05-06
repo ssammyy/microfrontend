@@ -5135,11 +5135,7 @@ class QADaoServices(
         return permits.map { p ->
             PermitEntityDto(
                 p.id,
-                p.attachedPlantId?.let {
-                    commonDaoServices.findCompanyProfileWithID(
-                        findPlantDetailsB(it)?.companyProfileId ?: -1L
-                    ).name
-                },
+                p.attachedPlantId?.let { commonDaoServices.findCompanyProfileWithID(findPlantDetailsB(it)?.companyProfileId ?: -1L).name },
                 p.permitRefNumber,
                 p.commodityDescription,
                 p.tradeMark,
@@ -5174,19 +5170,19 @@ class QADaoServices(
                 p.permitStatus,
                 p.versionNumber,
                 encryptedUserId = jasyptStringEncryptor.encrypt(p.userId.toString()),
-                assignOfficer = checkForAssignedOfficer(p.assignOfficerStatus, p.qaoId),
+                assignOfficer = p.qaoId?.let { checkForAssignedOfficer(p.assignOfficerStatus, it) },
 
 
                 )
         }
     }
 
-    private fun checkForAssignedOfficer(assignOfficerStatus: Int?, qaoId: Long?): String {
+    private fun checkForAssignedOfficer(assignOfficerStatus: Int?, qaoId: Long): String {
 
         when (assignOfficerStatus) {
             1 -> {
                 return commonDaoServices.concatenateName(
-                    commonDaoServices.findUserByID(qaoId ?: 1L)
+                    commonDaoServices.findUserByID(qaoId)
                 )
             }
         }
