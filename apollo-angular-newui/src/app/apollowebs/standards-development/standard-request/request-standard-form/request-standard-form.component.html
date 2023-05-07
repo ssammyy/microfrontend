@@ -97,14 +97,14 @@
                 <!--                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">-->
 
 
-                <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"
-                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
-                                    [selectFirstCountry]="false"
-                                    [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"
-                                    [phoneValidation]="true"
-                                    required
-                                    [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
-                </ngx-intl-tel-input>
+<!--                <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"-->
+<!--                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"-->
+<!--                                    [selectFirstCountry]="false"-->
+<!--                                    [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"-->
+<!--                                    [phoneValidation]="true"-->
+<!--                                    required-->
+<!--                                    [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">-->
+<!--                </ngx-intl-tel-input>-->
                 <mat-error
                         *ngIf="isFormSubmitted && stdRequestFormGroup.controls['phone'].errors?.required">
                     Please Enter Your Phone Number
