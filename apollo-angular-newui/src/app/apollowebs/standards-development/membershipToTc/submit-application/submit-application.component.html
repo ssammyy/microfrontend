@@ -153,14 +153,14 @@
 
             <div class="form-group">
                 <label><b>Telephone Number</b></label>
-                <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"
-                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
-                                    [selectFirstCountry]="false"
-                                    [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"
-                                    [phoneValidation]="true"
-                                    required
-                                    [numberFormat]="PhoneNumberFormat.National" name="mobileNumber" formControlName="mobileNumber">
-                </ngx-intl-tel-input>
+<!--                <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"-->
+<!--                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"-->
+<!--                                    [selectFirstCountry]="false"-->
+<!--                                    [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"-->
+<!--                                    [phoneValidation]="true"-->
+<!--                                    required-->
+<!--                                    [numberFormat]="PhoneNumberFormat.National" name="mobileNumber" formControlName="mobileNumber">-->
+<!--                </ngx-intl-tel-input>-->
                 <mat-error
                         *ngIf="isFormSubmitted && applicationToATcFormGroup.controls['mobileNumber'].errors?.required">
                     Please Enter Your Phone Number
