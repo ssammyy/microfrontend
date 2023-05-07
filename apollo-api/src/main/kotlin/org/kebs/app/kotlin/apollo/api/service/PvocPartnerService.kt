@@ -111,6 +111,7 @@ class PvocPartnerService(
                 responseModel
             }
         } else {
+
             val responseModel = this.corporateCustomerService.addCorporateCustomer(billingForm)
             if ("00" == responseModel.responseCode) {
                 partner.billingId = responseModel.data as Long

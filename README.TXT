@@ -19,3 +19,8 @@ ls
 ```
 ssh-keyscan -t rsa -p 922 10.10.0.127 >>~/.ssh/known_hosts
 ```
+2. export NODE_OPTIONS="--max-old-space-size=8192"
+```
+export NODE_OPTIONS="--max-old-space-size=8192"
+```
+or
