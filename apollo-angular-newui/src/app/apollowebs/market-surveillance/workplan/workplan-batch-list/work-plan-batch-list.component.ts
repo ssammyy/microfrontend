@@ -33,7 +33,7 @@ export class WorkPlanBatchListComponent implements OnInit {
   previousStatus = 'all-workPlan-batch';
   searchStatus: any;
   personalTasks = 'false';
-  defaultPageSize = 20;
+  defaultPageSize = 100;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -77,7 +77,7 @@ export class WorkPlanBatchListComponent implements OnInit {
       userCreated: {
         title: 'CREATED BY',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       createdDate: {
         title: 'CREATED DATE',

@@ -2109,12 +2109,6 @@ export interface ReviewDecision {
 
 export interface ISCheckRequirements {
     id: number;
-    title: string;
-    scope: string;
-    normativeReference: string;
-    symbolsAbbreviatedTerms: string;
-    clause: string;
-    special: string;
     justificationNo: number;
     proposalId: number;
     status: string;
@@ -2124,26 +2118,35 @@ export interface ISCheckRequirements {
     documentType: string;
     preparedBy: string;
     comStdNumber: string;
-    requestNumber: string;
     draftId: number;
     departmentId: string;
     tcName: string;
     subject: string;
     description: string;
-    contactOneFullName: string;
-    contactOneTelephone: string;
-    contactOneEmail: string;
-    contactTwoFullName: string;
-    contactTwoTelephone: string;
-    contactTwoEmail: string;
-    contactThreeFullName: string;
-    contactThreeTelephone: string;
-    contactThreeEmail: string;
-    companyName: string;
-    companyPhone: string;
     draftNumber: string;
     draughting: string;
     standardType: string;
+    meetingDate: string;
+    slNumber: string;
+    edition: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: Timestamp<any>;
+    referenceMaterial: string;
+    submissionDate: Timestamp<any>;
+    tcCommittee: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    purposeAndApplication: string;
+    intendedUsers: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    durationTaken: string;
 }
 
 export interface ComStdRequest {

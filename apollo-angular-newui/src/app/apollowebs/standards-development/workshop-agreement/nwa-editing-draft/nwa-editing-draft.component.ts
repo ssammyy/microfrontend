@@ -211,9 +211,7 @@ export class NwaEditingDraftComponent implements OnInit {
             comStdNumber:this.actionRequests.comStdNumber,
             departmentId:this.actionRequests.departmentId,
             subject:this.actionRequests.subject,
-            description:this.actionRequests.description,
-            companyName:this.actionRequests.companyName,
-            companyPhone:this.actionRequests.companyPhone
+            description:this.actionRequests.description
           }
       );
 

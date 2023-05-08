@@ -892,6 +892,7 @@ class IntStandardService(
         standardNumber=isProposalJustification.standardNumber
         referenceMaterial=isProposalJustification.referenceMaterial
         status= 0.toString()
+        submissionDate= Timestamp(System.currentTimeMillis())
 
 
         departmentName = departmentListRepository.findNameById(isProposalJustification.department?.toLong())
@@ -1142,7 +1143,11 @@ class IntStandardService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         isJustificationDecision.taskId.let { variables.put("taskId", it) }
         isJustificationDecision.processId.let { variables.put("processId", it) }
 

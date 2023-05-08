@@ -157,19 +157,8 @@ class ISAdoptionJustification {
     @Basic
     var closingDate: Timestamp? = null
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Column(name = "SPC_APPROVAL_DATE")
+    @Basic
+    var spcApprovalDate: Timestamp? = null
 
 }

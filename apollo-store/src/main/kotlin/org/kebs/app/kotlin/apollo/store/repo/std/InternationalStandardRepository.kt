@@ -141,24 +141,28 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     fun getStdApproved(): MutableList<ComStandard>
 
     @Query(
-        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
-                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
-                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
-                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
-                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
-                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+        value = "SELECT s.ID as id,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.STANDARD_TYPE as standardType,j.MEETING_DATE as meetingDate,\n" +
+                "j.SL_NUMBER as slNumber,j.EDITION as edition,j.REQUEST_NUMBER as requestNumber,j.REQUESTED_BY as requestedBy,\n" +
+                "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
+                "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
+                "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =8 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
     fun getAppStdPublishing(): MutableList<ComStandard>
 
     @Query(
-        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
-                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
-                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
-                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
-                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
-                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+        value = "SELECT s.ID as id,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.STANDARD_TYPE as standardType,j.MEETING_DATE as meetingDate,\n" +
+                "j.SL_NUMBER as slNumber,j.EDITION as edition,j.REQUEST_NUMBER as requestNumber,j.REQUESTED_BY as requestedBy,\n" +
+                "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
+                "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
+                "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =15 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
@@ -522,7 +526,7 @@ interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacList
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
-    fun findAllById(id: Long): ComStandardDraftUploads
+    fun findAllByIdOrderByIdDesc(id: Long): ComStandardDraftUploads
 
     @Query(
         value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",

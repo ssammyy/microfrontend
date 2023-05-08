@@ -32,9 +32,12 @@
                                     <tr>
                                         <th>#</th>
                                         <th class="knw">Standard Type</th>
-                                        <th class="knw">Title</th>
-                                        <th class="knw">Standard Number</th>
-                                        <th class="knw">Prepared By</th>
+                                        <th class="knw">KS NO, Title and Edition</th>
+                                        <th class="knw">Requested By</th>
+                                        <th class="knw">Issues Addressed</th>
+                                        <th class="knw">Reference Material</th>
+                                        <th class="knw">Background Information</th>
+                                        <th>Multiple Selections</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -42,9 +45,23 @@
                                     <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{isCheckRequirement.standardType}}</td>
-                                        <td>{{isCheckRequirement.title}}</td>
-                                        <td>{{isCheckRequirement.comStdNumber}}</td>
-                                        <td>{{isCheckRequirement.preparedBy}}</td>
+                                        <td><b>{{isCheckRequirement.comStdNumber}}</b><br>{{isCheckRequirement.title}},<br>{{isCheckRequirement.edition}}</td>
+                                        <td>{{isCheckRequirement.requestedBy}}</td>
+                                        <td>{{isCheckRequirement.scope}},<br>{{isCheckRequirement.purposeAndApplication}},<br>{{isCheckRequirement.issuesAddressed}}</td>
+                                        <td>{{isCheckRequirement.referenceMaterial}}</td>
+                                        <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}} <br><b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
+                                       <td><div class="form-check">
+                                           <input class="form-check-input" type="radio" name="approve" id="approve{{i+1}}">
+                                           <label class="form-check-label" for="approve{{i+1}}">
+                                               Approve
+                                           </label>
+                                       </div>
+                                           <div class="form-check">
+                                               <input class="form-check-input" type="radio" name="reject" id="reject{{i+1}}" >
+                                               <label class="form-check-label" for="reject{{i+1}}">
+                                                   Reject
+                                               </label>
+                                           </div></td>
                                         <td *ngIf="isCheckRequirement.status==8"><a  (click)="onOpenModals(isCheckRequirement,'approveStandard',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Standard</a></td>
 
                                     </tr>

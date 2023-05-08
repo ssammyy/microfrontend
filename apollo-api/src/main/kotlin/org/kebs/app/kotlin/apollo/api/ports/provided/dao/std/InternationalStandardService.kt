@@ -183,8 +183,16 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = iSDecision.accentTo
         variables["No"] = iSDecision.accentTo
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId.let { variables.put("taskId", it) }
+        iSDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
+        iSDecision.taskId.let {
+            if (it != null) {
+                variables.put("taskId", it)
+            }
+        }
         if(variables["Yes"]==true){
             isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal->
 
@@ -304,7 +312,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         isJustificationDecision.taskId.let { variables.put("taskId", it) }
         if(variables["Yes"]==true){
             iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
@@ -343,7 +355,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         isJustificationDecision.taskId.let { variables.put("taskId", it) }
         if(variables["Yes"]==true){
             iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
