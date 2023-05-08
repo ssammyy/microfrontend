@@ -337,7 +337,11 @@ class StandardReviewService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = reviewDecision.accentTo
         variables["No"] = reviewDecision.accentTo
-        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         reviewDecision.taskId.let { variables.put("taskId", it) }
         reviewDecision.processId.let { variables.put("processId", it) }
         reviewDecision.assignedTo.let { variables.put("assignedTo", it) }
@@ -388,7 +392,11 @@ class StandardReviewService(
         variables["Yes"] = reviewDecision.accentTo
         variables["No"] = reviewDecision.accentTo
         loggedInUser.id?.let { variables["originator"] = it }
-        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         reviewDecision.taskId?.let { variables.put("taskId", it) }
         reviewDecision.processId?.let { variables.put("processId", it) }
         reviewDecision.reviewID?.let { variables.put("reviewID", it) }
@@ -541,7 +549,11 @@ class StandardReviewService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = reviewDecision.accentTo
         variables["No"] = reviewDecision.accentTo
-        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         reviewDecision.taskId.let { variables.put("taskId", it) }
         reviewDecision.processId.let { variables.put("processId", it) }
         reviewDecision.assignedTo.let { variables.put("assignedTo", it) }
@@ -701,7 +713,11 @@ class StandardReviewService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = reviewDecision.accentTo
         variables["No"] = reviewDecision.accentTo
-        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         reviewDecision.taskId.let { variables.put("taskId", it) }
         reviewDecision.processId.let { variables.put("processId", it) }
         reviewDecision.assignedTo.let { variables.put("assignedTo", it) }

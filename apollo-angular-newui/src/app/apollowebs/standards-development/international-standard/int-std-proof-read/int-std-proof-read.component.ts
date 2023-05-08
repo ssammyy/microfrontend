@@ -232,18 +232,7 @@ export class IntStdProofReadComponent implements OnInit {
                     special:this.actionRequests.special,
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
-                    description:this.actionRequests.description,
-                    contactOneFullName:this.actionRequests.contactOneFullName,
-                    contactOneTelephone:this.actionRequests.contactOneTelephone,
-                    contactOneEmail:this.actionRequests.contactOneEmail,
-                    contactTwoFullName:this.actionRequests.contactTwoFullName,
-                    contactTwoTelephone:this.actionRequests.contactTwoTelephone,
-                    contactTwoEmail:this.actionRequests.contactTwoEmail,
-                    contactThreeFullName:this.actionRequests.contactThreeFullName,
-                    contactThreeTelephone:this.actionRequests.contactThreeTelephone,
-                    contactThreeEmail:this.actionRequests.contactThreeEmail,
-                    companyName:this.actionRequests.companyName,
-                    companyPhone:this.actionRequests.companyPhone
+                    description:this.actionRequests.description
                 }
             );
 

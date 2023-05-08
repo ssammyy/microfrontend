@@ -778,37 +778,39 @@ interface NwaRequest{
 
 interface ComStandard {
     fun getId(): Long?
+    fun getComStdNumber(): String?
+    fun getDocumentType(): String?
+    fun getPreparedBy(): String?
+    fun getUploadDate(): String?
+    fun getStatus(): Long?
+    fun getRequestId(): Long?
+    fun getDraftId(): Long?
+    fun getDepartmentId(): Long?
+    fun getDepartmentName(): String?
+    fun getSubject(): String?
+    fun getDescription(): String?
+    fun getMeetingDate(): String?
+    fun getSlNumber(): String?
+    fun getEdition(): String?
+    fun getRequestNumber(): String?
+    fun getRequestedBy(): String?
+    fun getIssuesAddressed(): String?
+    fun getTcAcceptanceDate(): String?
+    fun getReferenceMaterial(): String?
+    fun getSubmissionDate(): Timestamp?
+    fun getTcCommittee(): String?
     fun getTitle(): String?
     fun getScope(): String?
     fun getNormativeReference(): String?
     fun getSymbolsAbbreviatedTerms(): String?
     fun getClause(): String?
     fun getSpecial(): String?
-    fun getComStdNumber(): String?
-    fun getDocumentType(): String?
-    fun getPreparedBy(): String?
-    fun getUploadDate(): String?
-    fun getRequestNumber(): String?
-    fun getStatus(): String?
-    fun getRequestId(): String?
-    fun getDraftId(): String?
-    fun getDepartmentId(): Long?
-    fun getDepartmentName(): String?
-    fun getSubject(): String?
-    fun getDescription(): String?
-    fun getContactOneFullName(): String?
-    fun getContactOneTelephone(): String?
-    fun getContactOneEmail(): String?
-    fun getContactTwoFullName(): String?
-    fun getContactTwoTelephone(): String?
-    fun getContactTwoEmail(): String?
-    fun getContactThreeFullName(): String?
-    fun getContactThreeTelephone(): String?
-    fun getContactThreeEmail(): String?
-    fun getCompanyName(): String?
-    fun getCompanyPhone(): String?
-    fun getStandardType(): String?
+    fun getPurposeAndApplication(): String?
+    fun getIntendedUsers(): String?
+    fun getCirculationDate(): Timestamp?
+    fun getClosingDate(): Timestamp?
     fun getWorkShopDate(): Timestamp?
+    fun getDurationTaken(): String?
 }
 
 interface ComStdRequest{
