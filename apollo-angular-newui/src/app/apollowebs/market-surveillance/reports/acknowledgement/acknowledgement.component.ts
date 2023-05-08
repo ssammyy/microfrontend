@@ -267,7 +267,7 @@ export class AcknowledgementComponent implements OnInit {
     this.complaintsClosed = resolutionSum;
     this.percentageComplaintsClosed = (this.complaintsClosed/this.complaintsReceived)*100
 
-    this.percentageComplianceWithTimelines = (this.sumOfDaysTakenToProvideFeedback/this.complaintsReceived)*100
+    this.percentageComplianceWithTimelines = (this.sumOfDaysTakenToProvideFeedback/this.complaintsClosed)*100
     this.averageFeedbackTimeDays = this.sumOfDaysTakenToProvideFeedback/this.complaintsReceived
 
     this.percentageComplianceTo28Days = (this.noComplaintsAddressedWithin28Days/this.complaintsReceived)*100

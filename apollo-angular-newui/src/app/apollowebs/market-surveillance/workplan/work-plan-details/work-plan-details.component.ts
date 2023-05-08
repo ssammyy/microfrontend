@@ -3422,22 +3422,25 @@ export class WorkPlanDetailsComponent implements OnInit {
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
     formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
     formData.append('docTypeName', docName);
-    for (let i = 0; i < chainOfCustodyDoc.length; i++) {
-      formData.append('docFile', chainOfCustodyDoc[i], chainOfCustodyDoc[i].name);
+    if (chainOfCustodyDoc){
+      for (let i = 0; i < chainOfCustodyDoc.length; i++) {
+        formData.append('docFile', chainOfCustodyDoc[i], chainOfCustodyDoc[i].name);
+      }
+      this.msService.saveWorkPlanFiles(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // this.uploadedChainOfCustodyDoc = new FileList();
+            // this.SpinnerService.hide();
+            // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log('Chain of Custody Doc failed upload' + error);
+            // this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
     }
-    this.msService.saveWorkPlanFiles(formData).subscribe(
-        (data: any) => {
-          this.workPlanInspection = data;
-          // this.uploadedChainOfCustodyDoc = new FileList();
-          // this.SpinnerService.hide();
-          // this.msService.showSuccess('CHAIN OF CUSTODY FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
-        },
-        error => {
-          this.SpinnerService.hide();
-          console.log('Chain of Custody Doc failed upload' + error);
-          // this.msService.showError('AN ERROR OCCURRED');
-        },
-    );
+
   }
   onClickSaveFollowUpActionDoc(docName: string) {
     this.msService.showSuccessWith2Message('Are you sure your want to save this file(s)?', 'You won\'t be able to Update them after submission!',
