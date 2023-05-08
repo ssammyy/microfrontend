@@ -116,6 +116,11 @@
                                         <b class="text-primary">Location of Activity</b>
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Scope of coverage</div>
+                                                <div class="list-text-accordion">
+                                                    {{workPlanInspection?.scopeOfCoverage}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Region</div>
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.region}}</div>
@@ -130,6 +135,7 @@
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.townMarketCenter}}</div>
                                             </li>
+                                            <br>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Other</div>
                                                 <div class="list-text-accordion">
@@ -1108,6 +1114,51 @@
                                                     class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                                 && workPlanInspection?.msPreliminaryReportStatus"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                                 && workPlanInspection?.msPreliminaryReportStatus"
+                                                    (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus
+
+                                            && workPlanInspection?.approvedStatus == true
+                                            && workPlanInspection?.rejectedStatus == false
+                                            && workPlanInspection?.compliantStatusAdded == true
+                                            && workPlanInspection?.preliminaryApprovedStatus == false
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                            && workPlanInspection?.updatedStatus
+                                            && workPlanInspection?.resubmitStatus
+                                            && workPlanInspection?.msPreliminaryReportStatus"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
@@ -1326,7 +1377,7 @@
                                             <button  *ngIf="workPlanInspection?.approvedStatus &&
                                                 workPlanInspection?.onsiteStartStatus &&
                                                workPlanInspection?.sampleSubmittedStatus &&
-                                               workPlanInspection?.seizureDeclarationStatus &&
+                                               workPlanInspection?.investInspectReportStatus &&
                                                workPlanInspection?.dataReportStatus &&
                                              workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
                                                      (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
@@ -1472,6 +1523,28 @@
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus == false
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
                                                  && workPlanInspection?.msPreliminaryReportStatus"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus
+                                            && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                 && workPlanInspection?.msPreliminaryReportStatus"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus
+                                            && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.rejectedStatusHod
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus == false
+                                            && workPlanInspection?.updatedStatus == false && workPlanInspection?.resubmitStatus == false
+                                            && workPlanInspection?.msPreliminaryReportStatus"
                                                     (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -2085,7 +2158,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksPDF" matInput type="text"
                                                       formControlName="complianceRemarks"
@@ -2112,7 +2185,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field disabled class="example-full-width">
                                             <textarea id="complianceRemarksPDFt" matInput type="text"
                                                       formControlName="complianceRemarks"
@@ -8135,7 +8208,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksPDF6" matInput type="text"
                                                       formControlName="complianceRemarks"
@@ -8213,7 +8286,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field disabled class="example-full-width">
                                             <textarea id="complianceRemarksPDFt9" matInput type="text"
                                                       formControlName="complianceRemarks"
@@ -8380,7 +8453,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksPDF6" matInput type="text"
                                                       formControlName="complianceRemarks"
@@ -8406,7 +8479,7 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for the compliance status above:</b></label>
                                         <mat-form-field disabled class="example-full-width">
                                             <textarea id="complianceRemarksPDFt9" matInput type="text"
                                                       formControlName="complianceRemarks"

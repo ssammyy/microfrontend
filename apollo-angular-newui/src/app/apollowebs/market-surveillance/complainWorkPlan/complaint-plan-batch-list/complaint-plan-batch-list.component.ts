@@ -33,7 +33,7 @@ export class ComplaintPlanBatchListComponent implements OnInit {
   previousStatus = 'all-workPlan-batch';
   searchStatus: any;
   personalTasks = 'false';
-  defaultPageSize = 20;
+  defaultPageSize = 100;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -89,11 +89,11 @@ export class ComplaintPlanBatchListComponent implements OnInit {
         type: 'date',
         filter: false,
       },
-      workPlanStatus: {
-        title: 'APPROVAL STATUS',
-        type: 'boolean',
-        filter: true,
-      },
+      // workPlanStatus: {
+      //   title: 'APPROVAL STATUS',
+      //   type: 'boolean',
+      //   filter: true,
+      // },
     },
     pager: {
       display: true,
