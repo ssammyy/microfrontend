@@ -96,7 +96,7 @@ export class AddApiClientComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.pvocService.showSuccess(res.message, () => {
+                        this.pvocService.showSuccess(res.message + " \nClient ID is " + res.data.client_id + " and the new secret is " + res.data.client_secret, () => {
                             this.dialogRef.close(res.data)
                         })
                     } else {

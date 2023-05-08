@@ -26,7 +26,14 @@ export class CorFragmentComponent implements OnInit {
 
     createQuery() {
         this.dialog.open(PvocQueriesComponent, {
-            data: this.corDetails.certificate_details
+            data: {
+                partnerId: this.corDetails.pvoc_client?.partnerId,
+                documentType: "COR",
+                certNumber: this.corDetails.cor_details?.corNumber,
+                rfcNumber: this.corDetails.cor_details?.rfcNumber,
+                invoiceNumber: this.corDetails.cor_details?.finalInvoiceNumber,
+                ucrNumber: this.corDetails.cor_details?.ucrNumber,
+            }
         }).afterClosed()
             .subscribe(
                 res => {

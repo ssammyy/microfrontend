@@ -6,71 +6,71 @@
             </div>
             <div class="card-body pt-0 widget-body">
                 <table class="table-responsive">
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Application Ref Number
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.applicationRefNo}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Application Date
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.applicationDate}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Declaration Number
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.declaraionNumber}}</td>
                     </tr>
                     <th>
                         UCR Number
                     </th>
                     <tr>
-                        <td>{{corDetails.cd_details.ucrNumber}}</td>
+                        <td>{{corDetails.cor_details.ucrNumber}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Application Type
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.cdTypeName}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Document Type
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.cdTypeName}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Assigned Officer
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.assignedTo}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Approval Status
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.approvalStatus}}</td>
                     </tr>
 
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Approval Date
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.approvalStatus}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Final Approval Date
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.approveRejectCdDate}}</td>
                     </tr>
-                    <th>
+                    <th *ngIf="corDetails.cd_details">
                         Version No
                     </th>
-                    <tr>
+                    <tr *ngIf="corDetails.cd_details">
                         <td>{{corDetails.cd_details.version}}</td>
                     </tr>
                 </table>
@@ -88,11 +88,15 @@
                 <ul class="w-list-unstyled">
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">COR NUMBER</div>
-                        <div class="list-text-accordion">{{corDetails.cor_details.corSerialNo}}</div>
+                        <div class="list-text-accordion">{{corDetails.cor_details.corNumber}}</div>
                     </li>
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">UCR NUMBER</div>
                         <div class="list-text-accordion">{{corDetails.cor_details.ucrNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">RFC NUMBER</div>
+                        <div class="list-text-accordion">{{corDetails.cor_details.rfcNumber}}</div>
                     </li>
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">RFC DATE</div>

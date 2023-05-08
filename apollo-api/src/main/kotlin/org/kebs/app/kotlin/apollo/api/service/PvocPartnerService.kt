@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service
 
+import org.kebs.app.kotlin.apollo.api.notifications.NotificationCodes
+import org.kebs.app.kotlin.apollo.api.notifications.NotificationService
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -26,6 +28,7 @@ class PvocPartnerService(
     private val corporateCustomerService: CorporateCustomerService,
     private val partnersRepository: IPvocPartnersRepository,
     private val commonDaoServices: CommonDaoServices,
+    private val notifications: NotificationService,
     private val partnerCountryRepo: IPvocPartnersCountriesRepository,
     private val partnerCategoryRepo: IPvocPartnerTypeRepository,
     private val apiClientService: ApiClientService
@@ -74,7 +77,7 @@ class PvocPartnerService(
             addUpdateBilling(form, partner, false)
             response.data = PvocPartnerDto.fromEntity(saved)
             response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Partner added"
+            response.message = "Partner added, create API client under partner details for integrations"
         } else {
             response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
             response.message = "Partner with given reference number already exists"
@@ -190,6 +193,28 @@ class PvocPartnerService(
         return response
     }
 
+    fun updateApiClientCredentials(partnerId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            val partner = partnerOptional.get()
+            val dataMap = this.apiClientService.updateClientCredentials(partner.apiClientId ?: 0)
+            partner.partnerEmail?.let { email ->
+                notifications.sendEmail(
+                    email, NotificationCodes.PVOC_PARTNER_API_CLIENT_CREDENTIAL.name,
+                    dataMap.toMap()
+                )
+            }
+            response.message = "Success"
+            response.data = dataMap
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+        } else {
+            response.message = "Invalid partner client"
+            response.responseCode = ResponseCodes.NOT_FOUND
+        }
+        return response
+    }
+
     fun addPartnerApiClient(form: ApiClientForm, partnerId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val partnerOptional = partnersRepository.findById(partnerId)
@@ -203,9 +228,16 @@ class PvocPartnerService(
                 partner.modifiedOn = Timestamp.from(Instant.now())
                 partner.modifiedBy = this.commonDaoServices.getLoggedInUser()?.userName
                 val saved = this.partnersRepository.save(partner)
-                response.data = saved.id
+                response.data = data
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Partner client created successfully"
+                partner.partnerEmail?.let { email ->
+                    val dataMap = mutableMapOf<String, Any>()
+                    dataMap.putAll(data)
+                    dataMap["record_id"] = ""
+                    dataMap["partner_name"] = partner.partnerName ?: ""
+                    notifications.sendEmail(email, NotificationCodes.PVOC_PARTNER_API_CLIENT_CREDENTIAL.name, data)
+                }
             } else {
                 response.responseCode = client.responseCode
                 response.message = client.responseCode

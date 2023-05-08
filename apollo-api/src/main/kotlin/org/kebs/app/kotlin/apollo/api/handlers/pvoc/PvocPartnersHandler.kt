@@ -130,4 +130,17 @@ class PvocPartnersHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun updatePartnerApiClientCredentials(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val partnerId = req.pathVariable("partnerId").toLong()
+            response = this.partnerService.updateApiClientCredentials(partnerId)
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to update api client credentials"
+            response.errors = ex.toString()
+        }
+        return ServerResponse.ok().body(response)
+    }
+
 }
