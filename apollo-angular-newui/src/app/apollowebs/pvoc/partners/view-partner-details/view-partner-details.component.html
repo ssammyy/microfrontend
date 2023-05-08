@@ -111,8 +111,13 @@
                             <div class="col-md-2">
                                 <b>Actions</b>
                                 <br/>
-                                <button class="btn" *ngIf="!partnerDetails.api_client" (click)="addApiClient()">Add Api
+                                <button class="btn btn-primary" *ngIf="!partnerDetails.api_client"
+                                        (click)="addApiClient()">Add Api
                                     Client
+                                </button>
+                                <button class="btn btn-warning" *ngIf="partnerDetails.api_client"
+                                        (click)="resetApiClientSecret()">
+                                    Reset Client Secret
                                 </button>
                             </div>
                         </div>

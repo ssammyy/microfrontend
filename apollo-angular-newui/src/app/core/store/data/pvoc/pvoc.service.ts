@@ -3,7 +3,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import swal from "sweetalert2";
+import swal, {SweetAlertIcon} from "sweetalert2";
 
 @Injectable({
     providedIn: 'root'
@@ -43,6 +43,29 @@ export class PVOCService {
         })
     }
 
+    showConfirmation(message: string, fn?: Function, icon?: SweetAlertIcon) {
+        let confirmationIcon: SweetAlertIcon = 'question'
+        if (icon) {
+            confirmationIcon = icon
+        }
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            showDenyButton: true,
+            confirmButtonText: 'Confirm',
+            denyButtonText: `Cancel`,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn',
+                denyButton: 'btn btn-danger form-wizard-next-btn',
+            },
+            icon: confirmationIcon
+        }).then((result) => {
+            if (fn) {
+                fn(result.isConfirmed)
+            }
+        })
+    }
+
     loadPartners(keyword: string, page: number, size: number): Observable<any> {
         let params = {}
         if (keyword) {
@@ -71,6 +94,10 @@ export class PVOCService {
 
     addPartnerApiClient(data: any, partnerId: number): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/create/api-client/" + partnerId), data)
+    }
+
+    updatePartnerApiClientSecret(data: any, partnerId: number): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/partners/update/api-client/secret/" + partnerId), data)
     }
 
     loadPartnerDetails(partnerId: number): Observable<any> {
@@ -322,5 +349,9 @@ export class PVOCService {
 
     sendPvocQuery(data: any): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/request"), data)
+    }
+
+    sendPvocQueryResponse(data: any, queryId: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/" + data.responseType), data)
     }
 }

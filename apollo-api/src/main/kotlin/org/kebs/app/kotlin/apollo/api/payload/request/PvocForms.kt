@@ -2268,7 +2268,7 @@ class KebsPvocQueryForm {
     @NotEmpty(message = "Certificate number is required")
     var certNumber: String? = null
 
-    @NotEmpty(message = "RFC Number is required")
+    //@NotEmpty(message = "RFC Number is required")
     var rfcNumber: String? = null
     var invoiceNumber: String? = null
 

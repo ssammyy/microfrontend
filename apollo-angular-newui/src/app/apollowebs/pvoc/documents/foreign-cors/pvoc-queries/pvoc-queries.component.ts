@@ -19,15 +19,16 @@ export class PvocQueriesComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.certNumber = this.data.corNumber
+        console.log(this.data)
+        this.certNumber = this.data.certNumber
         this.form = this.fb.group({
-            partnerId: [this.data.partner],
-            documentType: [this.data.cocType],
-            certNumber: [this.certNumber],
+            partnerId: [this.data.partnerId, Validators.required],
+            documentType: [this.data.documentType, Validators.required],
+            certNumber: [this.data.certNumber, Validators.required],
             rfcNumber: [this.data.rfcNumber],
-            invoiceNumber: [this.data.finalInvoiceNumber],
+            invoiceNumber: [this.data.invoiceNumber],
             ucrNumber: [this.data.ucrNumber],
-            kebsQuery: [null, [Validators.required]]
+            kebsQuery: [null, [Validators.required, Validators.minLength(20)]]
         })
     }
 

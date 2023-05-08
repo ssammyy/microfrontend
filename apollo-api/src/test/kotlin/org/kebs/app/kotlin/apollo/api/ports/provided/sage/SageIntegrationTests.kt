@@ -78,4 +78,14 @@ class SageIntegrationTests {
         Assert.assertNotNull("Expected remote reference", courier.countryName)
         Thread.sleep(TimeUnit.SECONDS.toMillis(20))
     }
+
+    @Test
+    fun testCheckPvocAccount() {
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val courier = CorporateCustomerAccounts()
+        sageService.checkCourierDetails("FOR-0065", "", courier, map)
+        Assert.assertNotNull(courier.corporateCode, "Corporate code is required")
+        Assert.assertNotNull("Expected remote reference", courier.countryName)
+        Thread.sleep(TimeUnit.SECONDS.toMillis(20))
+    }
 }

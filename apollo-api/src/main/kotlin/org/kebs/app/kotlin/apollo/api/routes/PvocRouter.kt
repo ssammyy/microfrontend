@@ -22,6 +22,7 @@ class PvocRouter {
             GET("/details/{partnerId}", handler::getPartnerDetails)
             PUT("/update/{partnerId}", handler::updatePartnerDetails)
             POST("/create/api-client/{partnerId}", handler::createPartnerApiClient)
+            POST("/update/api-client/secret/{partnerId}", handler::updatePartnerApiClientCredentials)
         }
     }
 

@@ -12,7 +12,8 @@
         <h5 class="card-title" *ngIf="queryDetails.conclusion">Conclusions</h5>
         <div class="card-text" *ngIf="queryDetails.conclusion">{{queryDetails.conclusion}}</div>
         <span class="text-break"></span>
-        <a class="float-right pull-right btn btn-primary pt-3 pl-3" href="/pvoc/foreign/queries/{{queryDetails.id}}">View
-            More</a>
+        <button class="float-right pull-right btn btn-primary" (click)="viewQuery(queryDetails)">
+            View More
+        </button>
     </div>
 </div>
