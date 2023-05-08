@@ -27,6 +27,7 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
+                                <form (ngSubmit)="approveInternationalStandard()" [formGroup]="approveRequirementsFormGroup" class="form">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
                                     <thead>
                                     <tr>
@@ -49,24 +50,27 @@
                                         <td>{{isCheckRequirement.requestedBy}}</td>
                                         <td>{{isCheckRequirement.scope}},<br>{{isCheckRequirement.purposeAndApplication}},<br>{{isCheckRequirement.issuesAddressed}}</td>
                                         <td>{{isCheckRequirement.referenceMaterial}}</td>
-                                        <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}} <br><b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
-                                       <td><div class="form-check">
-                                           <input class="form-check-input" type="radio" name="approve" id="approve{{i+1}}">
-                                           <label class="form-check-label" for="approve{{i+1}}">
-                                               Approve
-                                           </label>
-                                       </div>
-                                           <div class="form-check">
-                                               <input class="form-check-input" type="radio" name="reject" id="reject{{i+1}}" >
+                                        <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}} <br><b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b><br> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
+                                       <td>
+                                           <div class="form-group form-check-inline" >
+                                               <input class="form-check-input" type="checkbox"  formControlName="accentTo"  id="approve{{i+1}}" value="{{approve}}" name="accentTo">
+                                               <label class="form-check-label" for="approve{{i+1}}">
+                                                   approve
+                                               </label>
+                                           </div>
+                                           <div class="form-group form-check-inline" >
+                                               <input class="form-check-input" type="checkbox" value="{{reject}}" formControlName="accentTo" id="reject{{i+1}}" name="accentTo" >
                                                <label class="form-check-label" for="reject{{i+1}}">
                                                    Reject
                                                </label>
-                                           </div></td>
+                                           </div>
+
                                         <td *ngIf="isCheckRequirement.status==8"><a  (click)="onOpenModals(isCheckRequirement,'approveStandard',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Standard</a></td>
 
                                     </tr>
                                     </tbody>
                                 </table>
+                                </form>
                             </div>
                             <div class="modal fade" id="approveStandard" tabindex="-1" role="dialog" aria-labelledby="approveStandardLabel" aria-hidden="true">a
                                 <div class="modal-dialog modal-xl" role="document">

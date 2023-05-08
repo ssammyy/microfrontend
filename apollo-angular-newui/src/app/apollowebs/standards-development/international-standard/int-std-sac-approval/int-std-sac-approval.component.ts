@@ -48,6 +48,7 @@ export class IntStdSacApprovalComponent implements OnInit {
   isShowMainTab= true;
   isShowMainTabs= true;
   public approveRequirementsFormGroup!: FormGroup;
+  public multipleApproveFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   public actionRequests: ISCheckRequirements | undefined;
@@ -67,6 +68,21 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getAppStdPublishing();
+    this.multipleApproveFormGroup= this.formBuilder.group({
+        docName: null,
+        title: null,
+        scope: null,
+        normativeReference: null,
+        symbolsAbbreviatedTerms: null,
+        clause: null,
+        special: null,
+        standardType: null,
+        comments: null,
+        accentTo: null,
+        draftId: null,
+        requestId: null,
+        id: null,
+    });
     this.approveRequirementsFormGroup = this.formBuilder.group({
         docName: null,
         title: null,
