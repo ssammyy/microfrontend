@@ -127,7 +127,7 @@ class EditProposalCommentsDto(
     var requestId: Long?=null,
     var draftId: Long?=null,
     var adoptionAcceptableAsPresented: String?=null,
-    var intialAdoptionAcceptableAsPresented: String?=null,
+    var initialAdoptionAcceptableAsPresented: String?=null,
     var emailOfRespondent: String?=null,
     var phoneOfRespondent: String?=null,
     var stakeHolderId: Long?=null,

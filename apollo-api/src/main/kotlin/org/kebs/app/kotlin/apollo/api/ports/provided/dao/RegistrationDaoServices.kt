@@ -791,16 +791,18 @@ class RegistrationDaoServices(
         var sm = StdLevyEntryNoDataMigrationEntity()
         var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
         var kraPin= cp.kraPin
-        var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
-        allRequests = allRequests.plus(1)
-        val genNumber= String.format("%06d", allRequests)
-        var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+        var entry=""
+        var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
-        // this will convert any number sequence into 6 character.
-        val entry= "${prefixText}${genNumber}"
+        if (entryNumbers==null){
+            var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
 
-        //var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
-       // if (entryNumbers==null){
+            allRequests = allRequests.plus(1)
+            val genNumber= String.format("%06d", allRequests)
+            var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+            // this will convert any number sequence into 6 character.
+            entry= "${prefixText}${genNumber}"
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
@@ -811,12 +813,13 @@ class RegistrationDaoServices(
 
 
             stdLevyEntryNoDataMigrationEntityRepository.save(sm)
-       // }
-       // entryNumbers = (entryNumbers ?: entry) as Long?
+        }
+
+        entryNumbers = (entryNumbers ?: entry) as Long?
 
 
         with(cp) {
-            entryNumber = entry
+            entryNumber = entryNumbers.toString()
             modifiedBy = commonDaoServices.concatenateName(u)
             modifiedOn = commonDaoServices.getTimestamp()
         }

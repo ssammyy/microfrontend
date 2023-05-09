@@ -352,7 +352,7 @@
                                                                 <option *ngFor="let proposal of proposals"  value="{{proposal.value}}"  [selected]="proposal.value==isComment.adoptDraft">{{proposal.name}}</option>
 
                                                             </select>
-
+                                                            <input type="hidden" formControlName="initialAdoptionAcceptableAsPresented" value="{{isComment.adoptDraft}}" name="initialAdoptionAcceptableAsPresented" >
                                                         </div>
                                                         <div class="form-group col-12" >
                                                             <label><b>Reasons</b><span style="font-size: small; color: red;">(*)Not required if Adoption Proposal is acceptable</span></label>
@@ -393,6 +393,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
 
                                                 <input type="hidden" formControlName="commentId" value="{{actionRequest?.commentId}}" name="commentId" >
                                                 <input type="hidden" formControlName="requestId" value="{{actionRequest?.id}}" name="requestId" >
