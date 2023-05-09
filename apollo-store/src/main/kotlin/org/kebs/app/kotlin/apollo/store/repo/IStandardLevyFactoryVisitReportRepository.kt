@@ -64,8 +64,12 @@ interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdL
     @Query(value = "SELECT NVL(max(ENTRY_COUNT),0)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
     fun getMaxEntryNo(): Long
 
-    @Query(value = "SELECT ENTRY_NUMBERS  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
+    @Query(value = "SELECT MAX(ENTRY_NUMBER) as entryNumber  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
     fun getEntryNo(@Param("kraPin") kraPin: String?): Long?
+
+    @Query(value = "SELECT ID as entryId  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE ENTRY_NUMBER=:entryNumber", nativeQuery = true)
+    fun getEntryid(@Param("entryNumber") entryNumber: Long?): Long?
+
 
 }
 interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHistoricalPayments, Long>{

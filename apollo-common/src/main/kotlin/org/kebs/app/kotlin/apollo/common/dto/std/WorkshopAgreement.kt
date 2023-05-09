@@ -145,94 +145,80 @@ class EditCompanyStandard(
     @JsonProperty("comStdNumber")  var comStdNumber: String,
     @JsonProperty("savedRowID")  var id: Long,
 ){}
-class ISDecision(
-    @JsonProperty("processId") val processId: String,
-    @JsonProperty("taskId") val taskId: String,
-    @JsonProperty("accentTo") val accentTo: Boolean,
-    @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("preparedBy")  val preparedBy: Long,
-    @JsonProperty("reviewID")  val reviewID: Long,
-    @JsonProperty("taskType")  val taskType: Long,
-    @JsonProperty("assignedTo")  var assignedTo: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("standardID") val standardID: Long,
-    @JsonProperty("description") val description: String,
-    @JsonProperty("drafterId") val drafterId: Long,
+data class ISDecision(
+     var processId: String?=null,
+     var taskId: String?=null,
+     var accentTo: Boolean,
+      var approvalID: Long?=null,
+      var preparedBy: Long?=null,
+      var reviewID: Long?=null,
+      var taskType: Long?=null,
+      var assignedTo: Long?=null,
+     var comments: String?=null,
+     var proposalId: Long?=null,
+     var standardID: Long?=null,
+     var description: String?=null,
+     var drafterId: Long?=null
 ) {
 }
-class ISTDecision(
-    @JsonProperty("processId") val processId: String,
-    @JsonProperty("taskId") val taskId: String,
-    @JsonProperty("accentTo") val accentTo: Boolean,
-    @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("preparedBy")  val preparedBy: Long,
-    @JsonProperty("reviewID")  val reviewID: Long,
-    @JsonProperty("taskType")  val taskType: Long,
-    @JsonProperty("assignedTo")  var assignedTo: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("standardID") val standardID: Long,
-    @JsonProperty("drafterId") val drafterId: Long,
+data class ISTDecision(
+     var processId: String?=null,
+     var taskId: String?=null,
+     var accentTo: Boolean?=null,
+      var approvalID: Long?=null,
+      var preparedBy: Long?=null,
+      var reviewID: Long?=null,
+      var taskType: Long?=null,
+      var assignedTo: Long?=null,
+     var comments: String?=null,
+     var proposalId: Long?=null,
+     var standardID: Long?=null,
+     var drafterId: Long?=null
 ) {
 }
-class ISTDecisions(
-    @JsonProperty("accentTo") val accentTo: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("comments") val comments: String
+data class ISTDecisions(
+     var accentTo: String?=null,
+     var proposalId: Long?=null,
+     var comments: String?=null
 ){
 
 }
 
-class ISJustificationDecisions(
-    @JsonProperty("accentTo") val accentTo: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("justificationId") val justificationId: Long,
-    @JsonProperty("comments") val comments: String
+data class ISJustificationDecisions(
+     var accentTo: String?=null,
+     var proposalId: Long?=null,
+     var justificationId: Long?=null,
+     var comments: String?=null
 ){
 
 }
-class ISHopDecision(
-    @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("requestId") val requestId: Long,
-    @JsonProperty("id") val id: Long
-){
-
-}
-class ISDraftDecisions(
-    @JsonProperty("accentTo") val accentTo: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("justificationId") val justificationId: Long,
-    @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("requestId") val requestId: Long,
-    @JsonProperty("standardType") val standardType: String,
-    @JsonProperty("draftStatus") val draftStatus: String,
-    @JsonProperty("coverPageStatus") val coverPageStatus: String,
-    @JsonProperty("id") val id: Long,
-    @JsonProperty("assignedTo") val assignedTo: Long
+data class ISHopDecision(
+     var draftId: Long?=null,
+     var comments: String?=null,
+     var requestId: Long?=null,
+     var id: Long?=null
 ){
 
 }
 
-class ISDecisions(
-    @JsonProperty("accentTo") val accentTo: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("id") val id: Long,
-    @JsonProperty("standardType") val standardType: String,
+
+data class ISDecisions(
+     var accentTo: String?=null,
+     var proposalId: Long?=null,
+     var draftId: Long?=null,
+     var comments: String?=null,
+     var id: Long?=null,
+     var standardType: String?=null,
 ){
 
 }
 
-class ISDrDecisions(
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("requestId") val requestId: Long,
-    @JsonProperty("id") val id: Long
+data class ISDrDecisions(
+     var proposalId: Long?=null,
+     var draftId: Long?=null,
+     var comments: String?=null,
+     var requestId: Long?=null,
+     var id: Long?=null
 ){
 
 }
@@ -243,23 +229,22 @@ class StandardGazetteDto(
 
 
 }
-class ISDraftDecisionsStd(
-    @JsonProperty("accentTo") val accentTo: String,
-    @JsonProperty("proposalId") val proposalId: Long,
-    @JsonProperty("justificationId") val justificationId: Long,
-    @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String?,
-    @JsonProperty("title") val title: String?,
-    @JsonProperty("normativeReference") val normativeReference: String?,
-    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String?,
-    @JsonProperty("clause") val clause: String?,
-    @JsonProperty("scope") val scope: String?,
-    @JsonProperty("special") val special: String?,
-    @JsonProperty("standardNumber") val standardNumber: String?,
-    @JsonProperty("standardType") val standardType: String?,
-    @JsonProperty("requestId") val requestId: Long?,
-    @JsonProperty("id") val id: Long
-
+data class ISDraftDecisionsStd(
+     var accentTo: String?=null,
+     var proposalId: Long?=null,
+     var justificationId: Long?=null,
+     var draftId: Long?=null,
+     var comments: String?=null,
+     var title: String?=null,
+     var normativeReference: String?=null,
+     var symbolsAbbreviatedTerms: String?=null,
+     var clause: String?=null,
+     var scope: String?=null,
+     var special: String?=null,
+     var standardNumber: String?=null,
+     var standardType: String?=null,
+     var requestId: Long?=null,
+     var id: Long
 ){
 
 }
@@ -288,7 +273,7 @@ class ISJustificationDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("comments") val comments: String?
 ) {
 }
 class ISDraftStdUpload(
@@ -298,7 +283,7 @@ class ISDraftStdUpload(
 
 }
 class ReviewDecision(
-    @JsonProperty("comments") var comments: String,
+    @JsonProperty("comments") var comments: String?,
     @JsonProperty("taskId") var taskId: String,
     @JsonProperty("processId")  var processId: String,
     @JsonProperty("assignedTo")  var assignedTo: Long,
@@ -310,7 +295,7 @@ class ReviewDecision(
 }
 
 class GazzettementDecision(
-    @JsonProperty("comments") var comments: String,
+    @JsonProperty("comments") var comments: String?,
     @JsonProperty("taskId") var taskId: String,
     @JsonProperty("processId")  var processId: String,
     @JsonProperty("assignedTo")  var assignedTo: Long,
@@ -396,7 +381,8 @@ data class ISAdoptionProposalDto(
     //var addStakeholdersList: List<String>?=null,
     var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
     var departmentId: Long?=null,
-    var departmentName: String?=null
+    var departmentName: String?=null,
+    var tcSecAssigned: String?=null
 
 ){
 
@@ -490,7 +476,6 @@ data class ISAdoptionJustifications(
     var intendedUsers: String?=null,
     var circulationDate: Timestamp?=null,
     var closingDate: Timestamp?=null,
-
     var meetingDate:String?=null,
     var tcSec_id:String?=null,
     var slNumber:String?=null,
@@ -743,4 +728,36 @@ data class SpcStandardReviewCommentDto(
 
 )
 {}
+
+//class ISDraftDecisions(
+//    @JsonProperty("accentTo") val accentTo: String,
+//    @JsonProperty("proposalId") val proposalId: Long,
+//    @JsonProperty("justificationId") val justificationId: Long,
+//    @JsonProperty("draftId") val draftId: Long,
+//    @JsonProperty("comments") val comments: String,
+//    @JsonProperty("requestId") val requestId: Long,
+//    @JsonProperty("standardType") val standardType: String,
+//    @JsonProperty("draftStatus") val draftStatus: String,
+//    @JsonProperty("coverPageStatus") val coverPageStatus: String,
+//    @JsonProperty("id") val id: Long,
+//    @JsonProperty("assignedTo") val assignedTo: Long
+//){
+//
+//}
+
+data class ISDraftDecisions(
+    var accentTo: String?=null,
+    var proposalId: Long?=null,
+    var justificationId: Long?=null,
+    var draftId: Long?=null,
+    var comments: String?=null,
+    var requestId: Long?=null,
+    var standardType: String?=null,
+    var draftStatus: String?=null,
+    var coverPageStatus: String?=null,
+    var id: Long,
+    var assignedTo: Long?=null
+){
+
+}
 

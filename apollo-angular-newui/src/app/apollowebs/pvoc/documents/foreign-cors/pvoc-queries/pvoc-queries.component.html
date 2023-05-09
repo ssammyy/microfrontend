@@ -2,7 +2,7 @@
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-8">
-            <label for="kebsQuery" class="waiver-form-label">Please write, in detailed </label>
+            <label for="kebsQuery" class="waiver-form-label">Please write, in detailed (Minimum 20 characters)</label>
             <textarea id="kebsQuery" class="waiver-form-input-master"
                       formControlName="kebsQuery"></textarea>
             <mat-error *ngIf="errorMessages && errorMessages.kebsQuery">{{errorMessages.kebsQuery}}</mat-error>
@@ -13,6 +13,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
+        <p *ngFor="let e of form.errors">{{e.toString()}}</p>
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
             <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>

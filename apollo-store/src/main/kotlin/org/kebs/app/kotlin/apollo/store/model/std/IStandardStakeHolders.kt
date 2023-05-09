@@ -46,6 +46,10 @@ class IStandardStakeHolders {
     @Basic
     var status: Long?=null
 
+    @Column(name="COMMENT_ID")
+    @Basic
+    var commentId: Long?=null
+
 
 
 }

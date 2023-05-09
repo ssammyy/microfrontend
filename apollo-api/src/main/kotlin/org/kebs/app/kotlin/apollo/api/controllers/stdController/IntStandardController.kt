@@ -281,6 +281,12 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
     }
 
+    @GetMapping("/international_standard/getProposalComment")
+    fun getProposalComment(@RequestParam("id") id: Long):MutableIterable<ComDraftComments>?
+    {
+        return internationalStandardService.getProposalComment(id)
+    }
+
     @PostMapping("/anonymous/international_standard/submitDraftComments")
     fun submitDraftComments(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
@@ -307,6 +313,16 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComment(intDraftCommentDto))
 
     }
+
+    @PostMapping("/international_standard/editSubmitDraftComment")
+    fun editSubmitDraftComment(@RequestBody intDraftCommentDto: EditProposalCommentsDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.editSubmitDraftComment(intDraftCommentDto))
+
+    }
+
 
 
     @GetMapping("/international_standard/getAllComment")

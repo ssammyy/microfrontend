@@ -665,6 +665,27 @@ export class ThisProposalComment{
     phoneOfRespondent: string;
     stakeHolderId:number;
 }
+
+export class EditProposalComment{
+    commentDocumentType: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    standardNumber: string;
+    commentTitle: string;
+    scope: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    requestId: number;
+    draftId: number;
+    adoptionAcceptableAsPresented: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
+    stakeHolderId:number;
+}
+
 export class PredefinedSDCommentsFields {
     standardNumber: string;
     commentTitle: string;
@@ -699,12 +720,7 @@ export interface ISAdoptionProposal {
     scope: string;
     clause: string;
     standardNumber: string;
-    adoptionAcceptableAsPresented: string;
     reasonsForNotAcceptance: string;
-    recommendations: string;
-    nameOfRespondent: string;
-    positionOfRespondent: string;
-    nameOfOrganization: string;
     dateOfApplication: string;
     proposalNumber: string;
     stakeholdersList: string[];
@@ -740,6 +756,29 @@ export interface ISAdoptionProposal {
     stName: string;
     stStatus: number;
     stTelephone: string;
+    tcSecAssigned:string;
+
+    adoptionAcceptableAsPresented: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    commentId: number;
+
+}
+export interface ISComments{
+    id: number;
+    draftComment: string;
+    nameOfOrganization: string;
+    proposedChange: string;
+    adoptStandard: string;
+    adoptDraft: string;
+    reason: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    observation: string;
 }
 
 export interface ISJustificationProposal {
@@ -2070,12 +2109,6 @@ export interface ReviewDecision {
 
 export interface ISCheckRequirements {
     id: number;
-    title: string;
-    scope: string;
-    normativeReference: string;
-    symbolsAbbreviatedTerms: string;
-    clause: string;
-    special: string;
     justificationNo: number;
     proposalId: number;
     status: string;
@@ -2085,26 +2118,35 @@ export interface ISCheckRequirements {
     documentType: string;
     preparedBy: string;
     comStdNumber: string;
-    requestNumber: string;
     draftId: number;
     departmentId: string;
     tcName: string;
     subject: string;
     description: string;
-    contactOneFullName: string;
-    contactOneTelephone: string;
-    contactOneEmail: string;
-    contactTwoFullName: string;
-    contactTwoTelephone: string;
-    contactTwoEmail: string;
-    contactThreeFullName: string;
-    contactThreeTelephone: string;
-    contactThreeEmail: string;
-    companyName: string;
-    companyPhone: string;
     draftNumber: string;
     draughting: string;
     standardType: string;
+    meetingDate: string;
+    slNumber: string;
+    edition: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: Timestamp<any>;
+    referenceMaterial: string;
+    submissionDate: Timestamp<any>;
+    tcCommittee: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    purposeAndApplication: string;
+    intendedUsers: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    durationTaken: string;
 }
 
 export interface ComStdRequest {

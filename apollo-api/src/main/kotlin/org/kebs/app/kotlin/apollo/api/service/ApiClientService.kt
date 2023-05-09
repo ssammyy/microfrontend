@@ -205,6 +205,25 @@ class ApiClientService(
         return response
     }
 
+    fun updateClientCredentials(clientId: Long): MutableMap<String, Any> {
+        val client = this.apiClientRepo.findById(clientId)
+        if (client.isPresent) {
+            val apiClient = client.get()
+            val apiSecret = generateRandom(15, true)
+            // Save client secret
+            apiClient.clientSecret = this.passwordEncoder.encode(apiSecret)
+            this.apiClientRepo.save(apiClient)
+            // Prepare payload for client credentials
+            val dataMap = mutableMapOf<String, Any>()
+            dataMap["record_id"] = ""
+            dataMap["client_id"] = apiClient.clientId ?: ""
+            dataMap["client_secret"] = apiSecret
+            return dataMap
+        } else {
+            throw UsernameNotFoundException("client id or secret are invalid")
+        }
+    }
+
     fun authenticateClient(clientId: String, clientSecret: String): SystemApiClient? {
         val client = this.apiClientRepo.findByClientId(clientId)
         if (client.isPresent) {

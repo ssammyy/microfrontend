@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import {
     AuthoritiesEntityDtos,
     ComDraftComment,
-    ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks,
+    ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks, EditProposalComment,
     GazetteNotice,
     InternationalStandardsComments, InterNationalStdDecision,
     ISAdoptionComments,
     ISAdoptionJustification,
-    ISAdoptionProposal, ISCheckRequirements,
+    ISAdoptionProposal, ISCheckRequirements, ISComments,
     ISDecision, ISDraftDecision, ISDraftDecisionStd,
     ISDraftUpload,
     ISHopTASKS,
@@ -202,6 +202,11 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION);
         const params = new HttpParams().set('draftId', draftId);
         return this.http.get<ISJustificationProposal>(url, {params}).pipe();
+    }
+    public getProposalComments(id: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSAL_COMMENTS);
+        const params = new HttpParams().set('id', id);
+        return this.http.get<ISComments>(url, {params}).pipe();
     }
     public getApprovedISJustification(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APP_JUSTIFICATION);
@@ -464,6 +469,19 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_WEB_COMMENTS);
         const params = new HttpParams();
         return this.http.post<ThisProposalComment>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public editSubmitDraftComment(comDraftComment: EditProposalComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_DRAFT_COMMENT);
+        const params = new HttpParams();
+        return this.http.post<EditProposalComment>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

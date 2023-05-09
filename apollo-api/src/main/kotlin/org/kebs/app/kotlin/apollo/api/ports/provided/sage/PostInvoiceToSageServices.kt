@@ -12,7 +12,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.*
-import org.kebs.app.kotlin.apollo.common.dto.kappa.response.NotificationResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.qa.SageValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.sage.response.SageNotificationResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -272,7 +271,14 @@ class PostInvoiceToSageServices(
 
             val headerBody = Header().apply {
                 serviceName = "Thirdparty"
-                messageID = "ATL/KBES/REF${generateRandomText(4, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                messageID = "ATL/KBES/REF${
+                    generateRandomText(
+                        4,
+                        map.secureRandom,
+                        map.messageDigestAlgorithm,
+                        true
+                    ).toUpperCase()
+                }"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
 
@@ -282,18 +288,26 @@ class PostInvoiceToSageServices(
             requestBody["header"] = headerBody
             val dataMap = mutableMapOf<String, String>()
             dataMap["TaxNo"] = pinNumber
-            dataMap["GroupCode"] = groupCode
+            // Send empty group code for foreign customers
+            when {
+                "TRAFOR".equals(groupCode, true) -> {
+                    dataMap["GroupCode"] = ""
+                }
+                else -> {
+                    dataMap["GroupCode"] = groupCode.trim()
+                }
+            }
             requestBody["request"] = mapOf(Pair("Interface", "T103"))
             requestBody["details"] = dataMap
 
             // Send and log request
             val resp = daoService.getHttpResponseFromGetCall(
-                    false,
-                    "$configUrl/${config.varField3}",
-                    config,
-                    requestBody,
-                    null,
-                    null
+                false,
+                "$configUrl/${config.varField3}",
+                config,
+                requestBody,
+                null,
+                null
             )
             // Check response code
             if (resp == null || resp.status.value != 200) {

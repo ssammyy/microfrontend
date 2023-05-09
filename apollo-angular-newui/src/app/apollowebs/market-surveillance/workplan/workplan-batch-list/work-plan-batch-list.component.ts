@@ -82,7 +82,7 @@ export class WorkPlanBatchListComponent implements OnInit {
       userCreated: {
         title: 'CREATED BY',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       createdDate: {
         title: 'CREATED DATE',

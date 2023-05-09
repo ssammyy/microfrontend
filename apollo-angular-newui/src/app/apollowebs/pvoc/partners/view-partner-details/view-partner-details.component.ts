@@ -58,4 +58,22 @@ export class ViewPartnerDetailsComponent implements OnInit {
             )
     }
 
+    resetApiClientSecret() {
+        this.pvocService.showConfirmation("Are you sure you want to generate and send PVOC client secret? This might affect their current opperation", res => {
+            if (res) {
+                this.pvocService.updatePartnerApiClientSecret({}, this.partnerId)
+                    .subscribe(
+                        res => {
+                            if (res.responseCode === "00") {
+                                this.pvocService.showSuccess(res.message + " \nClient ID is " + res.data.client_id + " and the new secret is " + res.data.client_secret)
+                                this.loadData()
+                            } else {
+                                this.pvocService.showError(res.message)
+                            }
+                        }
+                    )
+            }
+        });
+    }
+
 }

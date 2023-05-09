@@ -141,24 +141,28 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     fun getStdApproved(): MutableList<ComStandard>
 
     @Query(
-        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
-                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
-                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
-                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
-                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
-                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+        value = "SELECT s.ID as id,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.STANDARD_TYPE as standardType,j.MEETING_DATE as meetingDate,\n" +
+                "j.SL_NUMBER as slNumber,j.EDITION as edition,j.REQUEST_NUMBER as requestNumber,j.REQUESTED_BY as requestedBy,\n" +
+                "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
+                "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
+                "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =8 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
     fun getAppStdPublishing(): MutableList<ComStandard>
 
     @Query(
-        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
-                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
-                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
-                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
-                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
-                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+        value = "SELECT s.ID as id,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.STANDARD_TYPE as standardType,j.MEETING_DATE as meetingDate,\n" +
+                "j.SL_NUMBER as slNumber,j.EDITION as edition,j.REQUEST_NUMBER as requestNumber,j.REQUESTED_BY as requestedBy,\n" +
+                "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
+                "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
+                "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =15 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
@@ -496,6 +500,8 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
 }
 interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, Long> {
     fun findByDraftIDOrderByIdDesc(id: Long): MutableIterable<ComDraftComments>?
+    fun findByIdOrderByIdDesc(id: Long): MutableIterable<ComDraftComments>?
+    fun findAllById(id: Long):MutableIterable<ComDraftComments>?
 
     @Query(
         value = "SELECT ID as id  FROM SD_COM_DRAFT_COMMENTS  WHERE DRAFT_ID= :id ",
@@ -520,7 +526,7 @@ interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacList
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
-    fun findAllById(id: Long): ComStandardDraftUploads
+    fun findAllByIdOrderByIdDesc(id: Long): ComStandardDraftUploads
 
     @Query(
         value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",
@@ -593,7 +599,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName,p.TC_SEC_NAME as tcSecEmail," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,h.ID as stId,h.EMAIL as stEmail,h.NAME as stName,h.STATUS as stStatus,h.TELEPHONE as stTelephone " +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,p.ADOPTION_LINK as adoptionLink,d.STANDARD_TYPE as standardType,h.ID as stId,h.EMAIL as stEmail,h.NAME as stName,h.STATUS as stStatus,h.COMMENT_ID as commentId,h.TELEPHONE as stTelephone " +
                 "FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN SD_IS_STAKE_HOLDERS h ON d.ID=h.DRAFT_ID " +
                 " WHERE TRUNC(p.CIRCULATION_DATE) < TRUNC( SYSDATE ) AND  TRUNC(p.CLOSING_DATE) > TRUNC( SYSDATE ) AND h.USER_ID=:id AND d.STATUS=0 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
@@ -639,11 +645,11 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE  d.STATUS=4 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE p.TC_SEC_ASSIGNED=:id AND  d.STATUS=4 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
     )
 
-    fun getApprovedJustification(): MutableList<ProposalDetails>
+    fun getApprovedJustification(id: Long?): MutableList<ProposalDetails>
 
     @Query("SELECT NVL (NUMBER_OF_COMMENTS,0) as NUMBER_OF_COMMENTS FROM SD_ADOPTION_PROPOSAL WHERE ID=:proposalID", nativeQuery = true)
     fun getCommentCount(@Param("proposalID") proposalID: Long?): Long

@@ -51,13 +51,13 @@ class ConfigurationsHandler(
         return ServerResponse.ok().body(configService.listBillTypes(page))
     }
 
-    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN','PVOC_ADMIN')")
     fun removeBillLimit(req: ServerRequest): ServerResponse {
         val limitId = req.pathVariable("limitId").toLong()
         return ServerResponse.ok().body(configService.removeBillLimit(limitId))
     }
 
-    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN','PVOC_ADMIN')")
     fun addBillingLimit(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {

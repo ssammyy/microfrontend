@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 

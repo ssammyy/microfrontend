@@ -83,6 +83,7 @@ export class IsProposalFormComponent implements OnInit {
         adoptionProposalLink:['', [Validators.required, Validators.pattern(this.urlRegex)]],
         departmentId:null,
         departmentName:null,
+        tcSecAssigned: null
         //addStakeholdersList:['', Validators.required]
         // adoptionAcceptableAsPresented : ['', Validators.required],
         // reasonsForNotAcceptance : ['', Validators.required],
@@ -152,7 +153,8 @@ export class IsProposalFormComponent implements OnInit {
                     proposal_doc_name: this.proposal_doc_name,
                     tcSecName: this.fullname,
                     departmentId: this.actionRequests.departmentId,
-                    departmentName: this.actionRequests.departmentName
+                    departmentName: this.actionRequests.departmentName,
+                    tcSecAssigned:this.actionRequests.tcSecAssigned
                 }
             );
         }

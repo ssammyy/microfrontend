@@ -94,11 +94,11 @@ export class ComplaintPlanBatchListComponent implements OnInit {
         type: 'date',
         filter: false,
       },
-      workPlanStatus: {
-        title: 'APPROVAL STATUS',
-        type: 'boolean',
-        filter: true,
-      },
+      // workPlanStatus: {
+      //   title: 'APPROVAL STATUS',
+      //   type: 'boolean',
+      //   filter: true,
+      // },
     },
     pager: {
       display: true,

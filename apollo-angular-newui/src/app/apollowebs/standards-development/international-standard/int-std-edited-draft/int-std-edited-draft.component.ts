@@ -206,11 +206,6 @@ export class IntStdEditedDraftComponent implements OnInit {
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
                     description:this.actionRequests.description,
-                    contactOneFullName:this.actionRequests.contactOneFullName,
-                    contactOneTelephone:this.actionRequests.contactOneTelephone,
-                    contactOneEmail:this.actionRequests.contactOneEmail,
-                    companyName:this.actionRequests.companyName,
-                    companyPhone:this.actionRequests.companyPhone,
                     standardType:this.actionRequests.standardType,
                     docName:this.actionRequests.documentType,
                 }

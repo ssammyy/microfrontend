@@ -20,15 +20,12 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
@@ -132,7 +129,8 @@ class IntStandardService(
 
     fun getIntStandardProposals(): MutableList<StandardRequest>
     {
-        return standardRequestRepository.getIntStandardProposals()
+        val loggedInUser = commonDaoServices.loggedInUserDetails().id
+        return standardRequestRepository.getIntStandardProposals(loggedInUser)
     }
 
 
@@ -153,9 +151,17 @@ class IntStandardService(
         iSAdoptionProposal.tcSecEmail=loggedInUser.email
         iSAdoptionProposal.title=isAdoptionProposalDto.title
         iSAdoptionProposal.scope=isAdoptionProposalDto.scope
-        iSAdoptionProposal.iStandardNumber=isAdoptionProposalDto.iStandardNumber
+        var standardString="KS "+isAdoptionProposalDto.iStandardNumber
+
+        //val str = "abcdefgh"
+        var firstChar = standardString?.get(0)
+        var secondChar = standardString?.get(1)
+        var thirdChar = standardString?.get(0)
+
+        iSAdoptionProposal.iStandardNumber=standardString
         iSAdoptionProposal.requestId=isAdoptionProposalDto.requestId
         iSAdoptionProposal.adoptionProposalLink=isAdoptionProposalDto.adoptionProposalLink
+        iSAdoptionProposal.tcSecAssigned=isAdoptionProposalDto.tcSecAssigned
 
         iSAdoptionProposal.uploadedBy=isAdoptionProposalDto.uploadedBy
         iSAdoptionProposal.preparedDate = datePrepared
@@ -373,6 +379,9 @@ class IntStandardService(
 //
 //        println("Comment Submitted")
 //    }
+    fun getProposalComment(id: Long): MutableIterable<ComDraftComments>? {
+        return comStandardDraftCommentsRepository.findAllById(id)
+    }
 
     fun submitDraftComments(com: ProposalCommentsDto){
         val variables: MutableMap<String, Any> = HashMap()
@@ -384,6 +393,7 @@ class IntStandardService(
             comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
             comDraftComments.requestID=com.requestId
             comDraftComments.draftID=com.draftId
+            comDraftComments.positionOfRespondent=com.positionOfRespondent
             comDraftComments.nameOfRespondent=com.nameOfRespondent
             comDraftComments.phoneOfRespondent=com.phoneOfRespondent
             comDraftComments.emailOfRespondent=com.emailOfRespondent
@@ -418,6 +428,7 @@ class IntStandardService(
         iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
             with(stakeHolder){
                status=1
+               commentId= comDraftCommentsSaved.id
             }
             iStdStakeHoldersRepository.save(stakeHolder)
         }?: throw Exception("USER NOT FOUND")
@@ -440,7 +451,7 @@ class IntStandardService(
 
     fun submitWebsiteComments(com: ProposalCommentsDto): CommentForm{
         val variables: MutableMap<String, Any> = HashMap()
-        var  comDraftCommentsSaved = ComDraftComments();
+        //var  comDraftCommentsSaved = ComDraftComments();
         var slFormResponse=""
         var responseStatus=""
         var responseButton=""
@@ -452,12 +463,13 @@ class IntStandardService(
         comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
         comDraftComments.requestID=com.requestId
         comDraftComments.draftID=com.draftId
+        comDraftComments.positionOfRespondent=com.positionOfRespondent
         comDraftComments.nameOfRespondent=com.nameOfRespondent
         comDraftComments.phoneOfRespondent=com.phoneOfRespondent
         comDraftComments.emailOfRespondent=com.emailOfRespondent
         comDraftComments.nameOfOrganization=com.nameOfOrganization
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
         val adoptDecision=com.adoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
@@ -493,6 +505,7 @@ class IntStandardService(
             st.dateOfCreation=Timestamp(System.currentTimeMillis())
             st.telephone=com.phoneOfRespondent
             st.status=1
+            st.commentId= comDraftCommentsSaved.id
             val sid= iStdStakeHoldersRepository.save(st)
 
             val sub = "New Adoption Proposal "
@@ -523,7 +536,7 @@ class IntStandardService(
 
     fun submitDraftComment(com: ProposalCommentsDto){
         val variables: MutableMap<String, Any> = HashMap()
-        var  comDraftCommentsSaved = ComDraftComments();
+        //var  comDraftCommentsSaved = ComDraftComments();
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val  comDraftComments = ComDraftComments();
@@ -532,12 +545,13 @@ class IntStandardService(
         comDraftComments.adoptDraft=com.adoptionAcceptableAsPresented
         comDraftComments.requestID=com.requestId
         comDraftComments.draftID=com.draftId
+        comDraftComments.positionOfRespondent=com.positionOfRespondent
         comDraftComments.nameOfRespondent=com.nameOfRespondent
         comDraftComments.phoneOfRespondent=loggedInUser.cellphone
         comDraftComments.emailOfRespondent=loggedInUser.email
         comDraftComments.nameOfOrganization=com.nameOfOrganization
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
         val adoptDecision=com.adoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
@@ -563,9 +577,74 @@ class IntStandardService(
             comStdDraftRepository.save(comStdDraft)
         }?: throw Exception("REQUEST NOT FOUND")
 
+        iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let {  stakeHolder ->
+            with(stakeHolder){
+                status=1
+                commentId= comDraftCommentsSaved.id
+            }
+            iStdStakeHoldersRepository.save(stakeHolder)
+        }?: throw Exception("USER NOT FOUND")
+
 
 
         println("Comment Submitted")
+    }
+
+    fun editSubmitDraftComment(com: EditProposalCommentsDto){
+        val adoptDecision=com.adoptionAcceptableAsPresented
+        var selectedDecision=" "
+        if(adoptDecision=="Yes"){
+            selectedDecision="Yes"
+        }else{
+            selectedDecision="No"
+        }
+
+        comStandardDraftCommentsRepository.findByIdOrNull(com.commentId)?.let { comDraftComments ->
+            with(comDraftComments) {
+                reason=com.reasons
+                recommendations=com.recommendations
+                adoptDraft=selectedDecision
+                positionOfRespondent=com.positionOfRespondent
+                nameOfRespondent=com.nameOfRespondent
+                nameOfOrganization=com.nameOfOrganization
+                commentTime = Timestamp(System.currentTimeMillis())
+
+            }
+            comStandardDraftCommentsRepository.save(comDraftComments)
+        }?: throw Exception("DRAFT NOT FOUND")
+
+
+        val initialDecision=com.intialAdoptionAcceptableAsPresented
+        var newAdopt: Long
+        var newNotAdopt: Long
+
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftId)
+        val adoptNumber=comStdDraftRepository.getISDraftAdoptCount(com.draftId)
+        val notAdoptNumber=comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        if(adoptDecision==initialDecision){
+            newAdopt=adoptNumber
+            newNotAdopt=notAdoptNumber
+        }else{
+            if(adoptDecision=="Yes"){
+                newAdopt=adoptNumber-1
+                newNotAdopt=notAdoptNumber+1
+
+            }else{
+                newAdopt=adoptNumber+1
+                newNotAdopt=notAdoptNumber-1
+            }
+        }
+
+        comStdDraftRepository.findByIdOrNull(com.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                adopt= newAdopt
+                notAdopt= newNotAdopt
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("DRAFT NOT FOUND")
+
+        println("Comment Updated")
     }
 
 
@@ -813,6 +892,7 @@ class IntStandardService(
         standardNumber=isProposalJustification.standardNumber
         referenceMaterial=isProposalJustification.referenceMaterial
         status= 0.toString()
+        submissionDate= Timestamp(System.currentTimeMillis())
 
 
         departmentName = departmentListRepository.findNameById(isProposalJustification.department?.toLong())
@@ -948,7 +1028,8 @@ class IntStandardService(
     }
 
     fun getApprovedJustification(): MutableList<ProposalDetails>{
-        return isAdoptionProposalRepository.getApprovedJustification();
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return isAdoptionProposalRepository.getApprovedJustification(loggedInUser.id);
     }
 
 
@@ -1062,7 +1143,11 @@ class IntStandardService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.comments.let {
+            if (it != null) {
+                variables.put("comments", it)
+            }
+        }
         isJustificationDecision.taskId.let { variables.put("taskId", it) }
         isJustificationDecision.processId.let { variables.put("processId", it) }
 

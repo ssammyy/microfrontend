@@ -2,10 +2,10 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewE
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ComStdCommitteeRemarks, ComStdRemarks,
-  InternationalStandardsComments,
-  ISCheckRequirements,
-  StakeholderProposalComments
+    ComStdCommitteeRemarks, ComStdRemarks,
+    InternationalStandardsComments,
+    ISCheckRequirements, ISJustificationProposal,
+    StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -37,6 +37,7 @@ export class IntStdSacApprovalComponent implements OnInit {
   isCheckRequirements:ISCheckRequirements[]=[];
   public actionRequest: ISCheckRequirements | undefined;
   comStdRemarks: ComStdRemarks[] = [];
+    iSJustificationProposals: ISJustificationProposal[] = [];
   loadingText: string;
 
   approve: string;
@@ -47,6 +48,7 @@ export class IntStdSacApprovalComponent implements OnInit {
   isShowMainTab= true;
   isShowMainTabs= true;
   public approveRequirementsFormGroup!: FormGroup;
+  public multipleApproveFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   public actionRequests: ISCheckRequirements | undefined;
@@ -66,6 +68,21 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getAppStdPublishing();
+    this.multipleApproveFormGroup= this.formBuilder.group({
+        docName: null,
+        title: null,
+        scope: null,
+        normativeReference: null,
+        symbolsAbbreviatedTerms: null,
+        clause: null,
+        special: null,
+        standardType: null,
+        comments: null,
+        accentTo: null,
+        draftId: null,
+        requestId: null,
+        id: null,
+    });
     this.approveRequirementsFormGroup = this.formBuilder.group({
         docName: null,
         title: null,
@@ -115,7 +132,27 @@ export class IntStdSacApprovalComponent implements OnInit {
     );
   }
 
-  toggleDisplayMainTab(){
+  toggleDisplayMainTab(comStdDraftID: number){
+      this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.documentDTOs = response;
+              this.SpinnerService.hide();
+              //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              //console.log(error.message);
+          }
+      );
+      this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.coverDTOs = response;
+              this.SpinnerService.hide();
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+          }
+      );
     this.isShowMainTab = !this.isShowMainTab;
     this.isShowRemarksTab= true;
     this.isShowCommentsTab= true;
@@ -169,12 +206,13 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.isShowMainTabs= true;
 
   }
-  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
+  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string,draftId: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+
     if (mode==='checkRequirementsMet'){
       this.actionRequest=iSCheckRequirement;
       button.setAttribute('data-target','#checkRequirementsMet');
@@ -277,24 +315,14 @@ export class IntStdSacApprovalComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-        (response: DocumentDTO[]) => {
-          this.documentDTOs = response;
-          this.SpinnerService.hide();
-          //console.log(this.documentDTOs)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          //console.log(error.message);
-        }
-    );
-      this.stdComStandardService.getCoverPagesList(comStdDraftID).subscribe(
-          (response: DocumentDTO[]) => {
-              this.coverDTOs = response;
-              this.SpinnerService.hide();
+
+      this.stdIntStandardService.getISJustification(comStdDraftID).subscribe(
+          (response: ISJustificationProposal[]) => {
+              this.iSJustificationProposals = response;
+
           },
-          (error: HttpErrorResponse) => {
-              this.SpinnerService.hide();
+          (error: HttpErrorResponse)=>{
+              console.log(error.message);
           }
       );
 

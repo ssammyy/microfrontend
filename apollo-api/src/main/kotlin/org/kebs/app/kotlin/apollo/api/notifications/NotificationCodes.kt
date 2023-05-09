@@ -5,6 +5,7 @@ enum class NotificationCodes {
     COMPLAINT_REJECTED,
     COMPLAINT_APPROVED,
     COMPLAINT_APPROVED_PVOC,
+    PVOC_PARTNER_API_CLIENT_CREDENTIAL
 }
 
 enum class NotificationTypeCodes(val description: String) {
