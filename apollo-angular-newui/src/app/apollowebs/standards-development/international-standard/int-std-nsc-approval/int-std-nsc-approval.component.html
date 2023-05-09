@@ -45,11 +45,11 @@
                                     <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{isCheckRequirement.standardType}}</td>
-                                        <td><b>{{isCheckRequirement.comStdNumber}}</b><br>{{isCheckRequirement.title}},<br>{{isCheckRequirement.edition}}</td>
+                                        <td><b>KS Number:</b><br>{{isCheckRequirement.comStdNumber}}<br><b>Title:</b><br>{{isCheckRequirement.title}},<br><b>Edition:</b><br>{{isCheckRequirement.edition}}</td>
                                         <td>{{isCheckRequirement.requestedBy}}</td>
-                                        <td>{{isCheckRequirement.scope}},<br>{{isCheckRequirement.purposeAndApplication}},<br>{{isCheckRequirement.issuesAddressed}}</td>
+                                        <td><b>Scope:</b><br>{{isCheckRequirement.scope}},<br><b>Purpose and Application:</b><br>{{isCheckRequirement.purposeAndApplication}},<br><b>Intended Users:</b><br>{{isCheckRequirement.intendedUsers}}</td>
                                         <td>{{isCheckRequirement.referenceMaterial}}</td>
-                                        <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}}<br> <b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b><br> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
+                                        <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}} <br><b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b><br> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
                                         <td><div class="form-check">
                                             <input class="form-check-input" type="radio" name="approve" id="approve{{i+1}}">
                                             <label class="form-check-label" for="approve{{i+1}}">
