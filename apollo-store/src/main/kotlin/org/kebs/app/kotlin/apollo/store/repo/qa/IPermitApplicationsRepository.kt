@@ -299,7 +299,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): Page<PermitApplicationsEntity>?
 
     @Query(
-        value = " SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a where\n" +
+        value = "SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a where\n" +
                 "     ((:refNumber is null or lower(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%')) or\n" +
                 "     (:refNumber is null or upper(a.PERMIT_REF_NUMBER)  like CONCAT(CONCAT('%',:refNumber),'%'))) and\n" +
                 "     (:assignedIo is null or a.QAO_ID =TO_NUMBER(:assignedIo)) and\n" +

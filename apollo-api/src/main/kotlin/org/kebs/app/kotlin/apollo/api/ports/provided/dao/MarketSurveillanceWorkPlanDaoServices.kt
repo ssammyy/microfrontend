@@ -342,7 +342,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchList(page: PageRequest, complaint: Boolean): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchList(page: PageRequest, complaint: Boolean): ApiResponseModel {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -406,12 +406,18 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
             }
         }
-        return mapWorkPlanBatchListDto(myWorkPlanCreated)
+
+        return commonDaoServices.setSuccessResponse(
+            mapWorkPlanBatchListDto(myWorkPlanCreated),
+            myWorkPlanCreated?.totalPages,
+            myWorkPlanCreated?.number,
+            myWorkPlanCreated?.totalElements
+        )
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchListClosed(page: PageRequest, complaint: Boolean): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchListClosed(page: PageRequest, complaint: Boolean): ApiResponseModel {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -492,12 +498,17 @@ class MarketSurveillanceWorkPlanDaoServices(
             }
         }
 
-        return mapWorkPlanBatchListDto(myWorkPlanCreated)
+        return commonDaoServices.setSuccessResponse(
+            mapWorkPlanBatchListDto(myWorkPlanCreated),
+            myWorkPlanCreated?.totalPages,
+            myWorkPlanCreated?.number,
+            myWorkPlanCreated?.totalElements
+        )
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchListOpen(page: PageRequest, complaint: Boolean): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchListOpen(page: PageRequest, complaint: Boolean): ApiResponseModel {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -577,12 +588,18 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
             }
         }
-        return mapWorkPlanBatchListDto(myWorkPlanCreated)
+
+        return commonDaoServices.setSuccessResponse(
+            mapWorkPlanBatchListDto(myWorkPlanCreated),
+            myWorkPlanCreated?.totalPages,
+            myWorkPlanCreated?.number,
+            myWorkPlanCreated?.totalElements
+        )
     }
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewWorkPlanBatch(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+    fun createNewWorkPlanBatch(page: PageRequest): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val currentYear = getCurrentYear()
@@ -595,7 +612,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                     null -> {
                         createWorkPlanYear(loggedInUser, map, workPlanYearCodes, false)
                         val workPlanCreated = workPlanCreatedRepository.findByUserCreatedId(loggedInUser, page)
-                        return mapWorkPlanBatchListDto(workPlanCreated)
+//                        return mapWorkPlanBatchListDto(workPlanCreated)
+                        return commonDaoServices.setSuccessResponse(
+                            mapWorkPlanBatchListDto(workPlanCreated),
+                            workPlanCreated?.totalPages,
+                            workPlanCreated?.number,
+                            workPlanCreated?.totalElements
+                        )
                     }
                     else -> {
                         throw ExpectedDataNotFound("You already have a work plan for this year")
