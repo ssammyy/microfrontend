@@ -18,6 +18,13 @@ import swal from "sweetalert2";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {LoggedInUser, selectUserInfo} from "../../../../core/store";
 
+interface FormField {
+    id: string;
+    label: string;
+    control: FormControl;
+}
+
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
@@ -47,6 +54,9 @@ export class RejectedProposalsComponent implements OnInit {
     dateFormat = "yyyy-MM-dd  hh:mm";
     language = "en";
     public userDetails!: UserRegister;
+
+    public hofDetails!: UserRegister;
+
     public sacDetails!: UserRegister;
     public spcDetails!: UserRegister;
 
@@ -66,6 +76,30 @@ export class RejectedProposalsComponent implements OnInit {
     roles: string[];
     userLoggedInID: number;
     userProfile: LoggedInUser;
+
+    options = [
+        {value: 'Government Lead Agency/Regulatory Authority', label: 'Government Lead Agency/Regulatory Authority'},
+        {
+            value: 'Manufacturers, producers or service providers',
+            label: 'Manufacturers, producers or service providers'
+        },
+        {
+            value: 'University, Research and other Technical Institutions',
+            label: 'University, Research and other Technical Institutions'
+        },
+        {value: 'Professional Body', label: 'Professional Body'},
+        {value: 'Consumer Organization', label: 'Consumer Organization'},
+        {value: 'Non-Governmental Organization (NGO)', label: 'Non-Governmental Organization (NGO)'},
+        {value: 'Renown Professionals/experts', label: 'Renown Professionals/experts'},
+        {value: 'Small and Medium Enterprises (SMEs)', label: 'Small and Medium Enterprises (SMEs)'},
+        {value: 'SME trade associations', label: 'SME trade associations'},
+        {value: 'Major corporate consumers', label: 'Major corporate consumers'}
+    ];
+
+    formFields: FormField[] = [];
+
+    showEditForm: boolean = false;
+
 
     constructor(private formationOfTcService: FormationOfTcService,
                 private notifyService: NotificationService,
@@ -96,9 +130,9 @@ export class RejectedProposalsComponent implements OnInit {
             nameOfTC: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            proposedRepresentationArray: [[], Validators.minLength(3)],
+            proposedRepresentationArray: [[]],
             proposedRepresentation: [''],
-            departmentId: ['', Validators.required],
+            departmentId: [''],
             isoCommittee: [''],
             id: ['', Validators.required],
             departmentIdOriginal: ['', Validators.required],
@@ -136,14 +170,23 @@ export class RejectedProposalsComponent implements OnInit {
         button.setAttribute('data-target', '#editModal');
 
         this.getDepartmentName(String(this.proposalRetrieved.departmentId))
-        this.getSelectedUser(proposal.proposer)
+        this.getSelectedUser(proposal.createdBy)
 
         this.selectedOptions = proposal.proposedRepresentation.split(',').slice(0, 3);
         this.editFormationRequestFormGroup.controls['departmentId'].setValue(this.proposalRetrieved.departmentId);
-        // if(proposal.hofId!="null") {
-        //
-        //     this.getSelectedUser(proposal.hofId)
-        // }
+
+        this.editFormationRequestFormGroup.controls['proposedRepresentationArray'].valueChanges.subscribe((selectedOptionsB: string[]) => {
+            this.formFields = selectedOptionsB?.map(option => ({
+                id: option,
+                label: ` ${option}`,
+                control: new FormControl()
+            }));
+        });
+        this.showEditForm = false
+        if(proposal.hofId!="null") {
+
+            this.getSelectedHof(proposal.hofId)
+        }
 
         // this.getSelectedSpc(proposal.spcId)
         if (proposal.status == "7" || proposal.status == "6") {
@@ -177,6 +220,16 @@ export class RejectedProposalsComponent implements OnInit {
             this.masterService.loadUserDetails(userId).subscribe(
                 (data: UserRegister) => {
                     this.userDetails = data;
+                }
+            );
+
+        });
+    }
+    private getSelectedHof(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.hofDetails = data;
                 }
             );
 
@@ -242,41 +295,91 @@ export class RejectedProposalsComponent implements OnInit {
 
         if (this.editFormationRequestFormGroup.valid) {
             this.loadingText = "Resubmitting Please Wait ...."
-
-            this.loading = true;
-            this.SpinnerService.show();
+            //
+            // this.loading = true;
+            // this.SpinnerService.show();
             const departmentIdOriginal = this.editFormationRequestFormGroup.controls['departmentIdOriginal'].value;
-            const departmentIdNew = this.editFormationRequestFormGroup.controls['departmentId'].value;
-            if (departmentIdOriginal != departmentIdNew.id) {
+            const departmentIdNew = this.editFormationRequestFormGroup.controls['departmentId'].value.toString();
+            const parts = departmentIdNew.split('$');
+            const departmentId = Number(parts[0]);
+            const departmentName = parts[1];
+
+            console.log(departmentIdNew)
+            console.log(parts)
+            console.log(departmentId)
+            console.log(departmentName)
+
+
+            if (departmentIdOriginal != departmentId) {
                 let str = this.editFormationRequestFormGroup.controls['referenceNumber'].value;
-                str = str.replace(/^[^/]+/, departmentIdNew.name);
+                str = str.replace(/^[^/]+/, departmentName);
                 this.editFormationRequestFormGroup.controls['referenceNumber'].setValue(str);
-                this.editFormationRequestFormGroup.controls['departmentId'].setValue(departmentIdNew.id);
+                this.editFormationRequestFormGroup.controls['departmentId'].setValue(departmentId);
             }
-            this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
-                (response) => {
-                    this.showToasterSuccess("Success", "Successfully edited proposal for formation of TC")
 
-                    this.SpinnerService.hide();
-                    formDirective.resetForm();
-                    this.isFormSubmitted = false;
-                    this.editFormationRequestFormGroup.reset()
-                    swal.fire({
-                        title: 'Your Proposal Has Been Resubmitted.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.getAllHofJustificationsRejected();
-                    this.hideModelB()
-
-                },
-                (error: HttpErrorResponse) => {
-                    alert(error.message);
+            if(this.showEditForm)
+            {
+                const arrayTest = this.editFormationRequestFormGroup.controls['proposedRepresentationArray'].value;
+                const myVar1 = arrayTest.toString()
+                const formValues = {};
+                let numValues = 0;
+                for (const field of this.formFields) {
+                    if (field.control.value?.trim()) {
+                        const value = field.control.value.trim();
+                        if (value) {
+                            numValues += value.split(',').length;
+                            formValues[field.id] = value;
+                        }
+                    }
+                    else {
+                        this.showToasterError("Error", "Please enter proposed representations organisations")
+                        this.isFormSubmitted = false;
+                        this.loading = false;
+                        this.SpinnerService.hide();
+                        return;
+                    }
                 }
-            )
+                if (numValues < 6) {
+                    this.showToasterError("Error", "Please enter at least six proposed representations organisations")
+                    this.isFormSubmitted = false;
+                    this.loading = false;
+                    this.SpinnerService.hide();
+                    return;
+                }
+                let jsonString = JSON.stringify(formValues);
+                let cleanedJsonString = jsonString.replace(/\\/g, '').replace(/^{/, '').replace(/}$/, '');
+
+
+                this.editFormationRequestFormGroup.controls['proposedRepresentation'].setValue(cleanedJsonString);
+
+            }
+
+
+            console.log(this.editFormationRequestFormGroup.value)
+            // this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
+            //     (response) => {
+            //         this.showToasterSuccess("Success", "Successfully edited proposal for formation of TC")
+            //
+            //         this.SpinnerService.hide();
+            //         formDirective.resetForm();
+            //         this.isFormSubmitted = false;
+            //         this.editFormationRequestFormGroup.reset()
+            //         swal.fire({
+            //             title: 'Your Proposal Has Been Resubmitted.',
+            //             buttonsStyling: false,
+            //             customClass: {
+            //                 confirmButton: 'btn btn-success form-wizard-next-btn ',
+            //             },
+            //             icon: 'success'
+            //         });
+            //         this.getAllHofJustificationsRejected();
+            //         this.hideModelB()
+            //
+            //     },
+            //     (error: HttpErrorResponse) => {
+            //         alert(error.message);
+            //     }
+            // )
         }
     }
 
@@ -324,6 +427,13 @@ export class RejectedProposalsComponent implements OnInit {
 
     textValidationType(e) {
         this.validTextType = !!e;
+    }
+
+    showForm() {
+        this.showEditForm = true
+    }
+    hideForm() {
+        this.showEditForm = false
     }
 
 }

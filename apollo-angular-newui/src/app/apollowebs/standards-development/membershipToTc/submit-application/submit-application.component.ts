@@ -11,7 +11,7 @@ import {DatePipe} from "@angular/common";
 import swal from "sweetalert2";
 import {TechnicalCommittee} from "../../../../core/store/data/std/std.model";
 import {ErrorStateMatcher} from "@angular/material/core";
-// import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
+import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
 import {DataHolder} from "../../../../core/store/data/std/request_std.model";
 import {take, takeUntil,} from 'rxjs/operators';
 import {ReplaySubject, Subject} from "rxjs";
@@ -72,10 +72,10 @@ export class SubmitApplicationComponent implements OnInit {
 
     isFormSubmitted = false;
 
-    // SearchCountryField = SearchCountryField;
-    // CountryISO = CountryISO;
-    // PhoneNumberFormat = PhoneNumberFormat;
-    // preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
+    SearchCountryField = SearchCountryField;
+    CountryISO = CountryISO;
+    PhoneNumberFormat = PhoneNumberFormat;
+    preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
 
     public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
 

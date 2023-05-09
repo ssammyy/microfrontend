@@ -581,6 +581,7 @@ import {IntStdNscApprovalComponent} from './apollowebs/standards-development/int
 import {IntStdWebProposalComponent} from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
+import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -655,6 +656,7 @@ import {RejectedProposalsComponent} from './apollowebs/standards-development/for
         MatSortModule,
         MatPaginatorModule,
         MatCardModule,
+        NgxIntlTelInputModule,
         RecaptchaFormsModule,
         RecaptchaModule,
         RecaptchaFormsModule,

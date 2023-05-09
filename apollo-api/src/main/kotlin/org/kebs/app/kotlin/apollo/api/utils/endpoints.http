@@ -703,7 +703,7 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedDmar
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllCompanies
 
 ###
-GET https://kims.kebs.org:8006/api/v1/migration/anonymous/mobile/permitNo?permitNumber=SM#37596
+GET https://kims.kebs.org:8006/api/v1/migration/anonymous/mobile/permitNo?permitNumber=1782
 
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?companyName=HASBA (K) LTD/ ENERGIZER HOLDINGS INC. – ALEXANDRIA EGYPT
