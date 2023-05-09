@@ -1093,7 +1093,7 @@ export class MsService {
     /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
 
     // tslint:disable-next-line:max-line-length
-    public loadMSWorkPlanBatchList(page: string, records: string, routeTake: string, complaintStatus: string ): Observable<WorkPlanBatchDetailsDto[]> {
+    public loadMSWorkPlanBatchList(page: string, records: string, routeTake: string, complaintStatus: string ): Observable<ApiResponseModel> {
         let url = null;
         switch (routeTake) {
             case 'all-workPlan-batch':
@@ -1113,8 +1113,8 @@ export class MsService {
             .set('complaintStatus', complaintStatus)
             .set('page', page)
             .set('records', records);
-        return this.http.get<WorkPlanBatchDetailsDto[]>(url, {params}).pipe(
-            map(function (response: WorkPlanBatchDetailsDto[]) {
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -1124,14 +1124,14 @@ export class MsService {
         );
     }
 
-    public addNewMSWorkPlanBatch(page: string, records: string): Observable<WorkPlanBatchDetailsDto[]> {
+    public addNewMSWorkPlanBatch(page: string, records: string): Observable<ApiResponseModel> {
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ADD_NEW_BATCH);
-        return this.http.post<WorkPlanBatchDetailsDto[]>(url, null, {params}).pipe(
-            map(function (response: WorkPlanBatchDetailsDto[]) {
+        return this.http.post<ApiResponseModel>(url, null, {params}).pipe(
+            map(function (response: ApiResponseModel) {
                 return response;
             })
             , catchError((fault: HttpErrorResponse) => {

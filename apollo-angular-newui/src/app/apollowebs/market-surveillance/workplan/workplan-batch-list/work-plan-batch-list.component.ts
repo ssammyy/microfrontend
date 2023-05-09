@@ -5,7 +5,12 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
-import {BatchFileFuelSaveDto, FuelBatchDetailsDto, WorkPlanBatchDetailsDto} from '../../../../core/store/data/ms/ms.model';
+import {
+  ApiResponseModel,
+  BatchFileFuelSaveDto,
+  FuelBatchDetailsDto,
+  WorkPlanBatchDetailsDto, WorkPlanScheduleListDetailsDto
+} from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject} from 'rxjs';
 import {LocalDataSource} from 'ng2-smart-table';
 
@@ -33,11 +38,11 @@ export class WorkPlanBatchListComponent implements OnInit {
   previousStatus = 'all-workPlan-batch';
   searchStatus: any;
   personalTasks = 'false';
-  defaultPageSize = 100;
+  defaultPageSize = 10;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  totalCount = 12;
+  totalCount = 20;
   public settings = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -138,10 +143,12 @@ export class WorkPlanBatchListComponent implements OnInit {
   private loadData(page: number, records: number, routeTake: string): any {
     this.SpinnerService.show();
     this.msService.loadMSWorkPlanBatchList(String(page), String(records), routeTake, 'false').subscribe(
-        (data) => {
-          console.log(`TEST DATA===${data}`);
-          this.loadedData = data;
-          this.totalCount = this.loadedData.length;
+        (dataResponse: ApiResponseModel) => {
+          if (dataResponse.responseCode === '00') {
+            // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+            this.loadedData = dataResponse?.data as WorkPlanBatchDetailsDto[];
+            this.totalCount = dataResponse.totalCount;
+          }
           this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
 
@@ -220,10 +227,12 @@ export class WorkPlanBatchListComponent implements OnInit {
   addNewWorkPlan() {
     this.SpinnerService.show();
     this.msService.addNewMSWorkPlanBatch(String(this.defaultPage), String(this.defaultPageSize)).subscribe(
-        (data: any) => {
-          console.log(`TEST DATA===${data}`);
-          this.loadedData = data;
-          this.totalCount = this.loadedData.length;
+        (dataResponse: ApiResponseModel) => {
+          if (dataResponse.responseCode === '00') {
+            // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+            this.loadedData = dataResponse?.data as WorkPlanBatchDetailsDto[];
+            this.totalCount = dataResponse.totalCount;
+          }
           this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
           this.msService.showSuccess('NEW WORK-PLAN BATCH CREATED SUCCESSFUL');
