@@ -614,7 +614,7 @@ class IntStandardService(
         }?: throw Exception("DRAFT NOT FOUND")
 
 
-        val initialDecision=com.intialAdoptionAcceptableAsPresented
+        val initialDecision=com.initialAdoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
 
@@ -626,12 +626,12 @@ class IntStandardService(
             newNotAdopt=notAdoptNumber
         }else{
             if(adoptDecision=="Yes"){
-                newAdopt=adoptNumber-1
-                newNotAdopt=notAdoptNumber+1
-
-            }else{
                 newAdopt=adoptNumber+1
                 newNotAdopt=notAdoptNumber-1
+
+            }else{
+                newAdopt=adoptNumber-1
+                newNotAdopt=notAdoptNumber+1
             }
         }
 

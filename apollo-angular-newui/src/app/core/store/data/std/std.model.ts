@@ -681,6 +681,7 @@ export class EditProposalComment{
     requestId: number;
     draftId: number;
     adoptionAcceptableAsPresented: string;
+    initialAdoptionAcceptableAsPresented: string;
     emailOfRespondent: string;
     phoneOfRespondent: string;
     stakeHolderId:number;

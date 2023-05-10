@@ -811,6 +811,7 @@ interface ComStandard {
     fun getClosingDate(): Timestamp?
     fun getWorkShopDate(): Timestamp?
     fun getDurationTaken(): String?
+    fun getStandardType(): String?
 }
 
 interface ComStdRequest{

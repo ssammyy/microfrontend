@@ -101,6 +101,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
           requestId: null,
           draftId: null,
           adoptionAcceptableAsPresented:null,
+          initialAdoptionAcceptableAsPresented:null,
           stakeHolderId: null,
           commentId: null
       });

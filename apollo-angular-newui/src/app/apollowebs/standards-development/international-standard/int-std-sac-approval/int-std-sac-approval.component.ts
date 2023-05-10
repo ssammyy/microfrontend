@@ -120,7 +120,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.stdComStandardService.getAppStdPublishing().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
-          //console.log(this.isCheckRequirements)
+          console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
