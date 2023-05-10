@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface IPaymentMethodsRepository: HazelcastRepository<PaymentMethodsEntity, Long>{
-
+    fun findByMethodAndStatus(methd: String, status: Int): List<PaymentMethodsEntity>
 }

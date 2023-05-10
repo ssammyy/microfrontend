@@ -191,14 +191,30 @@ class InvoiceDaoService(
             }
         }
 
-        return updateInvoiceBatchDetails(invoiceBatchDetails, tableSourcePrefix, detailsDescription, user, totalAmount,totalTaxAmount)
+        return updateInvoiceBatchDetails(
+            invoiceBatchDetails,
+            tableSourcePrefix,
+            detailsDescription,
+            user,
+            totalAmount,
+            totalTaxAmount
+        )
+    }
+
+    fun listPaymentMethodtype(methodType: String): List<PaymentMethodsEntity> {
+        return iPaymentMethodsRepo.findByMethodAndStatus(methodType, 1)
+    }
+
+    fun getPaymentMethodtype(methodType: String): PaymentMethodsEntity? {
+        return iPaymentMethodsRepo.findByMethodAndStatus(methodType, 1)
+            .firstOrNull()
     }
 
     fun findPaymentMethodtype(paymentMethodID: Long): PaymentMethodsEntity {
         iPaymentMethodsRepo.findByIdOrNull(paymentMethodID)
-                ?.let {
-                    return it
-                } ?: throw ExpectedDataNotFound("PAYMENT METHOD WITH [ID = $paymentMethodID], DOES NOT EXIST")
+            ?.let {
+                return it
+            } ?: throw ExpectedDataNotFound("PAYMENT METHOD WITH [ID = $paymentMethodID], DOES NOT EXIST")
     }
 
 

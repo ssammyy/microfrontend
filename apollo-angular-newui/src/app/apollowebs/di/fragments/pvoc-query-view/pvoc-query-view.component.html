@@ -6,12 +6,12 @@
             <select id="officer" class="waiver-form-input-master" formControlName="responseType">
                 <option value="" disabled selected>Select status</option>
                 <option *ngFor="let status of queryStatuses"
-                        [value]="status.conclusion">{{status.description}} </option>
+                        [value]="status.status">{{status.description}} </option>
             </select>
 
-            <label for="queryResponse" class="waiver-form-label">Please write, in detail, response or conclusion</label>
-            <textarea id="queryResponse" class="waiver-form-input-master"
-                      formControlName="queryResponse"></textarea>
+            <label for="responseData" class="waiver-form-label">Please write, in detail, response or conclusion</label>
+            <textarea id="responseData" class="waiver-form-input-master"
+                      formControlName="responseData"></textarea>
             <label *ngIf="form.value.responseType=='conclusion'" for="queryAnalysis" class="waiver-form-label">Any
                 analysis done to arrive to a conclusion</label>
             <textarea id="queryAnalysis" class="waiver-form-input-master"

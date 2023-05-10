@@ -615,7 +615,7 @@ class PvocAgentService(
         return response
     }
 
-    fun receiveKebsQueryConclusion(form: PvocQueryConclusion): ApiResponseModel {
+    fun receiveKebsQueryConclusion(form: KebsQueryResponseForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             this.partnerQuerriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
@@ -623,20 +623,20 @@ class PvocAgentService(
                 if (query.partnerId == partner?.id) {
                     val data = KebsQueryResponse()
                     if ("CONCLUSION".equals(form.responseType, true)) {
-                        query.conclusion = form.responseData
+                        query.conclusion = form.queryResponse
                         query.conclusionStatus = QueryStatuses.ACTIVE.code
                         query.responseAnalysis = form.queryAnalysis
                         query.modifiedOn = Timestamp.from(Instant.now())
                         query.modifiedBy = commonDaoServices.loggedInUserAuthentication().name
                         this.partnerQuerriesRepository.save(query)
                         data.responseSerialNumber = query.serialNumber
-                        data.conclusion = form.responseData.orEmpty()
+                        data.conclusion = form.queryAnalysis.orEmpty()
                     } else {
-                        data.queryResponse = form.responseData.orEmpty()
+                        data.queryResponse = form.queryResponse.orEmpty()
                         val res = PvocQueryResponseEntity()
                         res.queryId = query
                         res.serialNumber = queryResponseReference("KEBS")
-                        res.response = form.responseData
+                        res.response = form.queryResponse
                         res.responseFrom = "KEBS"
                         res.linkToUploads = form.linkToUploads
                         res.status = 1
