@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {MatDialog} from "@angular/material/dialog";
 import {AddApiClientComponent} from "../../../system/clients/add-api-client/add-api-client.component";
+import {AddUpdatePartnerComponent} from "../add-update-partner/add-update-partner.component";
 
 @Component({
     selector: 'app-view-partner-details',
@@ -12,6 +13,7 @@ import {AddApiClientComponent} from "../../../system/clients/add-api-client/add-
 export class ViewPartnerDetailsComponent implements OnInit {
     partnerId: any
     partnerDetails: any
+    partnerCountries: any[]
     active: Number = 0
 
     constructor(private routeActivated: ActivatedRoute, private pvocService: PVOCService, private dialog: MatDialog) {
@@ -22,8 +24,21 @@ export class ViewPartnerDetailsComponent implements OnInit {
             res => {
                 this.partnerId = res.get('id')
                 this.loadData()
+                this.loadPartnerCountries()
             }
         )
+    }
+
+    loadPartnerCountries() {
+        this.pvocService.loadPartnerCountries()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.partnerCountries = res.data
+                    }
+                }
+            )
+
     }
 
     loadData() {
@@ -46,6 +61,23 @@ export class ViewPartnerDetailsComponent implements OnInit {
         this.dialog.open(AddApiClientComponent, {
             data: {
                 partnerId: this.partnerId
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
+                    }
+                }
+            )
+    }
+
+    updatePartnerDetails() {
+        this.dialog.open(AddUpdatePartnerComponent, {
+            data: {
+                partner: this.partnerDetails,
+                countries: this.partnerCountries
             }
         })
             .afterClosed()
