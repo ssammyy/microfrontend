@@ -206,8 +206,11 @@ class InvoiceDaoService(
     }
 
     fun getPaymentMethodtype(methodType: String): PaymentMethodsEntity? {
-        return iPaymentMethodsRepo.findByMethodAndStatus(methodType, 1)
-            .firstOrNull()
+        val payments = iPaymentMethodsRepo.findByMethodAndStatus(methodType, 1)
+        if (payments.isEmpty()) {
+            throw ExpectedDataNotFound("PAYMENT METHOD WITH [METHOD = $methodType], DOES NOT EXIST")
+        }
+        return payments.first()
     }
 
     fun findPaymentMethodtype(paymentMethodID: Long): PaymentMethodsEntity {
