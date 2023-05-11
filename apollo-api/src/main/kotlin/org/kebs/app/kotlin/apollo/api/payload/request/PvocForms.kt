@@ -2233,11 +2233,9 @@ class KebsQueryResponseForm {
     @NotEmpty(message = "Query response is required")
     var queryResponse: String? = null
 
-    @NotEmpty(message = "Query analysis is required")
     var queryAnalysis: String? = null
 
-    @NotEmpty(message = "Query conclusion is required")
-    var conclusion: String? = null
+    var responseType: String? = null
     var linkToUploads: String? = null
 
 }

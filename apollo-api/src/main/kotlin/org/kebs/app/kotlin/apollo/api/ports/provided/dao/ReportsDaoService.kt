@@ -24,6 +24,9 @@ import org.springframework.util.ResourceUtils
 import java.io.*
 import javax.servlet.http.HttpServletResponse
 
+enum class PaymentMethodCategory(val code: String) {
+    BANK("BANK"), MOBILE_MONEY("MPESA")
+}
 
 @Service
 class ReportsDaoService(
@@ -42,47 +45,49 @@ class ReportsDaoService(
         val logoMpesaImageResource = resourceLoader.getResource(applicationMapProperties.mapMPESALogoPath)
         val logoMpesaImageFile = logoMpesaImageResource.file.toString()
 
-        val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
-        val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
-        val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
-        val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
-//        val map = hashMapOf<String, Any>()
+        val mpesaDetails = invoiceDaoService.getPaymentMethodtype(PaymentMethodCategory.MOBILE_MONEY.code)
+        val banksDetails = invoiceDaoService.listPaymentMethodtype(PaymentMethodCategory.BANK.code)
+        // Pick bank details or null to maintain backward compatibility with generated reports
+        // FIXME: Make reports not dependent on 3 banks, banks should be dynamic 1,2,3,4...
+        val bank1Details = banksDetails.firstOrNull()
+        val bank2Details = banksDetails.elementAtOrNull(2)
+        val bank3Details = banksDetails.elementAtOrNull(2)
 
 
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
         map["mpesaLogo"] = logoMpesaImageFile
-        map["paybillNo"] = mpesaDetails.payBillNo.toString()
+        map["paybillNo"] = mpesaDetails?.payBillNo.toString() ?: ""
         map["mpesaACNo"] = mpesaAccountNumber
-        map["vatNo"] = mpesaDetails.vatNo.toString()
-        map["pinNo"] = mpesaDetails.pinNo.toString()
+        map["vatNo"] = mpesaDetails?.vatNo.toString() ?: ""
+        map["pinNo"] = mpesaDetails?.pinNo.toString() ?: ""
 //        map["preparedBy"] = demandNote?.
 //        map["datePrepared"] = demandNote?.
-        map["bankName1"] = bank1Details.bankAccountName.toString()
-        map["bank1"] = bank1Details.bankName.toString()
-        map["bankBranch1"] = bank1Details.bankBranch.toString()
-        map["kesAcNo1"] = bank1Details.bankAccountKesNumber.toString()
-        map["usdNo1"] = bank1Details.bankAccountUsdNumber.toString()
-        map["bankCode1"] = bank1Details.bankCode.toString()
-        map["branchCode1"] = bank1Details.branchCode.toString()
-        map["swiftCode1"] = bank1Details.swiftCode.toString()
+        map["bankName1"] = bank1Details?.bankAccountName.orEmpty() ?: ""
+        map["bank1"] = bank1Details?.bankName.orEmpty() ?: ""
+        map["bankBranch1"] = bank1Details?.bankBranch.orEmpty() ?: ""
+        map["kesAcNo1"] = bank1Details?.bankAccountKesNumber.orEmpty() ?: ""
+        map["usdNo1"] = bank1Details?.bankAccountUsdNumber.orEmpty() ?: ""
+        map["bankCode1"] = bank1Details?.bankCode.orEmpty() ?: ""
+        map["branchCode1"] = bank1Details?.branchCode.orEmpty() ?: ""
+        map["swiftCode1"] = bank1Details?.swiftCode.orEmpty() ?: ""
 
-        map["bankName2"] = bank2Details.bankAccountName.toString()
-        map["bank2"] = bank2Details.bankName.toString()
-        map["bankBranch2"] = bank2Details.bankBranch.toString()
-        map["kesAcNo2"] = bank2Details.bankAccountKesNumber.toString()
-        map["usdNo2"] = bank2Details.bankAccountUsdNumber.toString()
-        map["bankCode2"] = bank2Details.bankCode.toString()
-        map["branchCode2"] = bank2Details.branchCode.toString()
-        map["swiftCode2"] = bank2Details.swiftCode.toString()
+        map["bankName2"] = bank2Details?.bankAccountName.orEmpty() ?: ""
+        map["bank2"] = bank2Details?.bankName.orEmpty() ?: ""
+        map["bankBranch2"] = bank2Details?.bankBranch.orEmpty() ?: ""
+        map["kesAcNo2"] = bank2Details?.bankAccountKesNumber.orEmpty() ?: ""
+        map["usdNo2"] = bank2Details?.bankAccountUsdNumber.orEmpty() ?: ""
+        map["bankCode2"] = bank2Details?.bankCode.orEmpty() ?: ""
+        map["branchCode2"] = bank2Details?.branchCode.orEmpty() ?: ""
+        map["swiftCode2"] = bank2Details?.swiftCode.orEmpty() ?: ""
 
-        map["bankName3"] = bank3Details.bankAccountName.toString()
-        map["bank3"] = bank3Details.bankName.toString()
-        map["bankBranch3"] = bank3Details.bankBranch.toString()
-        map["kesAcNo3"] = bank3Details.bankAccountKesNumber.toString()
-        map["usdNo3"] = bank3Details.bankAccountUsdNumber.toString()
-        map["bankCode3"] = bank3Details.bankCode.toString()
-        map["branchCode3"] = bank3Details.branchCode.toString()
-        map["swiftCode3"] = bank3Details.swiftCode.toString()
+        map["bankName3"] = bank3Details?.bankAccountName.orEmpty() ?: ""
+        map["bank3"] = bank3Details?.bankName.orEmpty() ?: ""
+        map["bankBranch3"] = bank3Details?.bankBranch.orEmpty() ?: ""
+        map["kesAcNo3"] = bank3Details?.bankAccountKesNumber.orEmpty() ?: ""
+        map["usdNo3"] = bank3Details?.bankAccountUsdNumber.orEmpty() ?: ""
+        map["bankCode3"] = bank3Details?.bankCode.orEmpty() ?: ""
+        map["branchCode3"] = bank3Details?.branchCode.orEmpty() ?: ""
+        map["swiftCode3"] = bank3Details?.swiftCode.orEmpty() ?: ""
 
         return map
     }

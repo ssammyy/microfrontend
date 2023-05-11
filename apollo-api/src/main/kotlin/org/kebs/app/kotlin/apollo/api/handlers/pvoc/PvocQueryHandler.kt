@@ -5,7 +5,6 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.KebsPvocQueryForm
 import org.kebs.app.kotlin.apollo.api.payload.request.KebsQueryResponseForm
-import org.kebs.app.kotlin.apollo.api.payload.request.PvocQueryConclusion
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
 import org.springframework.stereotype.Component
@@ -65,7 +64,7 @@ class PvocQueryHandler(
     fun pvocPartnerQueryConclusion(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
-            val form = req.body(PvocQueryConclusion::class.java)
+            val form = req.body(KebsQueryResponseForm::class.java)
             validatorService.validateInputWithInjectedValidator(form)?.let {
                 response.message = "Request validation failed"
                 response.errors = it

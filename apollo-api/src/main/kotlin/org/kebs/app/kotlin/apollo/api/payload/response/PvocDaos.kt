@@ -8,6 +8,8 @@ import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 class PvocComplaintDao {
     var complaintId: Long? = null
@@ -1140,3 +1142,75 @@ class CorEntityDao {
         }
     }
 }
+
+class QueryResponseDao {
+    var serialNumber: String? = null
+    var queryResponse: String? = null
+    var responseFrom: String? = null
+    var queryAnalysis: String? = null
+    var responseType: String? = null
+    var linkToUploads: String? = null
+
+    companion object {
+        fun toEntity(response: PvocQueryResponseEntity): QueryResponseDao {
+            val res = QueryResponseDao()
+            res.serialNumber = response.serialNumber
+            res.queryAnalysis = response.response
+            res.queryResponse = response.response
+            res.responseFrom = response.responseFrom
+            return res
+        }
+
+        fun fromList(responses: Iterable<PvocQueryResponseEntity>): List<QueryResponseDao> {
+            val responseList = mutableListOf<QueryResponseDao>()
+            responses.forEach { rs ->
+                responseList.add(toEntity(rs))
+                return responseList
+            }
+            return responseList
+        }
+    }
+}
+
+class PvocQueryDao {
+    @NotNull(message = "Document partner is required")
+    var partnerId: Long? = null
+    var serialNumber: String? = null
+
+    @NotEmpty(message = "document type is required")
+    var documentType: String? = null
+
+    @NotEmpty(message = "Certificate number is required")
+    var certNumber: String? = null
+
+    //@NotEmpty(message = "RFC Number is required")
+    var rfcNumber: String? = null
+    var invoiceNumber: String? = null
+
+    @NotEmpty(message = "UCR number is required")
+    var ucrNumber: String? = null
+
+    @NotEmpty(message = "Query details cannot be empty")
+    var kebsQuery: String? = null
+    var createdBy: String? = null
+    var createdOn: Timestamp? = null
+    var responses: List<QueryResponseDao>? = null
+
+    companion object {
+        fun toEntity(dt: PvocQueriesEntity): PvocQueryDao {
+            val query = PvocQueryDao()
+            query.serialNumber = dt.serialNumber
+            query.documentType = dt.certType
+            query.rfcNumber = dt.rfcNumber
+            query.invoiceNumber = dt.invoiceNumber
+            query.kebsQuery = dt.queryDetails
+            query.ucrNumber = dt.ucrNumber
+            query.responses = dt.responses?.let { QueryResponseDao.fromList(it) }
+            query.partnerId = dt.partnerId
+            query.createdBy = dt.createdBy
+            query.createdOn = dt.createdOn
+            return query
+        }
+    }
+}
+

@@ -1390,7 +1390,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus && workPlanInspection?.bsNumberCountAdded ==
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus && workPlanInspection?.bsNumberCountAdded ==
                                                     workPlanInspection?.sampleSubmitted.length && workPlanInspection?.bsNumberStatus== true &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"

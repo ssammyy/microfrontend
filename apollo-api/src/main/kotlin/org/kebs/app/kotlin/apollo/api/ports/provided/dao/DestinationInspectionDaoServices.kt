@@ -998,10 +998,11 @@ class DestinationInspectionDaoServices(
 
     fun sendDemandNotGeneratedToKWIS(demandNoteEntity: CdDemandNoteEntity?, version: String) {
         demandNoteEntity?.let {
-            val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
-            val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
-            val bank2Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankTwoDetails)
-            val bank3Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankThreeDetails)
+            val mpesaDetails = invoiceDaoService.getPaymentMethodtype(PaymentMethodCategory.MOBILE_MONEY.code)
+            val banks = invoiceDaoService.listPaymentMethodtype(PaymentMethodCategory.BANK.code)
+            val bank1Details = banks.elementAtOrNull(0)
+            val bank2Details = banks.elementAtOrNull(1)
+            val bank3Details = banks.elementAtOrNull(2)
 
             val demandNote: CustomDemandNoteXmlDto = it.toCdDemandNoteXmlRecordRefl()
             demandNote.demandNoteNumber = it.postingReference
@@ -1024,12 +1025,12 @@ class DestinationInspectionDaoServices(
             )
             demandNote.rate = it.rate
             demandNote.product = it.product
-            demandNote.paymentInstruction1 = PaymenInstruction1(bank1Details)
-            demandNote.paymentInstruction2 = PaymenInstruction2(bank2Details)
-            demandNote.paymentInstruction3 = PaymenInstruction3(bank3Details)
-            mpesaDetails.mpesaAccNo = demandNoteEntity.postingReference
-            demandNote.paymentInstructionMpesa = PaymenInstructionMpesa(mpesaDetails)
-            demandNote.paymentInstructionOther = PaymenInstructionOther(mpesaDetails)
+            demandNote.paymentInstruction1 = bank1Details?.let { it1 -> PaymenInstruction1(it1) }
+            demandNote.paymentInstruction2 = bank2Details?.let { it1 -> PaymenInstruction2(it1) }
+            demandNote.paymentInstruction3 = bank3Details?.let { it1 -> PaymenInstruction3(it1) }
+            mpesaDetails?.mpesaAccNo = demandNoteEntity.postingReference
+            demandNote.paymentInstructionMpesa = mpesaDetails?.let { it1 -> PaymenInstructionMpesa(it1) }
+            demandNote.paymentInstructionOther = mpesaDetails?.let { it1 -> PaymenInstructionOther(it1) }
             demandNote.version = demandNote.version ?: 1
 
             val demandNoteFinalDto = DemandNoteXmlDTO()
