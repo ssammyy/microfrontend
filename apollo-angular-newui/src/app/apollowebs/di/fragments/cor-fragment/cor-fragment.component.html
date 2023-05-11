@@ -228,6 +228,7 @@
                 <b class="text-primary">PVOC Queries for document</b>
                 <div class="row" *ngIf="corDetails.queries else noQueries">
                     <app-pvoc-query-card class="col-md-12" *ngFor="let q of corDetails.queries"
+                                         (queryChanged)="reloadChanged($event)"
                                          [queryDetails]="q"></app-pvoc-query-card>
                 </div>
                 <ng-template #noQueries>
