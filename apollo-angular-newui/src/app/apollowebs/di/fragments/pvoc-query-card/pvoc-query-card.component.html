@@ -1,19 +1,36 @@
 <div class="card border" style="width: 98%">
     <div class="card-header" [className]="queryDetails.queryOrigin==='KEBS'?'bg-primary':'bg-success'">
-        <h4 class="pull-right">
+        <h4 class="pull-left">
             {{queryDetails.serialNumber}} - {{queryDetails.queryOrigin}}
             <span class="font-small pull-right float-right">Created by {{queryDetails.createdBy}}
                 on {{queryDetails.createdOn | date: 'dd-MM-yyyy'}} at {{queryDetails.createdOn | date: 'HH:mm'}}</span>
         </h4>
     </div>
     <div class="card-body">
-        <h5 class="card-title">Query from <b>{{queryDetails.queryOrigin}}</b></h5>
-        <div class="card-text">{{queryDetails.queryDetails}}</div>
-        <h5 class="card-title" *ngIf="queryDetails.conclusion">Conclusions</h5>
-        <div class="card-text" *ngIf="queryDetails.conclusion">{{queryDetails.conclusion}}</div>
-        <span class="text-break"></span>
-        <button class="float-right pull-right btn btn-primary" (click)="viewQuery(queryDetails)">
-            View More
-        </button>
+        <div class="list-group">
+            <div class="list-group-item">
+                <div class="card-text">{{queryDetails.queryDetails}}</div>
+                <h5 class="card-title" *ngIf="queryDetails.conclusion">Conclusions</h5>
+                <div class="card-text" *ngIf="queryDetails.conclusion">{{queryDetails.conclusion}}</div>
+                <span class="text-break"></span>
+            </div>
+            <div *ngFor="let resp of queryDetails.responses" class="list-group-item card">
+                <h5 class="card-title pull-right">Response from <b>{{resp.responseFrom}}</b>
+                    <span class="font-small pull-right float-right">Created by {{resp.createdBy}}
+                        on {{resp.createdOn | date: 'dd-MM-yyyy'}} at {{resp.createdOn | date: 'HH:mm'}}</span>
+                </h5>
+                <div class="card-text">Response- {{resp.queryResponse}}</div>
+                <h5 class="card-title" *ngIf="resp.conclusion">Conclusions</h5>
+                <div class="card-text" *ngIf="resp.conclusion">{{resp.conclusion}}</div>
+                <span class="text-break"></span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer" *ngIf="queryDetails">
+        <div class="row">
+            <button class="btn btn-primary" (click)="viewQuery(queryDetails)"
+                    aria-expanded="false">Reply
+            </button>
+        </div>
     </div>
 </div>
