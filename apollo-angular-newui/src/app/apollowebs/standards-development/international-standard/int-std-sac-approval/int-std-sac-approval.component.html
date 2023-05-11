@@ -27,7 +27,9 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
-                                <form (ngSubmit)="approveInternationalStandard()" [formGroup]="approveRequirementsFormGroup" class="form">
+                                <button  class="btn btn-primary btn-sm" data-target="#approveStandards" data-toggle="modal"  >Proceed to Decision View</button>
+                                <form  [formGroup]="multipleApproveFormGroup" class="form">
+
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
                                     <thead>
                                     <tr>
@@ -45,32 +47,76 @@
                                     <tbody>
                                     <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{isCheckRequirement.standardType}}</td>
+                                        <td>{{isCheckRequirement.standardType}}-{{isCheckRequirement.id}}</td>
                                         <td><b>KS Number:</b><br>{{isCheckRequirement.comStdNumber}}<br><b>Title:</b><br>{{isCheckRequirement.title}},<br><b>Edition:</b><br>{{isCheckRequirement.edition}}</td>
                                         <td>{{isCheckRequirement.requestedBy}}</td>
                                         <td><b>Scope:</b><br>{{isCheckRequirement.scope}},<br><b>Purpose and Application:</b><br>{{isCheckRequirement.purposeAndApplication}},<br><b>Intended Users:</b><br>{{isCheckRequirement.intendedUsers}}</td>
                                         <td>{{isCheckRequirement.referenceMaterial}}</td>
                                         <td><b>Date of TC Acceptance</b> <br> {{isCheckRequirement.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br>{{isCheckRequirement.submissionDate | date: 'dd/MM/yyyy'}} <br><b>Date of Notification to WTO/NEP Office:</b> <br><br><b>Public Review Circulation Dates:</b> <br><b>Circulation Date:</b> <br> {{isCheckRequirement.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isCheckRequirement.closingDate | date: 'dd/MM/yyyy' }} <br> <b>Ballot Circulation dates:</b><br> <b>Circulation Date</b><br><b>Closing Date</b> <br><b>Duration Taken</b> <br>{{isCheckRequirement.durationTaken}} </td>
                                        <td>
-                                           <div class="form-group form-check-inline" >
-                                               <input class="form-check-input" type="checkbox"  formControlName="accentTo"  id="approve{{i+1}}" value="{{approve}}" name="accentTo">
-                                               <label class="form-check-label" for="approve{{i+1}}">
-                                                   approve
-                                               </label>
+                                           <div  >
+                                               <ng-select (change)="onClickAddResource()"  class="form-control" formControlName="accentTo" name="accentTo"  >
+                                                   <ng-option  [value]="approve" >Approve </ng-option>
+                                                   <ng-option  [value]="reject" >Decline </ng-option>
+                                               </ng-select>
+                                               <input type="hidden" formControlName="draftId" name="draftId" ngModel="{{isCheckRequirement.draftId}}" value="{{isCheckRequirement.draftId}}" >
+                                               <input type="hidden" formControlName="id" name="id" ngModel="{{isCheckRequirement.id}}" value="{{isCheckRequirement.id}}" >
+                                               <input type="hidden" formControlName="standardType" name="standardType" ngModel="{{isCheckRequirement.standardType}}" value="{{isCheckRequirement.standardType}}" >
                                            </div>
-                                           <div class="form-group form-check-inline" >
-                                               <input class="form-check-input" type="checkbox" value="{{reject}}" formControlName="accentTo" id="reject{{i+1}}" name="accentTo" >
-                                               <label class="form-check-label" for="reject{{i+1}}">
-                                                   Reject
-                                               </label>
-                                           </div>
+
+                                       </td>
 
                                         <td *ngIf="isCheckRequirement.status==8"><a  (click)="onOpenModals(isCheckRequirement,'approveStandard',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Standard</a></td>
 
                                     </tr>
                                     </tbody>
+
                                 </table>
+
+
                                 </form>
+                            </div>
+                            <div class="modal fade" id="approveStandards" tabindex="-1" role="dialog" aria-labelledby="approveStandardsLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="approveStandardsLabel">SAC LIST DECISION</h3>
+                                            <button type="button" #closeModalRequirements class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form  [formGroup]="multipleApproveFormGroup" class="form">
+                                        <div class="modal-body">
+                                            <div class="form-body">
+                                                <div class="form-group col-12">
+                                                    <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Decision</th>
+                                                            <th>DraftId</th>
+                                                            <th>Id</th>
+                                                            <th>Standard Type</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let r of dataSaveResourcesRequiredList; let i=index">
+                                                            <td>{{r.accentTo}}</td>
+                                                            <td>{{r.draftId}}</td>
+                                                            <td>{{r.id}}</td>
+                                                            <td>{{r.standardType}}</td>
+
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary btn-sm"  >Save and Submit</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal fade" id="approveStandard" tabindex="-1" role="dialog" aria-labelledby="approveStandardLabel" aria-hidden="true">a
                                 <div class="modal-dialog modal-xl" role="document">
