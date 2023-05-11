@@ -2771,5 +2771,13 @@ export interface JustificationStatus {
     statusType: number;
 }
 
+export class MultipleApprovalFields{
+    accentTo: string;
+    draftId:number;
+    requestId:number;
+    id:number;
+    standardType:string;
+}
+
 
 
