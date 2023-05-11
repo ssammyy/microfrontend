@@ -4,8 +4,8 @@ import {Subject} from "rxjs";
 import {
     ComStdCommitteeRemarks, ComStdRemarks,
     InternationalStandardsComments,
-    ISCheckRequirements, ISJustificationProposal,
-    StakeholderProposalComments
+    ISCheckRequirements, ISJustificationProposal, MultipleApprovalFields,
+    StakeholderProposalComments, StakeHoldersFields
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -39,9 +39,13 @@ export class IntStdSacApprovalComponent implements OnInit {
   comStdRemarks: ComStdRemarks[] = [];
     iSJustificationProposals: ISJustificationProposal[] = [];
   loadingText: string;
+    dataSaveResourcesRequired : MultipleApprovalFields;
+    dataSaveResourcesRequiredList: MultipleApprovalFields[]=[];
 
-  approve: string;
-  reject: string;
+  approval: string;
+  rejection: string;
+    approve: string;
+    reject: string;
     blob: Blob;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
@@ -67,21 +71,14 @@ export class IntStdSacApprovalComponent implements OnInit {
   ngOnInit(): void {
     this.approve='Yes';
     this.reject='No';
+
     this.getAppStdPublishing();
     this.multipleApproveFormGroup= this.formBuilder.group({
-        docName: null,
-        title: null,
-        scope: null,
-        normativeReference: null,
-        symbolsAbbreviatedTerms: null,
-        clause: null,
-        special: null,
-        standardType: null,
-        comments: null,
-        accentTo: null,
-        draftId: null,
-        requestId: null,
-        id: null,
+        accentTo:null,
+        draftId:null,
+        requestId:null,
+        id:null,
+        standardType:null
     });
     this.approveRequirementsFormGroup = this.formBuilder.group({
         docName: null,
@@ -120,7 +117,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.stdComStandardService.getAppStdPublishing().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
-          console.log(this.isCheckRequirements)
+          //console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -393,6 +390,13 @@ export class IntStdSacApprovalComponent implements OnInit {
                 this.getAppStdPublishing();
             }
         );
+    }
+    onClickAddResource(): void {
+       // this.SpinnerService.show();
+
+        this.dataSaveResourcesRequired = this.multipleApproveFormGroup.value;
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        console.log(this.dataSaveResourcesRequiredList);
     }
 
 }

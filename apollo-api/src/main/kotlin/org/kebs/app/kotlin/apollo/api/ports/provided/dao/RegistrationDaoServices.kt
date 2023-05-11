@@ -37,7 +37,6 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import com.google.gson.Gson
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -792,6 +791,7 @@ class RegistrationDaoServices(
         var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
         var kraPin= cp.kraPin
         var entry=""
+        var thisEntry=""
         var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
         if (entryNumbers==null){
@@ -814,12 +814,16 @@ class RegistrationDaoServices(
 
             stdLevyEntryNoDataMigrationEntityRepository.save(sm)
         }
+        else{
+            entry= entryNumbers.toString()
+        }
+       // val varLong: Long = entry.toLong()
 
-        entryNumbers = (entryNumbers ?: entry) as Long?
+      //  entryNumbers = (entryNumbers ?: varLong)
 
 
         with(cp) {
-            entryNumber = entryNumbers.toString()
+            entryNumber = entry
             modifiedBy = commonDaoServices.concatenateName(u)
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -1241,6 +1245,7 @@ class RegistrationDaoServices(
             }else{
                 throw ExpectedDataNotFound("Error has occurred, Try again")
             }
+
 
         }
         else{
