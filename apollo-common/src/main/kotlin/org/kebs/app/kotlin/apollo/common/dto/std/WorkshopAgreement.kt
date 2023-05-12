@@ -359,6 +359,7 @@ class NwaPDraftAction(
     @JsonProperty("special") val special: String,
 ) {
 }
+
 data class ISAdoptionProposalDto(
     var proposal_doc_name: String?=null,
     var circulationDate: Timestamp,
@@ -396,6 +397,41 @@ data class IStakeholderDTO(
 ){
 
 }
+
+data class ISSpcMultipleDecisionDto(
+    var decisionList: MutableList<SpcDecisionDTO>?=null,
+){
+
+}
+
+data class SpcDecisionDTO(
+
+    var accentTo:String,
+    var draftId:Long
+){
+
+}
+
+data class ISSacMultipleDecisionDto(
+    var decisionList: MutableList<SacDecisionDTO>?=null,
+){
+
+}
+
+data class SacDecisionDTO(
+
+    var accentTo:String,
+    var draftId:Long,
+    var requestId:Long,
+    var id:Long,
+    var standardType:String?=null,
+    var comStdNumber:String?=null,
+    var title:String?=null,
+    var scope:String?=null,
+){
+
+}
+
 
 data class ISPropComments(
     var commentTitle: String?=null,

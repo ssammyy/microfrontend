@@ -826,4 +826,29 @@ class IntStandardController(
         return internationalStandardService.getRQNumber();
     }
 
+    @PostMapping("/international_standard/multipleDecisionOnJustification")
+    fun multipleDecisionOnJustification(@RequestBody isSpcMultipleDecisionDto: ISSpcMultipleDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.multipleDecisionOnJustification(isSpcMultipleDecisionDto))
+
+    }
+
+    @PostMapping("/international_standard/multipleDecisionOnSacList")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun multipleDecisionOnSacList(@RequestBody isSacMultipleDecisionDto: ISSacMultipleDecisionDto): ServerResponse{
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded ",internationalStandardService.multipleDecisionOnSacList(isSacMultipleDecisionDto))
+    }
+
+    @PostMapping("/international_standard/multipleDecisionOnNscList")
+    fun multipleDecisionOnNscList(@RequestBody isSacMultipleDecisionDto: ISSacMultipleDecisionDto
+    ) : ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.multipleDecisionOnNscList(isSacMultipleDecisionDto))
+
+    }
+
 }

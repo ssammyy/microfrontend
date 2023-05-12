@@ -41,6 +41,8 @@ export class IntStdSacApprovalComponent implements OnInit {
   loadingText: string;
     dataSaveResourcesRequired : MultipleApprovalFields;
     dataSaveResourcesRequiredList: MultipleApprovalFields[]=[];
+    predefinedDecisionAdded: boolean = false;
+    submitted = false;
 
   approval: string;
   rejection: string;
@@ -313,6 +315,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
 
+
       this.stdIntStandardService.getISJustification(comStdDraftID).subscribe(
           (response: ISJustificationProposal[]) => {
               this.iSJustificationProposals = response;
@@ -391,12 +394,72 @@ export class IntStdSacApprovalComponent implements OnInit {
             }
         );
     }
-    onClickAddResource(): void {
-       // this.SpinnerService.show();
 
-        this.dataSaveResourcesRequired = this.multipleApproveFormGroup.value;
-        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
-        console.log(this.dataSaveResourcesRequiredList);
+    onClickAddResource(isCheckRequirement: ISCheckRequirements ): void {
+        const dataSaveResourcesRequiredTest=new MultipleApprovalFields;
+        dataSaveResourcesRequiredTest.id=isCheckRequirement.id;
+        dataSaveResourcesRequiredTest.draftId=isCheckRequirement.draftId
+        dataSaveResourcesRequiredTest.standardType=isCheckRequirement.standardType
+        dataSaveResourcesRequiredTest.comStdNumber=isCheckRequirement.comStdNumber
+        dataSaveResourcesRequiredTest.title=isCheckRequirement.title
+        dataSaveResourcesRequiredTest.scope=isCheckRequirement.scope
+        dataSaveResourcesRequiredTest.requestId=isCheckRequirement.requestId
+      dataSaveResourcesRequiredTest.accentTo=this.multipleApproveFormGroup.get("accentTo").value;
+        const valueFound=this.dataSaveResourcesRequiredList.find(t=> t.id===dataSaveResourcesRequiredTest.id );
+        if(dataSaveResourcesRequiredTest.accentTo!==null){
+
+            if (valueFound === null || valueFound === undefined) {
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest);
+                console.log(this.dataSaveResourcesRequiredList);
+            }else{
+                const myArray = this.dataSaveResourcesRequiredList;
+
+                const idToRemove = valueFound.id;
+
+                const result = myArray.reduce((accumulator, currentValue) => {
+                    if (currentValue.id !== idToRemove) {
+                        accumulator.push(currentValue);
+                    }
+                    return accumulator;
+                }, []);
+
+                //console.log(result);
+                this.dataSaveResourcesRequiredList=[]
+                this.dataSaveResourcesRequiredList.push(...result);
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest)
+                //console.log(this.dataSaveResourcesRequiredList);
+            }
+        }
+
+
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedDecisionAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickMakeDecision() {
+        this.submitted = true;
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.stdIntStandardService.onClickMakeSacDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+                (response) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Multiple Decisions Submitted`);
+                    this.getAppStdPublishing();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error..Try Again`);
+                    alert(error.message);
+                }
+            );
+        }
     }
 
 }
