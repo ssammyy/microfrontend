@@ -74,7 +74,7 @@ class IntStandardService(
     private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository
 
 
-    ) {
+) {
     val callUrl = applicationMapProperties.mapKebsLevyUrl
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
     val gson = Gson()
@@ -1920,9 +1920,9 @@ class IntStandardService(
         return isStandardUploadsRepository.findByIsStdDocumentId(isStandardID)
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$isStandardID]")
     }
-    fun multipleDecisionOnJustification(isSpcMultipleDecisionDto: ISSpcMultipleDecisionDto) : String
-    {
-        val spcList= isSpcMultipleDecisionDto.decisionList
+
+    fun multipleDecisionOnJustification(isSpcMultipleDecisionDto: ISSpcMultipleDecisionDto): String {
+        val spcList = isSpcMultipleDecisionDto.decisionList
         spcList?.forEach { s ->
             val decision = s.accentTo
             val draftId = s.draftId
@@ -1935,7 +1935,7 @@ class IntStandardService(
                     }
                     comStdDraftRepository.save(comStdDraft)
                     //companyStandardRemarksRepository.save(companyStandardRemarks)
-                   // response = "Justification Was Approved"
+                    // response = "Justification Was Approved"
                 } ?: throw Exception("DRAFT NOT FOUND")
 
 
@@ -1946,27 +1946,26 @@ class IntStandardService(
                         status = 1
                     }
                     comStdDraftRepository.save(comStdDraft)
-                   // companyStandardRemarksRepository.save(companyStandardRemarks)
+                    // companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                   // response = "Justification Was Not Approved"
+                    // response = "Justification Was Not Approved"
                 } ?: throw Exception("DRAFT NOT FOUND")
 
 
             }
         }
         return "Actioned"
-}
+    }
 
-    fun multipleDecisionOnSacList(isSacMultipleDecisionDto: ISSacMultipleDecisionDto) : String
-    {
-        val sacList= isSacMultipleDecisionDto.decisionList
+    fun multipleDecisionOnSacList(isSacMultipleDecisionDto: ISSacMultipleDecisionDto): String {
+        val sacList = isSacMultipleDecisionDto.decisionList
         sacList?.forEach { s ->
-            val decision=s.accentTo
-            val cid=s.id
-            val draftId=s.draftId
-            val requestId=s.requestId
-            val standardType=s.standardType
-            val standardNo=s.comStdNumber
+            val decision = s.accentTo
+            val cid = s.id
+            val draftId = s.draftId
+            val requestId = s.requestId
+            val standardType = s.standardType
+            val standardNo = s.comStdNumber
             if (decision == "Yes") {
                 companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
                     with(companyStandard) {
@@ -1974,7 +1973,7 @@ class IntStandardService(
 
                     }
                     companyStandardRepository.save(companyStandard)
-                   // companyStandardRemarksRepository.save(comRemarks)
+                    // companyStandardRemarksRepository.save(comRemarks)
 
                 } ?: throw Exception("DRAFT NOT FOUND")
 
@@ -1993,7 +1992,7 @@ class IntStandardService(
                                 status = 11
                             }
                             companyStandardRepository.save(companyStandard)
-                           // companyStandardRemarksRepository.save(comRemarks)
+                            // companyStandardRemarksRepository.save(comRemarks)
 
                         } ?: throw Exception("DRAFT NOT FOUND")
                     } ?: throw Exception("REQUEST NOT FOUND")
@@ -2013,7 +2012,8 @@ class IntStandardService(
 
         return "Decision Saved"
     }
-    fun multipleDecisionOnNscList(isSacMultipleDecisionDto: ISSacMultipleDecisionDto) : String {
+
+    fun multipleDecisionOnNscList(isSacMultipleDecisionDto: ISSacMultipleDecisionDto): String {
         val sacList = isSacMultipleDecisionDto.decisionList
         sacList?.forEach { s ->
             val decision = s.accentTo
@@ -2022,40 +2022,32 @@ class IntStandardService(
             val requestId = s.requestId
             val standardType = s.standardType
             val standardNo = s.comStdNumber
-
             if (decision == "Yes") {
-                if (standardType == "International Standard") {
-                    companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
-                        with(companyStandard) {
-                            status = 9
+                when (standardType) {
+                    "International Standard" -> {
+                        companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
+                            setCompanyStandardStatus(companyStandard, 9)
+                        } ?: throw Exception("DRAFT NOT FOUND")
+                    }
 
-                        }
-                        companyStandardRepository.save(companyStandard)
-                        //companyStandardRemarksRepository.save(comRemarks)
+                    "Kenya Standard" -> {
+                        var kenyaStd = getKSNumber()
+                        var ks = SDWorkshopStd()
+                        ks.nwaStdNumber = kenyaStd
+                        ks.requestId = draftId
+                        companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
+                            with(companyStandard) {
+                                status = 9
+                                comStdNumber = kenyaStd
+                            }
+                            sdWorkshopStdRepository.save(ks)
+                            companyStandardRepository.save(companyStandard)
+                            //companyStandardRemarksRepository.save(comRemarks)
+                        } ?: throw Exception("DRAFT NOT FOUND")
+                    }
 
-
-                    } ?: throw Exception("DRAFT NOT FOUND")
-                } else if (standardType == "Kenya Standard") {
-                    var kenyaStd = getKSNumber()
-                    var ks = SDWorkshopStd()
-                    ks.nwaStdNumber = kenyaStd
-                    ks.requestId = draftId
-                    companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
-                        with(companyStandard) {
-                            status = 9
-                            comStdNumber = kenyaStd
-
-                        }
-                        sdWorkshopStdRepository.save(ks)
-                        companyStandardRepository.save(companyStandard)
-                        //companyStandardRemarksRepository.save(comRemarks)
-
-                    } ?: throw Exception("DRAFT NOT FOUND")
-
-
+                    else -> throw IllegalArgumentException("Invalid standard type: $standardType")
                 }
-
-
             } else if (decision == "No") {
                 companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
                     with(companyStandard) {
@@ -2074,50 +2066,53 @@ class IntStandardService(
         return "Actioned"
     }
 
+    private fun setCompanyStandardStatus(
+        companyStandard: CompanyStandard,
+        status: Long
+    ) {
+        companyStandard.status = status
+        companyStandardRepository.save(companyStandard)
+        //companyStandardRemarksRepository.save(comRemarks)
+    }
 
 
-    fun getISDNumber(): Pair<String, Long>
-    {
-        var allRequests =standardRepository.getMaxISDN()
-        allRequests = if (allRequests.equals(null)){
+    fun getISDNumber(): Pair<String, Long> {
+        var allRequests = standardRepository.getMaxISDN()
+        allRequests = if (allRequests.equals(null)) {
             0
-        }else{
+        } else {
             allRequests
         }
 
-        var startId="ISN"
+        var startId = "ISN"
         allRequests = allRequests.plus(1)
         val year = Calendar.getInstance()[Calendar.YEAR]
         return Pair("$startId/$allRequests:$year", allRequests)
     }
 
 
+    fun getPRNumber(): String {
+        val allRequests = isAdoptionProposalRepository.findAllByOrderByIdDesc()
+
+        var lastId: String? = "0"
+        var finalValue = 1
+        var startId = "PR"
 
 
-    fun getPRNumber(): String
-    {
-        val allRequests =isAdoptionProposalRepository.findAllByOrderByIdDesc()
-
-        var lastId:String?="0"
-        var finalValue =1
-        var startId="PR"
-
-
-        for(item in allRequests){
+        for (item in allRequests) {
             println(item)
             lastId = item.proposalNumber
             break
         }
 
-        if(lastId != "0")
-        {
+        if (lastId != "0") {
             val strs = lastId?.split(":")?.toTypedArray()
 
             val firstPortion = strs?.get(0)
 
             val lastPortArray = firstPortion?.split("/")?.toTypedArray()
 
-            val intToIncrement =lastPortArray?.get(1)
+            val intToIncrement = lastPortArray?.get(1)
 
             finalValue = (intToIncrement?.toInt()!!)
             finalValue += 1
@@ -2129,30 +2124,28 @@ class IntStandardService(
         return "$startId/$finalValue:$year";
     }
 
-    fun getRQNumber(): String
-    {
-        val allRequests =iSAdoptionJustificationRepository.findAllByOrderByIdDesc()
+    fun getRQNumber(): String {
+        val allRequests = iSAdoptionJustificationRepository.findAllByOrderByIdDesc()
 
-        var lastId:String?="0"
-        var finalValue =1
-        var startId="RQ"
+        var lastId: String? = "0"
+        var finalValue = 1
+        var startId = "RQ"
 
 
-        for(item in allRequests){
+        for (item in allRequests) {
             println(item)
             lastId = item.requestNumber
             break
         }
 
-        if(lastId != "0")
-        {
+        if (lastId != "0") {
             val strs = lastId?.split(":")?.toTypedArray()
 
             val firstPortion = strs?.get(0)
 
             val lastPortArray = firstPortion?.split("/")?.toTypedArray()
 
-            val intToIncrement =lastPortArray?.get(1)
+            val intToIncrement = lastPortArray?.get(1)
 
             finalValue = (intToIncrement?.toInt()!!)
             finalValue += 1
@@ -2176,44 +2169,42 @@ class IntStandardService(
         val c = allRequests
         val d = c.toInt()
         val x = 1
-        val z = x  + d
+        val z = x + d
 
         val finalValue = z.toString()
 
 //        println("Sum of x+y = $finalValue")
 
         val year = Calendar.getInstance()[Calendar.YEAR]
-        val month = Calendar.getInstance().get(Calendar.MONTH)+1
+        val month = Calendar.getInstance().get(Calendar.MONTH) + 1
 
         return "$startId/$finalValue/$month:$year"
 
 
     }
 
-    fun getISNumber(): String
-    {
-        val allRequests =iSUploadStandardRepository.findAllByOrderByIdDesc()
+    fun getISNumber(): String {
+        val allRequests = iSUploadStandardRepository.findAllByOrderByIdDesc()
 
-        var lastId:String?="0"
-        var finalValue =1
-        var startId="IS"
+        var lastId: String? = "0"
+        var finalValue = 1
+        var startId = "IS"
 
 
-        for(item in allRequests){
+        for (item in allRequests) {
             println(item)
             lastId = item.iSNumber
             break
         }
 
-        if(lastId != "0")
-        {
+        if (lastId != "0") {
             val strs = lastId?.split(":")?.toTypedArray()
 
             val firstPortion = strs?.get(0)
 
             val lastPortArray = firstPortion?.split("/")?.toTypedArray()
 
-            val intToIncrement =lastPortArray?.get(1)
+            val intToIncrement = lastPortArray?.get(1)
 
             finalValue = (intToIncrement?.toInt()!!)
             finalValue += 1
@@ -2224,30 +2215,29 @@ class IntStandardService(
 
         return "$startId/$finalValue:$year"
     }
-    fun getKSNumber(): String
-    {
+
+    fun getKSNumber(): String {
         val allRequests = sdWorkshopStdRepository.findAllByOrderByIdDesc()
 
-        var lastId:String?="0"
-        var finalValue =1
-        var startId="NWA"
+        var lastId: String? = "0"
+        var finalValue = 1
+        var startId = "NWA"
 
 
-        for(item in allRequests){
+        for (item in allRequests) {
             println(item)
             lastId = item.nwaStdNumber
             break
         }
 
-        if(lastId != "0")
-        {
+        if (lastId != "0") {
             val strs = lastId?.split(":")?.toTypedArray()
 
             val firstPortion = strs?.get(0)
 
             val lastPortArray = firstPortion?.split("/")?.toTypedArray()
 
-            val intToIncrement =lastPortArray?.get(1)
+            val intToIncrement = lastPortArray?.get(1)
 
             finalValue = (intToIncrement?.toInt()!!)
             finalValue += 1
