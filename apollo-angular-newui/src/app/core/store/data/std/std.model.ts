@@ -708,6 +708,7 @@ export class PredefinedSDCommentsFields {
     observation: string;
 }
 
+
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
@@ -2777,6 +2778,28 @@ export class MultipleApprovalFields{
     requestId:number;
     id:number;
     standardType:string;
+    comStdNumber:string;
+    title: string;
+    scope: string;
+}
+
+export interface SacDecision{
+    decisionList: MultipleApprovalFields[]
+}
+
+export class MultipleSpcApprovals{
+    accentTo: string;
+    draftId:number;
+    requestId:number;
+    id:number;
+    standardType:string;
+    comStdNumber:string;
+    title: string;
+    scope: string;
+}
+
+export interface SpcDecision{
+    decisionList: MultipleSpcApprovals[]
 }
 
 

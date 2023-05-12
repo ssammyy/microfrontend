@@ -1,11 +1,11 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
     ComStdCommitteeRemarks,
     ComStdRemarks,
     InternationalStandardsComments,
-    ISCheckRequirements, ISJustificationProposal,
+    ISCheckRequirements, ISJustificationProposal, MultipleApprovalFields,
     StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -22,7 +22,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 @Component({
   selector: 'app-int-std-nsc-approval',
   templateUrl: './int-std-nsc-approval.component.html',
-  styleUrls: ['./int-std-nsc-approval.component.css']
+  styleUrls: ['./int-std-nsc-approval.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdNscApprovalComponent implements OnInit {
   @ViewChildren(DataTableDirective)
@@ -37,6 +38,10 @@ export class IntStdNscApprovalComponent implements OnInit {
   public actionRequest: ISCheckRequirements | undefined;
   comStdRemarks: ComStdRemarks[] = [];
   loadingText: string;
+    dataSaveResourcesRequired : MultipleApprovalFields;
+    dataSaveResourcesRequiredList: MultipleApprovalFields[]=[];
+    predefinedDecisionAdded: boolean = false;
+    submitted = false;
 
   approve: string;
   reject: string;
@@ -45,6 +50,7 @@ export class IntStdNscApprovalComponent implements OnInit {
   isShowCommentsTab= true;
   isShowMainTab= true;
   isShowMainTabs= true;
+    public multipleApproveFormGroup!: FormGroup;
   public approveRequirementsFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
@@ -65,6 +71,13 @@ export class IntStdNscApprovalComponent implements OnInit {
     this.approve='Yes';
     this.reject='No';
     this.getStdApproval();
+      this.multipleApproveFormGroup= this.formBuilder.group({
+          accentTo:null,
+          draftId:null,
+          requestId:null,
+          id:null,
+          standardType:null
+      });
     this.approveRequirementsFormGroup = this.formBuilder.group({
       docName: null,
       title: null,
@@ -373,5 +386,71 @@ export class IntStdNscApprovalComponent implements OnInit {
         }
     );
   }
+    onClickAddResource(isCheckRequirement: ISCheckRequirements ): void {
+        const dataSaveResourcesRequiredTest=new MultipleApprovalFields;
+        dataSaveResourcesRequiredTest.id=isCheckRequirement.id;
+        dataSaveResourcesRequiredTest.draftId=isCheckRequirement.draftId
+        dataSaveResourcesRequiredTest.standardType=isCheckRequirement.standardType
+        dataSaveResourcesRequiredTest.comStdNumber=isCheckRequirement.comStdNumber
+        dataSaveResourcesRequiredTest.title=isCheckRequirement.title
+        dataSaveResourcesRequiredTest.scope=isCheckRequirement.scope
+        dataSaveResourcesRequiredTest.requestId=isCheckRequirement.requestId
+        dataSaveResourcesRequiredTest.accentTo=this.multipleApproveFormGroup.get("accentTo").value;
+        const valueFound=this.dataSaveResourcesRequiredList.find(t=> t.id===dataSaveResourcesRequiredTest.id );
+        if(dataSaveResourcesRequiredTest.accentTo!==null){
+
+            if (valueFound === null || valueFound === undefined) {
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest);
+                console.log(this.dataSaveResourcesRequiredList);
+            }else{
+                const myArray = this.dataSaveResourcesRequiredList;
+
+                const idToRemove = valueFound.id;
+
+                const result = myArray.reduce((accumulator, currentValue) => {
+                    if (currentValue.id !== idToRemove) {
+                        accumulator.push(currentValue);
+                    }
+                    return accumulator;
+                }, []);
+
+                //console.log(result);
+                this.dataSaveResourcesRequiredList=[]
+                this.dataSaveResourcesRequiredList.push(...result);
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest)
+                //console.log(this.dataSaveResourcesRequiredList);
+            }
+        }
+
+
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedDecisionAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickMakeDecision() {
+        this.submitted = true;
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.stdIntStandardService.onClickMakeNscDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+                (response) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Multiple Decisions Submitted`);
+                    this.getStdApproval();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error..Try Again`);
+                    alert(error.message);
+                }
+            );
+        }
+    }
 
 }
