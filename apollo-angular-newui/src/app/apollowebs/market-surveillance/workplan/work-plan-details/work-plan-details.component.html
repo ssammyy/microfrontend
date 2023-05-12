@@ -6510,24 +6510,38 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label><b>Select the Data Report</b></label>
-                                            <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
-                                            <datalist id="availableDataReports">
-                                                <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
-                                            </datalist>
+                                <div class="p-1 m-1" *ngIf="workPlanInspection?.dataReportDto.length!=0">
+
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <div class="form-group">
+                                                <label><b>Select the Data Report</b></label>
+                                                <select class="form-control two-column-input" formControlName="dataReportSelected" name="dataReportSelected" (change)="onSelectedDataReport($event.target.value)">
+                                                    <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col">
+                                            <div *ngIf="showDataReportProduct" class="form-group">
+                                                <label><b>Select the Product in the Data Report</b></label>
+                                                <select class="form-control two-column-input" formControlName="productSelected" name="productSelected" (change)="onSelectProductInDataReport()">
+                                                    <option *ngFor="let productSheet of selectedDataSheet?.productsList" [value]="productSheet.id">{{productSheet.typeBrandName}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+
+                                        </div>
+                                        <div class="col">
+
                                         </div>
                                     </div>
 
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button  mat-raised-button
-                                                     class="btn btn-outline-success" type="button" >SELECT DATA REPORT
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>

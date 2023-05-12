@@ -114,6 +114,9 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       sampleReferences: ['', null],
       assignIO: ['', null],
       sectorID: ['', null],
+      nameProduct: ['', null],
+      function: ['', null],
+      outletName: ['', null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
@@ -147,6 +150,13 @@ export class SampleSubmittedTimelineComponent implements OnInit {
           if (dataResponse.responseCode === '00') {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.loadedData = dataResponse?.data as SubmittedSamplesSummaryReportViewEntity[];
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].submissionWithin2Days) == 1){
+                this.loadedData[i].submissionWithin2Days = 'YES';
+              }else if(Number(this.loadedData[i].submissionWithin2Days) == 0){
+                this.loadedData[i].submissionWithin2Days = 'NO';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.calculateSampleSubmittedSummary();
             this.rerender();
@@ -194,11 +204,19 @@ export class SampleSubmittedTimelineComponent implements OnInit {
     this.SpinnerService.show();
     this.submitted = true;
     this.submittedSamplesSummarySearchValues = this.searchFormGroup.value;
+    console.log(this.submittedSamplesSummarySearchValues.assignIO);
     // tslint:disable-next-line:max-line-length
     this.msService.loadSearchSubmittedSamplesSummaryViewList(String(this.defaultPage), String(this.defaultPageSize), this.submittedSamplesSummarySearchValues).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].submissionWithin2Days) == 1){
+                this.loadedData[i].submissionWithin2Days = 'YES';
+              }else if(Number(this.loadedData[i].submissionWithin2Days) == 0){
+                this.loadedData[i].submissionWithin2Days = 'NO';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
             this.calculateSampleSubmittedSummary();
@@ -244,57 +262,69 @@ export class SampleSubmittedTimelineComponent implements OnInit {
 
       for(let i=0; i < this.loadedData.length; i++){
         if(isNaN(Number(this.loadedData[i].noSamplesTested))){
-          this.loadedData[i].noSamplesTested = '0'
+          // this.loadedData[i].noSamplesTested = '0'
+        }else{
+          arrayOfSamplesTested.push(Number(this.loadedData[i].noSamplesTested));
         }
-        arrayOfSamplesTested.push(Number(this.loadedData[i].noSamplesTested));
 
-        if(this.loadedData[i].complianceTesting != '100'){
-          this.loadedData[i].complianceTesting = '0'
+        if (this.loadedData[i].bsNumber != 'N/A'){
+          if(this.loadedData[i].complianceTesting == '100'){
+            arrayOfComplianceTesting.push(Number(this.loadedData[i].complianceTesting));
+          }
         }
-        arrayOfComplianceTesting.push(Number(this.loadedData[i].complianceTesting));
+
 
         if(isNaN(Number(this.loadedData[i].tcxb))){
           this.loadedData[i].tcxb = '0'
         }
         arrayOfTCXB.push(Number(this.loadedData[i].tcxb));
 
-        if(isNaN(Number(this.loadedData[i].timeTakenSubmitSample))){
-          arrayOfTimeTakenToSubmitSample.push(0);
-        }else{
-          arrayOfTimeTakenToSubmitSample.push(Number(this.loadedData[i].timeTakenSubmitSample)+1);
+        if(this.loadedData[i].bsNumber != 'N/A'){
+          if(isNaN(Number(this.loadedData[i].timeTakenSubmitSample))){
+            // arrayOfTimeTakenToSubmitSample.push(0);
+          }else{
+            arrayOfTimeTakenToSubmitSample.push(Number(this.loadedData[i].timeTakenSubmitSample));
+          }
         }
 
-        if(isNaN(Number(this.loadedData[i].submissionWithin2Days))){
-          this.loadedData[i].submissionWithin2Days = '0'
+        if(this.loadedData[i].bsNumber != 'N/A'){
+          if(isNaN(Number(this.loadedData[i].submissionWithin2Days))){
+            // this.loadedData[i].submissionWithin2Days = '0'
+          }else{
+            arrayOfSubmittedWithin2Days.push(Number(this.loadedData[i].submissionWithin2Days));
+          }
         }
-        arrayOfSubmittedWithin2Days.push(Number(this.loadedData[i].submissionWithin2Days));
+
+
 
         if(isNaN(Number(this.loadedData[i].timeTakenForwardLetters))){
-          arrayOfTimeTakenToForwardLetter.push(0);
+          // arrayOfTimeTakenToForwardLetter.push(0);
         }else{
-          arrayOfTimeTakenToForwardLetter.push(Number(this.loadedData[i].timeTakenForwardLetters)+1);
+          arrayOfTimeTakenToForwardLetter.push(Number(this.loadedData[i].timeTakenForwardLetters));
         }
 
         if(isNaN(Number(this.loadedData[i].forwardingWithin14DaysTesting))){
-          this.loadedData[i].forwardingWithin14DaysTesting = '0'
+          // this.loadedData[i].forwardingWithin14DaysTesting = '0'
+        }else{
+          arrayOfForwardingWithin14DaysOfTesting.push(Number(this.loadedData[i].forwardingWithin14DaysTesting));
         }
-        arrayOfForwardingWithin14DaysOfTesting.push(Number(this.loadedData[i].forwardingWithin14DaysTesting));
 
       }
       console.log("Array of submitted with 2 days"+arrayOfSubmittedWithin2Days);
       this.numberOfSamplesTested = arrayOfSamplesTested.reduce((a,b)=> a + b, 0);
-      this.averageTestingCompliance = this.numberOfSamplesTested/this.loadedData.length;
+
       this.sumOfComplianceToTesting = arrayOfComplianceTesting.reduce((a,b)=> a + b, 0);
+      this.averageTestingCompliance = this.sumOfComplianceToTesting/arrayOfComplianceTesting.length;
       this.sumOfTCTimesB = arrayOfTCXB.reduce((a,b)=> a + b, 0);
       this.sumOfTimeTakenToSubmitSamples = arrayOfTimeTakenToSubmitSample.reduce((a,b)=> a + b, 0);
-      this.averageTimeTakenToSubmitSamples = this.sumOfTimeTakenToSubmitSamples/this.loadedData.length;
+      this.averageTimeTakenToSubmitSamples = this.sumOfTimeTakenToSubmitSamples/arrayOfTimeTakenToSubmitSample.length;
       this.sumOfSubmissionWithin2Days = arrayOfSubmittedWithin2Days.reduce((a,b)=> a + b, 0);
       console.log("Sum of submission within 2 days: "+this.sumOfSubmissionWithin2Days);
-      this.percentageComplianceToSubmissionWithin2days = (this.sumOfSubmissionWithin2Days/this.loadedData.length)*100;
+      this.percentageComplianceToSubmissionWithin2days = (this.sumOfSubmissionWithin2Days/arrayOfSubmittedWithin2Days.length)*100;
       this.sumOfTimeTakenToForwardLetters = arrayOfTimeTakenToForwardLetter.reduce((a,b)=> a + b, 0);
-      this.averageTimeTakenToForwardLetters = this.sumOfTimeTakenToForwardLetters/this.loadedData.length;
+      this.averageTimeTakenToForwardLetters = this.sumOfTimeTakenToForwardLetters/arrayOfTimeTakenToForwardLetter.length;
       this.sumOfForwardingWithin14Days = arrayOfForwardingWithin14DaysOfTesting.reduce((a,b)=> a + b, 0);
-      this.percentageComplianceToForwardingWithin14Days = (this.sumOfForwardingWithin14Days/this.loadedData.length)*100;
+      this.percentageComplianceToForwardingWithin14Days = (this.sumOfForwardingWithin14Days/arrayOfForwardingWithin14DaysOfTesting.length)*100;
   }
 
 }

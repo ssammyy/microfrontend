@@ -263,6 +263,11 @@ class MsSampleSubmissionEntity : Serializable {
     @Basic
     var dataReportID: Long? = null
 
+
+    @Column(name = "PRODUCT_IN_DATA_REPORT")
+    @Basic
+    var productSelected: Long? = null
+
     @Column(name = "MS_FUEL_INSPECTION_ID")
     @Basic
     var msFuelInspectionId: Long? = null

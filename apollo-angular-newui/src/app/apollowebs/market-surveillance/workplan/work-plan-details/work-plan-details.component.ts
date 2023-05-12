@@ -79,6 +79,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
   nonComplianceList: NonComplianceDto[];
   selectedDataSheet: DataReportDto;
+  showDataReportProduct: boolean = false;
   showOther = false;
   active: Number = 0;
   selectedFile: File;
@@ -1966,6 +1967,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       id: null,
       dataReportSelected: null,
       dataReportID: null,
+      productSelected: null,
       nameProduct: ['', Validators.required],
       packaging: null,
       labellingIdentification: null,
@@ -4572,6 +4574,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
+      this.dataSaveSampleSubmit.productSelected = this.sampleSubmitForm?.get('productSelected').value;
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -6197,8 +6200,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     link.click();
   }
 
-  onSelectedDataReport() {
-     this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
+  onSelectedDataReport(dataReportID) {
+    this.showDataReportProduct = false;
+    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id == Number(dataReportID));
+    this.showDataReportProduct = true;
   }
 
   calculateEndDate() {
