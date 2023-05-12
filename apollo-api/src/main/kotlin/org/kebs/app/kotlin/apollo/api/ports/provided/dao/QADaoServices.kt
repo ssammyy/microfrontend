@@ -11020,7 +11020,7 @@ class QADaoServices(
     ): List<PermitApplicationsEntity> {
 
 
-        permitRepo.findTopByAwardedPermitNumberAndPermitStatusOrderByIdDesc(awardedPermitNumber, 28)
+        permitRepo.findByPermitStatusAndAwardedPermitNumberContainingOrderByDateOfExpiryDesc(28, awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }

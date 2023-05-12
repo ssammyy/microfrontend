@@ -1,13 +1,15 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
+import {ErrorStateMatcher} from "@angular/material/core";
 import {JustificationForTc} from "../../../../core/store/data/std/formation_of_tc.model";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {Department} from "../../../../core/store/data/std/std.model";
 import {UserRegister} from "../../../../shared/models/user";
+import {LoggedInUser, selectUserInfo} from "../../../../core/store";
 import {FormationOfTcService} from "../../../../core/store/data/std/formation-of-tc.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {MasterService} from "../../../../core/store/data/master/master.service";
@@ -15,8 +17,7 @@ import {ActivatedRoute} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
-import {ErrorStateMatcher} from "@angular/material/core";
-import {LoggedInUser, selectUserInfo} from "../../../../core/store";
+import Swal from "sweetalert2";
 
 interface FormField {
     id: string;
@@ -33,11 +34,12 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-    selector: 'app-rejected-proposals',
-    templateUrl: './rejected-proposals.component.html',
-    styleUrls: ['./rejected-proposals.component.css']
+    selector: 'app-rejected-by-spc',
+    templateUrl: './rejected-by-spc.component.html',
+    styleUrls: ['./rejected-by-spc.component.css']
 })
-export class RejectedProposalsComponent implements OnInit {
+export class RejectedBySpcComponent implements OnInit {
+
     tasks: JustificationForTc[] = [];
     dtOptions: DataTables.Settings = {};
     dtOptionsB: DataTables.Settings = {};
@@ -56,6 +58,8 @@ export class RejectedProposalsComponent implements OnInit {
     public userDetails!: UserRegister;
 
     public hofDetails!: UserRegister;
+    public commentingHofDetails!: UserRegister;
+
 
     public sacDetails!: UserRegister;
     public spcDetails!: UserRegister;
@@ -100,6 +104,8 @@ export class RejectedProposalsComponent implements OnInit {
 
     showEditForm: boolean = false;
 
+    stdHofCommentOnSpcRejection: FormGroup;
+
 
     constructor(private formationOfTcService: FormationOfTcService,
                 private notifyService: NotificationService,
@@ -122,7 +128,7 @@ export class RejectedProposalsComponent implements OnInit {
             this.userProfile = u;
             return this.roles = u.roles;
         });
-        this.getAllHofJustificationsRejected();
+        this.getAllRejectedJustificationsBySpc();
         this.editFormationRequestFormGroup = this.formBuilder.group({
             dateOfPresentation: ['', Validators.required],
             userDetails: ['', Validators.required],
@@ -140,11 +146,22 @@ export class RejectedProposalsComponent implements OnInit {
 
         });
 
+        this.stdHofCommentOnSpcRejection = this.formBuilder.group(
+            {
+                commentOnSpcRejection: ['', Validators.required],
+                id: ['', Validators.required],
+            }
+        )
+
     }
 
-    public getAllHofJustificationsRejected(): void {
+    get formHofCommentOnSpcRejection(): any {
+        return this.stdHofCommentOnSpcRejection.controls;
+    }
+
+    public getAllRejectedJustificationsBySpc(): void {
         this.SpinnerService.show()
-        this.formationOfTcService.getAllJustificationsRejectedByHof().subscribe(
+        this.formationOfTcService.getAllRejectedJustificationsBySpc().subscribe(
             (response: JustificationForTc[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide()
@@ -183,12 +200,16 @@ export class RejectedProposalsComponent implements OnInit {
             }));
         });
         this.showEditForm = false
-        if(proposal.hofId!="null") {
+        if (proposal.hofId!== null) {
 
             this.getSelectedHof(proposal.hofId)
         }
+        if (proposal.commentOnSpcRejectionBy !== null) {
 
-        // this.getSelectedSpc(proposal.spcId)
+            this.getCommentingHof(proposal.commentOnSpcRejectionBy)
+        }
+
+        this.getSelectedSpc(proposal.spcId)
         if (proposal.status == "7" || proposal.status == "6") {
             this.getSelectedSac(proposal.sacId)
 
@@ -225,11 +246,22 @@ export class RejectedProposalsComponent implements OnInit {
 
         });
     }
+
     private getSelectedHof(userId) {
         this.route.fragment.subscribe(params => {
             this.masterService.loadUserDetails(userId).subscribe(
                 (data: UserRegister) => {
                     this.hofDetails = data;
+                }
+            );
+
+        });
+    }
+    private getCommentingHof(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.commentingHofDetails = data;
                 }
             );
 
@@ -317,8 +349,7 @@ export class RejectedProposalsComponent implements OnInit {
                 this.editFormationRequestFormGroup.controls['departmentId'].setValue(departmentId);
             }
 
-            if(this.showEditForm)
-            {
+            if (this.showEditForm) {
                 const arrayTest = this.editFormationRequestFormGroup.controls['proposedRepresentationArray'].value;
                 const myVar1 = arrayTest.toString()
                 const formValues = {};
@@ -330,8 +361,7 @@ export class RejectedProposalsComponent implements OnInit {
                             numValues += value.split(',').length;
                             formValues[field.id] = value;
                         }
-                    }
-                    else {
+                    } else {
                         this.showToasterError("Error", "Please enter proposed representations organisations")
                         this.isFormSubmitted = false;
                         this.loading = false;
@@ -354,8 +384,6 @@ export class RejectedProposalsComponent implements OnInit {
 
             }
 
-
-            console.log(this.editFormationRequestFormGroup.value)
             this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
                 (response) => {
                     this.showToasterSuccess("Success", "Successfully edited proposal for formation of TC")
@@ -372,7 +400,7 @@ export class RejectedProposalsComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    this.getAllHofJustificationsRejected();
+                    this.getAllRejectedJustificationsBySpc();
                     this.hideModelB()
 
                 },
@@ -382,6 +410,43 @@ export class RejectedProposalsComponent implements OnInit {
             )
         }
     }
+
+    public submitComment(formDirective): void {
+        if (this.stdHofCommentOnSpcRejection.valid) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+
+            this.loading = true
+            this.loadingText = "Submitting Comment"
+            this.SpinnerService.show()
+            this.formationOfTcService.hofSubmitCommentOnSpcRejection(this.stdHofCommentOnSpcRejection.value).subscribe(
+                (response) => {
+                    this.SpinnerService.hide();
+                    swalWithBootstrapButtons.fire(
+                        'Success!',
+                        'Comment Successfully Submitted!',
+                        'success'
+                    );
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, 'Comment Successful');
+                    this.getAllRejectedJustificationsBySpc();
+
+                    formDirective.resetForm()
+
+                },
+            );
+        } else {
+            this.showToasterError("Error", `Please Enter A Comment.`);
+
+        }
+
+    }
+
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
@@ -432,8 +497,10 @@ export class RejectedProposalsComponent implements OnInit {
     showForm() {
         this.showEditForm = true
     }
+
     hideForm() {
         this.showEditForm = false
     }
 
 }
+

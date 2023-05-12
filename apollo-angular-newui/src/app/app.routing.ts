@@ -1265,7 +1265,7 @@ export const routes: Routes = [
     },
 
 
-    // quality Assurance Admin
+    // Quality Assurance Admin
 
     {
         path: 'smark-admin', component: AdminLayoutComponent,

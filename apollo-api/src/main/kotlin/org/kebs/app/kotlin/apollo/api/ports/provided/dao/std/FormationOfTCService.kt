@@ -100,12 +100,23 @@ class FormationOfTCService(
             "Rejected", "Justification Rejected. Sent Back To Tc-Sec"
         )
     }
-
+    fun hofSubmitCommentOnSpcRejection(justificationForTC: JustificationForTC): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
+        u.commentOnSpcRejectionBy = loggedInUser.id
+        u.commentOnSpcRejection= justificationForTC.commentOnSpcRejection
+        u.commentOnSpcRejectionDate = Timestamp(System.currentTimeMillis())
+        justificationForTCRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Success", "Comment Successfully Submitted"
+        )
+    }
     fun getAllSpcJustifications(): List<JustificationForTC> {
         return justificationForTCRepository.findAllByStatus(2)
     }
 
-    fun getAllJustificationsRejectedBySpc(): List<JustificationForTC> {
+    fun getAllJustificationsRejectedByHof(): List<JustificationForTC> {
         return justificationForTCRepository.findAllByStatus(3)
     }
 

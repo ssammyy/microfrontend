@@ -29,6 +29,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
 
+
+    fun findByPermitStatusAndAwardedPermitNumberContainingOrderByDateOfExpiryDesc(permitStatus: Long,awardedPermitNumber: String): List<PermitApplicationsEntity>?
+
+
+
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -1463,6 +1468,24 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 
 @Repository
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
+
+
+    @Query("SELECT a.* from\n" +
+            "(SELECT ID,COMPANY_ID ,PRODUCT_NAME,KS_NUMBER,TITLE, AWARDED_PERMIT_NUMBER,DATE_OF_ISSUE,DATE_OF_EXPIRY,EFFECTIVE_DATE,STATUS,\n" +
+            "PERMIT_STATUS \n" +
+            "FROM apollo.DAT_KEBS_PERMIT_TRANSACTION dkpt WHERE AWARDED_PERMIT_NUMBER LIKE CONCAT(CONCAT(CONCAT('%', :permitType),:permitNumber),'%')\n" +
+            "OR AWARDED_PERMIT_NUMBER= :permitNumber\n" +
+            ")a,\n" +
+            "(SELECT max(DATE_OF_EXPIRY) exp_date FROM apollo.DAT_KEBS_PERMIT_TRANSACTION dkpt\n" +
+            "WHERE AWARDED_PERMIT_NUMBER LIKE CONCAT(CONCAT(CONCAT('%', :permitType),:permitNumber),'%')\n" +
+            "OR AWARDED_PERMIT_NUMBER= :permitNumber)b\n" +
+            "WHERE a.date_of_expiry=b.exp_date;", nativeQuery = true)
+
+    fun searchPermit(permitType: String,permitNumber: String): List<PermitMigrationApplicationsEntity>?
+
+
+
+
     fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?

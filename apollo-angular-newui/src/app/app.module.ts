@@ -582,6 +582,7 @@ import {IntStdWebProposalComponent} from './apollowebs/standards-development/int
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
 import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
+import { RejectedBySpcComponent } from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1219,6 +1220,7 @@ import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
         IntStdWebProposalComponent,
         ApprovedProposalsComponent,
         RejectedProposalsComponent,
+        RejectedBySpcComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -42,12 +42,17 @@ export class FormationOfTcService {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'rejectJustification', justificationForTc)
     }
 
+    public hofSubmitCommentOnSpcRejection(justificationForTc: JustificationForTc): Observable<any> {
+        return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'hofSubmitCommentOnSpcRejection', justificationForTc)
+    }
+
+
     public getAllSpcJustifications(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllSpcJustifications')
     }
 
-    public getAllJustificationsRejectedBySpc(): Observable<JustificationForTc[]> {
-        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllJustificationsRejectedBySpc')
+    public getAllJustificationsRejectedByHof(): Observable<JustificationForTc[]> {
+        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllJustificationsRejectedByHof')
     }
 
     public approveJustificationSPCForTC(justificationForTc: JustificationForTc): Observable<any> {
@@ -64,7 +69,7 @@ export class FormationOfTcService {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllApprovedJustificationsBySpc')
     }
 
-    public sacGetAllRejectedJustificationsBySpc(): Observable<JustificationForTc[]> {
+    public getAllRejectedJustificationsBySpc(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllRejectedJustificationsBySpc')
     }
 

@@ -27,10 +27,11 @@ export interface JustificationForTc {
     spcReviewDate: Date;
     sacReviewDate: Date;
     departmentId: string;
-
     commentsSac: string;
-
     isoCommittee: string;
+    commentOnSpcRejection:string;
+    commentOnSpcRejectionDate:Date;
+    commentOnSpcRejectionBy:string;
 
 
 }

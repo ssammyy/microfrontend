@@ -42,6 +42,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="rejected-proposals-spc"
+                           (click)="tabChange('Rejected Proposals SPC')" role="tablist">
+                            <i class="material-icons"></i>Declined Proposals By SPC
+                        </a>
+                    </li>
+
 
                 </ul>
 
@@ -127,6 +134,10 @@
                     <app-rejected-proposals></app-rejected-proposals>
                 </div>
 
+                <div *ngIf="id == 'Rejected Proposals SPC'" class="w-100">
+                    <app-rejected-by-spc></app-rejected-by-spc>
+                </div>
+
                 <div class="modal fade" id="recommendation" tabindex="-1" role="dialog"
                      aria-labelledby="recommendation"
                      aria-hidden="true">
@@ -135,7 +146,8 @@
                             <div class="modal-header">
                                 <h5 class="modal-title"
                                 >Recommend Proposal</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalB>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                        #closeModalB>
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -180,7 +192,8 @@
                             <div class="modal-header">
                                 <h5 class="modal-title"
                                     id="updateRejectRecommendation">Not Recommend Proposal</h5>
-                                <button type="button" class="close" data-dismiss="modal" #closeModalD aria-label="Close">
+                                <button type="button" class="close" data-dismiss="modal" #closeModalD
+                                        aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -275,7 +288,7 @@
                                             <input type="text"
                                                    aria-describedby="inputGroup-sizing-sm"
                                                    aria-label="Small"
-                                                   class="form-control one-column-input"                                       readonly
+                                                   class="form-control one-column-input" readonly
                                                    ngModel="{{this.proposalRetrieved?.nameOfTC}}">
 
                                         </div>
@@ -287,7 +300,7 @@
                                             <input type="text"
                                                    aria-describedby="inputGroup-sizing-sm"
                                                    aria-label="Small"
-                                                   class="form-control one-column-input"                                         readonly
+                                                   class="form-control one-column-input" readonly
                                                    ngModel="{{this.proposalRetrieved?.scope}}">
                                         </div>
                                     </div>
