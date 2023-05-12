@@ -5,10 +5,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.RfcItemForm
-import org.kebs.app.kotlin.apollo.api.payload.response.CorEntityDao
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
-import org.kebs.app.kotlin.apollo.api.payload.response.RfcCorDao
-import org.kebs.app.kotlin.apollo.api.payload.response.RfcDao
+import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocAgentMonitoringStatusEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -115,7 +112,9 @@ class PvocMonitoringService(
                 dataMap["rfc"] = RfcDao.fromEntity(data.get())
                 val items = this.rfcItemRepository.findByRfcId(rfcId)
                 dataMap["items"] = RfcItemForm.fromList(items)
-                dataMap["queries"] = emptyArray<Any>()
+                dataMap["queries"] = data.get().rfcNumber?.let {
+                    PvocKebsQueryDao.fromList(pvocQuerriesRepository.findByRfcNumber(it))
+                } ?: emptyArray<PvocKebsQueryDao>()
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -167,7 +166,9 @@ class PvocMonitoringService(
             } else {
                 val dataMap = mutableMapOf<String, Any>()
                 dataMap["rfc"] = RfcCorDao.fromEntity(data.get())
-                dataMap["queries"] = emptyArray<Any>()
+                dataMap["queries"] =
+                    data.get().rfcNumber?.let { PvocKebsQueryDao.fromList(pvocQuerriesRepository.findByRfcNumber(it)) }
+                        ?: emptyArray<PvocKebsQueryDao>()
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -277,12 +278,14 @@ class PvocMonitoringService(
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
                 dataMap["items"] = cocItemRepository.findByCocId(foreignId)
-                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(
-                    when (data.get().cocType) {
-                        "COC" -> data.get().cocNumber.orEmpty()
-                        "COI" -> data.get().coiNumber.orEmpty()
-                        else -> data.get().cocNumber.orEmpty()
-                    }
+                dataMap["queries"] = PvocKebsQueryDao.fromList(
+                    pvocQuerriesRepository.findAllByCertNumber(
+                        when (data.get().cocType) {
+                            "COC" -> data.get().cocNumber.orEmpty()
+                            "COI" -> data.get().coiNumber.orEmpty()
+                            else -> data.get().cocNumber.orEmpty()
+                        }
+                    )
                 )
                 response.data = dataMap
                 response.message = "Success"
@@ -374,7 +377,8 @@ class PvocMonitoringService(
                 dataMap["pvoc_client"] = data.get().partner?.let { partnerId ->
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
-                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty())
+                dataMap["queries"] =
+                    PvocKebsQueryDao.fromList(pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty()))
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

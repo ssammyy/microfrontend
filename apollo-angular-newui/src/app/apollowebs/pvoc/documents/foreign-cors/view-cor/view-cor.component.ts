@@ -20,7 +20,7 @@ export class ViewCorComponent implements OnInit {
             .subscribe(
                 res => {
                     this.documentId = res.get("id")
-                    this.loadCorDetails()
+                    this.loadCorDetails(true)
                 }
             )
     }
@@ -29,7 +29,10 @@ export class ViewCorComponent implements OnInit {
         this.router.navigate(["/pvoc/foreign/cor"])
     }
 
-    loadCorDetails() {
+    loadCorDetails(reload: boolean) {
+        if (!reload) {
+            return
+        }
         this.message = null
         this.pvocService.loadCorDetails(this.documentId)
             .subscribe(
