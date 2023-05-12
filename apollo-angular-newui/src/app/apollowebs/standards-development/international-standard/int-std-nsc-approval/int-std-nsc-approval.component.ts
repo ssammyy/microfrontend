@@ -366,6 +366,12 @@ export class IntStdNscApprovalComponent implements OnInit {
   public hideModalEditedDraft() {
     this.closeModalEditedDraft?.nativeElement.click();
   }
+
+    @ViewChild('closeModalMultiple') private closeModalMultiple: ElementRef | undefined;
+
+    public hideModalMultiple() {
+        this.closeModalMultiple?.nativeElement.click();
+    }
   viewCoverPages(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
     this.stdComStandardService.viewCoverPages(pdfId).subscribe(
@@ -437,6 +443,8 @@ export class IntStdNscApprovalComponent implements OnInit {
 
     onClickMakeDecision() {
         this.submitted = true;
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
         if (this.dataSaveResourcesRequiredList.length > 0) {
             this.stdIntStandardService.onClickMakeNscDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
                 (response) => {
@@ -450,6 +458,7 @@ export class IntStdNscApprovalComponent implements OnInit {
                     alert(error.message);
                 }
             );
+            this.hideModalMultiple();
         }
     }
 

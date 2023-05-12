@@ -2787,20 +2787,22 @@ export interface SacDecision{
     decisionList: MultipleApprovalFields[]
 }
 
-export class MultipleSpcApprovals{
-    accentTo: string;
-    draftId:number;
-    requestId:number;
-    id:number;
-    standardType:string;
-    comStdNumber:string;
-    title: string;
-    scope: string;
-}
+
 
 export interface SpcDecision{
     decisionList: MultipleSpcApprovals[]
 }
 
+export class MultipleSpcApprovals{
+    accentTo: string;
+    docName: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    draftId: number;
+    id: number;
+}
 
 

@@ -115,7 +115,7 @@ export class StdIntStandardService {
     }
 
     public onClickMakeSpcDecision(spcDecision: SpcDecision,multipleSpcApprovals: MultipleSpcApprovals[]): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_MULTIPLE_NSC_LIST);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_MULTIPLE_JUSTIFICATIONS);
         const params = new HttpParams();
         spcDecision.decisionList=multipleSpcApprovals
         return this.http.post<SpcDecision>(url, spcDecision, {params}).pipe(

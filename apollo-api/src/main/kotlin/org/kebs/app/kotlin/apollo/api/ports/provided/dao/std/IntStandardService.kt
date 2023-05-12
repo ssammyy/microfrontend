@@ -439,12 +439,12 @@ class IntStandardService(
             iStdStakeHoldersRepository.save(stakeHolder)
         } ?: throw Exception("USER NOT FOUND")
 
-        val sub = "New Adoption Proposal "
+        val sub = "Acknowledgement of Feedback on Proposed Adoption of International Standard"
         val rec = com.emailOfRespondent
         val userN = com.nameOfRespondent
-        val kebsEmail = "tim@kebs.com"
-        val messageBody = "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
-                "If you have additional information,Send to the email provided below. $kebsEmail"
+        val kebsEmail = "tcsec@kebs.org"
+        val messageBody = "Dear $userN,We appreciate your feedback regarding the proposed adoption of [Standard Title, ISO Number]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
+                " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.% Thank you for your valuable input.%Kind regards, "
         if (rec != null) {
             notifications.sendEmail(rec, sub, messageBody)
         }
@@ -514,12 +514,12 @@ class IntStandardService(
             st.commentId = comDraftCommentsSaved.id
             val sid = iStdStakeHoldersRepository.save(st)
 
-            val sub = "New Adoption Proposal "
+            val sub = "Acknowledgement of Feedback on Proposed Adoption of International Standard"
             val rec = com.emailOfRespondent
             val userN = com.nameOfRespondent
-            val kebsEmail = "tim@kebs.com"
-            val messageBody = "Dear $userN,Comment has been received and noted.This is Final and cannot be changed. " +
-                    "If you have additional information,Send to the email provided below. $kebsEmail"
+            val kebsEmail = "tcsec@kebs.org"
+            val messageBody = "Dear $userN,We appreciate your feedback regarding the proposed adoption of [Standard Title, ISO Number]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
+                    " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.% Thank you for your valuable input.%Kind regards, "
             if (rec != null) {
                 notifications.sendEmail(rec, sub, messageBody)
             }

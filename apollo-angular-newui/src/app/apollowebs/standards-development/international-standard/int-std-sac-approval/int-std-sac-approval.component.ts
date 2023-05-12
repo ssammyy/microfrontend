@@ -446,6 +446,8 @@ export class IntStdSacApprovalComponent implements OnInit {
 
     onClickMakeDecision() {
         this.submitted = true;
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
         if (this.dataSaveResourcesRequiredList.length > 0) {
             this.stdIntStandardService.onClickMakeSacDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
                 (response) => {
@@ -459,7 +461,14 @@ export class IntStdSacApprovalComponent implements OnInit {
                     alert(error.message);
                 }
             );
+           this.hideModalMultiple();
         }
+    }
+
+    @ViewChild('closeModalMultiple') private closeModalMultiple: ElementRef | undefined;
+
+    public hideModalMultiple() {
+        this.closeModalMultiple?.nativeElement.click();
     }
 
 }

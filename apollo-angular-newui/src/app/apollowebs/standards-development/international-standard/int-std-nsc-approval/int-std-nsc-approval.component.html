@@ -18,7 +18,7 @@
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
                             </div>
-                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                            <div class="card-title float-right"><button *ngIf="dataSaveResourcesRequiredList.length > 0"  class="btn btn-primary btn-sm pull-right" data-target="#approveStandards" data-toggle="modal" style="width: 185px" >Proceed to Decision View</button><button type="button" class="btn btn-sm btn-outline-warning">
                                 Tasks <span class="badge badge-primary">{{isCheckRequirements.length}}</span>
                             </button></div>
                         </div>
@@ -27,7 +27,6 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
-                                <button  class="btn btn-primary btn-sm" data-target="#approveStandards" data-toggle="modal"  >Proceed to Decision View</button>
                                 <form  [formGroup]="multipleApproveFormGroup" class="form">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
                                     <thead>
@@ -55,7 +54,6 @@
                                         <td>
                                             <div  >
                                                 <ng-select (change)="onClickAddResource(isCheckRequirement)"  class="form-control" formControlName="accentTo" name="accentTo"  >
-                                                    <ng-option [value]=""  >None </ng-option>
                                                     <ng-option  [value]="approve" >Approve </ng-option>
                                                     <ng-option  [value]="reject" >Decline </ng-option>
                                                 </ng-select>
@@ -75,11 +73,11 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title" id="approveStandardsLabel">NSC LIST DECISION</h3>
-                                            <button type="button" #closeModalRequirements class="close" data-dismiss="modal" aria-label="Close">
+                                            <button type="button" #closeModalMultiple class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form  [formGroup]="multipleApproveFormGroup" class="form">
+                                        <form (ngSubmit)="onClickMakeDecision()" [formGroup]="multipleApproveFormGroup" class="form">
                                             <div class="modal-body">
                                                 <div class="form-body">
                                                     <div class="form-group col-12">
@@ -115,7 +113,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary btn-sm"  >Save and Submit</button>
+                                                <button type="submit" *ngIf="dataSaveResourcesRequiredList.length > 0" class="btn btn-primary btn-sm"  >Save and Submit</button>
                                             </div>
                                         </form>
                                     </div>
