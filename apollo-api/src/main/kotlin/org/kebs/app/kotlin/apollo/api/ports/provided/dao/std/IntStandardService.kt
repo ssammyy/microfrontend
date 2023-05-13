@@ -203,7 +203,7 @@ class IntStandardService(
         val targetUrl = "${callUrl}/isPropComments";
         val stakeholdersOne = isAdoptionProposalDto.stakeholdersList
         stakeholdersOne?.forEach { s ->
-            val subject = "New Adoption Proposal Document" + iSAdoptionProposal.proposalNumber
+            val subject = "Invitation to Provide Feedback on Proposed Adoption of International Standard"
             val recipient = s.email
             val user = s.name
             val userId = usersRepo.getUserId(s.email)
@@ -219,7 +219,13 @@ class IntStandardService(
             shs.status = 0
             iStdStakeHoldersRepository.save(shs)
 
-            val messageBody = "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
+            val messageBody =
+                "Dear $user,\nThe Kenya Bureau of Standards is considering the adoption of the International Standard [$standardString, $standardTitle].\n" +
+                        "To provide your feedback, please use the following link: [$targetUrl]. You will be prompted to provide your comments on the Adoption Proposal.\n" +
+                        "We highly encourage you to share your thoughts with us. If you have any questions or concerns, please do not hesitate to reach out to us at [tcsec@email.org].\n" +
+                        "Please note that the absence of any reply or comments will be considered as acceptance of the proposal for adoption and will constitute an approval vote.\n" +
+                        "Thank you in advance for your participation and contributions.%Best regards,\n " +
+                        "$tcName "
             if (recipient != null) {
                 // notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -247,11 +253,11 @@ class IntStandardService(
             val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber/$pid";
 
             val messageBody =
-                "Dear $userN,%The Kenya Bureau of Standards is considering the adoption of the International Standard [$standardString, $standardTitle].%" +
-                        "To provide your feedback, please use the following link: [$targetUrl2]. You will be prompted to provide your comments on the Adoption Proposal.%" +
-                        "We highly encourage you to share your thoughts with us. If you have any questions or concerns, please do not hesitate to reach out to us at [tcsec@email.org].%" +
-                        "Please note that the absence of any reply or comments will be considered as acceptance of the proposal for adoption and will constitute an approval vote.%" +
-                        "Thank you in advance for your participation and contributions.%Best regards,% " +
+                "Dear $userN,\nThe Kenya Bureau of Standards is considering the adoption of the International Standard [$standardString, $standardTitle].\n" +
+                        "To provide your feedback, please use the following link: [$targetUrl]. You will be prompted to provide your comments on the Adoption Proposal.\n" +
+                        "We highly encourage you to share your thoughts with us. If you have any questions or concerns, please do not hesitate to reach out to us at [tcsec@email.org].\n" +
+                        "Please note that the absence of any reply or comments will be considered as acceptance of the proposal for adoption and will constitute an approval vote.\n" +
+                        "Thank you in advance for your participation and contributions.%Best regards,\n " +
                         "$tcName "
             if (rec != null) {
                 notifications.sendEmail(rec, sub, messageBody)
@@ -413,6 +419,8 @@ class IntStandardService(
         val commentNumber = comStdDraftRepository.getISDraftCommentCount(com.draftId)
         val adoptNumber = comStdDraftRepository.getISDraftAdoptCount(com.draftId)
         val notAdoptNumber = comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
+        val title=com.commentTitle
+        val standardNo= com.standardNumber
         if (adoptDecision == "Yes") {
             newAdopt = adoptNumber + 1
             newNotAdopt = notAdoptNumber
@@ -443,8 +451,8 @@ class IntStandardService(
         val rec = com.emailOfRespondent
         val userN = com.nameOfRespondent
         val kebsEmail = "tcsec@kebs.org"
-        val messageBody = "Dear $userN,We appreciate your feedback regarding the proposed adoption of [Standard Title, ISO Number]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
-                " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.% Thank you for your valuable input.%Kind regards, "
+        val messageBody = "Dear $userN,\nWe appreciate your feedback regarding the proposed adoption of [$title, $standardNo]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
+                " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.\n Thank you for your valuable input.\nKind regards, "
         if (rec != null) {
             notifications.sendEmail(rec, sub, messageBody)
         }
@@ -475,13 +483,16 @@ class IntStandardService(
         comDraftComments.emailOfRespondent = com.emailOfRespondent
         comDraftComments.nameOfOrganization = com.nameOfOrganization
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
+        val title=com.commentTitle
+        val standardNo= com.standardNumber
+
         val adoptDecision = com.adoptionAcceptableAsPresented
         var newAdopt: Long
         var newNotAdopt: Long
         val commentCounts = iStdStakeHoldersRepository.countComments(com.emailOfRespondent, com.draftId)
         val toCheckCom: Long = 0
         if (commentCounts == toCheckCom) {
+            val comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
             val commentNumber = comStdDraftRepository.getISDraftCommentCount(com.draftId)
             val adoptNumber = comStdDraftRepository.getISDraftAdoptCount(com.draftId)
             val notAdoptNumber = comStdDraftRepository.getISDraftNotAdoptCount(com.draftId)
@@ -518,8 +529,8 @@ class IntStandardService(
             val rec = com.emailOfRespondent
             val userN = com.nameOfRespondent
             val kebsEmail = "tcsec@kebs.org"
-            val messageBody = "Dear $userN,We appreciate your feedback regarding the proposed adoption of [Standard Title, ISO Number]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
-                    " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.% Thank you for your valuable input.%Kind regards, "
+            val messageBody = "Dear $userN,\nWe appreciate your feedback regarding the proposed adoption of [$title, $standardNo]. Your comment has been received and duly noted. If you have any further information that may influence your decision," +
+                    " we encourage you to share it with the TC-Secretary by emailing. $kebsEmail.\n Thank you for your valuable input.\nKind regards, "
             if (rec != null) {
                 notifications.sendEmail(rec, sub, messageBody)
             }
