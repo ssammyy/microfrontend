@@ -26,6 +26,7 @@ import {DataTableDirective} from 'angular-datatables';
 export class AcknowledgementComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   submitted = false;
+  isEngineeringSelected: boolean = true;
   selectedCounty = 0;
   selectedTown = 0;
   departmentSelected: 0;
@@ -114,7 +115,8 @@ export class AcknowledgementComponent implements OnInit {
       sectorID: ['', null],
       regionID: ['', null],
       departmentID: ['', null],
-      // selectedOfficers: [[], null],
+      // selectedOfficers: [[]],
+      // selectedDivisions: [[]],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
@@ -149,6 +151,13 @@ export class AcknowledgementComponent implements OnInit {
           if (dataResponse.responseCode === '00') {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.loadedData = dataResponse?.data as ConsumerComplaintsReportViewEntity[];
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].resolution) == 1){
+                this.loadedData[i].resolution = 'RESOLVED';
+              }else if(Number(this.loadedData[i].resolution) == 0){
+                this.loadedData[i].resolution = 'NOT YET RESOLVED';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.rerender();
             this.calculateSummary();
@@ -196,11 +205,19 @@ export class AcknowledgementComponent implements OnInit {
     this.SpinnerService.show();
     this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
+    // console.log('Data type of selectedOfficers:', typeof this.searchFormGroup.get('selectedOfficers').value);
     // tslint:disable-next-line:max-line-length
     this.msService.loadSearchConsumerComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].resolution) == 1){
+                this.loadedData[i].resolution = 'RESOLVED';
+              }else if(Number(this.loadedData[i].resolution) == 0){
+                this.loadedData[i].resolution = 'NOT YET RESOLVED';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
             this.calculateSummary();
@@ -224,6 +241,15 @@ export class AcknowledgementComponent implements OnInit {
     this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
   }
 
+  filterDivision(event){
+    //console.log(event.target.value);
+    if(event.target.value == 3){
+      this.isEngineeringSelected = true;
+    }else if(event.target.value == 4){
+      this.isEngineeringSelected = false;
+    }
+  }
+
   toggleStatus(status: string): void {
     this.message = null;
     this.searchStatus = null;
@@ -242,10 +268,17 @@ export class AcknowledgementComponent implements OnInit {
     let arrayOfNumberOfComplaintsAddressedWithin28days = [];
     let arrayOfDaysTakenToAddressComplaints = [];
     for(let i=0; i < this.loadedData.length; i++){
-      resolutionSum += Number(this.loadedData[i].resolution);
+      if(this.loadedData[i].resolution == 'RESOLVED'){
+        resolutionSum += 1;
+      }else {
+        resolutionSum += 0;
+      }
       this.noFeedbackWithin5days += Number(this.loadedData[i].feedbackWithin5DaysCompInvestigation);
       arrayOfFeedbackWithin5days.push(Number(this.loadedData[i].feedbackWithin5DaysCompInvestigation));
-      arrayOfNumberOfComplaintsAddressedWithin28days.push(Number(this.loadedData[i].addressedWithin28DaysReceipt));
+      if(this.loadedData[i].resolution == 'RESOLVED'){
+        arrayOfNumberOfComplaintsAddressedWithin28days.push(Number(this.loadedData[i].addressedWithin28DaysReceipt));
+      }
+
       if(isNaN(Number(this.loadedData[i].timeTakenAddressComplaint))){
         this.loadedData[i].timeTakenAddressComplaint = '0';
         arrayOfDaysTakenToAddressComplaints.push((Number(this.loadedData[i].timeTakenAddressComplaint)));
@@ -270,7 +303,7 @@ export class AcknowledgementComponent implements OnInit {
     this.percentageComplianceWithTimelines = (this.sumOfDaysTakenToProvideFeedback/this.complaintsClosed)*100
     this.averageFeedbackTimeDays = this.sumOfDaysTakenToProvideFeedback/this.complaintsReceived
 
-    this.percentageComplianceTo28Days = (this.noComplaintsAddressedWithin28Days/this.complaintsReceived)*100
+    this.percentageComplianceTo28Days = (this.noComplaintsAddressedWithin28Days/this.complaintsClosed)*100
     this.averageTimeToAddressComplaints = this.sumOfTimeTakenToAddressComplaints/this.complaintsReceived
 
   }

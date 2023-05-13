@@ -277,29 +277,39 @@ export class FieldInspectionSummaryComponent implements OnInit {
 
     for (let i=0; i<this.loadedData.length; i++){
       if(isNaN(Number(this.loadedData[i].noOfSamplesPhysicallyInspected))){
-        this.loadedData[i].noOfSamplesPhysicallyInspected = 0
+        // this.loadedData[i].noOfSamplesPhysicallyInspected = 0
+      }else{
+        arrayOfSamplesPhysicallyInspected.push(Number(this.loadedData[i].noOfSamplesPhysicallyInspected));
       }
-      arrayOfSamplesPhysicallyInspected.push(Number(this.loadedData[i].noOfSamplesPhysicallyInspected));
+
 
       if(isNaN(Number(this.loadedData[i].visitAspermsSchedule))){
-        this.loadedData[i].visitAspermsSchedule = '0'
+        // this.loadedData[i].visitAspermsSchedule = '0'
+      }else{
+        arrayOfVisitAsPerSchedule.push(Number(this.loadedData[i].visitAspermsSchedule));
       }
-      arrayOfVisitAsPerSchedule.push(Number(this.loadedData[i].visitAspermsSchedule));
+
 
       if(isNaN(Number(this.loadedData[i].noSamplesDrawnSubmitted))){
-        this.loadedData[i].noSamplesDrawnSubmitted = '0'
+        // this.loadedData[i].noSamplesDrawnSubmitted = '0'
+      }else{
+        arrayOfSamplesDrawnAndSubmitted.push(Number(this.loadedData[i].noSamplesDrawnSubmitted));
       }
-      arrayOfSamplesDrawnAndSubmitted.push(Number(this.loadedData[i].noSamplesDrawnSubmitted));
+
 
       if(isNaN(Number(this.loadedData[i].compliancePhysicalInspection))){
-        this.loadedData[i].compliancePhysicalInspection = '0'
+        // this.loadedData[i].compliancePhysicalInspection = '0'
+      }else{
+        arrayOfComplianceToPhysicalInspection.push(Number(this.loadedData[i].compliancePhysicalInspection));
       }
-      arrayOfComplianceToPhysicalInspection.push(Number(this.loadedData[i].compliancePhysicalInspection));
+
 
       if(isNaN(Number(this.loadedData[i].pcxa))){
         this.loadedData[i].pcxa = '0'
+      }else{
+        arrayOfPCXA.push(Number(this.loadedData[i].pcxa));
       }
-      arrayOfPCXA.push(Number(this.loadedData[i].pcxa));
+
 
       if(isNaN(Number(this.loadedData[i].timeTakenFileSurveillanceReport))){
         arrayOfTimeTakenToFillSurveillanceReport.push(0);
@@ -308,9 +318,11 @@ export class FieldInspectionSummaryComponent implements OnInit {
       }
 
       if(isNaN(Number(this.loadedData[i].filingWithin1DayafterVisit))){
-        this.loadedData[i].filingWithin1DayafterVisit = '0'
+        // this.loadedData[i].filingWithin1DayafterVisit = '0'
+      }else{
+        arrayOfFilingWithin1DayAfterVisit.push(Number(this.loadedData[i].filingWithin1DayafterVisit));
       }
-      arrayOfFilingWithin1DayAfterVisit.push(Number(this.loadedData[i].filingWithin1DayafterVisit));
+
 
     }
     this.sumOfSamplesPhysicallyInspected = arrayOfSamplesPhysicallyInspected.reduce((a,b)=> a + b, 0);

@@ -43,9 +43,9 @@
                                             </div>
 <!--                                            <div class="col-6 col-md-3">-->
 <!--                                                <div class="form-group">-->
-<!--                                                    <label><b>Multiple Officers </b></label>-->
+<!--                                                    <label><b>Filter By Multiple Officers </b></label>-->
 <!--                                                    <mat-select multiple class="form-control" formControlName="selectedOfficers" name="selectedOfficers">-->
-<!--                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>-->
+<!--                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [value]="integCustomer.id">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>-->
 <!--                                                    </mat-select>-->
 <!--                                                </div>-->
 <!--                                            </div>-->
@@ -61,14 +61,14 @@
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Department</b> </label>
-                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                    <select (change)="filterDivision($event)" aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
                                                             class="form-control" formControlName="sectorID" name="sectorID">
-                                                        <option  selected>Please select</option>
+<!--                                                        <option  selected>Please select</option>-->
                                                         <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-6 col-md-3">
+                                            <div *ngIf="!isEngineeringSelected" class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Division</b> </label>
                                                     <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
@@ -76,15 +76,46 @@
 <!--                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true}" [value]="app.division">{{app.division}}</option>-->
                                                         <option [value]="'Agriculture'" >Agriculture</option>
                                                         <option [value]="'Chemical'" >Chemical</option>
+<!--                                                        <option [value]="'Civil'" >Civil</option>-->
+<!--                                                        <option [value]="'Electrical'" >Electrical</option>-->
+                                                        <option [value]="'Food'" >Food</option>
+<!--                                                        <option [value]="'Mechanical'" >Mechanical</option>-->
+<!--                                                        <option [value]="'Textile'" >Textile</option>-->
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isEngineeringSelected" class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="departmentID" name="departmentID">
+                                                        <!--                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true}" [value]="app.division">{{app.division}}</option>-->
+<!--                                                        <option [value]="'Agriculture'" >Agriculture</option>-->
+<!--                                                        <option [value]="'Chemical'" >Chemical</option>-->
                                                         <option [value]="'Civil'" >Civil</option>
                                                         <option [value]="'Electrical'" >Electrical</option>
-                                                        <option [value]="'Food'" >Food</option>
+<!--                                                        <option [value]="'Food'" >Food</option>-->
                                                         <option [value]="'Mechanical'" >Mechanical</option>
                                                         <option [value]="'Textile'" >Textile</option>
 
                                                     </select>
                                                 </div>
                                             </div>
+<!--                                            <div class="col-6 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Filter By Multiple Divisions </b></label>-->
+<!--                                                    <mat-select multiple class="form-control" formControlName="selectedDivisions" name="selectedDivisions">-->
+<!--                                                        <mat-option [value]="'Agriculture'">Agriculture</mat-option>-->
+<!--                                                        <mat-option [value]="'Chemical'">Chemical</mat-option>-->
+<!--                                                        <mat-option [value]="'Civil'">Civil</mat-option>-->
+<!--                                                        <mat-option [value]="'Electrical'">Electrical</mat-option>-->
+<!--                                                        <mat-option [value]="'Food'">Food</mat-option>-->
+<!--                                                        <mat-option [value]="'Mechanical'">Mechanical</mat-option>-->
+<!--                                                        <mat-option [value]="'Textile'">Textile</mat-option>-->
+<!--                                                    </mat-select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Start Date</b></label>
@@ -151,7 +182,7 @@
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr>
-                                        <th>No. Feedback Provided Within 5 Days</th>
+                                        <th>No. Complaints Whose Feedback Was Provided Within 5 Days</th>
                                         <th>% Compliance</th>
 <!--                                        <th>Average Feedback Time (Days)</th>-->
                                     </tr>
@@ -237,7 +268,6 @@
 <!--                                            <td>{{companyModel?.feedbackWithin5DaysCompInvestigation}}</td>-->
 <!--                                            <td>{{companyModel?.timeTakenAddressComplaint}}</td>-->
 <!--                                            <td>{{companyModel?.addressedWithin28DaysReceipt}}</td>-->
-
                                         </tr>
                                         </tbody>
                                     </table>

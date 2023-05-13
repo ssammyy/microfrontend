@@ -4924,6 +4924,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         productDescription = body.productDescription
                         sourceProductEvidence = body.sourceProductEvidence
                         dataReportID = body.dataReportID
+                        productSelected = body.productSelected
                         workPlanGeneratedID = workPlanScheduled.id
                         status = map.activeStatus
                         modifiedBy = commonDaoServices.concatenateName(user)
@@ -4970,6 +4971,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     productDescription = body.productDescription
                     sourceProductEvidence = body.sourceProductEvidence
                     dataReportID = body.dataReportID
+                    productSelected = body.productSelected
                     workPlanGeneratedID = workPlanScheduled.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
