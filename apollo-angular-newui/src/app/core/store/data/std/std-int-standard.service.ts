@@ -11,7 +11,7 @@ import {
     ISDecision, ISDraftDecision, ISDraftDecisionStd,
     ISDraftUpload,
     ISHopTASKS,
-    ISHosSicTASKS,
+    ISHosSicTASKS, ISJustification,
     ISJustificationDecision,
     ISJustificationProposal, ISProposalJustification,
     ISSacSecTASKS,
@@ -231,7 +231,7 @@ export class StdIntStandardService {
     public getJustification(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APP_JUSTIFICATION);
         const params = new HttpParams();
-        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+        return this.http.get<ISJustification>(url, {params}).pipe();
     }
 
     public getApprovedJustification(): any {

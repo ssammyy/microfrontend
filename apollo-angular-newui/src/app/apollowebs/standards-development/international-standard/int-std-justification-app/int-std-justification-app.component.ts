@@ -16,9 +16,9 @@ import {
     ComStdCommitteeRemarks, ComStdRemarks,
     Department,
     InternationalStandardsComments,
-    ISAdoptionProposal,
+    ISAdoptionProposal, ISJustification,
     ISJustificationProposal,
-     MultipleSpcApprovals, StakeholderProposalComments
+    MultipleSpcApprovals, StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
@@ -42,8 +42,8 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
-    isAdoptionProposals: ISAdoptionProposal[]=[];
-    public actionRequest: ISAdoptionProposal | undefined;
+    isAdoptionProposals: ISJustification[]=[];
+    public actionRequest: ISJustification | undefined;
     public prepareJustificationFormGroup!: FormGroup;
     stakeholderProposalComments: StakeholderProposalComments[] = [];
     internationalStandardsComments: InternationalStandardsComments[] = [];
@@ -181,7 +181,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     }
 
 
-    public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void {
+    public onOpenModal(isAdoptionProposal: ISJustification,mode:string,comStdDraftID: number): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
@@ -205,7 +205,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
             this.approveSpcJustificationFormGroup.patchValue(
                 {
                     requestedBy: this.actionRequest.tcSecName,
-                    slNumber: this.actionRequest.proposalNumber,
+                    slNumber: this.actionRequest.id,
                     scope: this.actionRequest.scope,
                     circulationDate: this.actionRequest.circulationDate,
                     closingDate: this.actionRequest.closingDate,
@@ -253,7 +253,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     public getApprovedProposals(): void{
         this.SpinnerService.show();
         this.stdIntStandardService.getJustification().subscribe(
-            (response: ISAdoptionProposal[])=> {
+            (response: ISJustification[])=> {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
@@ -336,11 +336,12 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
 
     }
 
-    onClickAddResource(isAdoptionProposal: ISAdoptionProposal ): void {
+    onClickAddResource(isAdoptionProposal: ISJustification ): void {
         const dataSaveResourcesRequiredTest=new MultipleSpcApprovals;
         dataSaveResourcesRequiredTest.id=isAdoptionProposal.id;
         dataSaveResourcesRequiredTest.draftId=isAdoptionProposal.draftId
-        dataSaveResourcesRequiredTest.docName=isAdoptionProposal.docName
+        dataSaveResourcesRequiredTest.standardType=isAdoptionProposal.standardType
+        dataSaveResourcesRequiredTest.standardNumber=isAdoptionProposal.standardNumber
         dataSaveResourcesRequiredTest.tcSecName=isAdoptionProposal.tcSecName
         dataSaveResourcesRequiredTest.title=isAdoptionProposal.title
         dataSaveResourcesRequiredTest.scope=isAdoptionProposal.scope

@@ -767,6 +767,7 @@ export interface ISAdoptionProposal {
     positionOfRespondent: string;
     nameOfOrganization: string;
     commentId: number;
+    edition: string;
 
 }
 export interface ISComments{
@@ -2798,11 +2799,34 @@ export class MultipleSpcApprovals{
     docName: string;
     title: string;
     tcSecName: string;
-    circulationDate: string;
-    closingDate: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
     scope: string;
     draftId: number;
     id: number;
+    standardType: string;
+    standardNumber: string;
+}
+
+export interface ISJustification{
+    id: number;
+    meetingDate: string;
+    departmentName: string;
+    tcSecName: string;
+    standardNumber: string;
+    title: string;
+    edition: string;
+    requesterName: string;
+    scope: string;
+    purpose: string;
+    intendedUsers: string;
+    referenceMaterial: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    tcAcceptanceDate: string;
+    draftId: number;
+    departmentId: number;
+    standardType: string;
 }
 
 

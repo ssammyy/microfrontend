@@ -148,10 +148,13 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
                 "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
                 "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
-                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate," +
+                "(ROUND ((MONTHS_BETWEEN (j.CLOSING_DATE, j.SUBMISSION_DATE) * 30), 0)) as  durationTaken " +
+                "FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =8 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
+
     fun getAppStdPublishing(): MutableList<ComStandard>
 
     @Query(
@@ -162,7 +165,9 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "j.ISSUES_ADDRESSED as issuesAddressed,j.TC_ACCEPTANCE_DATE as tcAcceptanceDate,j.REFERENCE_MATERIAL as referenceMaterial,\n" +
                 "j.SUBMISSION_DATE as submissionDate,j.TC_COMMITTEE as tcCommittee,j.TITLE as title,j.SCOPE as scope,j.NORMATIVE_REFERENCE as normativeReference,\n" +
                 "j.SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,j.CLAUSE as clause,j.SPECIAL as special,j.PURPOSE_AND_APPLICATION as purposeAndApplication,\n" +
-                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate,MONTHS_BETWEEN(j.CLOSING_DATE, j.SUBMISSION_DATE) as durationTaken FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
+                "j.INTENDED_USERS as intendedUsers,j.CIRCULATION_DATE as circulationDate,j.CLOSING_DATE as closingDate," +
+                "(ROUND ((MONTHS_BETWEEN (j.CLOSING_DATE, j.SUBMISSION_DATE) * 30), 0)) as  durationTaken " +
+                "FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT LEFT JOIN SD_ADOPTION_PROPOSAL_JUSTIFICATION j on s.DRAFT_ID=j.DRAFT_ID " +
                 "WHERE  s.STATUS =15 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
@@ -630,15 +635,14 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
     fun getApprovedProposals(): MutableList<ProposalDetails>
 
     @Query(
-        value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
-                "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
-                "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
-                "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE  d.STATUS=3 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+        value = "SELECT p.ID as id, p.MEETING_DATE as meetingDate,p.DEPARTMENT_NAME as departmentName,p.TC_SEC AS tcSecName,p.STANDARD_NUMBER as standardNumber,p.TITLE as title,p.EDITION as edition,r.REQUESTOR_NAME as requesterName,p.SCOPE as scope," +
+                "p.PURPOSE_AND_APPLICATION as purpose,p.INTENDED_USERS as intendedUsers,p.REFERENCE_MATERIAL as referenceMaterial, p.CIRCULATION_DATE as circulationDate,p.CLOSING_DATE AS closingDate,p.TC_ACCEPTANCE_DATE as tcAcceptanceDate,d.ID as draftId," +
+                "d.DEPARTMENT as departmentId,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION p " +
+                "LEFT JOIN SD_COM_STD_DRAFT d ON p.DRAFT_ID=d.ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE  d.STATUS=3 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
     )
 
-    fun getISJustification(): MutableList<ProposalDetails>
+    fun getISJustification(): MutableList<JustificationDetails>
 
     @Query(
         value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +

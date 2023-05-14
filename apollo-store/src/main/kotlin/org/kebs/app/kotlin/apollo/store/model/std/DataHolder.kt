@@ -441,6 +441,26 @@ interface UserIdHolder{
 interface ManufacturerStatusHolder{
     fun getManufacturerStatus(): Long?
 }
+interface JustificationDetails{
+    fun getId(): Long?
+    fun getMeetingDate(): String?
+    fun getDepartmentName(): String?
+    fun getTcSecName(): String?
+    fun getStandardNumber(): String?
+    fun getTitle(): String?
+    fun getEdition(): String?
+    fun getRequesterName(): String?
+    fun getScope(): String?
+    fun getPurpose(): String?
+    fun getIntendedUsers(): String?
+    fun getReferenceMaterial(): String?
+    fun getCirculationDate(): Timestamp?
+    fun getClosingDate(): Timestamp?
+    fun getTcAcceptanceDate(): String?
+    fun getDraftId(): Long?
+    fun getDepartmentId(): Long?
+    fun getStandardType(): String?
+}
 
 interface ProposalDetails{
     fun getId(): Long?

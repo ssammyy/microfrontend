@@ -948,7 +948,7 @@ class IntStandardService(
 
     }
 
-    fun getJustification(): MutableList<ProposalDetails> {
+    fun getJustification(): MutableList<JustificationDetails> {
         return isAdoptionProposalRepository.getISJustification();
     }
 
