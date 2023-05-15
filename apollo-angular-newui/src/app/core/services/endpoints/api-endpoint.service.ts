@@ -365,7 +365,9 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material_update`,
         PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
-
+        ADD_MISSING_STANDARD: `${ApiEndpointService.QA_CONTEXT}/fixes/add/standard`,
+        REMOVE_DUPLICATE_INSPECTION_REPORT: `${ApiEndpointService.QA_CONTEXT}/fixes/inspection-report/clean-up`,
+        TIE_FMARK_SMARK: `${ApiEndpointService.QA_CONTEXT}/tie-fmark-smark`,
 
         /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement

@@ -581,6 +581,7 @@ import {IntStdNscApprovalComponent} from './apollowebs/standards-development/int
 import {IntStdWebProposalComponent} from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
+import { QaAdminFixesComponent } from './apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1217,6 +1218,7 @@ import {RejectedProposalsComponent} from './apollowebs/standards-development/for
         IntStdWebProposalComponent,
         ApprovedProposalsComponent,
         RejectedProposalsComponent,
+        QaAdminFixesComponent,
 
     ],
     entryComponents: [LoaderComponent],

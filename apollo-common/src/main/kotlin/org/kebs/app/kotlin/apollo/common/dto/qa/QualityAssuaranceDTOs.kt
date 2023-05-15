@@ -103,6 +103,13 @@ data class SSFDetailsDto(
     var resultsAnalysis: Boolean? = null,
     var complianceRemarks: String? = null,
 )
+data class fmarkSmarkDTO(
+    var smarkId: Long? = null,
+    var fmarkId: Long? = null,
+    var description: String? = null,
+    var smarkPermitRefNumber: String? = null,
+    var fmarkPermitRefNumber: String? = null,
+)
 
 data class AllInspectionDetailsApplyDto(
     var id: Long? = null,

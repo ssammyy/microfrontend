@@ -267,3 +267,10 @@ export class UserTypeBEntityDto {
     defaultRole?: bigint;
 
 }
+
+export class AddMssingStandardDto{
+    standardNumber: string;
+    subCategoryId: string;
+    standardTitle: string;
+    numberOfPages: string;
+}

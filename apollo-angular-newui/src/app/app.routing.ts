@@ -478,6 +478,10 @@ import {
 import {
     StandardLevyRegisteredFirmsComponent,
 } from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
+import {
+    QaAdminFixesComponent,
+} from './apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component';
+
 // tslint:disable-next-line:max-line-length
 import {
     StandardLevyAllPaymentsComponent,
@@ -1060,6 +1064,10 @@ export const routes: Routes = [
             {
                 path: 'tivet_management',
                 component: ManageTivetComponent,
+            },
+            {
+                path: 'admin_fixes',
+                component: QaAdminFixesComponent,
             },
 
         ],

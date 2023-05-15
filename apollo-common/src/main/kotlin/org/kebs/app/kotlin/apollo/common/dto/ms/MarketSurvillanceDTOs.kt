@@ -161,6 +161,8 @@ data class FuelInspectionDto(
         var quotationGeneratedStatus: Boolean? = null,
 )
 
+
+
 data class WorkPlanInspectionDto(
         var id: Long?= 0,
         var productCategory: String? = null,

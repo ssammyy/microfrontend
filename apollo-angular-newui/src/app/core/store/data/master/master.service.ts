@@ -10,7 +10,7 @@ import {
     SectionsEntityDto,
     SubSectionsL1EntityDto,
     SubSectionsL2EntityDto, TitlesEntityDto, TownsDto,
-    UserSearchValues, UserTypeEntityDto
+    UserSearchValues, UserTypeEntityDto, AddMssingStandardDto
 } from './master.model';
 import {UserEntityDto} from "../users";
 import {TivetEntity} from "../companies";
@@ -104,6 +104,31 @@ export class MasterService {
                 return throwError(fault);
             })
         );
+    }
+    public addMissingStandard(data: AddMssingStandardDto) : any{
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ADD_MISSING_STANDARD);
+        return this.http.post<AddMssingStandardDto>(url, data).pipe(
+            map(function (response: AddMssingStandardDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        )
+
+    }
+    public removeInspectionReportsDuplicates(){
+
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REMOVE_DUPLICATE_INSPECTION_REPORT);
+        return this.http.post(url,null).pipe(
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        )
+
+
     }
 
     loadAuthoritiesSystemAdmin(status: number): any {

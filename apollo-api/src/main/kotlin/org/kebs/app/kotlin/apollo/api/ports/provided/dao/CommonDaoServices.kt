@@ -51,6 +51,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
@@ -63,6 +64,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraSer
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.dto.qa.fmarkSmarkDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -75,6 +77,8 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaInspectionReportRecommendationEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSmarkFmarkEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
@@ -83,12 +87,15 @@ import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
 import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkplanYearsCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInspectionReportRecommendationRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSmarkFmarkRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.ResponseEntity
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
@@ -178,7 +185,9 @@ class CommonDaoServices(
     private val apiClientRepo: ApiClientRepo,
     private val tokenService: JwtTokenService,
     private val authenticationProperties: AuthenticationProperties,
-    private val usersEntityRepository: UsersEntityRepository
+    private val usersEntityRepository: UsersEntityRepository,
+    private val inspectionReportRepository: IQaInspectionReportRecommendationRepository,
+    private val iQaSmarkFmarkRepository: IQaSmarkFmarkRepository
 ) {
 
     @Value("\${common.page.view.name}")
@@ -225,7 +234,7 @@ class CommonDaoServices(
     fun serializeToXml(fileName: String, obj: Any): File {
         try {
             val xmlString = xmlMapper.writeValueAsString(obj)
-           // KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
+            // KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
 
 //            val targetFile = File(fileName)
             val targetFile = File(Files.createTempDir(), fileName)
@@ -261,6 +270,56 @@ class CommonDaoServices(
     fun convertDateToSAGEDate(dateChange: Date): String {
         val sdf = SimpleDateFormat("mm/dd/yyyy")
         return sdf.format(dateChange)
+    }
+
+    fun deleteDuplicatePermits(): String {
+        val permits = inspectionReportRepository.findAll()
+        val duplicatePermitIds = permits
+            .filter { it.permitId != null } // Filter out permits with null permitId
+            .groupBy { it.permitId }
+            .filter { it.value.size > 1 }
+            .keys
+
+        for (permitId in duplicatePermitIds) {
+            val permitsWithId = permits.filter { it.permitId == permitId }
+            val duplicatePermit = permitsWithId.firstOrNull() // Delete the first duplicate, change as needed
+
+            if (duplicatePermit != null) {
+                duplicatePermit.permitId = null
+//                val entity = QaInspectionReportRecommendationEntity
+//                entity.per
+                inspectionReportRepository.save(duplicatePermit)
+            }
+        }
+        return if (duplicatePermitIds.isNotEmpty()) {
+            "Duplicates found: $duplicatePermitIds"
+        } else {
+            "No duplicates found."
+        }
+    }
+
+    fun tieFmarkToSmark(entity: fmarkSmarkDTO): ResponseEntity<String> {
+        val responseObject = JsonObject()
+        try {
+            val newEntity = QaSmarkFmarkEntity()
+            val user = loggedInUserDetails()
+            newEntity.fmarkPermitRefNumber = entity.fmarkPermitRefNumber
+            newEntity.smarkPermitRefNumber = entity.smarkPermitRefNumber
+            newEntity.fmarkId = entity.fmarkId
+            newEntity.smarkId = entity.smarkId
+            newEntity.createdOn = Timestamp(System.currentTimeMillis())
+            newEntity.createdBy = user.userName
+            iQaSmarkFmarkRepository.save(newEntity)
+            responseObject.addProperty("status", 200)
+            responseObject.addProperty("message", "Entity saved successfully")
+            return ResponseEntity.ok(responseObject.toString())
+        } catch (e: Exception) {
+            responseObject.addProperty("status", 500)
+            responseObject.addProperty("message", "An error occurred, try again later.")
+            return ResponseEntity.ok(responseObject.toString())
+        }
+
+
     }
 
     fun convertDateToKRADate(dateChange: java.util.Date): String {
@@ -326,7 +385,7 @@ class CommonDaoServices(
 
         val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
         val formatted = current.format(formatter)
-       // KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
+        // KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 
         //TODO: Add static fields to config file
         var finalFileName = filePrefix
@@ -339,7 +398,7 @@ class CommonDaoServices(
             .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
-      //  KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
+        //  KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
 
         return finalFileName
     }
@@ -778,7 +837,7 @@ class CommonDaoServices(
     ) {
         val map = serviceMapDetails(appID)
         val sr = mapServiceRequestForSuccess(map, payload, user)
-         user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }
+        user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }
 
 //        user.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification, userRegisteredSuccessfulEmailCompose(user), commonDaoServices.serviceMapDetails(appId), commonDaoServices.mapServiceRequestForSuccess(map, payload, user)) }
     }
@@ -1073,6 +1132,7 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("The following Region with ID  = $regionsId and status = $status, does not Exist")
     }
+
     fun findRegionNameByRegionID(regionsId: Long): String {
         regionsRepo.findNameById(regionsId)
             .let { regionEntity ->
@@ -1610,40 +1670,40 @@ class CommonDaoServices(
         map: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         attachmentFilePath: String? = null
-    ){
+    ) {
 
-            KotlinLogging.logger { }.info { "Started Mail process" }
-            notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
-                ?.let { list ->
-                    list.forEach { buffer ->
-                        /**
-                         * TODO: Make topic a field on the Buffer table
-                         */
-                        buffer.recipient?.let { recipient ->
-                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
-                            buffer.subject?.let { subject ->
-                                KotlinLogging.logger { }.info { "Started subject $subject" }
-                                buffer.messageBody?.let { messageBody ->
-                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
-                                    if (attachmentFilePath != null) {
-                                        KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
-                                        notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
-                                    } else {
-                                        notifications.sendEmail(recipient, subject, messageBody)
-                                    }
-//                                    notifications.processEmail(recipient, subject, messageBody)
-                                    KotlinLogging.logger { }.info { "Email sent" }
+        KotlinLogging.logger { }.info { "Started Mail process" }
+        notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
+            ?.let { list ->
+                list.forEach { buffer ->
+                    /**
+                     * TODO: Make topic a field on the Buffer table
+                     */
+                    buffer.recipient?.let { recipient ->
+                        KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                        buffer.subject?.let { subject ->
+                            KotlinLogging.logger { }.info { "Started subject $subject" }
+                            buffer.messageBody?.let { messageBody ->
+                                KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                if (attachmentFilePath != null) {
+                                    KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                } else {
+                                    notifications.sendEmail(recipient, subject, messageBody)
                                 }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                KotlinLogging.logger { }.info { "Email sent" }
                             }
                         }
                     }
-                    sr.processingEndDate = getTimestamp()
-                    serviceRequestsRepository.save(sr)
                 }
+                sr.processingEndDate = getTimestamp()
+                serviceRequestsRepository.save(sr)
+            }
 
     }
 
-     fun sendEmailWithUserEmailAsync(
+    fun sendEmailWithUserEmailAsync(
         userEmail: String,
         uuid: String,
         valuesMapped: Any,
@@ -1652,35 +1712,35 @@ class CommonDaoServices(
         attachmentFilePath: String? = null,
         subjectAppendValue: String? = null
     ) {
-                KotlinLogging.logger { }.info { "Started Mail process" }
-                notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
-                    ?.let { list ->
-                        list.forEach { buffer ->
-                            /**
-                             * TODO: Make topic a field on the Buffer table
-                             */
-                            buffer.recipient?.let { recipient ->
-                                KotlinLogging.logger { }.info { "Started recipient $recipient" }
-                                buffer.subject?.let { subject ->
-                                    KotlinLogging.logger { }.info { "Started subject $subject" }
-                                    buffer.messageBody?.let { messageBody ->
-                                        KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
-                                        if (attachmentFilePath != null) {
-                                            KotlinLogging.logger { }
-                                                .info { "Started attached body $attachmentFilePath" }
-                                            notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
-                                        } else {
-                                            notifications.sendEmail(recipient, subject, messageBody)
-                                        }
-//                                    notifications.processEmail(recipient, subject, messageBody)
-                                        KotlinLogging.logger { }.info { "Email sent" }
-                                    }
+        KotlinLogging.logger { }.info { "Started Mail process" }
+        notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
+            ?.let { list ->
+                list.forEach { buffer ->
+                    /**
+                     * TODO: Make topic a field on the Buffer table
+                     */
+                    buffer.recipient?.let { recipient ->
+                        KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                        buffer.subject?.let { subject ->
+                            KotlinLogging.logger { }.info { "Started subject $subject" }
+                            buffer.messageBody?.let { messageBody ->
+                                KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                if (attachmentFilePath != null) {
+                                    KotlinLogging.logger { }
+                                        .info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                } else {
+                                    notifications.sendEmail(recipient, subject, messageBody)
                                 }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                KotlinLogging.logger { }.info { "Email sent" }
                             }
                         }
-                        sr.processingEndDate = getTimestamp()
-                        serviceRequestsRepository.save(sr)
                     }
+                }
+                sr.processingEndDate = getTimestamp()
+                serviceRequestsRepository.save(sr)
+            }
     }
 
     fun sendEmailWithUserEmail(
@@ -1736,7 +1796,7 @@ class CommonDaoServices(
     ): List<NotificationsBufferEntity>? {
         notificationsRepo.findByServiceMapIdAndUuidAndStatus(map, uuid, map.activeStatus)
             ?.let { notifications ->
-                return generateBufferedNotification(notifications, map, email, data, sr,subjectAppendValue)
+                return generateBufferedNotification(notifications, map, email, data, sr, subjectAppendValue)
             }
             ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
 
@@ -1836,9 +1896,10 @@ class CommonDaoServices(
             with(buffer) {
                 messageBody = composeMessage(data, notification)
                 subject = when {
-                    subjectAppendValue!=null -> {
-                        notification.subject +" "+subjectAppendValue
+                    subjectAppendValue != null -> {
+                        notification.subject + " " + subjectAppendValue
                     }
+
                     else -> {
                         notification.subject
                     }
@@ -1887,7 +1948,7 @@ class CommonDaoServices(
         return Date.valueOf(givenLocalDate.plusYears(noOfYears))
     }
 
-    fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
+    fun getCalculatedDaysInLong(d1: Date, d2: Date): Long {
         val differenceInTime: Long = d2.time - d1.time
         return ((differenceInTime / (1000 * 60 * 60 * 24)) % 365)
 //        return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
@@ -2687,8 +2748,6 @@ class CommonDaoServices(
 
         return usersEntityRepository.getUserEmailById(userId) ?: throw ExpectedDataNotFound("No Email Address Found")
     }
-
-
 
 
 }
