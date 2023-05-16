@@ -186,6 +186,23 @@ export class MembershipToTcService {
         );
     }
 
+    public approveAppointmentEmailAuthorizer(tCApplicationId: string): Observable<any> {
+
+        const url = `${this.apiMembershipToTCUrlAnonymous}` + 'approveUserApplication';
+        const params = new HttpParams()
+            .set('applicationID', tCApplicationId);
+
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public getApprovedMembers(): Observable<ReviewApplicationTask[]> {
         return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getApproved')
     }

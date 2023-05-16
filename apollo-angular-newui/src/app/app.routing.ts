@@ -874,6 +874,9 @@ import {UserPrivilegesComponent} from "./apollowebs/system/user-privileges/user-
 import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.component";
 import {IntStdNscApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component";
 import {IntStdWebProposalComponent} from "./apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component";
+import {
+    AuthorizerApproveApplicationComponent
+} from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
 
 export const routes: Routes = [
     {
@@ -2448,6 +2451,13 @@ export const routes: Routes = [
         // canActivate: [AuthGuard],
         children: [{path: '', component: UploadTcMemberComponentComponent}],
     },
+    {
+        path: 'authorizerApproveApplication',
+        component: StandardRequestComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: AuthorizerApproveApplicationComponent}],
+    },
+
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
      ***************************************************************/
