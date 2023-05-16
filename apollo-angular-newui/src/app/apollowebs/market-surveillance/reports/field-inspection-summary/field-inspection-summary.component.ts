@@ -81,6 +81,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
   averageTimeTakenToFillSurveillanceReport: number;
   sumOfFilingWithin1DayAfterVisit: number;
   percentageFilingWithin1DayAfterVisit: number;
+  isEngineeringSelected: boolean = true;
 
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
@@ -235,6 +236,15 @@ export class FieldInspectionSummaryComponent implements OnInit {
     }
   }
 
+  filterDivision(event){
+    //console.log(event.target.value);
+    if(event.target.value == 3){
+      this.isEngineeringSelected = true;
+    }else if(event.target.value == 4){
+      this.isEngineeringSelected = false;
+    }
+  }
+
   // calculateFieldInspectionSummary(){
   //   let count = 0;
   //   for(let i=0; i < this.loadedData.length; i++){
@@ -314,7 +324,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
       if(isNaN(Number(this.loadedData[i].timeTakenFileSurveillanceReport))){
         arrayOfTimeTakenToFillSurveillanceReport.push(0);
       }else{
-        arrayOfTimeTakenToFillSurveillanceReport.push(Number(this.loadedData[i].timeTakenFileSurveillanceReport)+1);
+        arrayOfTimeTakenToFillSurveillanceReport.push(Number(this.loadedData[i].timeTakenFileSurveillanceReport));
       }
 
       if(isNaN(Number(this.loadedData[i].filingWithin1DayafterVisit))){
@@ -330,12 +340,12 @@ export class FieldInspectionSummaryComponent implements OnInit {
     this.percentageComplianceToVisitAsPerSchedule = (this.sumOfSamplesPhysicallyInspected/this.loadedData.length)*100;
     this.sumOfNumberOfSamplesDrawnAndSubmitted = arrayOfSamplesDrawnAndSubmitted.reduce((a,b)=> a + b, 0);
     this.sumOfComplianceToPhysicalInspectionSumOfPC = arrayOfComplianceToPhysicalInspection.reduce((a,b)=> a + b, 0);
-    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/this.loadedData.length;
+    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/arrayOfComplianceToPhysicalInspection.length;
     this.sumOfPCTimesA = arrayOfPCXA.reduce((a,b)=> a + b, 0);
     this.sumOfTimeTakenToFillSurveillanceReport = arrayOfTimeTakenToFillSurveillanceReport.reduce((a,b)=> a + b, 0);
-    this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/this.loadedData.length;
+    this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/arrayOfTimeTakenToFillSurveillanceReport.length;
     this.sumOfFilingWithin1DayAfterVisit = arrayOfFilingWithin1DayAfterVisit.reduce((a,b)=> a + b, 0);
-    this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/this.loadedData.length)*100;
+    this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/arrayOfFilingWithin1DayAfterVisit.length)*100;
 
 
 

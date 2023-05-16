@@ -75,6 +75,10 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
     var inspectionDate: String? = null
 
     @Basic
+    @Column(name = "INSPECTION_DATE_AS_DATE")
+    var inspectionDateAsDate: Date? = null
+
+    @Basic
     @Column(name = "IMPORTER_MANUFACTURER")
     var importerManufacturer: String? = null
 

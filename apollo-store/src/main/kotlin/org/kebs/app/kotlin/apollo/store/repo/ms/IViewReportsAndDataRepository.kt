@@ -217,7 +217,7 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
 
     @Query(
         value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))\n" +
+                "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
                 "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
                 "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)",
@@ -274,7 +274,7 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
 
     @Query(
         value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME LIKE :assignIO)\n" +
                 "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
                 "    AND (:function is null or a.FUNCTION =:function)\n"+
