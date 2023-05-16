@@ -254,7 +254,7 @@ class IntStandardService(
 
             val messageBody =
                 "Dear $userN,\nThe Kenya Bureau of Standards is considering the adoption of the International Standard [$standardString, $standardTitle].\n" +
-                        "To provide your feedback, please use the following link: [$targetUrl]. You will be prompted to provide your comments on the Adoption Proposal.\n" +
+                        "To provide your feedback, please use the following link: [$targetUrl2]. You will be prompted to provide your comments on the Adoption Proposal.\n" +
                         "We highly encourage you to share your thoughts with us. If you have any questions or concerns, please do not hesitate to reach out to us at [tcsec@email.org].\n" +
                         "Please note that the absence of any reply or comments will be considered as acceptance of the proposal for adoption and will constitute an approval vote.\n" +
                         "Thank you in advance for your participation and contributions.%Best regards,\n " +
