@@ -292,7 +292,6 @@ class Notifications(
                 applicationMapProperties.mapApplicationEmailUsername,
                 applicationMapProperties.mapApplicationEmailPassword
             )
-            //TODO: Add mail delivery check, update status if mail failed
             transport.sendMessage(msg, msg.allRecipients)
             KotlinLogging.logger { }.info("Mail has been sent successfully")
         } catch (ex: Exception) {
