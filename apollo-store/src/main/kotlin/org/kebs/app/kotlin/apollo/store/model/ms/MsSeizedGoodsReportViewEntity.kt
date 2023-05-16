@@ -18,6 +18,10 @@ class MsSeizedGoodsReportViewEntity : Serializable {
     var dateofSeizure: String? = null
 
     @Basic
+    @Column(name = "DATE_OF_SEIZURE_AS_DATE")
+    var dateofSeizureAsDate: Date? = null
+
+    @Basic
     @Column(name = "MARKET_CENTRE")
     var marketCentre: String? = null
 

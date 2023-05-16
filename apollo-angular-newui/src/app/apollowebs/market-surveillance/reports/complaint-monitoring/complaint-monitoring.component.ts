@@ -276,7 +276,7 @@ export class ComplaintMonitoringComponent implements OnInit {
         this.estimatedCost = arrayOfEstimatedCost.reduce((a,b)=> a + b, 0);
         // this.currentLocationOfSeizedGoods = arrayOfLocationAndSeizedGoods.reduce((a,b)=> a + b, 0);
         this.productsDueForDestruction = arrayOfProductsDueForDestruction.reduce((a,b)=> a + b, 0);
-        this.percentageOfProductDueForDestruction = this.productsDueForDestruction/this.loadedData.length;
+        this.percentageOfProductDueForDestruction = (this.productsDueForDestruction/this.loadedData.length)*100;
 
     }
 }

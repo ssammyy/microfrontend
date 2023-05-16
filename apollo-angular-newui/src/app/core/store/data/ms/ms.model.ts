@@ -822,6 +822,7 @@ export class FieldInspectionSummaryReportViewEntity {
     visitAspermsSchedule: string;
     timeTakenFileSurveillanceReport: string;
     filingWithin1DayafterVisit: string;
+    division: string;
 }
 
 export class WorkPlanMonitoringToolEntity {
