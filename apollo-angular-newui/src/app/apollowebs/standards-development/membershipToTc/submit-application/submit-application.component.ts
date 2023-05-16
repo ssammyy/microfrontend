@@ -71,6 +71,8 @@ export class SubmitApplicationComponent implements OnInit {
 
 
     isFormSubmitted = false;
+    removeValidation = false;
+
 
     SearchCountryField = SearchCountryField;
     CountryISO = CountryISO;
@@ -261,9 +263,16 @@ export class SubmitApplicationComponent implements OnInit {
 
         if (this.applicationToATcFormGroup.valid) {
 
-            if (this.applicationToATcFormGroup.controls['email'].value == this.applicationToATcFormGroup.controls['authorizingPersonEmail'].value) {
+            if ( !this.removeValidation && this.applicationToATcFormGroup.controls['email'].value == this.applicationToATcFormGroup.controls['authorizingPersonEmail'].value) {
                 this.showToasterError("Wrong Input", "Both Your Email And The Authorising Person's Email Are The Same")
-            } else {
+            }
+            if (this.uploadedFiles == null || this.uploadedFiles.length <= 0) {
+                this.showToasterError("Enter CV", "Please Upload Your Cv")
+
+            }
+
+
+            else {
                 let Data: any = this.applicationToATcFormGroup.controls['mobileNumber'].value;
                 this.applicationToATcFormGroup.controls['mobileNumber'].setValue(Data.e164Number)
                 this.SpinnerService.show();
@@ -322,6 +331,32 @@ export class SubmitApplicationComponent implements OnInit {
 
     validateCaptcha() {
         this.applicationToATcFormGroup.value.captcha = '';
+
+    }
+
+    onOptionChange(): void {
+
+        const selectedOption = this.applicationToATcFormGroup.get('organisationClassification').value;
+        const field1Control = this.applicationToATcFormGroup.get('authorizingPerson');
+        const field2Control = this.applicationToATcFormGroup.get('authorizingPersonPosition');
+        const field2Control3 = this.applicationToATcFormGroup.get('authorizingPersonEmail');
+
+        if (selectedOption === 'Renown Professionals/experts') {
+            field1Control.clearValidators();
+            field2Control.clearValidators();
+            field2Control3.clearValidators();
+            this.removeValidation = true
+        } else {
+            field1Control.setValidators([Validators.required]);
+            field2Control.setValidators([Validators.required]);
+            field2Control3.setValidators([Validators.required]);
+            this.removeValidation = false
+
+        }
+
+        field1Control.updateValueAndValidity();
+        field2Control.updateValueAndValidity();
+        field2Control3.updateValueAndValidity();
 
     }
 

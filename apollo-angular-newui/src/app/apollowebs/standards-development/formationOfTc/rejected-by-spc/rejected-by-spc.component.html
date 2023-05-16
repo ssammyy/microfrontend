@@ -185,16 +185,17 @@
                                     </app-field-error-display>
                                 </mat-form-field>
 
+                                <div *ngIf="roles?.includes('TC_SEC_SD_READ')">
 
-                                <button  *ngIf="!showEditForm" (click)="showForm()">Edit</button>
-                                <button *ngIf="showEditForm" (click)="hideForm()">Do Not Edit</button>
+                                    <button *ngIf="!showEditForm" (click)="showForm()">Edit</button>
+                                    <button *ngIf="showEditForm" (click)="hideForm()">Do Not Edit</button>
+                                </div>
 
                             </div>
 
                         </div>
 
                         <div *ngIf="showEditForm">
-
                             <div class="row">
                                 <div class="form-group col-12">
                                     <label><b>Proposed TC Representation</b></label>
@@ -470,7 +471,8 @@
                                 <div *ngIf="roles?.includes('TC_SEC_SD_READ') || roles?.includes( 'STANDARDS_DEVELOPMENT_FULL_ADMIN')">
 
 
-                                    <div *ngIf="this.proposalRetrieved?.commentOnSpcRejection!== null;else other_content" class="row">
+                                    <div *ngIf="this.proposalRetrieved?.commentOnSpcRejection!== null;else other_content"
+                                         class="row">
                                         <button class="btn btn-info" type="submit">
                                             Resubmit
                                         </button>
@@ -493,7 +495,8 @@
 
                                             </mat-form-field>
                                         </div>
-                                        <input hidden formControlName="id" [ngModel]="this.proposalRetrieved?.id" name="id">
+                                        <input hidden formControlName="id" [ngModel]="this.proposalRetrieved?.id"
+                                               name="id">
 
 
                                         <button class="btn btn-info" type="submit">Submit Comment

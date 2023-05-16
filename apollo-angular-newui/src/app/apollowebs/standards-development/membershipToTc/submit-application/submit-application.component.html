@@ -67,6 +67,7 @@
                                 formControlName="organisationClassification"
                                 name="organisationClassification"
                                 placeholder="Select Organization/entity"
+                                (selectionChange)="onOptionChange()"
                                 [class.is-invalid]="formStdApplicationToATc.organisationClassification.invalid && formStdApplicationToATc.organisationClassification.touched">
                         <mat-option value="Government Body/Regulatory Authority">01-Government Body/Regulatory
                             Authority

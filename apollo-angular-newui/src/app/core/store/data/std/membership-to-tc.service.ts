@@ -151,21 +151,22 @@ export class MembershipToTcService {
     }
 
 
-    public sendAppointmentEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
-        const params = new HttpParams()
-            .set('tCApplicationId', String(tCApplicationId))
+    public sendAppointmentEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number,data: FormData,): Observable<any> {
+        return this.http.post<any>(`${this.apiMembershipToTCUrl}` + 'approve', data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'tCApplicationId':  String(tCApplicationId)}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
 
-        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'approve',
-            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
-            .pipe(
-                map(function (response: any) {
-                    return response;
-                }),
-                catchError((fault: HttpErrorResponse) => {
-                    // console.warn(`getAllFault( ${fault.message} )`);
-                    return throwError(fault);
-                })
-            );
+
     }
 
     public approveAppointmentEmail(tCApplicationId: string): Observable<any> {

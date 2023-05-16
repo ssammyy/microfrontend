@@ -161,14 +161,16 @@ class MembershipToTCService(
         val link =
             "${applicationMapProperties.baseUrlQRValue}authorizerApproveApplication?applicationID=${encryptedId}"
 
-        notifications.sendEmail(
-            membershipTCApplication.authorizingPersonEmail!!,
-            "Technical Committee",
-            "Hello " + membershipTCApplication.authorizingPerson!! + ",\n We have received an application by " + membershipTCApplication.nomineeName + " For The Following Technical Committee: " + u.title!! + "\n" +
-                    " Please Click On The Following Link To Verify That " + membershipTCApplication.nomineeName + " is a member of your organisation. "
-                    + "\n " + link +
-                    "\n\n\n\n\n\n"
-        )
+        membershipTCApplication.authorizingPersonEmail?.let { email ->
+            // Check if authorizingPersonEmail is not null
+            notifications.sendEmail(
+                email,
+                "Technical Committee",
+                "Hello ${membershipTCApplication.authorizingPerson},\n We have received an application by ${membershipTCApplication.nomineeName} For The Following Technical Committee: ${u.title}\n" +
+                        " Please Click On The Following Link To Verify That ${membershipTCApplication.nomineeName} is a member of your organisation.\n" +
+                        "\n$link\n\n\n\n\n\n"
+            )
+        }
 
         return ProcessInstanceResponseValue(
             membershipTCApplication.id,
@@ -314,8 +316,8 @@ class MembershipToTCService(
 
     //HOF Send Email
     fun sendEmailToApproved(
-        membershipTCApplication: MembershipTCApplication,
-        applicationID: Long
+        applicationID: Long,
+        docFile: List<MultipartFile>
     ) {
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
         //send email
@@ -324,23 +326,18 @@ class MembershipToTCService(
             "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
         val messageBody =
             " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
-                    "${u.technicalCommittee}. Please find attached the Terms Of Reference. Also please click on the following link to confirm appointment  \n " +
+                    "${u.technicalCommittee}. Please find attached the Terms Of Reference and the Non Disclosure Agreement. Also please click on the following link to confirm appointment  \n " +
                     link +
                     "\n\n\n\n\n\n"
 
+
+
         u.email?.let {
-
-            val fileName = "static/tor.pdf"
-            val classLoader = javaClass.classLoader
-            val fileUrl = classLoader.getResource(fileName)
-            val filePath = fileUrl?.path ?: throw IllegalArgumentException("File not found: $fileName")
-
-
-            notifications.sendEmail(
+            notifications.processEmailAttachment(
                 it,
                 "Technical Committee Appointment  Letter",
                 messageBody,
-                filePath
+                docFile
             )
         }
         u.status = "5" // approved and appointment letter email has been sent by HOD

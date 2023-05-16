@@ -15,15 +15,18 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartFile
 import java.lang.Double
 import java.util.*
 import javax.activation.DataHandler
+import javax.activation.DataSource
 import javax.activation.FileDataSource
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
+import javax.mail.util.ByteArrayDataSource
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
@@ -280,6 +283,77 @@ class Notifications(
                     messageBodyPart.dataHandler = DataHandler(source)
                     messageBodyPart.fileName = source.name
                     multipart.addBodyPart(messageBodyPart)
+                }
+            }
+            msg.setContent(multipart)
+            val transport: Transport = session.getTransport(applicationMapProperties.mapApplicationEmailProtocol)
+            transport.connect(
+                applicationMapProperties.mapApplicationEmailSmtpHost,
+                applicationMapProperties.mapApplicationEmailUsername,
+                applicationMapProperties.mapApplicationEmailPassword
+            )
+            //TODO: Add mail delivery check, update status if mail failed
+            transport.sendMessage(msg, msg.allRecipients)
+            KotlinLogging.logger { }.info("Mail has been sent successfully")
+        } catch (ex: Exception) {
+            println("Unable to send an email: $ex")
+            KotlinLogging.logger { }.error("Unable to send an email : " + ex.message, ex)
+        }
+//        } catch (e: UnsupportedEncodingException) {
+//            KotlinLogging.logger { }.error(e.message, e)
+//        }
+    }
+
+    fun processEmailAttachment(recipientEmail: String, subject: String, messageText: String, docFiles: List<MultipartFile>?) {
+        KotlinLogging.logger { }.info("Sending email to=$recipientEmail, Attachments=$docFiles")
+
+        val props = Properties()
+        props.put("mail.smtp.starttls.enable", applicationMapProperties.mapApplicationEmailSmtpStartTlsEnable)
+        props.put("mail.smtp.host", applicationMapProperties.mapApplicationEmailSmtpHost)
+        props.put("mail.smtp.port", applicationMapProperties.mapApplicationEmailSmtpPort)
+        props.put("mail.smtp.ssl.trust", applicationMapProperties.mapApplicationEmailSmtpHost)
+        props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth)
+        props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername)
+        props.put("mail.smtp.password", applicationMapProperties.mapApplicationEmailPassword)
+
+        //Establishing a session with required user details
+        val session: Session = Session.getInstance(props, object : Authenticator() {
+            override fun getPasswordAuthentication(): PasswordAuthentication {
+                //return new PasswordAuthentication(username, password);
+                return PasswordAuthentication(
+                    applicationMapProperties.mapApplicationEmailUsername,
+                    applicationMapProperties.mapApplicationEmailPassword
+                )
+            }
+        })
+
+        try {
+            val msg = MimeMessage(session)
+            //String to = recepient;
+            val address: Array<InternetAddress> = InternetAddress.parse(recipientEmail, true)
+            msg.setRecipients(Message.RecipientType.TO, address)
+            msg.subject = subject
+            msg.sentDate = Date()
+            msg.setHeader("XPriority", "1")
+            msg.setFrom(
+                InternetAddress(
+                    applicationMapProperties.mapApplicationEmailUsername,
+                    applicationMapProperties.mapApplicationEmailFrom
+                )
+            )
+            //val messageText = message
+            val messageBodyPart: BodyPart = MimeBodyPart()
+            messageBodyPart.setText(messageText)
+            val multipart: Multipart = MimeMultipart()
+            multipart.addBodyPart(messageBodyPart)
+
+            if (docFiles != null) {
+                for (docFile in docFiles) {
+                    val attachmentBodyPart = MimeBodyPart()
+                    val source: DataSource = ByteArrayDataSource(docFile.bytes, docFile.contentType!!)
+                    attachmentBodyPart.dataHandler = DataHandler(source)
+                    attachmentBodyPart.fileName = docFile.originalFilename
+                    multipart.addBodyPart(attachmentBodyPart)
                 }
             }
             msg.setContent(multipart)

@@ -184,10 +184,11 @@ class MembershipToTCController(
     @PostMapping("/membershipToTC/approve")
     @ResponseBody
     fun sendApprovalEmail(
-        @RequestBody membershipTCApplication: MembershipTCApplication,
         @RequestParam("tCApplicationId") tCApplicationId: Long,
-    ) {
-        return membershipToTCService.sendEmailToApproved(membershipTCApplication, tCApplicationId)
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+
+        ) {
+        return membershipToTCService.sendEmailToApproved(tCApplicationId,docFile)
 
     }
 
