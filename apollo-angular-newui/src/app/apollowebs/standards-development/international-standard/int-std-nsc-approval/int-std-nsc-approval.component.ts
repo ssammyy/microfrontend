@@ -18,6 +18,7 @@ import {StdComStandardService} from "../../../../core/store/data/std/std-com-sta
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-nsc-approval',
@@ -272,7 +273,20 @@ export class IntStdNscApprovalComponent implements OnInit {
           //console.log(response);
           this.getStdApproval();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Standard Approved `);
+            if(response.body.responseStatus=="success"){
+                this.showToasterSuccess('Approved', response.body.responseMessage);
+            }else if(response.body.responseStatus=="error"){
+                this.showToasterError('Not Approved', response.body.responseMessage);
+            }
+            swal.fire({
+                title: response.body.responseMsg,
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: response.body.responseButton,
+                },
+                icon: response.body.responseStatus
+            });
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
