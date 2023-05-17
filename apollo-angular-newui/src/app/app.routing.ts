@@ -877,6 +877,7 @@ import {IntStdWebProposalComponent} from "./apollowebs/standards-development/int
 import {
     AuthorizerApproveApplicationComponent
 } from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
+import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
 
 export const routes: Routes = [
     {
@@ -2396,6 +2397,12 @@ export const routes: Routes = [
         component: AdminLayoutComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}],
+    },
+    {
+        path: 'reviewRecommendationOfSac',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewNscComponent}],
     },
     {
         path: 'reviewAccepted',

@@ -584,6 +584,8 @@ import {RejectedProposalsComponent} from './apollowebs/standards-development/for
 import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 import { RejectedBySpcComponent } from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
 import { AuthorizerApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
+import { ReviewNscComponent } from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
+import { ReviewApplicationRejectedByNscComponent } from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1223,6 +1225,8 @@ import { AuthorizerApproveApplicationComponent } from './apollowebs/standards-de
         RejectedProposalsComponent,
         RejectedBySpcComponent,
         AuthorizerApproveApplicationComponent,
+        ReviewNscComponent,
+        ReviewApplicationRejectedByNscComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -12,14 +12,14 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title"><b>Review Applications Recommendations</b></h4>
+                        <h4 class="card-title"><b>NSC Review Applications Recommendations</b></h4>
                     </div>
 
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
                                 <div class="d-flex flex-wrap align-items-center">
-                                    <h5 class="mr-4">Review Applications Recommendations</h5>
+                                    <h5 class="mr-4">NSC Review Applications Recommendations</h5>
                                     <div class="resolved-pill">
                                         <p>{{tcTasks.length}}</p>
                                     </div>
@@ -178,14 +178,14 @@
                                                                 <div class="row">
                                                                     <div class="col-12">
                                                                         <label><b>Provide Your
-                                                                            Recommendation</b></label>
+                                                                            Remarks</b></label>
                                                                         <textarea
                                                                                 aria-describedby="inputGroup-sizing-sm"
                                                                                 ngModel
-                                                                                id="commentsBySac"
+                                                                                id="commentsByNsc"
                                                                                 aria-label="Small"
                                                                                 class="form-control one-column-input"
-                                                                                name="commentsBySac"
+                                                                                name="commentsByNsc"
                                                                                 placeholder=" " type="text"
                                                                                 required></textarea>
                                                                     </div>
@@ -193,11 +193,11 @@
 
                                                                 <button class="btn btn-info"
                                                                         (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">
-                                                                    Recommend
+                                                                    Approve
                                                                 </button>
                                                                 <button class="btn btn-danger"
                                                                         (click)="decisionOnApplications(editForm.value,actionRequest?.id,'NO')">
-                                                                    Not Recommend
+                                                                    Decline
                                                                 </button>
 
 

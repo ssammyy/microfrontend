@@ -512,6 +512,8 @@ export interface ReviewApplicationTask {
     hofId: string,
     spcId: string,
     sacId: string,
+    nscId: string,
+    commentsByNsc: string,
     varField9: string,
     varField10: string,
     taskId: string

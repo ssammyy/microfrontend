@@ -2,22 +2,17 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
-import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
-import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.ResponseEntity
@@ -31,33 +26,24 @@ import java.util.*
 
 @Service
 class MembershipToTCService(
-    private val runtimeService: RuntimeService,
     private val taskService: TaskService,
     private val notifications: Notifications,
-
     @Qualifier("processEngine") private val processEngine: ProcessEngine,
+
     private val repositoryService: RepositoryService,
     private val membershipTCRepository: MembershipTCRepository,
     private val callForApplicationTCRepository: CallForApplicationTCRepository,
-    private val technicalCommitteMemberRepository: TechnicalCommitteMemberRepository,
-    private val decisionFeedbackRepository: DecisionFeedbackRepository,
-
+    private val technicalCommitteeMemberRepository: TechnicalCommitteMemberRepository,
     val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
-    private val usersRepo: IUserRepository,
     private val draftDocumentService: DraftDocumentService,
 
 
     ) {
 
-    val PROCESS_DEFINITION_KEY = "membership_to_TC"
-    val APPLICANTS = "applicants"
-    val HOF = "HOF"
-    val SPC = "SPC"
-    val SAC = "SAC"
-    val HOD_SIC = "HOD-SIC"
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
@@ -70,7 +56,7 @@ class MembershipToTCService(
     // if 1- submitted to HOf for review
     // if 2- submitted to SPC for review
     // if 3- submitted to SAC for review
-    // if 4- submitted to HOf for review for approval
+    // if 4- submitted to HOF for review for approval
     // if 5- submitted to SPC for review for rejection
     // if 6- HOP Approved and sent as email
 
@@ -82,7 +68,7 @@ class MembershipToTCService(
         callForTCApplication.tcId?.let { variable.put("tcId", it) }
         //select TC TITLE
         val technicalCommittee =
-            callForTCApplication.tcId?.let { technicalCommitteeRepository.findById(it).orElse(null) };
+            callForTCApplication.tcId?.let { technicalCommitteeRepository.findById(it).orElse(null) }
         callForTCApplication.tc = technicalCommittee?.title
         callForTCApplication.tc?.let { variable.put("tc", it) }
         callForTCApplication.title?.let { variable.put("title", it) }
@@ -101,62 +87,47 @@ class MembershipToTCService(
 
     }
 
-    //Edit Form
-    fun editCallsForTCMembers(callForTCApplication: CallForTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = HashMap()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: CallForTCApplication = callForApplicationTCRepository.findById(applicationID).orElse(null);
-        u.tc?.let { variable.put("tc", it) }
-        u.tcId?.let { variable.put("tcId", it) }
-        u.title?.let { variable.put("title", it) }
-        u.modifiedBy = loggedInUser.id.toString()
-        u.modifiedOn = Timestamp(System.currentTimeMillis())
-        callForApplicationTCRepository.save(u)
-
-
-    }
-
-    //Delete Form
-    fun deleteCallsForTCMembers(callForTCApplication: CallForTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = HashMap()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: CallForTCApplication = callForApplicationTCRepository.findById(applicationID).orElse(null);
-        u.status?.let { variable.put("DELETED", it) }
-        callForTCApplication.deleteBy = loggedInUser.id.toString()
-        callForTCApplication.deletedOn = Timestamp(System.currentTimeMillis())
-        callForApplicationTCRepository.save(callForTCApplication)
-
-
-    }
-
     fun getCallForApplications(): List<TechnicalCommittee> {
 
         return technicalCommitteeRepository.findAllByAdvertisingStatus("1")
 
     }
 
-    private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
-        val taskDetails: MutableList<TaskDetails> = ArrayList()
-        for (task in tasks) {
-            val processVariables = taskService.getVariables(task.id)
-            taskDetails.add(TaskDetails(task.id, task.name, processVariables))
-        }
-        return taskDetails
-    }
-
     fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue {
         membershipTCApplication.dateOfApplication = Timestamp(System.currentTimeMillis())
-        val u: TechnicalCommittee = technicalCommitteeRepository.findById(membershipTCApplication.tcId!!).orElse(null);
+        val u: TechnicalCommittee = technicalCommitteeRepository.findById(membershipTCApplication.tcId!!).orElse(null)
         val encryptedId = BCryptPasswordEncoder().encode(membershipTCApplication.tcId.toString())
         membershipTCApplication.varField10 = encryptedId
         membershipTCApplication.technicalCommittee = u.title
-        membershipTCRepository.save(membershipTCApplication)
 
-        notifications.sendEmail(
-            membershipTCApplication.email!!,
-            "Technical Committee",
-            "Hello " + membershipTCApplication.nomineeName!! + ",\n We have received your application For The Following Technical Committee: " + u.title!! + "\n Please Wait for Further Verification."
-        )
+
+        if (membershipTCApplication.authorizingPerson != null) {
+
+            notifications.sendEmail(
+                membershipTCApplication.email!!,
+                "Application Acknowledgement:  ${u.title} - Evaluation Pending Verification",
+                "Dear " + membershipTCApplication.nomineeName!! + ",\n Thank you for applying to join the: " + u.title!! + "\n We acknowledge receipt of your application and appreciate your interest in becoming a member.\n" +
+                        "\n" +
+                        "We are currently in the process of verifying your affiliation with your organization. Once the authorizing person confirms your membership, we will proceed with evaluating your application.\n" +
+                        "\n" +
+                        "Best regards,\n" +
+                        "\n" +
+                        "Director Standards Development and Trade"
+            )
+        } else {
+            membershipTCApplication.approvedByOrganization = "APPROVED"
+            notifications.sendEmail(
+                membershipTCApplication.email!!,
+                "Application Acknowledgement:  ${u.title} - Evaluation in Progress",
+                "Dear " + membershipTCApplication.nomineeName!! + ",\n Thank you for submitting your application to join the KEBS " + u.title!! + " Tc. \n We appreciate your interest in becoming a member of this Technical Committee.\n" +
+                        "\n" +
+                        "We acknowledge receipt of your application, and our team has commenced the evaluation process. We will keep you updated on the outcome once the process is completed.\n" +
+                        "\n" +
+                        "Best regards,\n" +
+                        "\n" +
+                        "Director Standards Development and Trade"
+            )
+        }
 
         val link =
             "${applicationMapProperties.baseUrlQRValue}authorizerApproveApplication?applicationID=${encryptedId}"
@@ -165,12 +136,25 @@ class MembershipToTCService(
             // Check if authorizingPersonEmail is not null
             notifications.sendEmail(
                 email,
-                "Technical Committee",
-                "Hello ${membershipTCApplication.authorizingPerson},\n We have received an application by ${membershipTCApplication.nomineeName} For The Following Technical Committee: ${u.title}\n" +
-                        " Please Click On The Following Link To Verify That ${membershipTCApplication.nomineeName} is a member of your organisation.\n" +
-                        "\n$link\n\n\n\n\n\n"
+                "Membership Application Verification for TC Committee",
+                "Dear ${membershipTCApplication.authorizingPerson},\n" +
+                        "We hope this email finds you well. We are contacting you on behalf of the Kenya Bureau of Standards (KEBS) regarding a recent membership application for the " +
+                        "Technical Committee ${membershipTCApplication.technicalCommittee}, identified by TC number ${u.technicalCommitteeNo}.\n" +
+                        "An individual named ${membershipTCApplication.nomineeName} has applied to join  ${membershipTCApplication.technicalCommittee} and has provided your contact information as the designated authorizing person from their organization." +
+                        " We kindly request your assistance in verifying the applicant's membership status within your organization.\n" +
+                        " To facilitate the verification process, we have established a secure online platform where you can confirm the applicant's affiliation. Kindly access the verification page by clicking on the link provided below:.\n" +
+                        "\n$link\n\n" +
+                        "Your participation is of utmost importance in upholding the integrity and transparency of the TC selection process.\n" +
+                        "\n" +
+                        "Thank you for your invaluable cooperation and dedication.\n" +
+                        "\n" +
+                        "Best regards,\n" +
+                        "\n" +
+                        "Director of Standards Development and Trade\n\n\n\n"
             )
         }
+        membershipTCRepository.save(membershipTCApplication)
+
 
         return ProcessInstanceResponseValue(
             membershipTCApplication.id,
@@ -188,7 +172,7 @@ class MembershipToTCService(
         val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
         return if (u != null) {
             if (u.approvedByOrganization != null) {
-                ResponseEntity.ok("This Link Has Already Been Used");
+                ResponseEntity.ok("This Link Has Already Been Used")
 
             } else {
                 u.approvedByOrganization = "APPROVED"
@@ -196,10 +180,45 @@ class MembershipToTCService(
                 //send email
                 notifications.sendEmail(
                     u.email!!,
-                    "Technical Committee Application Approved",
-                    "Hello " + u.nomineeName!! + ",\n Your Application Has Been Approved .\n Please Wait for Further Communication."
+                    "Application Update: ${u.technicalCommittee} - Verification Completed, Evaluation in Progress",
+                    "Dear " + u.nomineeName!! + ",\n We are pleased to inform you that your affiliation with ${u.organisationName} has been verified, confirming your eligibility to join the KEBS ${u.technicalCommittee} . Our team appreciates your cooperation during the verification process." +
+                            "\n The KEBS Standard Development team has now commenced the evaluation of your application, and we will inform you of the outcome once the process is completed. \n" +
+                            "\n" +
+                            "Best regards,\n" +
+                            "\n" +
+                            "\n" +
+                            "Director, Standards Development and Trade"
                 )
-                ResponseEntity.ok("Saved");
+                ResponseEntity.ok("Saved")
+
+            }
+
+        } else {
+            throw ExpectedDataNotFound("This is not approved for approval")
+        }
+
+
+    }
+
+    fun rejectUserApplication(
+        applicationID: String
+    ): ResponseEntity<String> {
+
+        val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
+        return if (u != null) {
+            if (u.approvedByOrganization != null) {
+                ResponseEntity.ok("This Link Has Already Been Used")
+
+            } else {
+                u.approvedByOrganization = "REJECTED"
+                membershipTCRepository.save(u)
+                //send email
+                notifications.sendEmail(
+                    u.email!!,
+                    "Technical Committee Application Rejected",
+                    "Hello " + u.nomineeName!! + ",\n Your Application Has Been Rejected .\n Please Try Again."
+                )
+                ResponseEntity.ok("Saved")
 
             }
 
@@ -217,9 +236,8 @@ class MembershipToTCService(
 
     // HOF Has Received The applications and is reviewing them and giving a decision. Status will be set to 1
     fun decisionOnApplicantRecommendation(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "1"
         u.comments_by_hof = membershipTCApplication.comments_by_hof
         u.hofId = loggedInUser.id.toString()
@@ -228,9 +246,8 @@ class MembershipToTCService(
     }
 
     fun rejectApplicantRecommendation(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "0" //application rejected
         u.comments_by_hof = membershipTCApplication.comments_by_hof
         u.hofId = loggedInUser.id.toString()
@@ -240,9 +257,9 @@ class MembershipToTCService(
         notifications.sendEmail(
             u.email!!,
             "Technical Committee Application Rejected",
-            "Hello " + u.nomineeName!! + ",\n Your Application Has Been Rejected because of "+u.comments_by_hof+" .\n Please Try Again."
+            "Hello " + u.nomineeName!! + ",\n Your Application Has Been Rejected because of " + u.comments_by_hof + " .\n Please Try Again."
         )
-        ResponseEntity.ok("Saved");
+        ResponseEntity.ok("Saved")
 
 
     }
@@ -266,7 +283,7 @@ class MembershipToTCService(
 
     fun completeSPCReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "2"
         u.commentsBySpc = membershipTCApplication.commentsBySpc
         u.spcId = loggedInUser.id.toString()
@@ -276,7 +293,7 @@ class MembershipToTCService(
 
     fun resubmitReview(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "2"
         u.commentsBySpc = membershipTCApplication.commentsBySpc
         u.spcId = loggedInUser.id.toString()
@@ -296,12 +313,11 @@ class MembershipToTCService(
         applicationID: Long,
         decision: String
     ) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         if (decision == "YES") {
-            u.status = "4" // approved and send to HOD to send appointment letters
+            u.status = "13" // approved and send to NSC for final approval
         } else {
             u.status = "3" //rejected and sent back to SPC with recommendations
 
@@ -317,6 +333,39 @@ class MembershipToTCService(
         return membershipTCRepository.findByStatus("3")
     }
 
+
+    //NSC Get Accepted
+    fun getSacAccepted(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("13")
+    }
+
+
+    fun decisionOnSACRecommendation(
+        membershipTCApplication: MembershipTCApplication,
+        applicationID: Long,
+        decision: String
+    ) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
+        if (decision == "YES") {
+            u.status = "4" // approved and send to HOF for Account Creation
+        } else {
+            u.status = "14" //rejected and sent back to SPC with recommendations
+
+        }
+        u.commentsByNsc = membershipTCApplication.commentsByNsc
+        u.nscId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+    }
+
+    //NSC Get Rejected
+    fun getNscRejected(): List<MembershipTCApplication> {
+
+        return membershipTCRepository.findByStatus("14")
+    }
+
+
     //HOF Get Accepted
     fun getAccepted(): List<MembershipTCApplication> {
 
@@ -328,7 +377,7 @@ class MembershipToTCService(
         applicationID: Long,
         docFile: List<MultipartFile>
     ) {
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         //send email
         val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
         val link =
@@ -365,12 +414,12 @@ class MembershipToTCService(
         val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
         return if (u != null) {
             if (u.status.equals("6")) {
-                ResponseEntity.ok("This Link Has Already Been Used");
+                ResponseEntity.ok("This Link Has Already Been Used")
 
             } else {
                 u.status = "6"
                 membershipTCRepository.save(u)
-                ResponseEntity.ok("Saved");
+                ResponseEntity.ok("Saved")
             }
 
         } else {
@@ -397,10 +446,8 @@ class MembershipToTCService(
         applicationID: Long,
         decision: String
     ) {
-        val variable: MutableMap<String, Any> = java.util.HashMap()
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "7" // approved and send to HOD-ICT
         u.varField9 = decision //this is scope that is defined
         membershipTCRepository.save(u)
@@ -417,7 +464,7 @@ class MembershipToTCService(
         membershipTCApplication: MembershipTCApplication,
         applicationID: Long
     ) {
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         u.status = "8" // created as users on QAIMSS
         membershipTCRepository.save(u)
     }
@@ -433,7 +480,7 @@ class MembershipToTCService(
         membershipTCApplication: MembershipTCApplication,
         applicationID: Long
     ) {
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         //send email
         val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
         val link =
@@ -460,12 +507,12 @@ class MembershipToTCService(
         val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
         return if (u != null) {
             if (u.status.equals("10")) {
-                ResponseEntity.ok("This Link Has Already Been Used");
+                ResponseEntity.ok("This Link Has Already Been Used")
 
             } else {
                 u.status = "10"
                 membershipTCRepository.save(u)
-                ResponseEntity.ok("Saved");
+                ResponseEntity.ok("Saved")
             }
 
         } else {
@@ -492,7 +539,7 @@ class MembershipToTCService(
         applicationID: Long,
         meetingDate: String
     ) {
-        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
         //send email
         val messageBody =
             " Hello ${u.nomineeName} \n We will be having our first meeting scheduled on ${meetingDate}. \n Looking Forward To Seeing You "
@@ -502,10 +549,22 @@ class MembershipToTCService(
         membershipTCRepository.save(u)
     }
 
+    fun nonRecommend(membershipTCApplication: MembershipTCApplication, applicationID: Long) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
+        u.status = "12"
+        u.commentsBySpc = membershipTCApplication.commentsBySpc
+        u.spcId = loggedInUser.id.toString()
+        membershipTCRepository.save(u)
+        //send rejection email
+        notifications.sendEmail(
+            u.email!!,
+            "Technical Committee Application Rejected",
+            "Hello " + u.nomineeName!! + ",\n Your Application Has Been Rejected because of " + u.commentsBySpc + " .\n Please Try Again."
+        )
+        ResponseEntity.ok("Saved")
 
-    fun getTCMemberCreationTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(HOD_SIC).list()
-        return getTaskDetails(tasks)
+
     }
 
     fun saveTCMember(technicalCommitteeMember: TechnicalCommitteeMember) {
@@ -516,7 +575,7 @@ class MembershipToTCService(
         technicalCommitteeMember.email?.let { variable.put("email", it) }
 
         println(technicalCommitteeMember.toString())
-        technicalCommitteMemberRepository.save(technicalCommitteeMember)
+        technicalCommitteeMemberRepository.save(technicalCommitteeMember)
 
         taskService.complete(technicalCommitteeMember.taskId, variable)
         println("Applicant has TC Member")
@@ -541,37 +600,12 @@ class MembershipToTCService(
 
     }
 
-    fun uploadSDFile(
-        uploads: DatKebsSdStandardsEntity,
-        docFile: MultipartFile,
-        doc: String,
-        user: UsersEntity,
-        DocDescription: String
-    ): DatKebsSdStandardsEntity {
-
-        with(uploads) {
-//            filepath = docFile.path
-            name = commonDaoServices.saveDocuments(docFile)
-//            fileType = docFile.contentType
-            fileType = docFile.contentType
-            documentType = doc
-            description = DocDescription
-            document = docFile.bytes
-            transactionDate = commonDaoServices.getCurrentDate()
-            status = 1
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
-        }
-
-        return sdNwaUploadsEntityRepository.save(uploads)
-    }
-
     fun uploadSDFileNotLoggedIn(
         uploads: DatKebsSdStandardsEntity,
         docFile: MultipartFile,
         doc: String,
         nomineeName: String,
-        DocDescription: String
+        docDescription: String
     ): DatKebsSdStandardsEntity {
 
         with(uploads) {
@@ -580,7 +614,7 @@ class MembershipToTCService(
 //            fileType = docFile.contentType
             fileType = docFile.contentType
             documentType = doc
-            description = DocDescription
+            description = docDescription
             document = docFile.bytes
             transactionDate = commonDaoServices.getCurrentDate()
             status = 1

@@ -12,7 +12,7 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title"><b>Send To HOD-ICT For Credentials Creation</b></h4>
+                        <h4 class="card-title"><b>Send To Standards Admin For Credentials Creation</b></h4>
                     </div>
 
                     <div class="card-body">
@@ -53,7 +53,7 @@
 
                                     <td><a type="button" (click)="onOpenModal(tcTask)" class="btn btn-success tooltips"
                                            data-placement="top" data-original-title="View Application">Forward
-                                        To HOD-ICT</a></td>
+                                        To Admin Std</a></td>
 
                                 </tr>
                                 </tbody>
@@ -69,28 +69,13 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="updateExampleModalLabel">
                                             Forward {{actionRequest?.nomineeName}}
-                                            To HOD-ICT </h5>
+                                            To Admin Std </h5>
                                         <button type="button" #closeViewModal class="close" data-dismiss="modal"
                                                 aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <form #editForm="ngForm" class="form">
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class=" col-12">
-                                                    <label><b>Provide Scope</b></label>
-                                                    <textarea
-                                                            aria-describedby="inputGroup-sizing-sm" ngModel
-                                                            id="varField10"
-                                                            aria-label="Small"
-                                                            class="form-control one-column-input" name="varField10"
-                                                            placeholder="Scope" type="text" required></textarea>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
                                         <input hidden ngModel="{{actionRequest?.email}}" name="email" id="email">
 
                                         <!--                                        <div class="row">-->
@@ -204,7 +189,7 @@
 
                                             <button class="btn btn-success"
                                                     (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">
-                                                Forward To HOD-ICT
+                                                Forward To Admin Std
                                             </button>
                                         </div>
                                     </form>
