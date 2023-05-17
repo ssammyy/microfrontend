@@ -739,8 +739,13 @@ class IntStandardService(
     fun decisionOnProposal(
         comStdDraft: ComStdDraft,
         companyStandardRemarks: CompanyStandardRemarks
-    ): ResponseMsg {
+    ): NotificationForm {
+
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
         var response = ""
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         comStdDraft.accentTo = comStdDraft.accentTo
         val decision = comStdDraft.accentTo
@@ -769,35 +774,41 @@ class IntStandardService(
                 with(comStdDraft) {
                     status = 1
                     tcAcceptanceDate = dateOfRemark
+                    tcDecision="Proposal Approved by Technical Committee.The TC Secretary was $usersName"
 
 
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
-                response = "Draft Approved"
+                slFormResponse = "Proposal Was Approved"
+                responseStatus = "success"
+                responseButton = "btn btn-success form-wizard-next-btn"
+                response = "Approved"
             } ?: throw Exception("DRAFT NOT FOUND")
+
+
 
 
         } else if (decision == "No") {
             comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                 with(comStdDraft) {
-                    status = 2
+                    status = 1
+                    tcAcceptanceDate = dateOfRemark
+                    tcDecision="Proposal Was not Approved by Technical Committee.The TC Secretary was $usersName"
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                response = "Draft Not Approved"
+                slFormResponse = "Proposal Was Not Approved"
+                responseStatus = "error"
+                responseButton = "btn btn-danger form-wizard-next-btn"
+                response = "Not Approved"
             } ?: throw Exception("DRAFT NOT FOUND")
 
 
         }
-
-        //  }else{
-        //      response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
-        //  }
-
-        return ResponseMsg(response)
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getDraftComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
@@ -994,8 +1005,13 @@ class IntStandardService(
     fun decisionOnJustification(
         comStdDraft: ComStdDraft,
         companyStandardRemarks: CompanyStandardRemarks
-    ): ResponseMsg {
+    ): NotificationForm {
+
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
         var response = ""
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         comStdDraft.accentTo = comStdDraft.accentTo
         val decision = comStdDraft.accentTo
@@ -1023,7 +1039,10 @@ class IntStandardService(
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
-                response = "Justification Was Approved"
+                slFormResponse = "Justification Was Approved"
+                responseStatus = "success"
+                responseButton = "btn btn-success form-wizard-next-btn"
+                response = "Approved"
             } ?: throw Exception("DRAFT NOT FOUND")
 
 
@@ -1036,13 +1055,16 @@ class IntStandardService(
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                response = "Justification Was Not Approved"
+                slFormResponse = "Justification Was Not Approved"
+                responseStatus = "error"
+                responseButton = "btn btn-danger form-wizard-next-btn"
+                response = "Not Approved"
             } ?: throw Exception("DRAFT NOT FOUND")
 
 
         }
 
-        return ResponseMsg(response)
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getApprovedJustification(): MutableList<ProposalDetails> {
@@ -1107,7 +1129,12 @@ class IntStandardService(
     fun decisionOnJustificationx(
         iSAdoptionJustification: ISAdoptionJustification,
         internationalStandardRemarks: InternationalStandardRemarks
-    ): String {
+    ): NotificationForm {
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
+        var response = ""
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         iSAdoptionJustification.accentTo = iSAdoptionJustification.accentTo
         val decision = iSAdoptionJustification.accentTo
@@ -1132,6 +1159,10 @@ class IntStandardService(
                     iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                     internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 } ?: throw Exception("JUSTIFICATION NOT FOUND")
+            slFormResponse = "Justification Was Approved"
+            responseStatus = "success"
+            responseButton = "btn btn-success form-wizard-next-btn"
+            response = "Approved"
 
         } else if (decision == "No") {
             iSAdoptionJustificationRepository.findByIdOrNull(iSAdoptionJustification.id)
@@ -1143,10 +1174,14 @@ class IntStandardService(
                     iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                     internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 } ?: throw Exception("JUSTIFICATION NOT FOUND")
+            slFormResponse = "Justification Was Not Approved"
+            responseStatus = "error"
+            responseButton = "btn btn-danger form-wizard-next-btn"
+            response = "Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification> {
@@ -1685,7 +1720,7 @@ class IntStandardService(
 
     fun approveInternationalStandard(
         iSDraftDecisions: ISDraftDecisionsStd
-    ): String {
+    ): NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val timeOfRemark = Timestamp(System.currentTimeMillis())
         val decision = iSDraftDecisions.accentTo
@@ -1704,6 +1739,11 @@ class IntStandardService(
         comRemarks.remarkBy = usersName
         comRemarks.role = "SAC"
 
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
+        var response = ""
+
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
                 with(companyStandard) {
@@ -1712,6 +1752,11 @@ class IntStandardService(
                 }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
+
+                slFormResponse = "Standard Was Approved"
+                responseStatus = "success"
+                responseButton = "btn btn-success form-wizard-next-btn"
+                response = "Approved"
 
             } ?: throw Exception("DRAFT NOT FOUND")
 
@@ -1744,15 +1789,19 @@ class IntStandardService(
 
                 } ?: throw Exception("DRAFT NOT FOUND")
             }
+            slFormResponse = "Standard Was Not Approved"
+            responseStatus = "error"
+            responseButton = "btn btn-danger form-wizard-next-btn"
+            response = "Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun approveInternationalStandardNSC(
         iSDraftDecisions: ISDraftDecisionsStd
-    ): String {
+    ): NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val timeOfRemark = Timestamp(System.currentTimeMillis())
         val decision = iSDraftDecisions.accentTo
@@ -1770,6 +1819,10 @@ class IntStandardService(
         comRemarks.dateOfRemark = timeOfRemark
         comRemarks.remarkBy = usersName
         comRemarks.role = "SAC"
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
+        var response = ""
 
         if (decision == "Yes") {
             if (typeOfStandard == "International Standard") {
@@ -1809,10 +1862,12 @@ class IntStandardService(
                     companyStandardRemarksRepository.save(comRemarks)
 
                 } ?: throw Exception("DRAFT NOT FOUND")
-
-
             }
 
+            slFormResponse = "Standard Was Approved"
+            responseStatus = "success"
+            responseButton = "btn btn-success form-wizard-next-btn"
+            response = "Approved"
 
         } else if (decision == "No") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
@@ -1822,12 +1877,15 @@ class IntStandardService(
                 }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
-
+                slFormResponse = "Standard Was Not Approved"
+                responseStatus = "error"
+                responseButton = "btn btn-danger form-wizard-next-btn"
+                response = "Not Approved"
             } ?: throw Exception("DRAFT NOT FOUND")
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getStakeHoldersList(draftId: Long): MutableList<EmailList>? {

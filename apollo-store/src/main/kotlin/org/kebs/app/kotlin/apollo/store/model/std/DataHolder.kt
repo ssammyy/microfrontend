@@ -505,6 +505,7 @@ interface ProposalDetails{
     fun getStStatus(): Long?
     fun getStTelephone(): String?
     fun getCommentId(): Long?
+    fun getTcDecision(): String?
 }
 interface PermitsAwarded{
     fun getId(): Long?

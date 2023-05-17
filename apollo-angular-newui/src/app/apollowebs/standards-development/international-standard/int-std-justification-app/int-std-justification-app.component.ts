@@ -28,6 +28,7 @@ import {Router} from "@angular/router";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-justification-app',
@@ -169,7 +170,20 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
                 //console.log(response);
                 this.getApprovedProposals();
                 this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Justification Approved`);
+                if(response.body.responseStatus=="success"){
+                    this.showToasterSuccess('Approved', response.body.responseMessage);
+                }else if(response.body.responseStatus=="error"){
+                    this.showToasterError('Not Approved', response.body.responseMessage);
+                }
+                swal.fire({
+                    title: response.body.responseMsg,
+                    text: response.body.responseMessage,
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: response.body.responseButton,
+                    },
+                    icon: response.body.responseStatus
+                });
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

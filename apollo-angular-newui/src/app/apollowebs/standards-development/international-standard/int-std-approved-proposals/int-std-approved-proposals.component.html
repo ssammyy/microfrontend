@@ -112,6 +112,7 @@
                                         <th class="knw">Closing Date</th>
                                         <th>Standard Number</th>
                                         <th class="referenceMaterial">Prepared By</th>
+                                        <th class="referenceMaterial">TC Decision</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -124,7 +125,8 @@
                                         <td>{{isAdoptionProposal.closingDate | date: 'dd/MM/yyyy'}}</td>
                                         <td>{{isAdoptionProposal.standardNumber}}</td>
                                         <td>{{isAdoptionProposal.tcSecName}}</td>
-                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'prepareJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Prepare Justification</a></td>
+                                        <td>{{isAdoptionProposal.tcDecision}}</td>
+                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'prepareJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Prepare / Edit Justification</a></td>
                                     </tr>
                                     </tbody>
                                 </table>

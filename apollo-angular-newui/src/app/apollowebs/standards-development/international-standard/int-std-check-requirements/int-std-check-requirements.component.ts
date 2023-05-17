@@ -285,7 +285,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
 
   }
   approveRequirements(): void {
-    this.loadingText = "Approving Draft...";
+    this.loadingText = "Decision on Draft...";
     this.SpinnerService.show();
     this.stdComStandardService.checkRequirements(this.approveRequirementsFormGroup.value).subscribe(
         (response ) => {
