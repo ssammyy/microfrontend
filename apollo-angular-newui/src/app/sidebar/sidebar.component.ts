@@ -968,7 +968,7 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'reviewAccepted',
-                title: 'Approve Members',
+                title: 'Accept Members',
                 ab: 'AL',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DI_SDT_SD_MODIFY', 'HOD_TWO_SD_READ']
             },

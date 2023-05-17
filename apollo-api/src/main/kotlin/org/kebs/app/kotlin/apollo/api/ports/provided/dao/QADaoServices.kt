@@ -11029,6 +11029,22 @@ class QADaoServices(
 
 
     }
+    fun findPermitByPermitNumberSms(
+        awardedPermitNumber: String
+    ): List<PermitApplicationsEntity> {
+
+
+        permitRepo.findTopByAwardedPermitNumberAndPermitStatusOrderByIdDesc(awardedPermitNumber, 28)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+
 
     fun findPermitByPermitNumberNotMigrated(
         awardedPermitNumber: String
