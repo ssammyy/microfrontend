@@ -768,6 +768,7 @@ export interface ISAdoptionProposal {
     nameOfOrganization: string;
     commentId: number;
     edition: string;
+    tcDecision: string;
 
 }
 export interface ISComments{
