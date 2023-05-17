@@ -774,6 +774,7 @@ class IntStandardService(
                 with(comStdDraft) {
                     status = 1
                     tcAcceptanceDate = dateOfRemark
+                    tcDecision="Proposal Approved by Technical Committee.The TC Secretary was $usersName"
 
 
                 }
@@ -792,7 +793,9 @@ class IntStandardService(
             comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                 with(comStdDraft) {
-                    status = 2
+                    status = 1
+                    tcAcceptanceDate = dateOfRemark
+                    tcDecision="Proposal Was not Approved by Technical Committee.The TC Secretary was $usersName"
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
