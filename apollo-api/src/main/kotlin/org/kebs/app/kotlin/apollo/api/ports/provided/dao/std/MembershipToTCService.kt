@@ -236,6 +236,15 @@ class MembershipToTCService(
         u.hofId = loggedInUser.id.toString()
         membershipTCRepository.save(u)
 
+        //send rejection email
+        notifications.sendEmail(
+            u.email!!,
+            "Technical Committee Application Rejected",
+            "Hello " + u.nomineeName!! + ",\n Your Application Has Been Rejected because of "+u.comments_by_hof+" .\n Please Try Again."
+        )
+        ResponseEntity.ok("Saved");
+
+
     }
 
     //SPC

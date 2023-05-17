@@ -126,7 +126,7 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
 
         } else {
             this.SpinnerService.show();
-            this.loadingText = "Approving Applicant";
+            this.loadingText = "Recommending Applicant";
             this.membershipToTcService.decisionOnApplications(reviewApplicationTask, tCApplicationId).subscribe(
                 (response) => {
                     console.log(response);
@@ -152,7 +152,7 @@ export class ReviewApplicationComponent implements OnInit, OnDestroy {
 
         } else {
             this.SpinnerService.show();
-            this.loadingText = "Rejecting Applicant";
+            this.loadingText = "Not Recommending Applicant";
             this.membershipToTcService.rejectApplicantRecommendation(reviewApplicationTask, tCApplicationId).subscribe(
                 (response) => {
                     this.getApplicationsForReview();

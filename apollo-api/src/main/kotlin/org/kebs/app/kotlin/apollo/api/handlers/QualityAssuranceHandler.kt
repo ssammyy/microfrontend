@@ -5203,7 +5203,7 @@ class QualityAssuranceHandler(
                 "SM" -> {
 
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsite(
 
                                 qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumberToBeRetrieved), map
@@ -5211,7 +5211,7 @@ class QualityAssuranceHandler(
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )
@@ -5222,14 +5222,14 @@ class QualityAssuranceHandler(
                     permitListAllApplications =
 
 
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteFmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedFmark(permitNumberToBeRetrieved), map
                             )
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )
@@ -5238,14 +5238,14 @@ class QualityAssuranceHandler(
 
                 "DM" -> {
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteDmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedDmark(permitNumberToBeRetrieved), map
                             )
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )
