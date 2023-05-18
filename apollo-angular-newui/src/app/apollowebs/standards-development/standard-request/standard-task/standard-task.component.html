@@ -35,7 +35,7 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" id="rejected-fornwi"
                            (click)="tabChange('Rejected For NWI')" role="tablist">
-                            <i class="material-icons"></i>Rejected For NWI
+                            <i class="material-icons"></i>Declined
                         </a>
                     </li>
 
@@ -77,6 +77,8 @@
                                                 <th class="task">Section</th>
                                                 <th class="task">Subject</th>
                                                 <th class="task">Requester</th>
+                                                <th class="task">Request Date</th>
+
                                                 <th class="task">Actions</th>
                                                 <th class="task">Review</th>
 
@@ -89,6 +91,8 @@
                                                 <td>{{task.departmentName}}</td>
                                                 <td>{{task.subject}}</td>
                                                 <td>{{task.name}}</td>
+                                                <td>{{formatFormDate(task.standardCreationDate)}}</td>
+
 
                                                 <td>
                                                     <button (click)="onOpenModal(task,'divisions')"
@@ -270,19 +274,16 @@
                                                                 the dropdown list)</b></label>
 
                                                             <mat-form-field>
-                                                                <mat-select formControlName="tcId"
-                                                                            placeholder="Technical Committee"
-                                                                            #singleSelect>
+                                                                <mat-select formControlName="tcId" placeholder="Technical Committee" #singleSelect  (input)="filterTcs($event.target.value)">
                                                                     <mat-option>
-                                                                        <ngx-mat-select-search
-                                                                                [formControl]="technicalCommitteeFilterCtrl"
-                                                                                placeholderLabel="Search"
-                                                                                noEntriesFoundLabel="'No matching TC found'"
+                                                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"
+                                                                                               placeholderLabel="Search"
+                                                                                               noEntriesFoundLabel="'No matching TC found'"
+
                                                                         ></ngx-mat-select-search>
                                                                     </mat-option>
 
-                                                                    <mat-option *ngFor="let tc of filteredTcs | async"
-                                                                                [value]="tc.id">
+                                                                    <mat-option *ngFor="let tc of filteredTcs | async" [value]="tc.id">
                                                                         {{tc.tc_Title}}
                                                                     </mat-option>
                                                                 </mat-select>
@@ -293,7 +294,8 @@
                                                             <mat-form-field>
                                                                 <mat-select name="isTc"
                                                                             formControlName="isTc"
-                                                                            placeholder="Assign Tc Secretary">
+                                                                            placeholder="Assign Tc Secretary"
+                                                                >
                                                                     <mat-option *ngFor="let tcSec of tcSecs"
                                                                                 value="{{tcSec.id}}">{{tcSec.firstName}} {{tcSec.lastName}}
                                                                     </mat-option>
@@ -345,7 +347,7 @@
                                                                                 aria-describedby="inputGroup-sizing-sm"
                                                                                 aria-label="Small"
                                                                                 [value]="'Reject For Review'">
-                                                                            Reject
+                                                                            Decline
                                                                         </mat-radio-button>
                                                                         <mat-radio-button
                                                                                 aria-describedby="inputGroup-sizing-sm"
@@ -365,6 +367,48 @@
                                                                     <input matInput type="text"
                                                                            placeholder="Reason For Decision"
                                                                            formControlName="reason">
+                                                                </mat-form-field>
+
+                                                            </div>
+                                                            <div *ngIf="onDeclineApplication">
+                                                                <div class="col-md-6">
+                                                                    <div class="col-sm-12 checkbox-radios">
+                                                                        <mat-radio-group
+                                                                                aria-labelledby="example-radio-group-label"
+                                                                                class="example-radio-group">
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    [value]="'Approve For Review'">
+                                                                                With Mandate
+                                                                            </mat-radio-button>
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    [value]="'Reject For Review'">
+                                                                                KEBS Department
+                                                                            </mat-radio-button>
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    [value]="'On Hold'">
+                                                                                Other
+                                                                            </mat-radio-button>
+                                                                        </mat-radio-group>
+                                                                        <br>
+                                                                        <br>
+
+                                                                    </div>
+                                                                </div>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="text"
+                                                                           placeholder="Reason For Decision"
+                                                                           formControlName="reason">
+                                                                </mat-form-field>
+                                                                <mat-form-field class="example-full-width">
+                                                                    <input matInput type="url"
+                                                                           placeholder="Link If Available"
+                                                                           formControlName="link">
                                                                 </mat-form-field>
                                                             </div>
 

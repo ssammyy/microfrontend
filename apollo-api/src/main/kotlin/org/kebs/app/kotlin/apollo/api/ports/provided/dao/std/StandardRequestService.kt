@@ -178,6 +178,9 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 departmentRepository.findNameById(p.departmentId?.toLong()),
+                p.createdOn,
+
+
 
 
                 )
@@ -220,9 +223,23 @@ class StandardRequestService(
                 }
 
                 "Reject For Review" -> {
-                    standardRequestToUpdate.status = "Rejected For Review"
+                    standardRequestToUpdate.status = "Declined For Review"
                     standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
                     standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+
+                    val subject = "Request Declination"
+                    val body = buildString {
+                        append("Dear ${standardRequestToUpdate.name},\n\n")
+                        append("Your request has been declined because of ${hofFeedback.rejectionReason}.\n")
+                        if (hofFeedback.link != null) {
+                            append("Kindly click on the link and follow the instructions.\n")
+                            append("${hofFeedback.link}\n")
+                        }
+                        append("Best regards,\n\n")
+                        append("Director Standards Development and Trade")
+                    }
+
+                    notifications.sendEmail(standardRequestToUpdate.email!!, subject, body)
 
                 }
 
@@ -282,6 +299,7 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
+                p.createdOn,
                 //Feedback Segment From Review
 
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -302,7 +320,7 @@ class StandardRequestService(
 
     fun getAllRejectedStandardRequestsToPrepareNWI(): List<StandardsDto> {
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Rejected For Review")
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Declined For Review")
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -325,6 +343,8 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
+                p.createdOn,
+
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -369,6 +389,8 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
+                p.createdOn,
+
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -484,6 +506,8 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 departmentRepository.findNameById(p.departmentId?.toLong()),
+                p.createdOn,
+
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -525,6 +549,7 @@ class StandardRequestService(
 
             }
     }
+
     fun reVoteOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         voteOnNWI.userId = loggedInUser.id!!
@@ -604,7 +629,7 @@ class StandardRequestService(
         val u: StandardNWI = standardNWIRepository.findById(standardNWI.id).orElse(null)
         u.status = "NWI Deferred"
         val dateString = standardNWI.deferredDate.toString() // Date string to convert
-        println(standardNWI.deferredDate.toString() )
+        println(standardNWI.deferredDate.toString())
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss") // Date format
         val date = format.parse(dateString) // Parse the date string into a Date object
         val timestamp = Timestamp(date.time) // Create a Timestamp object using the time from the Date object
@@ -689,8 +714,9 @@ class StandardRequestService(
         return standardJustificationRepository.findByStatusOrderByIdAsc(
             "Justification Created. Awaiting Decision",
 
-        )
+            )
     }
+
     fun getAllMyJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 

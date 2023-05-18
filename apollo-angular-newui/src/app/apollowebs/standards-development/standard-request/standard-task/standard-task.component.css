@@ -23,3 +23,9 @@ table {
 .tabs-container{
     border-bottom: 1px solid #ccc;
 }
+::ng-deep .cdk-overlay-container {
+    z-index: 9999;
+}
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 99999 !important;
+}

@@ -30,6 +30,8 @@ export interface StandardRequestB {
     reason: string;
     desiredOutput: string;
     desiredResult: string;
+    createdOn: Date;
+    standardCreationDate: Date;
 
 }
 
