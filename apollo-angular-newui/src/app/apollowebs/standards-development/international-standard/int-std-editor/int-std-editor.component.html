@@ -225,7 +225,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequests?.circulationDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.circulationDate | date: "yyyy/MM/dd"}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
@@ -237,7 +237,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequests?.closingDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.closingDate | date: "yyyy/MM/dd"}}.</p>
                                                                                 </a>
 
 
@@ -348,7 +348,7 @@
 
                                                                                         </div>
 
-                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.meetingDate}}.</p>
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.meetingDate | date: "yyyy/MM/dd"}}.</p>
                                                                                     </a>
                                                                                     <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                         <div class="d-flex w-100 justify-content-between">
