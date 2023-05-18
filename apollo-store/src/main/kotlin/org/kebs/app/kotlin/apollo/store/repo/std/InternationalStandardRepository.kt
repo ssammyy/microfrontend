@@ -519,10 +519,12 @@ interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, L
 
 interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacListUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardSacListUploads
-    fun findAllById(id: Long): ComStandardSacListUploads
+    fun findAllByIdOrderByIdAsc(id: Long): ComStandardSacListUploads
+
+
 
     @Query(
-        value = "SELECT ID as id  FROM SD_STD_DRAFT_SAC_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",
+        value = "SELECT ID as id  FROM SD_STD_DRAFT_SAC_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
         nativeQuery = true
     )
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
@@ -531,10 +533,10 @@ interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacList
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
-    fun findAllByIdOrderByIdDesc(id: Long): ComStandardDraftUploads
+    fun findAllByIdOrderByIdAsc(id: Long): ComStandardDraftUploads
 
     @Query(
-        value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",
+        value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
         nativeQuery = true
     )
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>

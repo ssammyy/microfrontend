@@ -2392,6 +2392,21 @@ export interface Countries {
     number: string
 }
 
+export interface JustificationEditionEditions{
+    edition:string;
+    editionValue: string;
+}
+
+export var justificationEditions: JustificationEditionEditions[]=[
+    {edition:"first", editionValue:"first"},
+    {edition:"second", editionValue:"second"},
+    {edition:"third", editionValue:"third"},
+    {edition:"fourth", editionValue:"fourth"},
+    {edition:"fifth", editionValue:"fifth"},
+    {edition:"sixth", editionValue:"sixth"},
+    {edition:"seventh", editionValue:"seventh"}
+]
+
 export var countries: Countries [] = [
     { code: "AF", code3: "AFG", name: "Afghanistan", number: "004" },
     { code: "AL", code3: "ALB", name: "Albania", number: "008" },
