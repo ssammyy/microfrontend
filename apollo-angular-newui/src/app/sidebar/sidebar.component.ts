@@ -968,7 +968,7 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'reviewRecommendationOfSac', title: 'NSC Review', ab: 'NSC',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ', 'DI_SDT_SD_MODIFY']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ']
             },
             {
                 path: 'reviewAccepted',

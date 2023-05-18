@@ -249,7 +249,8 @@
                                         <ul class="list-group">
                                             <li class="list-group-item active">Review Details</li>
                                             <li style="background: lightgray"
-                                                class="list-group-item"><b>TC SEC Assigned:</b>{{ actionRequest?.tcSecAssigned}}</li>
+                                                class="list-group-item"><b>TC SEC
+                                                Assigned:</b>{{ actionRequest?.tcSecAssigned}}</li>
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">
@@ -477,12 +478,12 @@
                                             <label><b>Target Date</b></label>
                                             <mat-form-field class="example-full-width has-label"
                                                             [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
-                                                <input type="date"
-                                                       matInput
-                                                       id="targetDate"
-                                                       placeholder="Target Date"
-                                                       [min]="todayDate"
-                                                       formControlName="targetDate">
+
+                                                <input matInput formControlName="targetDate" [matDatepicker]="picker"
+                                                       [min]="todayDate" placeholder="Target Date"
+                                                       name="targetDate" required>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker></mat-datepicker>
                                                 <app-field-error-display
                                                         [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"
                                                         errorMsg="Please Enter Target Date">
@@ -518,25 +519,25 @@
                                         <!--                                        </div>-->
                                         <!--                                    </div>-->
 
-<!--                                        <div class="form-group col-6" style="display: none">-->
-<!--                                            <label><b>Liaison Organization/or interested parties </b></label>-->
+                                        <!--                                        <div class="form-group col-6" style="display: none">-->
+                                        <!--                                            <label><b>Liaison Organization/or interested parties </b></label>-->
 
-<!--                                            <ng-multiselect-dropdown-->
-<!--                                                    [placeholder]="'Select Liaison Organization'"-->
-<!--                                                    [settings]="dropdownSettings"-->
-<!--                                                    [data]="dropdownList"-->
-<!--                                                    (onSelect)="onItemSelect($event)"-->
-<!--                                                    (onSelectAll)="onSelectAll($event)"-->
-<!--                                                    [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required-->
-<!--                                                 && formStdRequest?.liaisonOrganisationData?.touched"-->
-<!--                                                    formControlName="liaisonOrganisationData"-->
-<!--                                                    name="liaisonOrganisationData">-->
-<!--                                            </ng-multiselect-dropdown>-->
-<!--                                            <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required-->
-<!--                                        && formStdRequest?.liaisonOrganisationData?.touched"-->
-<!--                                                  style="color: red;">Liaison Organization is required </span>-->
+                                        <!--                                            <ng-multiselect-dropdown-->
+                                        <!--                                                    [placeholder]="'Select Liaison Organization'"-->
+                                        <!--                                                    [settings]="dropdownSettings"-->
+                                        <!--                                                    [data]="dropdownList"-->
+                                        <!--                                                    (onSelect)="onItemSelect($event)"-->
+                                        <!--                                                    (onSelectAll)="onSelectAll($event)"-->
+                                        <!--                                                    [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required-->
+                                        <!--                                                 && formStdRequest?.liaisonOrganisationData?.touched"-->
+                                        <!--                                                    formControlName="liaisonOrganisationData"-->
+                                        <!--                                                    name="liaisonOrganisationData">-->
+                                        <!--                                            </ng-multiselect-dropdown>-->
+                                        <!--                                            <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required-->
+                                        <!--                                        && formStdRequest?.liaisonOrganisationData?.touched"-->
+                                        <!--                                                  style="color: red;">Liaison Organization is required </span>-->
 
-<!--                                        </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                     <div class="row">
                                         <div class="row col-12">
@@ -612,10 +613,13 @@
                                             <label><b>Date of Circulation</b></label>
                                             <mat-form-field class="example-full-width has-label"
                                                             [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
-                                                <input type="date"
-                                                       matInput id="circulationDate"
-                                                       placeholder="Circulation Date"
-                                                       formControlName="circulationDate">
+                                                <input matInput formControlName="circulationDate"
+                                                       [matDatepicker]="pickerB"
+                                                       [min]="todayDate" placeholder="Circulation Date"
+                                                       name="circulationDate" required>
+                                                <mat-datepicker-toggle matSuffix
+                                                                       [for]="pickerB"></mat-datepicker-toggle>
+                                                <mat-datepicker #pickerB></mat-datepicker>
                                                 <app-field-error-display
                                                         [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')"
                                                         errorMsg="Please Enter Circulation Date"></app-field-error-display>
@@ -625,11 +629,12 @@
                                             <label><b>Closing Date</b></label>
                                             <mat-form-field class="example-full-width has-label"
                                                             [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
-                                                <input type="date"
-                                                       readonly
-                                                       matInput id="closingDate"
-                                                       placeholder="Closing Date"
-                                                       formControlName="closingDate">
+                                                <input matInput formControlName="closingDate" [matDatepicker]="pickerC"
+                                                       [min]="todayDate" placeholder="Closing Date"
+                                                       name="closingDate" required>
+                                                <mat-datepicker-toggle matSuffix
+                                                                       [for]="pickerC"></mat-datepicker-toggle>
+                                                <mat-datepicker #pickerC></mat-datepicker>
                                                 <app-field-error-display
                                                         [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')"
                                                         errorMsg="Please Enter Closing Date"></app-field-error-display>

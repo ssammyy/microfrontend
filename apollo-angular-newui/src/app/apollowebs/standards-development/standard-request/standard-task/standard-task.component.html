@@ -272,38 +272,27 @@
                                                         <div class="col-sm-6 checkbox-radios">
                                                             <label><b>Technical Committee (TC) Name : (Select one from
                                                                 the dropdown list)</b></label>
+                                                            <div class="default">
 
-                                                            <mat-form-field>
-                                                                <mat-select formControlName="tcId" placeholder="Technical Committee" #singleSelect  (input)="filterTcs($event.target.value)">
-                                                                    <mat-option>
-                                                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"
-                                                                                               placeholderLabel="Search"
-                                                                                               noEntriesFoundLabel="'No matching TC found'"
-
-                                                                        ></ngx-mat-select-search>
-                                                                    </mat-option>
-
-                                                                    <mat-option *ngFor="let tc of filteredTcs | async" [value]="tc.id">
-                                                                        {{tc.tc_Title}}
-                                                                    </mat-option>
-                                                                </mat-select>
-                                                            </mat-form-field>
+                                                            <ng-select [(ngModel)]="filteredTc" formControlName="tcId"
+                                                                       class="custom-ng-select" name="tcId">
+                                                                <ng-option *ngFor="let tc of tcs"
+                                                                           [value]="tc.id">{{tc.tc_Title}} </ng-option>
+                                                            </ng-select>
+                                                            </div>
                                                         </div>
                                                         <div class="col-sm-6 checkbox-radios">
                                                             <label><b>Tc Sec Assignment</b></label>
-                                                            <mat-form-field>
-                                                                <mat-select name="isTc"
-                                                                            formControlName="isTc"
-                                                                            placeholder="Assign Tc Secretary"
-                                                                >
-                                                                    <mat-option *ngFor="let tcSec of tcSecs"
-                                                                                value="{{tcSec.id}}">{{tcSec.firstName}} {{tcSec.lastName}}
-                                                                    </mat-option>
-                                                                </mat-select>
-                                                            </mat-form-field>
+
+                                                            <ng-select [(ngModel)]="filteredTcSec" formControlName="isTc"
+                                                                       class="custom-ng-select"  name="isTc">
+                                                                <ng-option *ngFor="let tcSec of tcSecs"
+                                                                           [value]="tcSec.id">{{tcSec.firstName}}  {{tcSec.lastName}} </ng-option>
+                                                            </ng-select>
                                                         </div>
 
                                                     </div>
+                                                    <br><br><br>
                                                     <div class="row">
                                                         <div class="col-sm-6 checkbox-radios">
                                                             <h5><b>Desired Output</b></h5>

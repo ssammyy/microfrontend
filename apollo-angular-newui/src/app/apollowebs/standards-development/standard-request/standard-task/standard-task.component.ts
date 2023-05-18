@@ -1,4 +1,13 @@
-import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    ViewEncapsulation
+} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {
     DataHolder,
@@ -8,7 +17,7 @@ import {
     TaskData
 } from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ReplaySubject, Subject} from "rxjs";
+import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -20,12 +29,12 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
-import {takeUntil} from "rxjs/operators";
 
 @Component({
     selector: 'app-standard-task',
     templateUrl: './standard-task.component.html',
-    styleUrls: ['./standard-task.component.css']
+    styleUrls: ['./standard-task.component.css'],
+
 })
 export class StandardTaskComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
@@ -34,7 +43,8 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
 
     dtTrigger4: Subject<any> = new Subject<any>();
-
+    filteredTc: number;
+    filteredTcSec: number;
 
     onApproveApplication: boolean = false;
     onDeclineApplication: boolean = false;
@@ -91,13 +101,14 @@ export class StandardTaskComponent implements OnInit {
     public taskData: TaskData | undefined;
 
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
-    public websiteFilterCtrl: FormControl = new FormControl();
-    public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
-    protected _onDestroy = new Subject();
+
+
+    filteredTcs: any[] = [];
 
     public tcs: DataHolder[] = [];
 
-
+    countries: DataHolder[] = this.tcs;
+    filteredCountries: Record<string, string>[] = [];
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
@@ -123,6 +134,8 @@ export class StandardTaskComponent implements OnInit {
         this.getHOFTasks();
         this.getOnHoldTasks();
         this.getTechnicalCommittee();
+        this.getTcSecs()
+
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -143,12 +156,7 @@ export class StandardTaskComponent implements OnInit {
 
 
         });
-        this.filteredTcs.next(this.tcs.slice());
-        this.websiteFilterCtrl.valueChanges
-            .pipe(takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.filteredTc();
-            });
+
     }
 
     id: any = 'Pending Review';
@@ -168,7 +176,7 @@ export class StandardTaskComponent implements OnInit {
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
     @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
-    @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
+    @ViewChild('searchInput', {static: false}) searchInput: ElementRef;
 
 
     public hideModel() {
@@ -331,13 +339,11 @@ export class StandardTaskComponent implements OnInit {
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        event.stopPropagation();
 
         if (mode === 'edit') {
             this.actionRequest = task;
             button.setAttribute('data-target', '#updateRequestModal');
             this.getAllDocs(String(this.actionRequest.id))
-            this.getTcSecs()
             this.selectedStandard = this.actionRequest.id
 
 
@@ -355,7 +361,6 @@ export class StandardTaskComponent implements OnInit {
             this.actionRequest = task;
             button.setAttribute('data-target', '#viewRequestModal');
             this.getAllDocs(String(this.actionRequest.id))
-            this.getTcSecs()
             this.selectedStandard = this.actionRequest.id
 
 
@@ -489,34 +494,17 @@ export class StandardTaskComponent implements OnInit {
         });
     }
 
-    public getTechnicalCommittee(): void {
+    getTechnicalCommittee(): void {
         this.standardDevelopmentService.getAllTcsForApplication().subscribe(
             (response: DataHolder[]) => {
-                this.tcs = response;
-                this.filteredTcs.next(this.tcs);
-
+                this.tcs = response
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
             }
-        )
+        );
     }
 
-    protected filteredTc = () => {
-        if (!this.tcs) {
-            return;
-        }
-        let search = this.websiteFilterCtrl.value;
-        if (!search) {
-            this.filteredTcs.next(this.tcs.slice());
-            return;
-        } else {
-            search = search.toLowerCase();
-        }
-        this.filteredTcs.next(
-            this.tcs.filter(tc => tc.tc_Title.toLowerCase().indexOf(search) > -1)
-        );
-    };
 
 
 
