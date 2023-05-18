@@ -46,6 +46,14 @@ class HOFFeedback {
     @Column(name = "REASON")
     @Basic
     var reason: String? = null
+    @Column(name = "REJECTION_REASON")
+    @Basic
+    var rejectionReason: String? = null
+
+    @Column(name = "LINK")
+    @Basic
+    var link: String? = null
+
 
     @Column(name = "CREATED_ON")
     @Basic

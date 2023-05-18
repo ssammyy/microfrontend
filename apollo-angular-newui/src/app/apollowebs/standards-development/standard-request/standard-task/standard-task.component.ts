@@ -20,6 +20,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
     selector: 'app-standard-task',
@@ -36,6 +37,8 @@ export class StandardTaskComponent implements OnInit {
 
 
     onApproveApplication: boolean = false;
+    onDeclineApplication: boolean = false;
+
     tcSecAvailabilty: boolean = false;
 
     // data source for the radio buttons:
@@ -88,8 +91,9 @@ export class StandardTaskComponent implements OnInit {
     public taskData: TaskData | undefined;
 
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
-    public technicalCommitteeFilterCtrl: FormControl = new FormControl();
+    public websiteFilterCtrl: FormControl = new FormControl();
     public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
+    protected _onDestroy = new Subject();
 
     public tcs: DataHolder[] = [];
 
@@ -133,10 +137,18 @@ export class StandardTaskComponent implements OnInit {
             sdRequestID: ['', Validators.required],
             sdResult: ['', Validators.required],
             reason: [''],
+            rejectionReason: [''],
+            link: [''],
             tcId: [''],
 
 
         });
+        this.filteredTcs.next(this.tcs.slice());
+        this.websiteFilterCtrl.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.filteredTc();
+            });
     }
 
     id: any = 'Pending Review';
@@ -147,6 +159,7 @@ export class StandardTaskComponent implements OnInit {
             this.reloadCurrentRoute()
         }
     }
+
     ngAfterViewInit(): void {
         this.sdOutput = this.selectSeason;
         this.sdResult = this.selectDesiredResult;
@@ -155,6 +168,8 @@ export class StandardTaskComponent implements OnInit {
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
     @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+    @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
+
 
     public hideModel() {
         this.closeModal?.nativeElement.click();
@@ -218,77 +233,67 @@ export class StandardTaskComponent implements OnInit {
 
     public onReviewTask(): void {
         this.SpinnerService.show();
-        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review' || this.stdHOFReview.controls['sdResult'].value == 'On Hold') {
-            if (this.stdHOFReview.controls['reason'].value != '') {
-                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                    (response) => {
-                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                        this.SpinnerService.hide();
-                        this.getOnHoldTasks();
-                        this.getHOFTasks();
 
-                        this.stdHOFReview.reset();
-                        this.hideModel()
-                    },
-                    (error: HttpErrorResponse) => {
-                        alert(error.message);
-                        this.SpinnerService.hide();
-
-                    }
-                )
-            } else {
-                this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
-                this.SpinnerService.hide();
-
-
-            }
-        } else {
-            if (this.stdHOFReview.valid) {
-                //check if tc sec availability has been selected
-                if (this.stdHOFReview.controls['isTcSec'].value != '') {
-                    if (this.stdHOFReview.controls['isTcSec'].value == '1') {
-                        if (this.stdHOFReview.controls['tcId'].value != '') {
-                            if (this.stdHOFReview.controls['isTc'].value != '') {
-                                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                                    (response) => {
-                                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                                        this.SpinnerService.hide();
-                                        this.getOnHoldTasks();
-                                        this.getHOFTasks();
-                                        this.stdHOFReview.reset();
-                                        this.hideModel()
-                                    },
-                                    (error: HttpErrorResponse) => {
-                                        alert(error.message);
-                                        this.SpinnerService.hide();
-
-                                    }
-                                )
-                            } else {
-                                this.showToasterError("Error", `Please Select A Technical Committee Secretary`);
-                                this.SpinnerService.hide();
-
-                            }
-                        } else {
-                            this.showToasterError("Error", `Please Select A Technical Committee`);
-                            this.SpinnerService.hide();
-
-                        }
-                    }
-                } else {
-                    this.showToasterError("Error", `Please Select Whether A TC SEC Is Available Or Not.`);
-                    this.SpinnerService.hide();
-
-                }
-
-            } else {
-                this.showToasterError("Error", `Please Fill In The Necessary  Fields.`);
-                this.SpinnerService.hide();
-
-
-            }
+        if (this.stdHOFReview.controls['sdResult'].value == 'On Hold' && this.stdHOFReview.controls['reason'].value == '') {
+            this.showToasterError("Error", `Please Enter A Reason For Putting On Hold.`);
+            this.SpinnerService.hide();
+            return;
         }
 
+        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review') {
+            if (this.stdHOFReview.controls['rejectionReason'].value == '') {
+                this.showToasterError("Error", `Please Select An Option For Rejection.`);
+            } else if (this.stdHOFReview.controls['reason'].value == '') {
+                this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
+            } else {
+                this.submitTask();
+            }
+            this.SpinnerService.hide();
+            return;
+        }
+
+        if (!this.stdHOFReview.valid) {
+            this.showToasterError("Error", `Please Fill In The Necessary  Fields.`);
+            this.SpinnerService.hide();
+            return;
+        }
+
+        if (this.stdHOFReview.controls['isTcSec'].value == '') {
+            this.showToasterError("Error", `Please Select Whether A TC SEC Is Available Or Not.`);
+            this.SpinnerService.hide();
+            return;
+        }
+
+        if (this.stdHOFReview.controls['isTcSec'].value == '1' && this.stdHOFReview.controls['tcId'].value == '') {
+            this.showToasterError("Error", `Please Select A Technical Committee`);
+            this.SpinnerService.hide();
+            return;
+        }
+
+        if (this.stdHOFReview.controls['isTcSec'].value == '1' && this.stdHOFReview.controls['isTc'].value == '') {
+            this.showToasterError("Error", `Please Select A Technical Committee Secretary`);
+            this.SpinnerService.hide();
+            return;
+        }
+
+        this.submitTask();
+    }
+
+    private submitTask(): void {
+        this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
+            (response) => {
+                this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
+                this.SpinnerService.hide();
+                this.getOnHoldTasks();
+                this.getHOFTasks();
+                this.stdHOFReview.reset();
+                this.hideModel();
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.SpinnerService.hide();
+            }
+        );
     }
 
     public updateDepartment(): void {
@@ -326,6 +331,8 @@ export class StandardTaskComponent implements OnInit {
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
+        event.stopPropagation();
+
         if (mode === 'edit') {
             this.actionRequest = task;
             button.setAttribute('data-target', '#updateRequestModal');
@@ -454,13 +461,22 @@ export class StandardTaskComponent implements OnInit {
     }
 
     onRadiobuttonchange($event: MatRadioChange) {
-        if ($event.value === 'Reject For Review' || $event.value === 'On Hold') {
+        if ($event.value === 'Reject For Review') {
+            this.onDeclineApplication = true;
+            this.onApproveApplication = false;
+
+        } else if ($event.value === 'On Hold') {
             this.onApproveApplication = true;
+            this.onDeclineApplication = false;
+
         } else {
             this.onApproveApplication = false;
+            this.onDeclineApplication = false;
+
         }
 
     }
+
     onTcSecAvailability($event: MatRadioChange) {
         this.tcSecAvailabilty = $event.value === '1';
 
@@ -485,6 +501,23 @@ export class StandardTaskComponent implements OnInit {
             }
         )
     }
+
+    protected filteredTc = () => {
+        if (!this.tcs) {
+            return;
+        }
+        let search = this.websiteFilterCtrl.value;
+        if (!search) {
+            this.filteredTcs.next(this.tcs.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+        this.filteredTcs.next(
+            this.tcs.filter(tc => tc.tc_Title.toLowerCase().indexOf(search) > -1)
+        );
+    };
+
 
 
 }
