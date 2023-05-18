@@ -787,12 +787,12 @@ class RegistrationDaoServices(
         s: ServiceMapsEntity,
         u: UsersEntity
     ): CompanyProfileEntity{
-        var sm = StdLevyEntryNoDataMigrationEntity()
+        val sm = StdLevyEntryNoDataMigrationEntity()
         var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
-        var kraPin= cp.kraPin
+        val kraPin= cp.kraPin
         var entry=""
         var thisEntry=""
-        var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
+        val entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
         if (entryNumbers==null){
             //var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
@@ -806,11 +806,11 @@ class RegistrationDaoServices(
             sm.entryNumber=entry
 
 
-            var insertId=stdLevyEntryNoDataMigrationEntityRepository.save(sm)
+            val insertId=stdLevyEntryNoDataMigrationEntityRepository.save(sm)
 
 
             val genNumber= String.format("%06d", insertId.id)
-            var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+            val prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
 
             // this will convert any number sequence into 6 character.
             entry= "${prefixText}${genNumber}"
@@ -831,9 +831,6 @@ class RegistrationDaoServices(
 
 
         return cp
-
-
-
 
     }
 
