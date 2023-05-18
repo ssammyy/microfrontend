@@ -795,31 +795,30 @@ class RegistrationDaoServices(
         var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
         if (entryNumbers==null){
-            var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
-
-            allRequests = allRequests.plus(1)
-            val genNumber= String.format("%06d", allRequests)
-            var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
-
-            // this will convert any number sequence into 6 character.
-            entry= "${prefixText}${genNumber}"
+            //var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
+            //allRequests = allRequests.plus(1)
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
-            sm.entryCount=allRequests
-            sm.entryNumbers=allRequests
+            //sm.entryCount=allRequests
+            //sm.entryNumbers=allRequests
             sm.entryNumber=entry
 
 
-            stdLevyEntryNoDataMigrationEntityRepository.save(sm)
+            var insertId=stdLevyEntryNoDataMigrationEntityRepository.save(sm)
+
+
+            val genNumber= String.format("%06d", insertId.id)
+            var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+            // this will convert any number sequence into 6 character.
+            entry= "${prefixText}${genNumber}"
+
         }
         else{
             entry= entryNumbers.toString()
         }
-       // val varLong: Long = entry.toLong()
-
-      //  entryNumbers = (entryNumbers ?: varLong)
 
 
         with(cp) {
