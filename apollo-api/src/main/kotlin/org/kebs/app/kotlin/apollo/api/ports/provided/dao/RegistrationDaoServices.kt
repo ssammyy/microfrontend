@@ -792,20 +792,15 @@ class RegistrationDaoServices(
         val kraPin= cp.kraPin
         var entry=""
         var thisEntry=""
-        val entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
+        val checkEntryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
-        if (entryNumbers==null){
+        if (checkEntryNumbers==null){
             //var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
             //allRequests = allRequests.plus(1)
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
-            //sm.entryCount=allRequests
-            //sm.entryNumbers=allRequests
-            sm.entryNumber=entry
-
-
             val insertId=stdLevyEntryNoDataMigrationEntityRepository.save(sm)
 
 
@@ -815,9 +810,19 @@ class RegistrationDaoServices(
             // this will convert any number sequence into 6 character.
             entry= "${prefixText}${genNumber}"
 
+            stdLevyEntryNoDataMigrationEntityRepository.findByIdOrNull(insertId.id)?.let { slEntry ->
+
+                with(slEntry) {
+                    entryCount=insertId.id
+                    entryNumbers=insertId.id
+                    entryNumber=entry
+                }
+                stdLevyEntryNoDataMigrationEntityRepository.save(slEntry)
+            } ?: throw Exception("Record Was Not Found")
+
         }
         else{
-            entry= entryNumbers.toString()
+            entry= checkEntryNumbers.toString()
         }
 
 
