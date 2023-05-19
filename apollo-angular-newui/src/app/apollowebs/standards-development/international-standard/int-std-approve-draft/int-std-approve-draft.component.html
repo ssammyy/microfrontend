@@ -85,11 +85,11 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let coverDTO of coverDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Cover page - {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{coverDTO.createdBy}}</b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewCoverPages( coverDTO.id,'draft'+coverDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm " style="width: 280px">
+                                                                                                    (click)="viewCoverPages( coverDTO.id,coverDTO.name, coverDTO.fileType)" target="" class="btn btn-info btn-sm " style="width: 280px">
                                                                                                 <i class="fa fa-download"></i> Download Cover Page</button>
                                                                                         </div>
 
@@ -101,11 +101,11 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{documentDTO.createdBy}} </b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
+                                                                                                    (click)="viewDraftFile( documentDTO.id,documentDTO.name, documentDTO.fileType)" target="" class="btn btn-info btn-sm ">
                                                                                                 <i class="fa fa-download"></i> Download Standard Draft</button>
 
 
@@ -143,7 +143,7 @@
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <form #demoForm="ngForm">
-                                                                                            <file-upload [(ngModel)]="uploadedFile" name="uploadedFiles"  fileslimit="1" accept=".docx" ></file-upload>
+                                                                                            <file-upload [(ngModel)]="uploadedFile" name="uploadedFiles"  fileslimit="1" accept=".docx,.pdf" ></file-upload>
                                                                                             <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
                                                                                         </form>
                                                                                     </div>
@@ -433,11 +433,11 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let coverDTO of coverDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Cover page - {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{coverDTO.createdBy}}</b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewCoverPages( coverDTO.id,'draft'+coverDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm " style="width: 280px">
+                                                                                                    (click)="viewCoverPages( coverDTO.id,coverDTO.name, coverDTO.fileType)" target="" class="btn btn-info btn-sm " style="width: 280px">
                                                                                                 <i class="fa fa-download"></i> Download Cover Page</button>
                                                                                         </div>
 
@@ -449,12 +449,14 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{documentDTO.createdBy}} </b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
+                                                                                                    (click)="viewDraftFile( documentDTO.id,documentDTO.name, documentDTO.fileType)" target="" class="btn btn-info btn-sm ">
                                                                                                 <i class="fa fa-download"></i> Download Standard Draft</button>
+
+
                                                                                         </div>
 
 
@@ -746,11 +748,11 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let coverDTO of coverDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Cover page - {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{coverDTO.createdBy}}</b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewCoverPages( coverDTO.id,'draft'+coverDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm " style="width: 280px">
+                                                                                                    (click)="viewCoverPages( coverDTO.id,coverDTO.name, coverDTO.fileType)" target="" class="btn btn-info btn-sm " style="width: 280px">
                                                                                                 <i class="fa fa-download"></i> Download Cover Page</button>
                                                                                         </div>
 
@@ -762,12 +764,14 @@
                                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                             <div>
                                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{documentDTO.createdBy}} </b></h5>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                    (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
+                                                                                                    (click)="viewDraftFile( documentDTO.id,documentDTO.name, documentDTO.fileType)" target="" class="btn btn-info btn-sm ">
                                                                                                 <i class="fa fa-download"></i> Download Standard Draft</button>
+
+
                                                                                         </div>
 
 

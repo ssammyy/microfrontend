@@ -159,25 +159,6 @@
                                                                 <div class="tab-pane fade show active" id="nav-jProposal" role="tabpanel" aria-labelledby="nav-jProposal-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
-                                                                            <div class="form-group col-12">
-                                                                                <label><b>International Standard Draft</b></label>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center" >
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>International Standard Drafts Version- {{d+1}} </b></h5>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
-                                                                                            <i class="fa fa-download"></i> Download Standard Draft</button>
-
-
-                                                                                    </div>
-
-
-                                                                                </a>
-                                                                            </div>
                                                                             <div class="list-group list-group-flush">
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
@@ -553,11 +534,11 @@
                                                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                                         <div>
                                                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>International Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Uploaded by- {{documentDTO.createdBy}} </b></h5>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                         <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                                (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                                                                (click)="viewDraftFile( documentDTO.id,documentDTO.name, documentDTO.fileType)" target="" class="btn btn-info btn-sm ">
                                                                                                             <i class="fa fa-download"></i> Download Standard Draft</button>
 
 
@@ -623,7 +604,7 @@
                                                                                                 <div class="form-group col-12">
                                                                                                     <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                                     <form #demoForm="ngForm">
-                                                                                                        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="1" accept=".docx" ></file-upload>
+                                                                                                        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="1" accept=".docx,.pdf" ></file-upload>
                                                                                                         <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
                                                                                                     </form>
                                                                                                 </div>
@@ -632,7 +613,7 @@
                                                                                                 <div class="form-group col-12">
                                                                                                     <label><b>Attach Cover Pages</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                                     <form #demoForm="ngForm">
-                                                                                                        <file-upload [(ngModel)]="uploadedCoverPages" name="uploadedCoverPages"   accept=".docx" ></file-upload>
+                                                                                                        <file-upload [(ngModel)]="uploadedCoverPages" name="uploadedCoverPages" fileslimit="2"   accept=".docx,.pdf" ></file-upload>
                                                                                                         <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
                                                                                                     </form>
                                                                                                 </div>

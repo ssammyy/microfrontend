@@ -524,7 +524,7 @@ interface ComStandardSacListUploadsRepository : JpaRepository<ComStandardSacList
 
 
     @Query(
-        value = "SELECT ID as id  FROM SD_STD_DRAFT_SAC_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
+        value = "SELECT ID as id,NAME as name,FILE_TYPE as fileType,CREATED_BY as createdBy  FROM SD_STD_DRAFT_SAC_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
         nativeQuery = true
     )
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
@@ -536,7 +536,7 @@ interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUplo
     fun findAllByIdOrderByIdAsc(id: Long): ComStandardDraftUploads
 
     @Query(
-        value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
+        value = "SELECT ID as id,NAME as name,FILE_TYPE as fileType,CREATED_BY as createdBy  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ORDER BY ID ASC",
         nativeQuery = true
     )
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>

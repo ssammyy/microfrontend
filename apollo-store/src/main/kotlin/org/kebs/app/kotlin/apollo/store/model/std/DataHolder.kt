@@ -94,6 +94,9 @@ interface RegionHolder{
 
 interface SiteVisitListHolder {
     fun getId(): Long?
+    fun getName(): String?
+    fun getFileType(): String?
+    fun getCreatedBy(): String?
 }
 
 
