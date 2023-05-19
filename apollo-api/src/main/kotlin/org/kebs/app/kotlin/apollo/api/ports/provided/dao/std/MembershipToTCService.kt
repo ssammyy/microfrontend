@@ -486,7 +486,7 @@ class MembershipToTCService(
         val link =
             "${applicationMapProperties.baseUrlQRValue}getInduction?applicationID=${encryptedId}"
         val messageBody =
-            " Hello ${u.nomineeName} \n Welcome To KEBS QAIMSS. \n Your Login Credentials are as follows:TBD " +
+            " Hello ${u.nomineeName} \n Welcome To KEBS KIMS. \n Your Login Credentials are as follows:TBD " +
                     "${u.technicalCommittee}. Please click on the following link to confirm induction \n " +
                     link +
                     "\n\n\n\n\n\n"

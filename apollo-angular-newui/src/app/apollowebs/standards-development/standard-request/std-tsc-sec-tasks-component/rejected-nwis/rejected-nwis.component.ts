@@ -1,466 +1,323 @@
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm} from "@angular/forms";
 import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-  ViewEncapsulation
-} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
-import {
-  Document,
-  LiaisonOrganization,
-  NwiItem,
-  NWIsForVoting,
-  StandardRequestB,
-  Stdtsectask
+    Document,
+    NwiItem,
+    NWIsForVoting,
+    StandardRequestB,
+    Stdtsectask
 } from "src/app/core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "src/app/core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {IDropdownSettings} from 'ng-multiselect-dropdown';
-import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NgxSpinnerService} from "ngx-spinner";
 
-// import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import { NotificationService } from 'src/app/core/store/data/std/notification.service';
-import {ErrorStateMatcher} from "@angular/material/core";
-import swal from "sweetalert2";
-import Swal from "sweetalert2";
+import {NotificationService} from 'src/app/core/store/data/std/notification.service';
 import {formatDate} from "@angular/common";
-import {VoteNwiRetrieved, VotesNwiTally} from "src/app/core/store/data/std/commitee-model";
 import {CommitteeService} from "src/app/core/store/data/std/committee.service";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
 import {StandardsDto} from "src/app/core/store/data/master/master.model";
-import {QaService} from "src/app/core/store/data/qa/qa.service";
 import {MsService} from "src/app/core/store/data/ms/ms.service";
+import {VoteNwiRetrieved} from "../../../../../core/store/data/std/commitee-model";
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 
 
 @Component({
-  selector: 'app-rejected-nwis',
-  templateUrl: './rejected-nwis.component.html',
-  styleUrls: ['./rejected-nwis.component.css']
+    selector: 'app-rejected-nwis',
+    templateUrl: './rejected-nwis.component.html',
+    styleUrls: ['./rejected-nwis.component.css']
 })
 export class RejectedNwisComponent implements OnInit {
 
- 
-  dtOptions: DataTables.Settings = {};
-  @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
-  dtTrigger1: Subject<any> = new Subject<any>();
-  dtTrigger2: Subject<any> = new Subject<any>();
-  dtTrigger3: Subject<any> = new Subject<any>();
-  dtTrigger4: Subject<any> = new Subject<any>();
-  dtTrigger5: Subject<any> = new Subject<any>();
-  dtTrigger6: Subject<any> = new Subject<any>();
-  p = 1;
-  p2 = 1;
-
-  docs !: Document[];
-  blob: Blob;
-
-  public actionRequest: NWIsForVoting | undefined;
-
-  dateFormat = "yyyy-MM-dd";
-  language = "en";
 
-  public itemId: string = "";
-  public filePurposeAnnex: string = "FilePurposeAnnex";
-  public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
-  public tscsecRequest !: Stdtsectask | undefined;
-  public nwiItem!: NwiItem[];
-
-  rejectedNwiS: NwiItem[] = [];
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
+    dtTrigger5: Subject<any> = new Subject<any>();
+    dtTrigger6: Subject<any> = new Subject<any>();
+    p = 1;
+    p2 = 1;
 
-  loadedStandards: StandardsDto[] = [];
-  loading = false;
-  loadingText: string;
+    docs !: Document[];
+    blob: Blob;
+    tasks: StandardRequestB[] = [];
 
-  displayedColumns: string[] = ['proposalTitle', 'scope', 'nameOfProposer', 'referenceNumber', 'actions'];
-  dataSource!: MatTableDataSource<NwiItem>;
-  dataSourceB!: MatTableDataSource<NwiItem>;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+    public actionRequest: NWIsForVoting | undefined;
 
-  @Input() errorMsg: string;
-  @Input() displayError: boolean;
-  stdNwiFormGroup: FormGroup;
-  // public uploadedFiles: Array<File> = [];
-  // public uploadedFilesB: Array<File> = [];
-  public uploadedFilesC: Array<File> = [];
-  validTextType: boolean = false;
-  validNumberType: boolean = false;
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
+
+    public itemId: string = "";
+
+    public tscsecRequest !: Stdtsectask | undefined;
+    public nwiItem!: NwiItem[];
 
-  public nwiRequest !: StandardRequestB | undefined;
+    rejectedNwiS: NwiItem[] = [];
 
-  //public stdTSecFormGroup!: FormGroup;
+    loadedStandards: StandardsDto[] = [];
+    loading = false;
+    loadingText: string;
 
+
+    @Input() errorMsg: string;
+    @Input() displayError: boolean;
+    stdNwiFormGroup: FormGroup;
+
+    public uploadedFilesC: Array<File> = [];
+    validTextType: boolean = false;
+    validNumberType: boolean = false;
+
+    public nwiRequest !: StandardRequestB | undefined;
+    dropdownList: any[] = [];
+    voteRetrieved !: VoteNwiRetrieved[];
+
+
+    public dropdownSettings: IDropdownSettings = {};
+
+    constructor(
+        private formBuilder: FormBuilder,
+        private standardDevelopmentService: StandardDevelopmentService,
+        private SpinnerService: NgxSpinnerService,
+        private notifyService: NotificationService,
+        private committeeService: CommitteeService,
+        private msService: MsService,
+    ) {
+    }
+
+
+
+    ngOnInit(): void {
+        this.getRejectedNwis();
+
+        this.dropdownSettings = {
+            singleSelection: false,
+            idField: 'id',
+            textField: 'name',
+            selectAllText: 'Select All',
+            unSelectAllText: 'UnSelect All',
+            itemsShowLimit: 3,
+            allowSearchFilter: true
+        };
+
+    }
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
+
+    showToasterSuccess(title: string, message: string) {
+        this.notifyService.showSuccess(message, title)
+
+    }
+
+
+
+    public onOpenModal(secTask: StandardRequestB, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        if (mode === 'edit') {
+            this.stdNwiFormGroup.reset()
+            // this.uploadedFiles = [];
+            // this.uploadedFilesB = [];
+            this.uploadedFilesC = [];
+            console.log(secTask.id)
+            this.itemId = String(secTask.id);
+            this.nwiRequest = secTask
+            button.setAttribute('data-target', '#updateNWIModal');
+        }
 
 
-  dropdownList: any[] = [];
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
 
+    }
+
+    public onOpenModalViewNwi(nwiId: string, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+
+        if (mode === 'edit') {
+            this.getSpecificNwi(String(nwiId))
+            this.getAllDocs(String(nwiId))
+            button.setAttribute('data-target', '#viewNwi');
+        }
+
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+    public onOpenModalViewRequest(nwiId: string, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        this.getSpecificStandardRequest(String(nwiId))
+        this.getAllRequestDocs(String(nwiId))
+        button.setAttribute('data-target', '#viewRequestModal');
+
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+    public onOpenModalViewVotes(nwiId: string, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        this.getAllVotes(Number(nwiId))
+        button.setAttribute('data-target', '#viewVotes');
+
+
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+
+            this.dtTrigger5.next();
+            this.dtTrigger1.next();
+            this.dtTrigger3.next();
+
+
+        });
+
+    }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger5.unsubscribe();
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger3.unsubscribe();
+
+
+    }
+
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
+    }
+
+    public getAllDocs(nwiId: string): void {
+        this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getSpecificNwi(nwiId: string): void {
+        this.standardDevelopmentService.getNwiById(nwiId).subscribe(
+            (response: NwiItem[]) => {
+                this.nwiItem = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    public getRejectedNwis(): void {
+        this.standardDevelopmentService.getRejectedNwiS().subscribe(
+            (response: NwiItem[]) => {
+                console.log(response);
+                this.rejectedNwiS = response;
+                this.rerender()
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.committeeService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
+
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+
+    public getSpecificStandardRequest(standardRequestId: string): void {
+        this.standardDevelopmentService.getRequestById(standardRequestId).subscribe(
+            (response: StandardRequestB[]) => {
+                this.tasks = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    public getAllRequestDocs(standardId: string): void {
+        this.standardDevelopmentService.getAdditionalDocuments(standardId).subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+
+                },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    private getAllVotes(nwiId: number) {
+        this.standardDevelopmentService.getAllVotesOnNwi(nwiId).subscribe(
+            (response: VoteNwiRetrieved[]) => {
+
+                this.voteRetrieved = response;
+                this.rerender()
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
 
-  public dropdownSettings: IDropdownSettings = {};
-
-  constructor(
-      private formBuilder: FormBuilder,
-      private standardDevelopmentService: StandardDevelopmentService,
-      private SpinnerService: NgxSpinnerService,
-      private notifyService: NotificationService,
-      private committeeService: CommitteeService,
-      private msService: MsService,
-
-  ) {
-  }
-
-  isFieldValid(form: FormGroup, field: string) {
-      return !form.get(field).valid && form.get(field).touched;
-  }
-
-  displayFieldCss(form: FormGroup, field: string) {
-      return {
-          'has-error': this.isFieldValid(form, field),
-          'has-feedback': this.isFieldValid(form, field)
-      };
-  }
-
-
-  validateAllFormFields(formGroup: FormGroup) {
-      Object.keys(formGroup.controls).forEach(field => {
-          const control = formGroup.get(field);
-          if (control instanceof FormControl) {
-              control.markAsTouched({onlySelf: true});
-          } else if (control instanceof FormGroup) {
-              this.validateAllFormFields(control);
-          }
-      });
-  }
-
-  ngOnInit(): void {
-      this.getRejectedNwis();
-      this.loadAllStandards();
-
-      this.dropdownSettings = {
-          singleSelection: false,
-          idField: 'id',
-          textField: 'name',
-          selectAllText: 'Select All',
-          unSelectAllText: 'UnSelect All',
-          itemsShowLimit: 3,
-          allowSearchFilter: true
-      };
-
-  }
-
-
-
-  get formStdRequest(): any {
-      return this.stdNwiFormGroup.controls;
-  }
-
-
-  onItemSelect(item: ListItem) {
-      console.log(item);
-  }
-
-  onSelectAll(items: any) {
-      console.log(items);
-  }
-
-  // get formStdTSec(): any {
-  //return this.stdTSecFormGroup.controls;
-  // }
-
-  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
-
-  public hideModel() {
-      this.closeModal?.nativeElement.click();
-  }
-
-  showToasterSuccess(title: string, message: string) {
-      this.notifyService.showSuccess(message, title)
-
-  }
-
-
-  public onUpload(secTask: Stdtsectask): void {
-      this.SpinnerService.show();
-
-      if (secTask.liaisonOrganisationData != null) {
-          //console.log(JSON.stringify(secTask.liaisonOrganisationData.name));
-          secTask.liaisonOrganisation = JSON.stringify(secTask.liaisonOrganisationData);
-      }
-
-      this.standardDevelopmentService.uploadNWI(secTask).subscribe(
-          (response) => {
-              console.log(response.body.savedRowID);
-              this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
-
-              // if (this.uploadedFiles.length > 0) {
-              //     this.uploadDocuments(response.body.savedRowID, "Annex Documents")
-              // }
-              // if (this.uploadedFilesB.length > 0) {
-              //     this.uploadDocuments(response.body.savedRowID
-              //         , "Relevant Documents")
-              // }
-              if (this.uploadedFilesC.length > 0) {
-                  this.uploadDocuments(response.body.savedRowID, "Reference Documents")
-              } else {
-                  this.hideModel();
-                  this.SpinnerService.hide();
-                  this.getRejectedNwis()
-
-
-              }
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-              this.SpinnerService.hide();
-
-          }
-      )
-  }
-
-  public onOpenModal(secTask: StandardRequestB, mode: string): void {
-
-
-      const container = document.getElementById('main-container');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.style.display = 'none';
-      button.setAttribute('data-toggle', 'modal');
-      if (mode === 'edit') {
-          this.stdNwiFormGroup.reset()
-          // this.uploadedFiles = [];
-          // this.uploadedFilesB = [];
-          this.uploadedFilesC = [];
-          console.log(secTask.id)
-          this.itemId = String(secTask.id);
-          this.nwiRequest = secTask
-          button.setAttribute('data-target', '#updateNWIModal');
-      }
-
-
-      // @ts-ignore
-      container.appendChild(button);
-      button.click();
-
-  }
-
-  public onOpenModalViewNwi(nwiId: string, mode: string): void {
-      const container = document.getElementById('main-container');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.style.display = 'none';
-      button.setAttribute('data-toggle', 'modal');
-
-      if (mode === 'edit') {
-          this.getSpecificNwi(String(nwiId))
-          this.getAllDocs(String(nwiId))
-          button.setAttribute('data-target', '#viewNwi');
-      }
-
-
-      // @ts-ignore
-      container.appendChild(button);
-      button.click();
-
-  }
-
-  textValidationType(e) {
-      this.validTextType = !!e;
-  }
-
-  numberValidationType(e) {
-      this.validNumberType = !!e;
-  }
-
-  saveNwi(formDirective): void {
-      if (this.stdNwiFormGroup.invalid) {
-          this.stdNwiFormGroup.markAllAsTouched();
-          this.validateAllFormFields(this.stdNwiFormGroup);
-
-          return;
-      } else {
-          this.onUpload(this.stdNwiFormGroup.value)
-          formDirective.resetForm();
-          this.stdNwiFormGroup.reset()
-      }
-  }
-
-
-  public uploadDocuments(nwiId: number, additionalInfo: string) {
-
-      let file = null;
-      // if (additionalInfo == "Annex Documents") {
-      //     file = this.uploadedFiles;
-      // }
-      // if (additionalInfo == "Relevant Documents") {
-      //     file = this.uploadedFilesB;
-      // }
-      if (additionalInfo == "Reference Documents") {
-          file = this.uploadedFilesC;
-      }
-      if (file != null) {
-          const formData = new FormData();
-          for (let i = 0; i < file.length; i++) {
-              console.log(file[i]);
-              formData.append('docFile', file[i], file[i].name);
-          }
-          this.standardDevelopmentService.uploadFileDetailsNwi(String(nwiId), formData, additionalInfo, additionalInfo).subscribe(
-              (data: any) => {
-                  this.SpinnerService.hide();
-
-                  // this.uploadedFiles = [];
-                  // this.uploadedFilesB = [];
-                  this.uploadedFilesC = [];
-
-
-                  console.log(data);
-                  swal.fire({
-                      title: 'Uploaded Successfully.',
-                      buttonsStyling: false,
-                      customClass: {
-                          confirmButton: 'btn btn-success form-wizard-next-btn ',
-                      },
-                      icon: 'success'
-                  });
-                  this.hideModel();
-
-                  this.SpinnerService.hide();
-
-                  // this.router.navigate(['/draftStandard']);
-                  // this.getSACTasks();
-
-              },
-          );
-      }
-  }
-
-  rerender(): void {
-      this.dtElements.forEach((dtElement: DataTableDirective) => {
-          if (dtElement.dtInstance)
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                  dtInstance.destroy();
-              });
-      });
-      setTimeout(() => {
-
-          this.dtTrigger5.next();
-
-
-      });
-
-  }
-
-  ngOnDestroy(): void {
-      // Do not forget to unsubscribe the event
-      this.dtTrigger5.unsubscribe();
-
-
-  }
-
-  formatFormDate(date: Date) {
-      return formatDate(date, this.dateFormat, this.language);
-  }
-
-  public getAllDocs(nwiId: string): void {
-      this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
-          (response: Document[]) => {
-              this.docs = response;
-              this.rerender()
-
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      );
-  }
-
-  public getSpecificNwi(nwiId: string): void {
-      this.standardDevelopmentService.getNwiById(nwiId).subscribe(
-          (response: NwiItem[]) => {
-              this.nwiItem = response;
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      )
-  }
-
-  public getRejectedNwis(): void {
-      this.standardDevelopmentService.getRejectedNwiS().subscribe(
-          (response: NwiItem[]) => {
-              console.log(response);
-              this.rejectedNwiS = response;
-              this.dataSource = new MatTableDataSource(this.rejectedNwiS);
-              this.dataSource.paginator = this.paginator;
-              this.dataSource.sort = this.sort;
-
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      )
-  }
-
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-      this.SpinnerService.show();
-      this.committeeService.viewDocsById(pdfId).subscribe(
-          (dataPdf: any) => {
-              this.SpinnerService.hide();
-              this.blob = new Blob([dataPdf], {type: applicationType});
-
-              // tslint:disable-next-line:prefer-const
-              let downloadURL = window.URL.createObjectURL(this.blob);
-              window.open(downloadURL, '_blank');
-
-              // this.pdfUploadsView = dataPdf;
-          },
-      );
-  }
-
-
-  loadAllStandards() {
-      this.msService.msStandardsListDetails().subscribe(
-          (standardsList: StandardsDto[]) => {
-              this.loadedStandards = standardsList;
-          },
-          error => {
-              console.log(error);
-              this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-  }
-
-  applyFilter(event: Event) {
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.dataSource.filter = filterValue.trim().toLowerCase();
-      this.dataSourceB.filter = filterValue.trim().toLowerCase();
-
-      if (this.dataSource.paginator) {
-          this.dataSource.paginator.firstPage();
-      }
-      if (this.dataSourceB.paginator) {
-          this.dataSourceB.paginator.firstPage();
-      }
-
-  }
 
 
 }

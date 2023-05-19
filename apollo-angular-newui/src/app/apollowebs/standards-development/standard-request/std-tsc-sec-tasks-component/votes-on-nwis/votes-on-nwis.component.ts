@@ -5,10 +5,9 @@ import {
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren,
-  ViewEncapsulation
+  ViewChildren
 } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm} from "@angular/forms";
 import {
   Document,
   LiaisonOrganization,
@@ -37,7 +36,6 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {StandardsDto} from "src/app/core/store/data/master/master.model";
-import {QaService} from "src/app/core/store/data/qa/qa.service";
 import {MsService} from "src/app/core/store/data/ms/ms.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -76,10 +74,7 @@ export class VotesOnNwisComponent implements OnInit {
   language = "en";
 
   public itemId: string = "";
-  public filePurposeAnnex: string = "FilePurposeAnnex";
-  public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
-
-  public secTasks: StandardRequestB[] = [];
+    public secTasks: StandardRequestB[] = [];
   public tscsecRequest !: Stdtsectask | undefined;
   public nwiItem!: NwiItem[];
   approvedNwiS: NwiItem[] = [];
@@ -153,10 +148,7 @@ export class VotesOnNwisComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.getTCSECTasks();
       this.getAllNwisUnderVote();
-      this.getRejectedNwis();
-      this.getApprovedNwis();
       this.loadAllStandards();
 
       this.getLiasisonOrganization();

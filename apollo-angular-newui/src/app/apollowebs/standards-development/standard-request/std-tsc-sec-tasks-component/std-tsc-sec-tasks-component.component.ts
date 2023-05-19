@@ -121,6 +121,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
     public dropdownSettings: IDropdownSettings = {};
     private datePipe: DatePipe;
+    todayDate: Date = new Date();
+
 
     constructor(
         private formBuilder: FormBuilder,
@@ -332,20 +334,6 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             }
         )
     }
-
-
-    public getAllNwisUnderVote(): void {
-        this.standardDevelopmentService.getAllVotesTally().subscribe(
-            (response: VotesNwiTally[]) => {
-                this.nwiForVotes = response;
-                this.rerender()
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
-
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
     public hideModel() {
@@ -610,8 +598,6 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         });
     }
 
-
-    todayDate = new DatePipe("En-US").transform(new Date(), "dd-MM-yyyy")
 
 
 
