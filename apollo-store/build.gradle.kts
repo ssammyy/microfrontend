@@ -25,6 +25,7 @@ dependencies {
 //    implementation("org.hibernate.search:hibernate-search-backend-lucene:6.0.6.Final")
     implementation("com.oracle.database.jdbc:ojdbc10:19.8.0.0")
     api("com.hazelcast:spring-data-hazelcast:2.4.0")
+    implementation(project(mapOf("path" to ":apollo-common")))
 //    implementation("com.hazelcast:hazelcast:4.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

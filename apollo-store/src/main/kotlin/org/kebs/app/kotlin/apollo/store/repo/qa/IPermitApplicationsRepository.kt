@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.jetbrains.annotations.Nullable
+import org.kebs.app.kotlin.apollo.common.dto.qa.PermitsSearch
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.PermitsAwarded
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
@@ -32,6 +33,39 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByPermitStatusAndAwardedPermitNumberContainingOrderByDateOfExpiryDesc(permitStatus: Long,awardedPermitNumber: String): List<PermitApplicationsEntity>?
 
+
+    @Query("SELECT id,COMPANY_NAME,PRODUCT_NAME,KS_NUMBER,TITLE,PERMIT_NUMBER,DATE_OF_ISSUE,DATE_OF_EXPIRY,\n" +
+            "EFFECTIVE_DATE,PERMIT_TYPE from(\n" +
+            "SELECT a.*,RANK() OVER (ORDER BY DATE_OF_EXPIRY desc) my_rank \n" +
+            "from(\n" +
+            "SELECT * from(\n" +
+            "SELECT id,COMPANY_NAME,PRODUCT_NAME,KS_NUMBER,TITLE,PERMIT_NUMBER,DATE_OF_ISSUE,DATE_OF_EXPIRY,\n" +
+            "EFFECTIVE_DATE,'SMARK' permit_type\n" +
+            "FROM APOLLO.DAT_KEBS_PERMIT_TRANSACTION_MIGRATION dkptm \n" +
+            "WHERE PERMIT_NUMBER =:permitNumber\n" +
+            "UNION ALL \n" +
+            "SELECT id,COMPANY_NAME,PRODUCT_NAME,KS_NUMBER,TITLE,PERMIT_NUMBER,DATE_OF_ISSUE,DATE_OF_EXPIRY,\n" +
+            "EFFECTIVE_DATE,'FMARK' permit_type\n" +
+            "FROM APOLLO.dat_kebs_permit_transaction_migration_fmark dkptm \n" +
+            "WHERE PERMIT_NUMBER =:permitNumber\n" +
+            "UNION ALL \n" +
+            "SELECT id,COMPANY_NAME,PRODUCT_NAME,KS_NUMBER,TITLE,PERMIT_NUMBER,DATE_OF_ISSUE,DATE_OF_EXPIRY,\n" +
+            "EFFECTIVE_DATE,'DMARK' permit_type\n" +
+            "FROM APOLLO.dat_kebs_permit_transaction_migration_dm dkptm \n" +
+            "WHERE PERMIT_NUMBER =:permitNumber\n" +
+            ")a\n" +
+            "UNION all\n" +
+            "SELECT dkpt.id,DKCP.NAME  Company_name,PRODUCT_NAME,KS_NUMBER,TITLE, AWARDED_PERMIT_NUMBER,\n" +
+            "DATE_OF_ISSUE,DATE_OF_EXPIRY,EFFECTIVE_DATE,cpt.MARK permit_type\n" +
+            "FROM apollo.DAT_KEBS_PERMIT_TRANSACTION dkpt,\n" +
+            "APOLLO.DAT_KEBS_COMPANY_PROFILE dkcp,APOLLO.CFG_PERMIT_TYPES cpt\n" +
+            "WHERE (AWARDED_PERMIT_NUMBER IN(CONCAT('SM#',:permitNumber) ,CONCAT('FM#',:permitNumber),CONCAT('DM#',:permitNumber)) \n" +
+            "OR AWARDED_PERMIT_NUMBER=:permitNumber)\n" +
+            "AND DKPT.COMPANY_ID =DKCP.ID  AND DKPT.DATE_OF_EXPIRY  IS NOT NULL\n" +
+            "AND dkpt.PERMIT_TYPE=cpt.ID \n" +
+            ")a\n" +
+            ") a WHERE my_rank=1", nativeQuery = true)
+    fun searchAllPermits(permitNumber: String):List<PermitsSearch>?
 
 
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
@@ -1488,7 +1522,15 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
 
     fun findFirstByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
-    fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
+
+
+
+
+
+
+
+
+    fun findAllByMigratedStatusIsNull(): List<PermitMigrationApplicationsEntity>?
 
 
     fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntity>?

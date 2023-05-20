@@ -586,6 +586,7 @@ import { RejectedBySpcComponent } from './apollowebs/standards-development/forma
 import { AuthorizerApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
 import { ReviewNscComponent } from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
 import { ReviewApplicationRejectedByNscComponent } from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
+import { TcManagementComponent } from './apollowebs/admin/tc-management/tc-management.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1227,6 +1228,7 @@ import { ReviewApplicationRejectedByNscComponent } from './apollowebs/standards-
         AuthorizerApproveApplicationComponent,
         ReviewNscComponent,
         ReviewApplicationRejectedByNscComponent,
+        TcManagementComponent,
 
     ],
     entryComponents: [LoaderComponent],
