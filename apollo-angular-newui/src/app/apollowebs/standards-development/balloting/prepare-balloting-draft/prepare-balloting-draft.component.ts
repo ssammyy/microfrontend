@@ -78,7 +78,9 @@ export class PrepareBallotingDraftComponent implements OnInit {
         this.getAllDepartments()
         this.publicReview_draftFormGroup = this.formBuilder.group({
             ballotName: ['', Validators.required],
-            ksNumber: ['', Validators.required]
+            ksNumber: ['', Validators.required],
+            prdID: ['', Validators.required]
+
         });
         this.dropdownSettings = {
             singleSelection: false,
@@ -190,7 +192,7 @@ export class PrepareBallotingDraftComponent implements OnInit {
     uploadBallotDraft(): void {
         if (this.uploadedFilesC != null) {
             this.SpinnerService.show();
-            this.ballotService.prepareBallotDraft(this.publicReview_draftFormGroup.value, String(this.publicReviewDraftsB.id)).subscribe(
+            this.ballotService.prepareBallotDraft(this.publicReview_draftFormGroup.value).subscribe(
                 (response) => {
                     console.log(response)
                     this.SpinnerService.hide();

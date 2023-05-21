@@ -2188,7 +2188,7 @@ export const routes: Routes = [
         children: [{path: '', component: CreateDepartmentComponent}],
     },
     {
-        path: 'technicalCommittee', component: AdminLayoutComponent,
+        path: 'sdAdmin/technicalCommittee', component: AdminLayoutComponent,
         children: [{path: '', component: CreatetechnicalcommitteeComponent}],
     },
     {

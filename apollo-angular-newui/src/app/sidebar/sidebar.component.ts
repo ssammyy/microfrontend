@@ -652,6 +652,26 @@ export const ROUTES: RouteInfo[] = [
     },
 
     // Standards Development
+
+
+    //Standards Development Admin
+    {
+        path: '/sdAdmin',
+        title: 'Standards',
+        type: 'sub',
+        children: [
+            {path: 'technicalCommittee', title: 'TC Management', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'Technical Committee', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'Technical Committee', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
+
+        ],
+        icontype: 'summarize',
+        collapse: 'standards',
+        privilege: ['SYSADMIN_VIEW'],
+
+    },
+
+
     {
         path: '',
         title: 'Request Module',

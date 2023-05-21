@@ -9,11 +9,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {selectUserInfo} from "../../../../core/store";
 import {Subject} from "rxjs";
-import {
-    DataHolder,
-    StdJustification, Stdtsectask,
-    StdtsecTaskJustification
-} from "../../../../core/store/data/std/request_std.model";
+import {DataHolder, StdJustification, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {DataTableDirective} from "angular-datatables";
 
 declare const $: any;
@@ -33,7 +29,7 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
     isDtInitialized: boolean = false
-    public  itemId: number;
+    public itemId: number;
 
 
     public createTCFormGroup!: FormGroup;
@@ -42,6 +38,8 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     public departments !: Department[];
     public technicalCommittees !: TechnicalCommittee[];
     public tscsecRequest !: DataHolder | undefined;
+    loading = false;
+    loadingText: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -55,13 +53,12 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
 
     ngOnInit(): void {
         this.getDepartments();
-
-    }
-
-    ngAfterViewInit(): void {
         this.getTechnicalCommittee();
 
+
     }
+
+
 
     public getDepartments(): void {
         this.standardDevelopmentService.getDepartmentsb().subscribe(
@@ -140,10 +137,16 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     }
 
     public getTechnicalCommittee(): void {
+        this.loadingText = "Retrieving Please Wait ...."
+        this.loading = true;
+        this.SpinnerService.show();
+
         this.standardDevelopmentService.getTechnicalCommittees().subscribe(
             (response: DataHolder[]) => {
                 console.log(response);
                 this.tcs = response;
+                this.loading = false;
+                this.SpinnerService.hide();
 
                 if (this.isDtInitialized) {
                     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -157,6 +160,8 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false;
+                this.SpinnerService.hide();
             }
         )
     }
@@ -181,6 +186,7 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
@@ -200,7 +206,6 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
             }
         )
     }
-
 
 
 }
