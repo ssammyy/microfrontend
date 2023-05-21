@@ -19,6 +19,7 @@
                     </div>
                     <div class="card-body">
                         <app-rfc-fragment
+                                (reloadRfc)="reloadRfcDetails($event)"
                                 [rfcDetails]="rfcDetails"
                                 [certType]="'COR'"
                         ></app-rfc-fragment>

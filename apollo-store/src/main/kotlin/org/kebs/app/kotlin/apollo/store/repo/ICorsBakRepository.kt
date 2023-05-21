@@ -12,18 +12,29 @@ import org.springframework.stereotype.Repository
 interface ICorsBakRepository : HazelcastRepository<CorsBakEntity, Long> {
     fun findByChasisNumber(chasisNumber: String): CorsBakEntity?
     fun findByCorNumber(corNumber: String): CorsBakEntity?
-    fun findByDocumentsTypeAndReviewStatus(documentsType: String, status: Int, page: Pageable): Page<CorsBakEntity>
-    fun findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+    fun findByCorNumberAndDocumentsType(corNumber: String, documentsType: String): CorsBakEntity?
+    fun findByDocumentsTypeAndReviewStatusAndCompliant(
         documentsType: String,
-        corNumber: String,
-        docType: String,
-        chassisNumber: String,
+        status: Int,
+        compliant: String,
         page: Pageable
     ): Page<CorsBakEntity>
 
-    fun findByCorNumberContainsOrChasisNumberContains(
+    fun findByDocumentsTypeAndCorNumberContainsAndCompliantOrDocumentsTypeAndChasisNumberContainsAndCompliant(
+        documentsType: String,
         corNumber: String,
+        compliant1: String,
+        docType: String,
         chassisNumber: String,
+        compliant2: String,
+        page: Pageable
+    ): Page<CorsBakEntity>
+
+    fun findByCorNumberContainsAndCompliantOrChasisNumberContainsAndCompliant(
+        corNumber: String,
+        compliant: String,
+        chassisNumber: String,
+        compliant2: String,
         page: Pageable
     ): Page<CorsBakEntity>
 

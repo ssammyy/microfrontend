@@ -581,6 +581,7 @@ import {IntStdNscApprovalComponent} from './apollowebs/standards-development/int
 import {IntStdWebProposalComponent} from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
+import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1217,6 +1218,7 @@ import {RejectedProposalsComponent} from './apollowebs/standards-development/for
         IntStdWebProposalComponent,
         ApprovedProposalsComponent,
         RejectedProposalsComponent,
+        NcrCorCertificateComponent,
 
     ],
     entryComponents: [LoaderComponent],

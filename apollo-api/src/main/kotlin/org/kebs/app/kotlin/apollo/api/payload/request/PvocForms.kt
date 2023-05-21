@@ -17,6 +17,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import javax.validation.Valid
 import javax.validation.constraints.*
+
 class PvocContainerDetails {
     @Min(value = 0, message = "Weight should not be negative, minimum is 0")
     @JsonAlias("SHIPMENT_GROSS_WEIGHT")
@@ -2185,6 +2186,9 @@ class PvocKebsQueryForm {
     @NotEmpty(message = "Query is required")
     @Size(min = 1, max = 4000, message = "Query should be upto 4000 characters")
     var partnerQuery: String? = null
+
+    @Min(1, message = "Minimum version is version 1")
+    var version: Long? = null
 }
 
 class PvocQueryResponse {
@@ -2275,6 +2279,7 @@ class KebsPvocQueryForm {
 
     @NotEmpty(message = "Query details cannot be empty")
     var kebsQuery: String? = null
+    var version: Long? = 1
 }
 
 class RiskProfileForm {

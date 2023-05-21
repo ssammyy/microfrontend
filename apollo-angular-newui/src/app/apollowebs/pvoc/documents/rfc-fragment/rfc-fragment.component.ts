@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {Router} from "@angular/router";
 
@@ -16,6 +16,8 @@ export class RfcFragmentComponent implements OnInit {
     isPvocOfficer = true
     @Input()
     active = 1
+    @Output()
+    reloadRfc = new EventEmitter<boolean>()
     rfcData: any
     settings = {
         selectMode: 'single',  // single|multi
@@ -47,6 +49,10 @@ export class RfcFragmentComponent implements OnInit {
     };
 
     constructor(private router: Router) {
+    }
+
+    reloadRfcDetails(reload) {
+        this.reloadRfc.emit(reload)
     }
 
     ngOnInit(): void {

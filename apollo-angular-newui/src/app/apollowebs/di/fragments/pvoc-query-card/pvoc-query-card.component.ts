@@ -19,6 +19,22 @@ export class PvocQueryCardComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    formatDocument(lnk: string) {
+        if (lnk) {
+            let parts = lnk.split('/')
+            if (parts.length > 0) {
+                return parts[parts.length - 1]
+            }
+        }
+        return "N/A"
+    }
+
+    reloadChanged(reload: boolean) {
+        if (reload) {
+            this.queryChanged.emit(true)
+        }
+    }
+
     viewQuery(data: any) {
         this.dialog.open(PvocQueryViewComponent, {
             data: data

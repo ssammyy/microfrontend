@@ -280,9 +280,10 @@
             </mat-tab>
             <mat-tab tabindex="6" *ngIf="rfcData.queries">
                 <ng-template mat-tab-label>Queries</ng-template>
-                <b class="text-primary">PVOC Queries for document</b>
+                <b class="text-primary">PVOC Queries for RFC document</b>
                 <div class="row" *ngIf="rfcData.queries else noQueries">
                     <app-pvoc-query-card class="col-md-12" *ngFor="let q of rfcData.queries"
+                                         (queryChanged)="reloadRfcDetails($event)"
                                          [queryDetails]="q"></app-pvoc-query-card>
                 </div>
                 <ng-template #noQueries>

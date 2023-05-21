@@ -30,9 +30,6 @@ export class ViewCorComponent implements OnInit {
     }
 
     loadCorDetails(reload: boolean) {
-        if (!reload) {
-            return
-        }
         this.message = null
         this.pvocService.loadCorDetails(this.documentId)
             .subscribe(
