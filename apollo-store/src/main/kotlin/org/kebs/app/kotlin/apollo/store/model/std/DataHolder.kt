@@ -473,6 +473,7 @@ interface ProposalDetails{
     fun getUploadedBy(): String?
     fun getRemarks(): String?
     fun getAssignedTo(): Long?
+    fun getDraftReviewStatus(): Long?
     fun getTitle(): String?
     fun getCirculationDate(): Timestamp?
     fun getNameOfOrganization(): String?
@@ -808,6 +809,7 @@ interface ComStandard {
     fun getUploadDate(): String?
     fun getStatus(): Long?
     fun getRequestId(): Long?
+    fun getDraftReviewStatus(): Long?
     fun getDraftId(): Long?
     fun getDepartmentId(): Long?
     fun getDepartmentName(): String?

@@ -197,5 +197,9 @@ class ComStdDraft {
     @Basic
     var coverPageStatus: String?=null
 
+    @Column(name = "DRAFT_REVIEW_STATUS")
+    @Basic
+    var draftReviewStatus: Long? = null
+
 
 }

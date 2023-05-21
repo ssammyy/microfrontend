@@ -196,7 +196,14 @@ data class ISHopDecision(
      var draftId: Long?=null,
      var comments: String?=null,
      var requestId: Long?=null,
-     var id: Long?=null
+     var standardType: String?=null,
+     var id: Long?=null,
+     var accentTo: String?=null,
+     var assignedTo: Long,
+     var proposalId: Long,
+     var draftReviewStatus: Long,
+
+
 ){
 
 }
@@ -260,6 +267,7 @@ class IStandardUploadDto(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
+    @JsonProperty("standardType") val standardType: String?,
     @JsonProperty("id") val id: Long
 
 ){
@@ -594,6 +602,7 @@ data class CSDraftDto(
     var requestId:Long?=null,
     var draftId:Long?=null,
     var departmentId: Long?=null,
+    var draftReviewStatus: Long?=null,
     var subject: String?=null,
     var description: String?=null,
     var contactOneFullName: String?=null,

@@ -826,20 +826,20 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
 
         children: [
-            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
-            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
-            {
-                path: 'draughtsmanTasks',
-                title: 'Draught Draft Standards',
-                ab: 'DDS',
-                privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
-            },
-            {
-                path: 'proofReaderTasks',
-                title: 'Proofread Draft Standards',
-                ab: 'PDS',
-                privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
-            },
+            //{path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
+            //{path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
+            // {
+            //     path: 'draughtsmanTasks',
+            //     title: 'Draught Draft Standards',
+            //     ab: 'DDS',
+            //     privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
+            // },
+            // {
+            //     path: 'proofReaderTasks',
+            //     title: 'Proofread Draft Standards',
+            //     ab: 'PDS',
+            //     privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
+            // },
             {
                 path: 'isUploadDraft',
                 title: 'Upload Draft For Editing',

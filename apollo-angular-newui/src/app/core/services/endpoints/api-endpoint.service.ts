@@ -424,6 +424,7 @@ export class ApiEndpointService {
         IST_GET_STD_EDITORS: `${ApiEndpointService.SD_IST_CONTEXT}/getEditorDetails`,
         IST_GET_STD_DRAUGHTSMANS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraughtsManDetails`,
         IST_GET_STD_PROOFREADERS: `${ApiEndpointService.SD_IST_CONTEXT}/getProofReaderDetails`,
+        IST_GET_STD_TC_SEC_DETAILS: `${ApiEndpointService.SD_IST_CONTEXT}/getTcSecDetails`,
         IST_VIEW_ADOPTION_PROPOSAL_REQUEST: `${ApiEndpointService.SD_IST_CONTEXT}/getIntStandardProposals`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_PD: `${ApiEndpointService.SD_IST_CONTEXT}/draft-file-upload`,

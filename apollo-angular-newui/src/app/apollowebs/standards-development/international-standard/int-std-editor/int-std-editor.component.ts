@@ -92,7 +92,9 @@ export class IntStdEditorComponent implements OnInit {
           contactOneTelephone:[],
           contactOneEmail:[],
           companyName:[],
-          companyPhone:[]
+          companyPhone:[],
+          standardType:[],
+          draftReviewStatus:[]
 
       });
   }
@@ -231,6 +233,8 @@ export class IntStdEditorComponent implements OnInit {
                     contactOneFullName:this.actionRequests.contactOneFullName,
                     contactOneTelephone:this.actionRequests.contactOneTelephone,
                     contactOneEmail:this.actionRequests.contactOneEmail,
+                    standardType:this.actionRequests.standardType,
+                    draftReviewStatus:this.actionRequests.draftReviewStatus
                 }
             );
 

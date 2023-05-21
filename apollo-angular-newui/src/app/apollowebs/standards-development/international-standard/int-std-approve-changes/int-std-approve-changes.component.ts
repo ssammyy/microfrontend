@@ -2,10 +2,10 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ComStdCommitteeRemarks,
-  ComStdRemarks,
-  InternationalStandardsComments, ISCheckRequirements,
-  StakeholderProposalComments
+    ComStdCommitteeRemarks,
+    ComStdRemarks,
+    InternationalStandardsComments, ISCheckRequirements,
+    StakeholderProposalComments, UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
@@ -61,6 +61,10 @@ export class IntStdApproveChangesComponent implements OnInit {
   public uploadStandardFile:  FileList;
   loadingText: string;
     coverDTOs: DocumentDTO[] = [];
+    selectedOption = '';
+    selectedType: number;
+    tcSecretary: number;
+    public tcSecretaries !: UsersEntity[] ;
 
   constructor(
       private store$: Store<any>,
@@ -73,14 +77,24 @@ export class IntStdApproveChangesComponent implements OnInit {
       private formBuilder: FormBuilder
   ) { }
 
+
+
   ngOnInit(): void {
+      this.approve='Yes';
+      this.reject='No';
     this.getStdForApproval();
+    this.getTcSecDetails();
     this.approveRequirementsFormGroup = this.formBuilder.group({
       id:[],
       comments:null,
       requestId:null,
       draftId:null,
       title:null,
+        accentTo:null,
+        assignedTo:null,
+        proposalId:null,
+        standardType:null,
+        draftReviewStatus:null
     });
   }
   ngOnDestroy(): void {
@@ -183,6 +197,9 @@ export class IntStdApproveChangesComponent implements OnInit {
             requestId: this.actionRequests.requestId,
             id: this.actionRequests.id,
             draftId: this.actionRequests.draftId,
+              proposalId: this.actionRequests.proposalId,
+              standardType: this.actionRequests.standardType,
+              draftReviewStatus: this.actionRequests.draftReviewStatus
 
           }
       );
@@ -299,6 +316,25 @@ export class IntStdApproveChangesComponent implements OnInit {
                 this.showToasterError('Error', `Error Processing Request`);
                 console.log(error.message);
                 this.getStdForApproval();
+            }
+        );
+    }
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
+    }
+
+    public getTcSecDetails(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.getTcSecDetails().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.tcSecretaries = response;
+                // console.log(this.usersLists);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
             }
         );
     }

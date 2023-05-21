@@ -77,7 +77,7 @@ export class IntStdUploadStandardComponent implements OnInit {
             draftId: null,
             requestId: null,
             id: null,
-            standardNumber: null,
+            standardNumber: null
 
         });
   }
@@ -282,7 +282,8 @@ export class IntStdUploadStandardComponent implements OnInit {
                             clause:this.actionRequests.clause,
                             scope:this.actionRequests.scope,
                             special:this.actionRequests.special,
-                            standardNumber:this.actionRequests.comStdNumber
+                            standardNumber:this.actionRequests.comStdNumber,
+                            standardType:this.actionRequests.standardType
                         }
 
             );

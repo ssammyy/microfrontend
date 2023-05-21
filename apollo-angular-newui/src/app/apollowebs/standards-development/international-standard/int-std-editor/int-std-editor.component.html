@@ -529,7 +529,7 @@
                                                                                     <div class="modal-body">
                                                                                         <div class="form-body">
                                                                                             <div class="form-group col-12">
-                                                                                                <label><b>International Standard Draft</b></label>
+                                                                                                <label><b>Standard Draft</b></label>
                                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                                         <div>
@@ -618,6 +618,8 @@
                                                                                                     </form>
                                                                                                 </div>
                                                                                             </div>
+                                                                                            <input type="hidden" formControlName="draftReviewStatus" name="draftReviewStatus" value="{{actionRequests?.draftReviewStatus}}" >
+                                                                                            <input type="hidden" formControlName="standardType" name="standardType" value="{{actionRequests?.standardType}}" >
                                                                                             <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
                                                                                             <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.id}}" >
                                                                                             <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
