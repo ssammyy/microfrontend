@@ -1105,6 +1105,7 @@ class IntStandardService(
         com.draftId = isDraftDto.draftId
         com.departmentId = isDraftDto.departmentId
         com.subject = isDraftDto.subject
+        com.proposalId = isDraftDto.proposalId
         com.description = isDraftDto.description
         com.status = 1
         com.standardType =isDraftDto.standardType
@@ -1772,7 +1773,7 @@ class IntStandardService(
                 companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
 
-                } ?: throw Exception("DRAFT NOT FOUND")
+                } ?: throw Exception("STD DRAFT NOT FOUND")
 
              comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
                  with(comStdDraft) {
@@ -1792,7 +1793,7 @@ class IntStandardService(
                  isAdoptionProposalRepository.save(prop)
                  //companyStandardRemarksRepository.save(companyStandardRemarks)
                  // response = "Justification Was Approved"
-             } ?: throw Exception("DRAFT NOT FOUND")
+             } ?: throw Exception("PROPOSAL NOT FOUND")
 
 
 

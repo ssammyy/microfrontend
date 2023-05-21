@@ -583,7 +583,7 @@ data class ComDraftDto(
 }
 
 data class CSDraftDto(
-    var proposalId:Long?=null,
+    var proposalId:Long,
     var justificationNo:Long?=null,
     var id:Long,
     var title:String?=null,

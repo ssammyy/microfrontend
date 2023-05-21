@@ -757,6 +757,7 @@ export interface ISAdoptionProposal {
     stEmail: string;
     stName: string;
     stStatus: number;
+    proposalId: number;
     stTelephone: string;
     tcSecAssigned:string;
 

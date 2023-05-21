@@ -160,6 +160,10 @@ class CompanyStandard {
     @Basic
     var draftReviewStatus: Long? = null
 
+    @Column(name = "PROPOSAL_ID")
+    @Basic
+    var proposalId: Long? = null
+
 
 
 }

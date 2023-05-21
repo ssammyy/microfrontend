@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
@@ -21,7 +21,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 @Component({
   selector: 'app-int-std-approve-changes',
   templateUrl: './int-std-approve-changes.component.html',
-  styleUrls: ['./int-std-approve-changes.component.css']
+  styleUrls: ['./int-std-approve-changes.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdApproveChangesComponent implements OnInit {
   @ViewChildren(DataTableDirective)
