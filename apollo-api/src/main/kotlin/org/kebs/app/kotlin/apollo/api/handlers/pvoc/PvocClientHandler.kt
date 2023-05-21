@@ -54,14 +54,20 @@ class PvocClientHandler(
     fun foreignCoc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
+            // Either of these fields need to be available and of correct format
+            val mutuallyExclusiveFields = listOf(
+                Pair("importerTelephoneNumber", "importerEmail"),
+                Pair("exporterTelephoneNumber", "exporterEmail")
+            )
             val form = req.body(CocEntityForm::class.java)
-            validatorService.validateInputWithInjectedValidator(form)?.let {
-                response.message = "Request validation failed"
-                response.errors = it
-                response.responseCode = ResponseCodes.INVALID_CODE
-                response.data = form
-                response
-            } ?: run {
+            validatorService.validateInputWithInjectedValidator(form, mutuallyExclusiveGroups = mutuallyExclusiveFields)
+                ?.let {
+                    response.message = "Request validation failed"
+                    response.errors = it
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.data = form
+                    response
+                } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveCoc(form))
             }
         } catch (ex: HttpMessageNotReadableException) {
@@ -182,14 +188,20 @@ class PvocClientHandler(
     fun foreignCocRfc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
+            // Either of these fields need to be available and of correct format
+            val mutuallyExclusiveFields = listOf(
+                Pair("importerTelephoneNumber", "importerEmail"),
+                Pair("exporterTelephoneNumber", "exporterEmail")
+            )
             val form = req.body(RfcEntityForm::class.java)
-            validatorService.validateInputWithInjectedValidator(form)?.let {
-                response.message = "Request validation failed"
-                response.errors = it
-                response.responseCode = ResponseCodes.INVALID_CODE
-                response.data = form
-                response
-            } ?: run {
+            validatorService.validateInputWithInjectedValidator(form, mutuallyExclusiveGroups = mutuallyExclusiveFields)
+                ?.let {
+                    response.message = "Request validation failed"
+                    response.errors = it
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.data = form
+                    response
+                } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveRfcCoc(form))
             }
         } catch (ex: HttpMessageNotReadableException) {
@@ -208,14 +220,20 @@ class PvocClientHandler(
     fun foreignCorRfc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
+            // Either of these fields need to be available and of correct format
+            val mutuallyExclusiveFields = listOf(
+                Pair("importerTelephoneNumber", "importerEmail"),
+                Pair("exporterTelephoneNumber", "exporterEmail")
+            )
             val form = req.body(RfcCorForm::class.java)
-            validatorService.validateInputWithInjectedValidator(form)?.let {
-                response.message = "Request validation failed"
-                response.errors = it
-                response.responseCode = ResponseCodes.INVALID_CODE
-                response.data = form
-                response
-            } ?: run {
+            validatorService.validateInputWithInjectedValidator(form, mutuallyExclusiveGroups = mutuallyExclusiveFields)
+                ?.let {
+                    response.message = "Request validation failed"
+                    response.errors = it
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.data = form
+                    response
+                } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveRfcCor(form))
             }
         } catch (ex: HttpMessageNotReadableException) {
@@ -310,7 +328,8 @@ class PvocClientHandler(
         val response = ApiResponseModel()
         try {
             val form = req.body(PvocKebsQueryForm::class.java)
-            validatorService.validateInputWithInjectedValidator(form)?.let {
+            val exclusiveGroups = listOf(Pair("ucrNumber", "rfcNumber"))
+            validatorService.validateInputWithInjectedValidator(form, mutuallyExclusiveGroups = exclusiveGroups)?.let {
                 response.message = "Request validation failed"
                 response.errors = it
                 response.responseCode = ResponseCodes.INVALID_CODE

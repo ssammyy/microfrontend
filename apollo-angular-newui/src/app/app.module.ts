@@ -587,6 +587,7 @@ import { AuthorizerApproveApplicationComponent } from './apollowebs/standards-de
 import { ReviewNscComponent } from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
 import { ReviewApplicationRejectedByNscComponent } from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
 import { TcManagementComponent } from './apollowebs/admin/tc-management/tc-management.component';
+import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1229,6 +1230,7 @@ import { TcManagementComponent } from './apollowebs/admin/tc-management/tc-manag
         ReviewNscComponent,
         ReviewApplicationRejectedByNscComponent,
         TcManagementComponent,
+        NcrCorCertificateComponent,
 
     ],
     entryComponents: [LoaderComponent],

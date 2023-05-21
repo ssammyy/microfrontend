@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.security.service
 
-import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException

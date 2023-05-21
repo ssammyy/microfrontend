@@ -356,7 +356,8 @@
                 <ng-template mat-tab-label>Queries</ng-template>
                 <b class="text-primary">PVOC Queries for document</b>
                 <div class="row p0 m-0" *ngIf="cocDetails.queries else noQueries">
-                    <app-pvoc-query-card class="col-md-12 p-0 m-0" *ngFor="let q of cocDetails.queries"
+                    <app-pvoc-query-card class="col-md-12" *ngFor="let q of cocDetails.queries"
+                                         (queryChanged)="reloadChanged($event)"
                                          [queryDetails]="q"></app-pvoc-query-card>
                 </div>
                 <ng-template #noQueries>

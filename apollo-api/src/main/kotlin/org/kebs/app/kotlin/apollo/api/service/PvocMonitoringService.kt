@@ -131,16 +131,12 @@ class PvocMonitoringService(
         try {
             // Find by chassis number or RfcNumber
             val data = when {
-                !keywords.isNullOrEmpty() -> this.rfcCorRepository.findByRfcNumberContainsAndReviewStatusAndStatusOrChassisNumberContainsAndReviewStatusAndStatus(
+                !keywords.isNullOrEmpty() -> this.rfcCorRepository.findByRfcNumberContainsOrChassisNumberContains(
                     keywords,
-                    status,
-                    1,
                     keywords,
-                    status,
-                    1,
                     page
                 )
-                else -> this.rfcCorRepository.findByReviewStatusAndStatus(status, 1, page)
+                else -> this.rfcCorRepository.findByReviewStatusAndStatus(status, status.toLong(), page)
             }
             response.data = RfcCorDao.fromList(data.toList())
             response.message = "Success"
@@ -189,6 +185,7 @@ class PvocMonitoringService(
         keywords: String? = null
     ): ApiResponseModel {
         val response = ApiResponseModel()
+
         try {
             val data = when (documentCategory) {
                 "F", "foreign" -> when {
@@ -300,47 +297,68 @@ class PvocMonitoringService(
     }
 
     fun listForeignCor(
+        documentType: String?,
         category: String?,
         reviewStatus: Int?,
         page: PageRequest,
         keywords: String? = null
     ): ApiResponseModel {
         val response = ApiResponseModel()
+        val compliant = when (documentType?.toUpperCase()) {
+            ConsignmentCertificatesIssues.NCR_COR.nameDesc -> "N"
+            else -> "Y"
+        }
         try {
             val data = when (category) {
                 "F", "foreign" -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsAndCompliantOrDocumentsTypeAndChasisNumberContainsAndCompliant(
                             "F",
                             keywords,
+                            compliant,
                             "F",
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->
-                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", status, page)
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatusAndCompliant(
+                                "F",
+                                status,
+                                compliant,
+                                page
+                            )
                         } ?: this.corBakRepository.findByDocumentsType("F", page)
                     }
                 }
                 "L", "local" -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsAndCompliantOrDocumentsTypeAndChasisNumberContainsAndCompliant(
                             "L",
                             keywords,
+                            compliant,
                             "L",
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->
-                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("L", status, page)
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatusAndCompliant(
+                                "L",
+                                status,
+                                compliant,
+                                page
+                            )
                         } ?: this.corBakRepository.findByDocumentsType("L", page)
                     }
                 }
                 else -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByCorNumberContainsOrChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByCorNumberContainsAndCompliantOrChasisNumberContainsAndCompliant(
                             keywords,
+                            compliant,
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->

@@ -9,7 +9,10 @@ import kotlin.reflect.KClass
 @Service
 class DaoValidatorService(private var validator: Validator) {
 
-    fun validateInputWithInjectedValidator(input: Any?): Map<String, String>? {
+    fun validateInputWithInjectedValidator(
+        input: Any?,
+        mutuallyExclusiveGroups: List<Pair<String, String>>? = null
+    ): Map<String, String>? {
         val errors = HashMap<String, String>()
         val violations: Set<ConstraintViolation<Any?>> = validator.validate(input)
         if (violations.isEmpty()) {
@@ -18,7 +21,27 @@ class DaoValidatorService(private var validator: Validator) {
         violations.forEach {
             errors.put(it.propertyPath.toString(), it.message)
         }
-        return errors
+        // Check for fields where one field maybe defined while another one is not
+        // In this case, the error on the second field should be removed from error list
+        mutuallyExclusiveGroups?.forEach { pair ->
+            when {
+                errors.containsKey(pair.first) -> {
+                    // Check if the second error is also available
+                    if (!errors.containsKey(pair.second)) {
+                        errors.remove(pair.first)
+                    }
+                }
+                errors.containsKey(pair.second) -> {
+                    if (!errors.containsKey(pair.first)) {
+                        errors.remove(pair.second)
+                    }
+                }
+            }
+        }
+        if (errors.isNotEmpty()) {
+            return errors
+        }
+        return null
     }
 }
 
