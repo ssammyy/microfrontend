@@ -4,27 +4,15 @@ import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.task.api.Task
-import org.kebs.app.kotlin.apollo.api.errors.std.ResourceNotFoundException
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 import java.sql.Timestamp
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
 
 
 @Service
@@ -41,8 +29,13 @@ class BallotService(
     private val publicReviewDraftCommentsRepository: PublicReviewDraftCommentsRepository,
     val commonDaoServices: CommonDaoServices,
     private val commentsRepository: CommentsRepository,
-    private val sdDocumentsRepository: StandardsDocumentsRepository
-) {
+    private val standardRequestRepository: StandardRequestRepository,
+    private val committeeCDRepository: CommitteeCDRepository,
+    private val committeePDRepository: CommitteePDRepository,
+    private val standardNWIRepository: StandardNWIRepository,
+
+
+    ) {
     val PROCESS_DEFINITION_KEY = "Balloting"
     val TASK_CANDIDATE_GROUP_TC_SEC = "TC-Sec"
     val TASK_CANDIDATE_GROUP_TC = "TC"
@@ -149,6 +142,16 @@ class BallotService(
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
 
         if (ballot.approvalStatus.equals("Approved")) {
+            val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
+            val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
+            val preliminaryDraft: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
+            val nwiItem: StandardNWI =
+                standardNWIRepository.findById(preliminaryDraft.nwiID?.toLong() ?: -1).orElse(null)
+            val standardRequest: StandardRequest =
+                standardRequestRepository.findById(nwiItem.standardId ?: -1).orElse(null)
+
+
+
             approveBallotDraft.status = "Standard Approved"
             approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
