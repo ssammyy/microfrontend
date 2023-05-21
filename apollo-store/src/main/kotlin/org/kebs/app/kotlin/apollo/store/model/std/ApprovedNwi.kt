@@ -288,6 +288,7 @@ interface VotesTally {
     fun getABSTENTION(): Long?
 
     fun getSTATUS(): String?
+    fun getPrdID(): Long?
 
 
 }

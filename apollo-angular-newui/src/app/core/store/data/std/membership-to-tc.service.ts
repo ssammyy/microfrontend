@@ -117,6 +117,21 @@ export class MembershipToTcService {
                 })
             );
     }
+    public nonRecommend(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+        const params = new HttpParams()
+            .set('tCApplicationId', String(tCApplicationId))
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'nonRecommend',
+            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
+            .pipe(
+                map(function (response: any) {
+                    return response;
+                }),
+                catchError((fault: HttpErrorResponse) => {
+                    // console.warn(`getAllFault( ${fault.message} )`);
+                    return throwError(fault);
+                })
+            );
+    }
 
     public getRecommendationsFromSPC(): Observable<ReviewApplicationTask[]> {
         return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getRecommendationsFromSPC')
@@ -139,23 +154,12 @@ export class MembershipToTcService {
                 })
             );
     }
-
-    public getAcceptedMembers(): Observable<ReviewApplicationTask[]> {
-        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getAcceptedFromSPC')
-
-    }
-
-    public getRejectedFromSPC(): Observable<ReviewApplicationTask[]> {
-        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getRejectedFromSPC')
-
-    }
-
-
-    public sendAppointmentEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): Observable<any> {
+    public decisionOnSACRecommendation(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): Observable<any> {
         const params = new HttpParams()
             .set('tCApplicationId', String(tCApplicationId))
+            .set('decision', String(decision))
 
-        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'approve',
+        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'decisionOnSACRecommendation',
             reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
             .pipe(
                 map(function (response: any) {
@@ -168,9 +172,81 @@ export class MembershipToTcService {
             );
     }
 
+    public getAcceptedMembers(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getAcceptedFromSPC')
+
+    }
+
+    public getSacAccepted(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getSacAccepted')
+
+    }
+
+    public getRejectedFromSPC(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getRejectedFromSPC')
+
+    }
+
+    public getNscRejected(): Observable<ReviewApplicationTask[]> {
+        return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getNscRejected')
+
+    }
+
+
+    public sendAppointmentEmail(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number,data: FormData,): Observable<any> {
+        return this.http.post<any>(`${this.apiMembershipToTCUrl}` + 'approve', data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'tCApplicationId':  String(tCApplicationId)}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+
+    }
+
     public approveAppointmentEmail(tCApplicationId: string): Observable<any> {
 
         const url = `${this.apiMembershipToTCUrlAnonymous}` + 'approve';
+        const params = new HttpParams()
+            .set('applicationID', tCApplicationId);
+
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public approveAppointmentEmailAuthorizer(tCApplicationId: string): Observable<any> {
+
+        const url = `${this.apiMembershipToTCUrlAnonymous}` + 'approveUserApplication';
+        const params = new HttpParams()
+            .set('applicationID', tCApplicationId);
+
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public rejectAppointmentEmailAuthorizer(tCApplicationId: string): Observable<any> {
+
+        const url = `${this.apiMembershipToTCUrlAnonymous}` + 'rejectUserApplication';
         const params = new HttpParams()
             .set('applicationID', tCApplicationId);
 

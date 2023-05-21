@@ -659,6 +659,26 @@ export const ROUTES: RouteInfo[] = [
     },
 
     // Standards Development
+
+
+    //Standards Development Admin
+    {
+        path: '/sdAdmin',
+        title: 'Standards',
+        type: 'sub',
+        children: [
+            {path: 'technicalCommittee', title: 'TC Management', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'Technical Committee', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'Technical Committee', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
+
+        ],
+        icontype: 'summarize',
+        collapse: 'standards',
+        privilege: ['SYSADMIN_VIEW'],
+
+    },
+
+
     {
         path: '',
         title: 'Request Module',
@@ -974,8 +994,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ', 'DI_SDT_SD_MODIFY']
             },
             {
+                path: 'reviewRecommendationOfSac', title: 'NSC Review', ab: 'NSC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ']
+            },
+            {
                 path: 'reviewAccepted',
-                title: 'Approve Members',
+                title: 'Accept Members',
                 ab: 'AL',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DI_SDT_SD_MODIFY', 'HOD_TWO_SD_READ']
             },
@@ -1148,7 +1172,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '',
-        title: 'International Standards',
+        title: 'Adoption of International Standards',
         type: 'sub',
         children: [
             {
@@ -1192,7 +1216,7 @@ export const ROUTES: RouteInfo[] = [
         ],
         icontype: 'business',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ'],
-        collapse: 'is',
+        collapse: 'AoIS',
     },
 
     {

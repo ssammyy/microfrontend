@@ -74,7 +74,7 @@ export class IsProposalFormComponent implements OnInit {
         closingDate : null,
         title : null,
         scope : null,
-        iStandardNumber:[null],
+        iStandardNumber:['', Validators.required],
         stakeholdersList:null,
         stakeHolderName:null,
         stakeHolderEmail:null,

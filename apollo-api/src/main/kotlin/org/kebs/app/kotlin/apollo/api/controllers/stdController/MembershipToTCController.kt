@@ -8,7 +8,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.MembershipToTCServi
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.MembershipTCRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -33,12 +32,7 @@ class MembershipToTCController(
     ) {
 
 
-    //********************************************************** deployment endpoints ********************************************//
-    @PostMapping("/anonymous/membershipToTCdeploy")
-    fun deployWorkflow(): ServerResponse {
-        membershipToTCService.deployProcessDefinition()
-        return ServerResponse(HttpStatus.OK, "Successfully deployed server", HttpStatus.OK)
-    }
+
 
     //***************************************************** submit justification for formation of TC ***************************//
     @PostMapping("/membershipToTC/submitCallForApplication")
@@ -85,6 +79,15 @@ class MembershipToTCController(
         @RequestParam("applicationID") applicationID: String
     ): ResponseEntity<String> {
         return membershipToTCService.approveUserApplication(applicationID)
+
+    }
+
+    @GetMapping("/anonymous/membershipToTC/rejectUserApplication")
+    fun getRejectionUserApplication(
+        response: ServerResponse,
+        @RequestParam("applicationID") applicationID: String
+    ): ResponseEntity<String> {
+        return membershipToTCService.rejectUserApplication(applicationID)
 
     }
 
@@ -142,7 +145,7 @@ class MembershipToTCController(
         @RequestBody membershipTCApplication: MembershipTCApplication,
         @RequestParam("tCApplicationId") tCApplicationId: Long,
     ) {
-        return membershipToTCService.completeSPCReview(membershipTCApplication, tCApplicationId);
+        return membershipToTCService.completeSPCReview(membershipTCApplication, tCApplicationId)
     }
 
     @PostMapping("/membershipToTC/resubmitReview")
@@ -151,7 +154,16 @@ class MembershipToTCController(
         @RequestBody membershipTCApplication: MembershipTCApplication,
         @RequestParam("tCApplicationId") tCApplicationId: Long,
     ) {
-        return membershipToTCService.resubmitReview(membershipTCApplication, tCApplicationId);
+        return membershipToTCService.resubmitReview(membershipTCApplication, tCApplicationId)
+    }
+
+    @PostMapping("/membershipToTC/nonRecommend")
+    @ResponseBody
+    fun nonRecommend(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+    ) {
+        return membershipToTCService.nonRecommend(membershipTCApplication, tCApplicationId)
     }
 
     @GetMapping("/membershipToTC/getRecommendationsFromSPC")
@@ -181,13 +193,36 @@ class MembershipToTCController(
         return membershipToTCService.getRejected()
     }
 
+    @GetMapping("/membershipToTC/getSacAccepted")
+    fun getSacAccepted(): List<MembershipTCApplication> {
+        return membershipToTCService.getSacAccepted()
+    }
+
+    @PostMapping("/membershipToTC/decisionOnSACRecommendation")
+    @ResponseBody
+    fun decisionOnSACRecommendation(
+        @RequestBody membershipTCApplication: MembershipTCApplication,
+        @RequestParam("tCApplicationId") tCApplicationId: Long,
+        @RequestParam("decision") decision: String
+    ) {
+        return membershipToTCService.decisionOnSACRecommendation(membershipTCApplication, tCApplicationId, decision)
+
+    }
+
+    @GetMapping("/membershipToTC/getNscRejected")
+    fun getNscRejected(): List<MembershipTCApplication> {
+        return membershipToTCService.getNscRejected()
+    }
+
+
     @PostMapping("/membershipToTC/approve")
     @ResponseBody
     fun sendApprovalEmail(
-        @RequestBody membershipTCApplication: MembershipTCApplication,
         @RequestParam("tCApplicationId") tCApplicationId: Long,
-    ) {
-        return membershipToTCService.sendEmailToApproved(membershipTCApplication, tCApplicationId)
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+
+        ) {
+        return membershipToTCService.sendEmailToApproved(tCApplicationId,docFile)
 
     }
 
@@ -273,18 +308,15 @@ class MembershipToTCController(
     }
 
 
-    @GetMapping("/membershipToTC/getTCMemberCreationTasks")
-    fun getTCMemberCreationTasks(): List<TaskDetails> {
-        return membershipToTCService.getTCMemberCreationTasks()
-    }
+
 
     @PostMapping("/membershipToTC/saveTCMember")
     @ResponseBody
-    fun submitTCMemberApplication(@RequestBody technicalCommitteMember: TechnicalCommitteeMember): ServerResponse {
+    fun submitTCMemberApplication(@RequestBody technicalCommitteeMember: TechnicalCommitteeMember): ServerResponse {
         return ServerResponse(
             HttpStatus.OK,
             "Successfully uploaded TC Member",
-            membershipToTCService.saveTCMember(technicalCommitteMember)
+            membershipToTCService.saveTCMember(technicalCommitteeMember)
         )
     }
 
@@ -299,7 +331,7 @@ class MembershipToTCController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = membershipTCRepository.findByIdOrNull(callForTCApplicationId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")

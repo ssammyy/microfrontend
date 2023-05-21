@@ -361,6 +361,10 @@ import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.comp
 import {IntStdNscApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component";
 import {IntStdWebProposalComponent} from "./apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component";
 import {NcrCorCertificateComponent} from "./apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component";
+import {
+    AuthorizerApproveApplicationComponent
+} from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
+import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
 
 export const routes: Routes = [
     {
@@ -752,7 +756,7 @@ export const routes: Routes = [
     },
 
 
-    // quality Assurance Admin
+    // Quality Assurance Admin
 
     {
         path: 'smark-admin', component: AdminLayoutComponent,
@@ -1676,7 +1680,7 @@ export const routes: Routes = [
         children: [{path: '', component: CreateDepartmentComponent}],
     },
     {
-        path: 'technicalCommittee', component: AdminLayoutComponent,
+        path: 'sdAdmin/technicalCommittee', component: AdminLayoutComponent,
         children: [{path: '', component: CreatetechnicalcommitteeComponent}],
     },
     {
@@ -1887,6 +1891,12 @@ export const routes: Routes = [
         children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}],
     },
     {
+        path: 'reviewRecommendationOfSac',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewNscComponent}],
+    },
+    {
         path: 'reviewAccepted',
         component: AdminLayoutComponent,
         // canActivate: [AuthGuard],
@@ -1940,6 +1950,13 @@ export const routes: Routes = [
         // canActivate: [AuthGuard],
         children: [{path: '', component: UploadTcMemberComponentComponent}],
     },
+    {
+        path: 'authorizerApproveApplication',
+        component: StandardRequestComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: AuthorizerApproveApplicationComponent}],
+    },
+
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
      ***************************************************************/

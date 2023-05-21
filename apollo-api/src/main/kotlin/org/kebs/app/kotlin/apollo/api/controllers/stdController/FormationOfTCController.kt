@@ -89,14 +89,25 @@ class FormationOfTCController(
         )
     }
 
+    @PostMapping("/hofSubmitCommentOnSpcRejection")
+    @ResponseBody
+    fun hofSubmitCommentOnSpcRejection(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Comment Submitted",
+            formationOfTCService.hofSubmitCommentOnSpcRejection(justificationForTC)
+        )
+    }
+
+
     @GetMapping("/getAllSpcJustifications")
     fun getAllSpcJustifications(): List<JustificationForTC> {
         return formationOfTCService.getAllSpcJustifications()
     }
 
-    @GetMapping("/getAllJustificationsRejectedBySpc")
-    fun getAllJustificationsRejectedBySpc(): List<JustificationForTC> {
-        return formationOfTCService.getAllJustificationsRejectedBySpc()
+    @GetMapping("/getAllJustificationsRejectedByHof")
+    fun getAllJustificationsRejectedByHof(): List<JustificationForTC> {
+        return formationOfTCService.getAllJustificationsRejectedByHof()
     }
 
     @PostMapping("/approveJustificationSPC")

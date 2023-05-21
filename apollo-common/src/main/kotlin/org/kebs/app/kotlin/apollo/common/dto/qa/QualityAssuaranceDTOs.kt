@@ -13,7 +13,6 @@ import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
 
-
 data class PermitSearchValues(
     var refNumber: String? = null,
     var productName: String? = null,
@@ -24,7 +23,7 @@ data class PermitSearchValues(
     var permitType: Long? = null,
     var firmName: String? = null,
 
-)
+    )
 
 data class SectionApplyDto(
     var sectionId: Long? = null,
@@ -93,6 +92,7 @@ data class SSFDetailsApplyDto(
     var brandName: String? = null,
     var productDescription: String? = null,
 )
+
 data class SSFDetailsDto(
     var id: Long? = null,
     var ssfNo: String? = null,
@@ -132,7 +132,7 @@ data class AllInspectionDetailsApplyDto(
 
 data class StandardizationMarkScheme(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var validitySmarkPermit: String? = null,
     var validitySmarkPermitRemarks: String? = null,
     var useTheSmark: String? = null,
@@ -157,7 +157,7 @@ data class TechnicalDetailsDto(
 
 data class InspectionDetailsDto(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var complianceApplicableStatutory: String? = null,
     var complianceApplicableStatutoryRemarks: String? = null,
     var plantHouseKeeping: String? = null,
@@ -172,7 +172,7 @@ data class InspectionDetailsDto(
 
 data class InspectionDetailsDtoB(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var equipmentCalibration: String? = null,
     var equipmentCalibrationRemarks: String? = null,
     var qualityRecords: String? = null,
@@ -186,8 +186,8 @@ data class InspectionDetailsDtoB(
 
 data class ProductLabellingDto(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
-    var technicalReportId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
+    var technicalReportId: Long? = null,
     var standardMarking: String? = null,
     var findings: String? = null,
     var statusOfCompliance: String? = null,
@@ -197,7 +197,7 @@ data class ProductLabellingDto(
 
 data class OperationProcessAndControlsDetailsApplyDto(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var processFlow: String? = null,
     var operations: String? = null,
     var qualityChecks: String? = null,
@@ -208,7 +208,7 @@ data class OperationProcessAndControlsDetailsApplyDto(
 
 data class HaccpImplementationDetailsApplyDto(
     var id: Long? = null,
-    var inspectionRecommendationId:Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var designFacilitiesConstructionLayout: String? = null,
     var designFacilitiesConstructionLayoutRemarks: String? = null,
     var maintenanceSanitationCleaningPrograms: String? = null,
@@ -682,7 +682,7 @@ data class FilesListDto(
     var fileType: String? = null,
     var documentType: String? = null,
     var versionNumber: Long? = null,
-    var createdBy: String? =null,
+    var createdBy: String? = null,
     var createdOn: Timestamp? = null,
     var document: ByteArray? = null
 ) {
@@ -789,7 +789,7 @@ data class ReportPermitEntityDto(
     var postalCode: String? = null
 
 
-    )
+)
 
 data class PermitDetailsDto(
     var Id: Long? = null,
@@ -1036,7 +1036,7 @@ data class ApprovedInspectionReportDto
     var permitId: Long? = null,
     var permitRefNumber: String? = null,
     var tradeMark: String? = null,
-            )
+)
 
 data class FilterDto(
     var regionId: Long? = null,
@@ -1066,6 +1066,41 @@ data class KebsWebistePermitEntityDto(
 
 
     )
+
+data class KebsWebistePermitSearchEntityDto(
+    var id: Long? = null,
+    var companyName: String? = null,
+    var productName: String? = null,
+    var ksNo: String? = null,
+    var title: String? = null,
+    var permitNo: String? = null,
+    var issueDate: String? = null,
+    var expiryDate: String? = null,
+    var effectiveDate: String? = null,
+    var permitType: String? = null,
+
+
+    )
+
+
+interface PermitsSearch {
+    fun getID(): Long?
+    fun getCOMPANY_NAME(): String?
+    fun getPRODUCT_NAME(): String?
+    fun getKS_NUMBER(): String?
+
+    fun getTITLE(): String?
+    fun getPERMIT_NUMBER(): String?
+    fun getDATE_OF_ISSUE(): String?
+
+    fun getDATE_OF_EXPIRY(): String?
+
+    fun getEFFECTIVE_DATE(): String?
+
+    fun getPERMIT_TYPE(): String?
+
+
+}
 
 data class companyDto(
     var companyName: String? = null,

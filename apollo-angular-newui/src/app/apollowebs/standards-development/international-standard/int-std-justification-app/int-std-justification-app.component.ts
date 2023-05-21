@@ -1,4 +1,13 @@
-import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    ViewEncapsulation
+} from '@angular/core';
 import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -7,9 +16,9 @@ import {
     ComStdCommitteeRemarks, ComStdRemarks,
     Department,
     InternationalStandardsComments,
-    ISAdoptionJustification, ISAdoptionProposal,
-    ISJustificationDecision, ISJustificationProposal,
-    ISSacSecTASKS, ProposalComments, StakeholderProposalComments
+    ISAdoptionProposal, ISJustification,
+    ISJustificationProposal,
+    MultipleSpcApprovals, StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
@@ -19,11 +28,13 @@ import {Router} from "@angular/router";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-justification-app',
   templateUrl: './int-std-justification-app.component.html',
-  styleUrls: ['./int-std-justification-app.component.css']
+  styleUrls: ['./int-std-justification-app.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     @ViewChildren(DataTableDirective)
@@ -32,8 +43,8 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
-    isAdoptionProposals: ISAdoptionProposal[]=[];
-    public actionRequest: ISAdoptionProposal | undefined;
+    isAdoptionProposals: ISJustification[]=[];
+    public actionRequest: ISJustification | undefined;
     public prepareJustificationFormGroup!: FormGroup;
     stakeholderProposalComments: StakeholderProposalComments[] = [];
     internationalStandardsComments: InternationalStandardsComments[] = [];
@@ -54,6 +65,11 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     isShowMainTabs= true;
     isShowJustificationTabs= true;
     public approveSpcJustificationFormGroup!: FormGroup;
+    dataSaveResourcesRequired : MultipleSpcApprovals;
+    dataSaveResourcesRequiredList: MultipleSpcApprovals[]=[];
+    predefinedDecisionAdded: boolean = false;
+    submitted = false;
+    public multipleApproveFormGroup!: FormGroup;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -74,6 +90,17 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
           proposalId:[],
           draftId:[],
 
+      });
+
+      this.multipleApproveFormGroup= this.formBuilder.group({
+          accentTo:null,
+          draftId:null,
+          id:null,
+          docName:null,
+          title:null,
+          scope: null,
+          circulationDate: null,
+          closingDate: null
       });
 
 
@@ -143,7 +170,20 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
                 //console.log(response);
                 this.getApprovedProposals();
                 this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Justification Approved`);
+                if(response.body.responseStatus=="success"){
+                    this.showToasterSuccess('Approved', response.body.responseMessage);
+                }else if(response.body.responseStatus=="error"){
+                    this.showToasterError('Not Approved', response.body.responseMessage);
+                }
+                swal.fire({
+                    title: response.body.responseMsg,
+                    text: response.body.responseMessage,
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: response.body.responseButton,
+                    },
+                    icon: response.body.responseStatus
+                });
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -155,7 +195,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     }
 
 
-    public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void {
+    public onOpenModal(isAdoptionProposal: ISJustification,mode:string,comStdDraftID: number): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
@@ -179,7 +219,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
             this.approveSpcJustificationFormGroup.patchValue(
                 {
                     requestedBy: this.actionRequest.tcSecName,
-                    slNumber: this.actionRequest.proposalNumber,
+                    slNumber: this.actionRequest.id,
                     scope: this.actionRequest.scope,
                     circulationDate: this.actionRequest.circulationDate,
                     closingDate: this.actionRequest.closingDate,
@@ -203,6 +243,13 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     public hideModalApproveSpcJustification() {
         this.closeModalApproveSPCJustification?.nativeElement.click();
     }
+
+    @ViewChild('closeModalMultiple') private closeModalMultiple: ElementRef | undefined;
+
+    public hideModalMultiple() {
+        this.closeModalMultiple?.nativeElement.click();
+    }
+
     rerender(): void {
         this.dtElements.forEach((dtElement: DataTableDirective) => {
             if (dtElement.dtInstance)
@@ -220,7 +267,7 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
     public getApprovedProposals(): void{
         this.SpinnerService.show();
         this.stdIntStandardService.getJustification().subscribe(
-            (response: ISAdoptionProposal[])=> {
+            (response: ISJustification[])=> {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
@@ -301,6 +348,78 @@ export class IntStdJustificationAppComponent implements OnInit,OnDestroy {
         this.isShowMainTabs= true;
         this.isShowJustificationTabs= true;
 
+    }
+
+    onClickAddResource(isAdoptionProposal: ISJustification ): void {
+        const dataSaveResourcesRequiredTest=new MultipleSpcApprovals;
+        dataSaveResourcesRequiredTest.id=isAdoptionProposal.id;
+        dataSaveResourcesRequiredTest.draftId=isAdoptionProposal.draftId
+        dataSaveResourcesRequiredTest.standardType=isAdoptionProposal.standardType
+        dataSaveResourcesRequiredTest.standardNumber=isAdoptionProposal.standardNumber
+        dataSaveResourcesRequiredTest.tcSecName=isAdoptionProposal.tcSecName
+        dataSaveResourcesRequiredTest.title=isAdoptionProposal.title
+        dataSaveResourcesRequiredTest.scope=isAdoptionProposal.scope
+        dataSaveResourcesRequiredTest.circulationDate=isAdoptionProposal.circulationDate
+        dataSaveResourcesRequiredTest.closingDate=isAdoptionProposal.closingDate
+        dataSaveResourcesRequiredTest.accentTo=this.multipleApproveFormGroup.get("accentTo").value;
+        const valueFound=this.dataSaveResourcesRequiredList.find(t=> t.id===dataSaveResourcesRequiredTest.id );
+        if(dataSaveResourcesRequiredTest.accentTo!==null){
+
+            if (valueFound === null || valueFound === undefined) {
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest);
+                console.log(this.dataSaveResourcesRequiredList);
+            }else{
+                const myArray = this.dataSaveResourcesRequiredList;
+
+                const idToRemove = valueFound.id;
+
+                const result = myArray.reduce((accumulator, currentValue) => {
+                    if (currentValue.id !== idToRemove) {
+                        accumulator.push(currentValue);
+                    }
+                    return accumulator;
+                }, []);
+
+                //console.log(result);
+                this.dataSaveResourcesRequiredList=[]
+                this.dataSaveResourcesRequiredList.push(...result);
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest)
+                //console.log(this.dataSaveResourcesRequiredList);
+            }
+        }
+
+
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedDecisionAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickMakeDecision() {
+        this.submitted = true;
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.stdIntStandardService.onClickMakeSpcDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+                (response) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Multiple Decisions Submitted`);
+                    this.getApprovedProposals();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error..Try Again`);
+                    alert(error.message);
+                }
+            );
+            this.hideModalMultiple();
+        }
     }
 
 }

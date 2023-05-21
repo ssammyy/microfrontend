@@ -191,8 +191,12 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
                 "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
                 "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
                 "   (:regionID is null or a.REGION =:regionID)",
+
         nativeQuery = true
     )
+
+//    "   (:assignIO is null or a.ASSIGNED_IO IN (:selectedOfficers))" +
+//    "   (:departmentID is null or a.DIVISION IN (:selectedDivisions))" ,
     fun findFilteredConsumerComplaintReport(
         @Param("startDate") startDate: Date?,
         @Param("endDate") endDate: Date?,
@@ -200,7 +204,9 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
         @Param("assignIO") assignIO: Long?,
         @Param("sectorID") sectorID: Long?,
         @Param("regionID") regionID: String?,
-        @Param("departmentID") departmentID: String?
+        @Param("departmentID") departmentID: String?,
+//        @Param("selectedOfficers") selectedOfficers: List<Long>?,
+//        @Param("selectedDivisions") selectedDivisions: List<String>?
     ): List<ConsumerComplaintsReportViewEntity>?
 }
 
@@ -211,7 +217,7 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
 
     @Query(
         value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))\n" +
+                "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
                 "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
                 "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)",
@@ -268,17 +274,23 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
 
     @Query(
         value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))\n" +
-                "    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))\n" +
-                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n",
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME LIKE :assignIO)\n" +
+                "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
+                "    AND (:function is null or a.FUNCTION =:function)\n"+
+                "    AND (:outletName is null or a.OUTLET_NAME =:outletName)\n"+
+                "    AND (:nameProduct is null or a.NAME_PRODUCT =:nameProduct)\n",
         nativeQuery = true
     )
     fun findFilteredSubmittedSamplesSummaryReport(
         @Param("startDate") startDate: Date?,
         @Param("endDate") endDate: Date?,
         @Param("sampleReferences") sampleReferences: String?,
-        @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?,
+        @Param("assignIO") assignIO: String?,
+        @Param("sectorID") sectorID: String?,
+        @Param("nameProduct") nameProduct: String?,
+        @Param("function") function: String?,
+        @Param("outletName") outletName: String?,
     ): List<SubmittedSamplesSummaryReportViewEntity>?
 }
 

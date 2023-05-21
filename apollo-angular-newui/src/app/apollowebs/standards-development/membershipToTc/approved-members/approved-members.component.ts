@@ -108,10 +108,7 @@ export class ApprovedMembersComponent implements OnInit {
 
 
     public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): void {
-        if (reviewApplicationTask.varField10 === "") {
-            this.showToasterError("Error", `Please Enter Scope.`);
 
-        } else {
 
             this.SpinnerService.show();
             this.loadingText = "Forwarding To HOD-ICT";
@@ -131,7 +128,7 @@ export class ApprovedMembersComponent implements OnInit {
             this.hideModel();
             this.clearForm();
 
-        }
+
     }
 
 

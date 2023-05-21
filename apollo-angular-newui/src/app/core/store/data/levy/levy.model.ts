@@ -188,6 +188,9 @@ export interface CompanyContactDetails{
 
 export interface DocumentDTO{
     id: number;
+    name: string;
+    fileType: string;
+    createdBy: string;
 }
 export interface EditCompanyDTO {
     postalAddress: string;

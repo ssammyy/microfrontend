@@ -17,6 +17,7 @@ import {StdIntStandardService} from "../../../../core/store/data/std/std-int-sta
 import {HttpErrorResponse} from "@angular/common/http";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-proposals',
@@ -246,15 +247,28 @@ export class IntStdProposalsComponent implements OnInit {
 
   }
   approveProposal(): void {
-    this.loadingText = "Approving Proposal...";
+    this.loadingText = "Decision on Proposal...";
     this.SpinnerService.show();
     this.stdIntStandardService.decisionOnProposal(this.approveProposalFormGroup.value).subscribe(
         (response ) => {
-          //console.log(response);
+
           this.getProposal();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Proposal Approved`);
+            if(response.body.responseStatus=="success"){
+                this.showToasterSuccess('Approved', response.body.responseMessage);
+            }else if(response.body.responseStatus=="error"){
+                this.showToasterError('Not Approved', response.body.responseMessage);
+            }
           this.approveProposalFormGroup.reset();
+            swal.fire({
+                title: response.body.responseMsg,
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: response.body.responseButton,
+                },
+                icon: response.body.responseStatus
+            });
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

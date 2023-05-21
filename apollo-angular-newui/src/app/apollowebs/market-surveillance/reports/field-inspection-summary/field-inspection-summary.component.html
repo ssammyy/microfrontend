@@ -43,26 +43,43 @@
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Department</b> </label>
-                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                    <select (change)="filterDivision($event)" aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
                                                             class="form-control" formControlName="sectorID" name="sectorID">
                                                         <option  selected>Please select</option>
                                                         <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-6 col-md-3">
+                                            <div *ngIf="isEngineeringSelected" class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Division</b> </label>
                                                     <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
-                                                            class="form-control" formControlName="divisionName" name="departmentID">
+                                                            class="form-control" formControlName="divisionName" name="divisionName">
+                                                        <!--                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true}" [value]="app.division">{{app.division}}</option>-->
+<!--                                                        <option [value]="'Agriculture'" >Agriculture</option>-->
+<!--                                                        <option [value]="'Chemical'" >Chemical</option>-->
+                                                        <option [value]="'Civil'" >Civil</option>
+                                                        <option [value]="'Electrical'" >Electrical</option>
+<!--                                                        <option [value]="'Food'" >Food</option>-->
+                                                        <option [value]="'Mechanical'" >Mechanical</option>
+                                                        <option [value]="'Textile'" >Textile</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!isEngineeringSelected" class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="divisionName" name="divisionName">
                                                         <!--                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true}" [value]="app.division">{{app.division}}</option>-->
                                                         <option [value]="'Agriculture'" >Agriculture</option>
                                                         <option [value]="'Chemical'" >Chemical</option>
-                                                        <option [value]="'Civil'" >Civil</option>
-                                                        <option [value]="'Electrical'" >Electrical</option>
+<!--                                                        <option [value]="'Civil'" >Civil</option>-->
+<!--                                                        <option [value]="'Electrical'" >Electrical</option>-->
                                                         <option [value]="'Food'" >Food</option>
-                                                        <option [value]="'Mechanical'" >Mechanical</option>
-                                                        <option [value]="'Textile'" >Textile</option>
+<!--                                                        <option [value]="'Mechanical'" >Mechanical</option>-->
+<!--                                                        <option [value]="'Textile'" >Textile</option>-->
 
                                                     </select>
                                                 </div>
@@ -120,7 +137,7 @@
                                     <thead>
                                         <th>Number of Samples Physically Inspected</th>
 <!--                                        <th>% Compliance to Visit as per Schedule</th>-->
-                                        <th>Number of Samples Drawn and Submitted</th>
+<!--                                        <th>Number of Samples Drawn and Submitted</th>-->
                                         <th>Average Compliance to Physical Inspection</th>
 <!--                                        <th>Sum of (PC*a)</th>-->
 <!--                                        <th>Average of Time Taken to File Surveillance Report (Days)</th>-->
@@ -129,8 +146,8 @@
                                     <tbody>
                                         <td>{{sumOfSamplesPhysicallyInspected}}</td>
 <!--                                        <td>{{percentageComplianceToVisitAsPerSchedule}}%</td>-->
-                                        <td>{{sumOfNumberOfSamplesDrawnAndSubmitted}}</td>
-                                        <td>{{averageComplianceToPhysicalInspection}}%</td>
+<!--                                        <td>{{sumOfNumberOfSamplesDrawnAndSubmitted}}</td>-->
+                                        <td>{{averageComplianceToPhysicalInspection}}</td>
 <!--                                        <td>{{sumOfPCTimesA}}</td>-->
 <!--                                        <td>{{averageTimeTakenToFillSurveillanceReport}}</td>-->
                                         <td>{{percentageFilingWithin1DayAfterVisit}}%</td>
@@ -154,14 +171,15 @@
                                             <th class="knw">MARKET CENTER</th>
                                             <th class="knw">NAME OF OUTLET</th>
 
-                                            <th class="knw">SECTOR</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">DIVISION</th>
                                             <th class="knw">NUMBER OF SAMPLES PHYSICALLY INSPECTED</th>
                                             <th class="knw">MOST RECURRING NC</th>
                                             <th class="knw">VISIT AS PER SCHEDULE? (YES/NO)</th>
-                                            <th class="knw">NUMBER OF SAMPLES DRAWN AND SUBMITTED</th>
+<!--                                            <th class="knw">NUMBER OF SAMPLES DRAWN AND SUBMITTED</th>-->
                                             <th class="knw">COMPLIANCE TO PHYSICAL INSPECTION %</th>
                                             <th class="sl">DATE OF INITIAL REPORT</th>
-                                            <th class="knw">PC * a</th>
+<!--                                            <th class="knw">PC * a</th>-->
                                             <th class="sl">TIME TAKEN TO FILL INITIAL REPORT (DAYS)</th>
                                             <th class="knw">FILING WITHING 1 DAY OF VISIT? (YES/NO)</th>
                                         </tr>
@@ -174,13 +192,14 @@
                                             <td>{{companyModel?.nameOutlet}}</td>
 
                                             <td>{{companyModel?.sectorName}}</td>
+                                            <td>{{companyModel?.division}}</td>
                                             <td>{{companyModel?.noOfSamplesPhysicallyInspected}}</td>
                                             <td>{{companyModel?.mostRecurringNonCompliant}}</td>
                                             <td>{{companyModel?.visitAspermsSchedule}}</td>
-                                            <td>{{companyModel?.noSamplesDrawnSubmitted}}</td>
+<!--                                            <td>{{companyModel?.noSamplesDrawnSubmitted}}</td>-->
                                             <td>{{companyModel?.compliancePhysicalInspection}}</td>
                                             <td>{{companyModel?.dateofSurveillanceReport}}</td>
-                                            <td>{{companyModel?.pcxa}}</td>
+<!--                                            <td>{{companyModel?.pcxa}}</td>-->
                                             <td>{{companyModel?.timeTakenFileSurveillanceReport}}</td>
                                             <td>{{companyModel?.filingWithin1DayafterVisit}}</td>
 

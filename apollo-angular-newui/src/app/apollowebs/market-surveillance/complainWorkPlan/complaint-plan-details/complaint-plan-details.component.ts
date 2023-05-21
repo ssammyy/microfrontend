@@ -80,6 +80,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   showOther: boolean = false;
+  showDataReportProduct: boolean = false;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -1951,6 +1952,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       valueToClone: null,
       id: null,
       dataReportSelected: null,
+      productSelected: null,
       dataReportID: null,
       nameProduct: ['', Validators.required],
       packaging: null,
@@ -4581,6 +4583,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
+      this.dataSaveSampleSubmit.productSelected = this.sampleSubmitForm?.get('productSelected').value;
+      console.log(this.dataSaveSampleSubmit.productSelected);
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -5990,8 +5994,21 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.standardsArray.splice(index, 1);
   }
 
-  onSelectedDataReport(){
-    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportSelected')?.value);
+  onSelectedDataReport(dataReportID){
+    this.showDataReportProduct = false;
+    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id == Number(dataReportID));
+    this.showDataReportProduct = true;
+
+  }
+  onSelectProductInDataReport(){
+    // const productSelected = this.selectedDataSheet?.productsList.find(this.selectedDataSheet?.id == 1403);
+    // console.log(productSelected.productName);
+    // console.log(productSelected.importerManufacturer);
+    // console.log(productSelected.localImport);
+    // console.log(productSelected.complianceInspectionParameter);
+    // console.log(productSelected.permitNumber);
+    // console.log(productSelected.remarks);
+    // console.log(productSelected.typeBrandName);
   }
 
   onClickCloneDataSSF() {

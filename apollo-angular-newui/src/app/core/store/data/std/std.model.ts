@@ -708,6 +708,7 @@ export class PredefinedSDCommentsFields {
     observation: string;
 }
 
+
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
@@ -766,6 +767,8 @@ export interface ISAdoptionProposal {
     positionOfRespondent: string;
     nameOfOrganization: string;
     commentId: number;
+    edition: string;
+    tcDecision: string;
 
 }
 export interface ISComments{
@@ -2389,6 +2392,21 @@ export interface Countries {
     number: string
 }
 
+export interface JustificationEditionEditions{
+    edition:string;
+    editionValue: string;
+}
+
+export var justificationEditions: JustificationEditionEditions[]=[
+    {edition:"first", editionValue:"first"},
+    {edition:"second", editionValue:"second"},
+    {edition:"third", editionValue:"third"},
+    {edition:"fourth", editionValue:"fourth"},
+    {edition:"fifth", editionValue:"fifth"},
+    {edition:"sixth", editionValue:"sixth"},
+    {edition:"seventh", editionValue:"seventh"}
+]
+
 export var countries: Countries [] = [
     { code: "AF", code3: "AFG", name: "Afghanistan", number: "004" },
     { code: "AL", code3: "ALB", name: "Albania", number: "008" },
@@ -2777,7 +2795,54 @@ export class MultipleApprovalFields{
     requestId:number;
     id:number;
     standardType:string;
+    comStdNumber:string;
+    title: string;
+    scope: string;
 }
 
+export interface SacDecision{
+    decisionList: MultipleApprovalFields[]
+}
+
+
+
+export interface SpcDecision{
+    decisionList: MultipleSpcApprovals[]
+}
+
+export class MultipleSpcApprovals{
+    accentTo: string;
+    docName: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    scope: string;
+    draftId: number;
+    id: number;
+    standardType: string;
+    standardNumber: string;
+}
+
+export interface ISJustification{
+    id: number;
+    meetingDate: string;
+    departmentName: string;
+    tcSecName: string;
+    standardNumber: string;
+    title: string;
+    edition: string;
+    requesterName: string;
+    scope: string;
+    purpose: string;
+    intendedUsers: string;
+    referenceMaterial: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    tcAcceptanceDate: string;
+    draftId: number;
+    departmentId: number;
+    standardType: string;
+}
 
 

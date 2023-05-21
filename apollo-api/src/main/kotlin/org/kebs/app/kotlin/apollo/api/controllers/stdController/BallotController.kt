@@ -119,9 +119,9 @@ class BallotController(
 
 
     @PostMapping("/prepareBallot")
-    fun prepareBallot(@RequestBody ballot: Ballot, @RequestParam("prdId") prdId: Long): ProcessInstanceResponseValue {
+    fun prepareBallot(@RequestBody ballot: Ballot): ProcessInstanceResponseValue {
 
-        return ballotService.prepareBallot(ballot, prdId)
+        return ballotService.prepareBallot(ballot)
 
     }
 
