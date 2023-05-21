@@ -98,7 +98,6 @@ class BallotService(
         ballotVote.comment?.let { variable.put("comment", it) }
         ballotVote.ballotId.let { variable.put("ballotId", it) }
         ballotVote.userId = loggedInUser.id!!
-        variable["userId"] = ballotVote.userId
 
 
 //        //check if person has voted
@@ -113,9 +112,7 @@ class BallotService(
             }
             ?: run {
                 ballotVote.createdOn = Timestamp(System.currentTimeMillis())
-                variable["createdOn"] = ballotVote.createdOn!!
                 ballotVote.status = 1
-                variable["status"] = ballotVote.status!!
                 ballotvoteRepository.save(ballotVote)
                 return ServerResponse(
                     HttpStatus.OK,
@@ -153,24 +150,16 @@ class BallotService(
 
         if (ballot.approvalStatus.equals("Approved")) {
             approveBallotDraft.status = "Standard Approved"
-            variable["status"] = approveBallotDraft.status!!
             approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
-            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
 
         } else if (ballot.approvalStatus.equals("Not Approved")) {
             approveBallotDraft.status = "Standard Not Approved"
-            variable["status"] = approveBallotDraft.status!!
             approveBallotDraft.approvalStatus = "Forward To TC For Further Deliberations"
-            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         }
         ballotRepository.save(approveBallotDraft)
@@ -183,11 +172,8 @@ class BallotService(
         val approveBallotDraft =
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
         approveBallotDraft.approvalStatus = "Edited By Hop"
-        variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
         approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
         approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
 
     }
@@ -197,11 +183,8 @@ class BallotService(
         val approveBallotDraft =
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
         approveBallotDraft.approvalStatus = "Forwarded To SAC For Approval"
-        variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
         approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
         approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
     }
 
@@ -212,24 +195,16 @@ class BallotService(
 
         if (ballot.approvalStatus.equals("Approved")) {
             approveBallotDraft.status = "FDKSTD Approved"
-            variable["status"] = approveBallotDraft.status!!
             approveBallotDraft.approvalStatus = "FDKSTD Approved"
-            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
 
         } else if (ballot.approvalStatus.equals("Not Approved")) {
             approveBallotDraft.status = "FDKSTD Not Approved"
-            variable["status"] = approveBallotDraft.status!!
             approveBallotDraft.approvalStatus = "FDKSTD Not Approved"
-            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         }
         ballotRepository.save(approveBallotDraft)
