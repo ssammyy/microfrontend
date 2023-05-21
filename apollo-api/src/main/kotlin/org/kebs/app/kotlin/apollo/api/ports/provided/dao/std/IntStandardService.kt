@@ -1072,6 +1072,13 @@ class IntStandardService(
         return isAdoptionProposalRepository.getApprovedJustification(loggedInUser.id);
     }
 
+    fun getApprovedBallotDrafts(): MutableList<ProposalDetails> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return isAdoptionProposalRepository.getApprovedBallotDrafts(loggedInUser.id);
+    }
+
+
+
 
     fun submitDraftForEditing(isDraftDto: CSDraftDto): CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()

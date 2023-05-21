@@ -166,7 +166,7 @@ export class ReviewBallotDraftComponent implements OnInit {
         );
     }
 
-    approveBallotDraft(ballotId: number): void {
+    approveBallotDraft(ballotId: number,prdID: number): void {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -194,7 +194,8 @@ export class ReviewBallotDraftComponent implements OnInit {
                     cdName: 'ballotId',
                     cdBy: 'ballotId',
                     approvalStatus: 'Approved',
-                    status: 'ballotId'
+                    status: 'ballotId',
+                    prdID: prdID
                 }
                 console.log(this.ballotDrafts)
                 this.ballotService.approveBallotDraft(this.ballotDrafts).subscribe(
@@ -225,7 +226,8 @@ export class ReviewBallotDraftComponent implements OnInit {
                     cdName: 'ballotId',
                     cdBy: 'ballotId',
                     approvalStatus: 'Not Approved',
-                    status: 'ballotId'
+                    status: 'ballotId',
+                    prdID: prdID
                 }
                 console.log(this.ballotDrafts)
                 this.ballotService.approveBallotDraft(this.ballotDrafts).subscribe(

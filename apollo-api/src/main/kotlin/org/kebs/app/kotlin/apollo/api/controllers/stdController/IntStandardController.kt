@@ -465,6 +465,14 @@ class IntStandardController(
         return internationalStandardService.getApprovedJustification()
     }
 
+    @GetMapping("/international_standard/getApprovedBallotDrafts")
+    @ResponseBody
+    fun getApprovedBallotDrafts(): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getApprovedBallotDrafts()
+    }
+
+
    // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/submitDraftForEditing")
     @ResponseBody

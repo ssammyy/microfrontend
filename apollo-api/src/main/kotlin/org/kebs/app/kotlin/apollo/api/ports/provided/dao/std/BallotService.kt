@@ -33,6 +33,9 @@ class BallotService(
     private val committeeCDRepository: CommitteeCDRepository,
     private val committeePDRepository: CommitteePDRepository,
     private val standardNWIRepository: StandardNWIRepository,
+    private val userListRepository: UserListRepository,
+    private val comStdDraftRepository: ComStdDraftRepository,
+    private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
 
 
     ) {
@@ -142,20 +145,58 @@ class BallotService(
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
 
         if (ballot.approvalStatus.equals("Approved")) {
-            val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
+            val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(approveBallotDraft.prdID).orElse(null);
             val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
             val preliminaryDraft: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
             val nwiItem: StandardNWI =
                 standardNWIRepository.findById(preliminaryDraft.nwiID?.toLong() ?: -1).orElse(null)
             val standardRequest: StandardRequest =
                 standardRequestRepository.findById(nwiItem.standardId ?: -1).orElse(null)
-
-
+            val uploadedDate= Timestamp(System.currentTimeMillis())
+            val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
+            val tcSecId= standardRequest.tcSecAssigned?.toLong()
 
             approveBallotDraft.status = "Standard Approved"
             approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+            val proposal=ISAdoptionProposal()
+            val closingDate=Timestamp.valueOf(nwiItem.closingDate+"00:00:00")
+            val circulationDate=Timestamp.valueOf(nwiItem.circulationDate+"00:00:00")
+            proposal.proposal_doc_name="Public Review Draft"
+            proposal.circulationDate=circulationDate
+            proposal.closingDate=closingDate
+            proposal.tcSecName=userListRepository.findNameById(tcSecId)
+            proposal.tcSecEmail=userListRepository.findEmailById(tcSecId)
+            proposal.preparedDate=uploadedDate
+            proposal.title=nwiItem.proposalTitle
+            proposal.scope=nwiItem.scope
+            proposal.requestId=standardRequest.id
+            proposal.iStandardNumber=publicReviewDraft.ksNumber
+            proposal.tcSecAssigned=standardRequest.tcSecAssigned
+
+            val prop=isAdoptionProposalRepository.save(proposal)
+
+            val comDraft = ComStdDraft()
+            comDraft.title=nwiItem.proposalTitle
+            comDraft.scope=nwiItem.scope
+            comDraft.normativeReference=nwiItem.referenceNumber
+            comDraft.uploadDate=uploadedDate
+            comDraft.deadlineDate=Timestamp.valueOf(nwiItem.targetDate+"00:00:00")
+            comDraft.uploadedBy=loggedInUser.id
+            comDraft.createdBy=userListRepository.findNameById(loggedInUser.id)
+            comDraft.requestNumber=standardRequest.requestNumber
+            comDraft.requestId=standardRequest.id
+            comDraft.status=4
+            comDraft.comStdNumber=publicReviewDraft.ksNumber
+            comDraft.departmentId= standardRequest.departmentId?.toLong()
+            comDraft.departmentName=standardRequest.departmentName
+            comDraft.subject=standardRequest.subject
+            comDraft.description=standardRequest.description
+            comDraft.standardType="Public Review Draft"
+            comDraft.proposalId=prop.id
+
+            val draftId=comStdDraftRepository.save(comDraft)
 
 
         } else if (ballot.approvalStatus.equals("Not Approved")) {
@@ -195,6 +236,7 @@ class BallotService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val approveBallotDraft =
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+
 
         if (ballot.approvalStatus.equals("Approved")) {
             approveBallotDraft.status = "FDKSTD Approved"

@@ -651,11 +651,18 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE p.TC_SEC_ASSIGNED=:id AND  d.STATUS=4 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE p.TC_SEC_ASSIGNED=:id AND  d.STATUS=4   ORDER BY p.ID DESC",
         nativeQuery = true
     )
 
     fun getApprovedJustification(id: Long?): MutableList<ProposalDetails>
+
+    @Query(
+        value = "SELECT d.ID as draftId,d.Title as title,d.SCOPE as scope,d.COM_STANDARD_NUMBER as iStandardNumber,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName," +
+                "d.STANDARD_TYPE as standardType,r.REQUESTOR_NAME as requesterName,u.FIRST_NAME || u.LAST_NAME as tcSecName FROM SD_COM_STD_DRAFT d LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID LEFT JOIN DAT_KEBS_USERS u on r.TC_SEC_ASSIGNED=u.ID " +
+                "WHERE r.TC_SEC_ASSIGNED=:id AND  d.STATUS=4 AND d.STANDARD_TYPE='Public Review Draft'  ORDER BY d.ID DESC",nativeQuery = true
+    )
+    fun getApprovedBallotDrafts(id: Long?): MutableList<ProposalDetails>
 
     @Query("SELECT NVL (NUMBER_OF_COMMENTS,0) as NUMBER_OF_COMMENTS FROM SD_ADOPTION_PROPOSAL WHERE ID=:proposalID", nativeQuery = true)
     fun getCommentCount(@Param("proposalID") proposalID: Long?): Long
@@ -924,6 +931,13 @@ interface StandardReviewProposalRecommendationsRepo: JpaRepository<StandardRevie
 interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
+
+    @Query("SELECT u.email FROM UsersEntity u WHERE u.id =:id")
+    fun findEmailById(@Param("id") id: Long?): String
+
+
+
+
 
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER','SL_ASSISTANT_MGR','SL_MANAGER') ", nativeQuery = true)
