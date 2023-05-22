@@ -76,6 +76,20 @@ export interface TechnicalCommittee {
 
 }
 
+export interface TechnicalCommitteeBc {
+    id: number;
+    technical_committee_no: string;
+    title: string;
+    first_NAME: string;
+    last_NAME: string;
+    tc_TITLE: string;
+    last_MODIFIED_ON: string;
+    tc_ID: number,
+    user_ID: number;
+
+}
+
+
 export interface StandardTasks {
     taskId: string;
     name: string;
@@ -975,7 +989,7 @@ export interface IStandardUpload {
     contactThreeEmail: string;
     companyName: string;
     companyPhone: string;
-    standardType:string;
+    standardType: string;
 }
 
 export interface ComStdDraftEdit {
@@ -1023,7 +1037,7 @@ export interface IStandardDraftEdit {
     proposalId: number;
     docName: string;
     standardNumber: string;
-    standardType:string;
+    standardType: string;
 }
 
 export interface InterNationalStdDecision {

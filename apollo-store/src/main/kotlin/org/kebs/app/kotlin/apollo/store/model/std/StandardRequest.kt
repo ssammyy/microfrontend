@@ -155,4 +155,9 @@ class StandardRequest {
     @Basic
     var nwaCdNumber: String? = null
 
+
+    @Column(name = "ONGOING_STATUS")
+    @Basic
+    var ongoingStatus: String? = null
+
 }

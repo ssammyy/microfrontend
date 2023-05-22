@@ -46,6 +46,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="allApplications"
+                           (click)="tabChange('All Applications')" role="tablist">
+                            <i class="material-icons"></i>All Applications
+                        </a>
+                    </li>
+
                 </ul>
 
                 <div *ngIf="id == 'Pending Review'" class="w-100">
@@ -274,18 +281,20 @@
                                                                 the dropdown list)</b></label>
                                                             <div class="default">
 
-                                                            <ng-select [(ngModel)]="filteredTc" formControlName="tcId"
-                                                                       class="custom-ng-select" name="tcId">
-                                                                <ng-option *ngFor="let tc of tcs"
-                                                                           [value]="tc.id">{{tc.tc_Title}} </ng-option>
-                                                            </ng-select>
+                                                                <ng-select [(ngModel)]="filteredTc"
+                                                                           formControlName="tcId"
+                                                                           class="custom-ng-select" name="tcId">
+                                                                    <ng-option *ngFor="let tc of tcs"
+                                                                               [value]="tc.id">{{tc.tc_Title}} </ng-option>
+                                                                </ng-select>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6 checkbox-radios">
                                                             <label><b>Tc Sec Assignment</b></label>
 
-                                                            <ng-select [(ngModel)]="filteredTcSec" formControlName="isTc"
-                                                                       class="custom-ng-select"  name="isTc">
+                                                            <ng-select [(ngModel)]="filteredTcSec"
+                                                                       formControlName="isTc"
+                                                                       class="custom-ng-select" name="isTc">
                                                                 <ng-option *ngFor="let tcSec of tcSecs"
                                                                            [value]="tcSec.id">{{tcSec.firstName}}  {{tcSec.lastName}} </ng-option>
                                                             </ng-select>
@@ -507,6 +516,13 @@
 
 
                     <app-onhold-for-nwi></app-onhold-for-nwi>
+
+
+                </div>
+                <div *ngIf="id == 'All Applications'" class="w-100">
+
+
+                    <app-all-applications-requests></app-all-applications-requests>
 
 
                 </div>
