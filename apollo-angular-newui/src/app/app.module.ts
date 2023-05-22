@@ -588,6 +588,8 @@ import {ReviewApplicationRejectedByNscComponent} from './apollowebs/standards-de
 import {TcManagementComponent} from './apollowebs/admin/tc-management/tc-management.component';
 import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
 import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
+import { ManageTcMembersComponent } from './apollowebs/admin/manage-tc-members/manage-tc-members.component';
+import { AllApplicationsRequestsComponent } from './apollowebs/standards-development/standard-request/standard-task/all-applications-requests/all-applications-requests.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1231,6 +1233,8 @@ import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
         ReviewApplicationRejectedByNscComponent,
         TcManagementComponent,
         NcrCorCertificateComponent,
+        ManageTcMembersComponent,
+        AllApplicationsRequestsComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -32,6 +32,8 @@ export interface StandardRequestB {
     desiredResult: string;
     createdOn: Date;
     standardCreationDate: Date;
+    ongoingStatus: string;
+
 
 }
 
@@ -731,7 +733,7 @@ export interface DataHolder {
     v4: string;
     v5: string;
     v6: string;
-
+    number_OF_MEMBERS:string;
 
 }
 

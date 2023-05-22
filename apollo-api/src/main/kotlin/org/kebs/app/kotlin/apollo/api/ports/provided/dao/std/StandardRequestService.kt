@@ -89,6 +89,8 @@ class StandardRequestService(
         standardRequest.createdOn = Timestamp(System.currentTimeMillis())
         standardRequest.departmentName = departmentRepository.findNameById(standardRequest.departmentId?.toLong())
         standardRequest.status = "Review By HOD"
+        standardRequest.ongoingStatus = "Review By HOD"
+
         val department = departmentRepository.findByIdOrNull(standardRequest.departmentId?.toLong())
         standardRequest.requestNumber = generateSRNumber(department?.abbreviations)
         standardRequest.rank = '3'.toString()
@@ -189,6 +191,43 @@ class StandardRequestService(
 
     }
 
+    fun getAllApplications():List<AllApplicationsStandardsDto>
+
+    {
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByProcess("Develop a standard through committee draft")
+        return standardRequest.map { p ->
+            AllApplicationsStandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                departmentRepository.findNameByIdB(p.departmentId?.toLong()) ?: "",
+                p.createdOn,
+                p.ongoingStatus
+
+
+                )
+        }
+
+
+    }
+
 
     fun getHOFTasks(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_HOF).list()
@@ -219,6 +258,8 @@ class StandardRequestService(
                     standardRequestToUpdate.tcAssigned = hofFeedback.tcId
                     standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
                     standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                    standardRequestToUpdate.ongoingStatus = "Prepare New Work Item"
+
 
                 }
 
@@ -430,6 +471,8 @@ class StandardRequestService(
         }
         if (standardRequestToUpdate != null) {
             standardRequestToUpdate.nwiStatus = "New Work Item Created For Voting"
+            standardRequestToUpdate.ongoingStatus = "New Work Item Created For Voting"
+
             standardRequestRepository.save(standardRequestToUpdate)
 
         }
@@ -609,6 +652,15 @@ class StandardRequestService(
         val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
         u.status = "Upload Justification"
         standardNWIRepository.save(u)
+        val standardRequestToUpdate = u.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "New Work Item Approved For Justification"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
         return ServerResponse(
             HttpStatus.OK,
             "Approved", "NWI Approved. Prepare Justification"
@@ -619,6 +671,15 @@ class StandardRequestService(
         val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
         u.status = "NWI Rejected"
         standardNWIRepository.save(u)
+        val standardRequestToUpdate = u.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "New Work Item Rejected For Justification"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
         return ServerResponse(
             HttpStatus.OK,
             "Rejected", "NWI Rejected."
@@ -635,6 +696,15 @@ class StandardRequestService(
         val timestamp = Timestamp(date.time) // Create a Timestamp object using the time from the Date object
         u.deferredDate = timestamp
         standardNWIRepository.save(u)
+        val standardRequestToUpdate = u.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "New Work Item Deferred"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
         return ServerResponse(
             HttpStatus.OK,
             "Deferred", "NWI Deferred."
@@ -667,6 +737,15 @@ class StandardRequestService(
         val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null)
         u.processStatus = "Approve/Reject Justification"
         standardNWIRepository.save(u)
+        val standardRequestToUpdate = u.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Justification Created. Awaiting Decision"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
         return ProcessInstanceResponseValue(standardJustification.id, "Complete", true, "justification")
 
 
@@ -731,6 +810,16 @@ class StandardRequestService(
                 j.cdNumber = cdNumber
                 standardJustificationRepository.save(j)
                 standardNWIRepository.save(u)
+                val standardRequestToUpdate = u.standardId?.let {
+                    standardRequestRepository.findById(it)
+                        .orElseThrow { RuntimeException("No Standard Request found") }
+                }
+                if (standardRequestToUpdate != null) {
+                    standardRequestToUpdate.ongoingStatus = "Prepare Minutes and Drafts For Preliminary Draft"
+                    standardRequestRepository.save(standardRequestToUpdate)
+
+                }
+
             }
             if (decisionJustification.decision.equals("Rejected")) {
                 j.status = "Justification Rejected"
@@ -1006,6 +1095,17 @@ class StandardRequestService(
     fun getAllTcs(): List<DataHolder> {
         return technicalCommitteeRepository.findAllWithDescriptionQuery()
     }
+
+    fun getAllTcsWithMembers(): List<DataHolder> {
+        return technicalCommitteeRepository.findAllWithCountQuery()
+    }
+
+    fun getTcsWithMembersDetails(technicalCommittee: Long): List<TcMembers> {
+        val u: TechnicalCommittee = technicalCommitteeRepository.findById(technicalCommittee).orElse(null)
+
+        return technicalCommitteeRepository.findTechnicalCommitteeMembers(u.id)
+    }
+
 
     //get all ProductCategory
     fun getAllProductCategories(): List<DataHolder> {
