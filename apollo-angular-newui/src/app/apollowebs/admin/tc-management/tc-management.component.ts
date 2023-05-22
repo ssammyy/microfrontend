@@ -1,8 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DataHolder, StdJustification, Stdtsectask} from "../../../core/store/data/std/request_std.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {DataHolder} from "../../../core/store/data/std/request_std.model";
 import {Department, TechnicalCommittee, UsersEntity} from "../../../core/store/data/std/std.model";
 import {StandardDevelopmentService} from "../../../core/store/data/std/standard-development.service";
 import {Store} from "@ngrx/store";
@@ -10,7 +10,6 @@ import {Router} from "@angular/router";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
-import {selectUserInfo} from "../../../core/store";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 
 declare const $: any;
