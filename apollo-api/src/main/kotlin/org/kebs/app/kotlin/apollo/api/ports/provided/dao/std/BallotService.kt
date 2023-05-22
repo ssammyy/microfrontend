@@ -184,6 +184,7 @@ class BallotService(
             comDraft.description=standardRequest.description
             comDraft.standardType="Public Review Draft"
             comDraft.proposalId=prop.id
+            comDraft.draftReviewStatus=0
 
             val draftId=comStdDraftRepository.save(comDraft)
 

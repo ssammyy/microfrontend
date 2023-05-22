@@ -39,7 +39,8 @@ class NationalEnquiryPointService(
     private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository,
     private val nepWtoNotificationRepo: NEPWtoNotificationRepository,
     private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository,
-    private val applicationMapProperties: ApplicationMapProperties
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val publicReviewDraftRepository: PublicReviewDraftRepository,
 
     ) {
     val callUrl=applicationMapProperties.mapKebsLevyUrl
@@ -422,6 +423,18 @@ class NationalEnquiryPointService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val sNep=NepNotificationFormEntity();
         val currentTime=Timestamp(System.currentTimeMillis())
+
+        publicReviewDraftRepository.findByIdOrNull(nep.pid)?.let { prd ->
+
+            with(prd) {
+                status="Sent To Head Of Trade Affairs"
+                modifiedOn=currentTime
+                modifiedBy=loggedInUser.id.toString()
+
+            }
+            publicReviewDraftRepository.save(prd)
+        }?: throw Exception("No public review draft found")
+
         sNep.datePrepared=currentTime
         val deadline: Timestamp = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(60))
         sNep.notifyingMember=nep.notifyingMember
@@ -443,6 +456,16 @@ class NationalEnquiryPointService(
         sNep.textAvailableFrom=nep.textAvailableFrom
         sNep.preparedBy=loggedInUser.firstName + loggedInUser.lastName
         sNep.status=0
+        sNep.pid=nep.pid
+        sNep.cd_Id=nep.cd_Id
+        sNep.prd_name=nep.prd_name
+        sNep.ks_NUMBER=nep.ks_NUMBER
+        sNep.organization=nep.organization
+        sNep.prd_by=nep.prd_by
+        sNep.prdStatus=nep.status
+        sNep.created_on=nep.created_on
+        sNep.number_OF_COMMENTS=nep.number_OF_COMMENTS
+        sNep.var_FIELD_1=nep.var_FIELD_1
 
         return nepNotificationFormEntityRepo.save(sNep)
     }

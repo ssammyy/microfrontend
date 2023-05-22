@@ -555,6 +555,16 @@ export interface NepPrepareDraft {
     proposedDateOfAdoption: Timestamp<any>;
     proposedDateOfEntryIntoForce: Timestamp<any>;
     textAvailableFrom: string;
+    pid:number;
+    cd_Id:number;
+    prd_name:string;
+    ks_NUMBER:string;
+    organization:string;
+    prd_by: string;
+    status: string;
+    created_on: string;
+    number_OF_COMMENTS: string;
+    var_FIELD_1: string;
 }
 
 // **********************************************************International Standards Adoption**********************************************************

@@ -224,10 +224,7 @@ class NationalEnquiryPointController(
 
     @PostMapping("/National_enquiry_point/notificationOfReview")
     fun notificationOfReview(@RequestBody nep: NepNotificationDto): ServerResponse? {
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(nep) }
-        return ServerResponse(
-            HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
             notificationOfReview(nep))
 
     }
