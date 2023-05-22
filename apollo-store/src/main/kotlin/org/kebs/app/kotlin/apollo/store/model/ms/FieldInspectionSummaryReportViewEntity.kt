@@ -15,7 +15,7 @@ class FieldInspectionSummaryReportViewEntity : Serializable {
     var id: Long? = null
 
     @Basic
-    @Column(name = "INSPECTION_DATE")
+    @Column(name = "INSPECTION_DATE_AS_DATE")
     var inspectionDate: Date? = null
 
     @Basic
@@ -33,13 +33,17 @@ class FieldInspectionSummaryReportViewEntity : Serializable {
     @Basic
     @Column(name = "OFFICER_ID")
     var officerId: Long? = null
+    
+    @Basic
+    @Column(name = "OFFICER_NAME")
+    var officerName: String? = null
 
     @Basic
     @Column(name = "TOTAL_COMPLIANCE_SCORE")
     var totalComplianceScore: String? = null
 
     @Basic
-    @Column(name = "REPORT_DATE")
+    @Column(name = "REPORT_DATE_AS_DATE")
     var reportDate: Date? = null
 
     @Basic

@@ -111,6 +111,8 @@ export class ComplaintMonitoringComponent implements OnInit {
             nameOutlet: ['', null],
             productsDueForDestruction: ['', null],
             productsDueForRelease: ['', null],
+            officerID: ['', null],
+            selectedOfficers: [[], null],
         });
 
         this.loadData(this.defaultPage, this.defaultPageSize);

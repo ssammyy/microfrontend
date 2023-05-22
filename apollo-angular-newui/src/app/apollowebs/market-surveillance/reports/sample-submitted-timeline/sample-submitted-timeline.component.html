@@ -111,6 +111,33 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Officers</b></label>
+                                                    <mat-select id="selectedOfficers"
+                                                                class="form-control"
+                                                                formControlName="selectedOfficers" multiple>
+                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [value]="integCustomer.firstName +' '+integCustomer.lastName">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Divisions </b></label>
+                                                    <mat-select multiple class="form-control" formControlName="selectedDivisions" name="selectedDivisions">
+                                                        <mat-option [value]="'Agriculture'">Agriculture</mat-option>
+                                                        <mat-option [value]="'Chemical'">Chemical</mat-option>
+                                                        <mat-option [value]="'Civil'">Civil</mat-option>
+                                                        <mat-option [value]="'Electrical'">Electrical</mat-option>
+                                                        <mat-option [value]="'Food'">Food</mat-option>
+                                                        <mat-option [value]="'Mechanical'">Mechanical</mat-option>
+                                                        <mat-option [value]="'Textile'">Textile</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->

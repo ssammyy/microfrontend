@@ -1951,8 +1951,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       valueToClone: null,
       id: null,
-      dataReportSelected: null,
-      productSelected: null,
+      dataReportSelected: ['', Validators.required],
+      productSelected: ['', Validators.required],
       dataReportID: null,
       nameProduct: ['', Validators.required],
       packaging: null,
@@ -1965,7 +1965,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       sendersName: null,
       designation: null,
       address: null,
-      sendersDate: ['', Validators.required],
+      sendersDate: null,
       receiversName: null,
       productDescription: ['', Validators.required],
       receiversDate: null,
@@ -4564,17 +4564,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    const SSFformControls = [
+      'dataReportSelected',
+      'nameProduct',
+      'sizeTestSample',
+      'productDescription',
+      'lbIdTradeMark'
+    ];
+
+    const invalidControls = SSFformControls.filter(controlName =>
+        this.sampleSubmitForm.get(controlName).invalid
+    );
+
+    if (invalidControls.length === 0) {
       window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    // }
-    // else{
-    //   this.msService.showError("Please Fill in all the fields!");
-    // }
+    }
+    else{
+      const errorMessage = 'Please fill in The following field(s): ' + invalidControls.join(', ');
+      this.msService.showError(errorMessage);
+    }
   }
 
   saveSampleSubmitted() {

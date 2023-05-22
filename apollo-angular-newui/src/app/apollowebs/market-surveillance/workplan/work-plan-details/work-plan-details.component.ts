@@ -1965,9 +1965,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       valueToClone: null,
       id: null,
-      dataReportSelected: null,
+      dataReportSelected: ['', Validators.required],
       dataReportID: null,
-      productSelected: null,
+      productSelected: ['', Validators.required],
       nameProduct: ['', Validators.required],
       packaging: null,
       labellingIdentification: null,
@@ -1979,12 +1979,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       sendersName: null,
       designation: null,
       address: null,
-      sendersDate: ['', Validators.required],
+      sendersDate: null,
       receiversName: null,
       productDescription: ['', Validators.required],
       receiversDate: null,
       lbIdAnyAomarking: null,
-      sampleCollectionDate: ['', Validators.required],
+      sampleCollectionDate: null,
       lbIdBatchNo: null,
       lbIdContDecl: null,
       lbIdDateOfManf: null,
@@ -4556,17 +4556,29 @@ export class WorkPlanDetailsComponent implements OnInit {
        this.arrayOfUploadedSSF.push(this.uploadedSSF[i]);
      }
    }
+    const SSFformControls = [
+      'dataReportSelected',
+      'nameProduct',
+      'sizeTestSample',
+      'productDescription',
+      'lbIdTradeMark'
+    ];
 
-    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    const invalidControls = SSFformControls.filter(controlName =>
+        this.sampleSubmitForm.get(controlName).invalid
+    );
+
+    if (invalidControls.length === 0) {
       window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    // } else {
-    //   this.msService.showError('Please Fill in all the fields!');
-    // }
+    } else {
+      const errorMessage = 'Please fill in The following field(s): ' + invalidControls.join(', ');
+      this.msService.showError(errorMessage);
+    }
   }
 
   saveSampleSubmitted() {
