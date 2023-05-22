@@ -47,6 +47,8 @@ class StandardRequestService(
     private val standardWorkPlanRepository: StandardWorkPlanRepository,
     private val productRepository: ProductRepository,
     private val departmentRepository: DepartmentRepository,
+    private val tcUserAssignmentRepository: TcUserAssignmentRepository,
+
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val productSubCategoryRepository: ProductSubCategoryRepository,
     private val hofFeedbackRepository: HOFFeedbackRepository,
@@ -179,8 +181,6 @@ class StandardRequestService(
                 p.status,
                 departmentRepository.findNameById(p.departmentId?.toLong()),
                 p.createdOn,
-
-
 
 
                 )
@@ -672,6 +672,42 @@ class StandardRequestService(
 
     }
 
+    fun assignTcSec(technicalCommittee: TechnicalCommittee): ProcessInstanceResponseValue {
+        val u: TechnicalCommittee = technicalCommitteeRepository.findById(technicalCommittee.id).orElse(null)
+        u.userId = technicalCommittee.userId
+        technicalCommitteeRepository.save(u)
+        return ProcessInstanceResponseValue(technicalCommittee.id, "Complete", true, "assignment")
+
+    }
+
+    fun assignHof(department: Department): ProcessInstanceResponseValue {
+        val u: Department = departmentRepository.findById(department.id).orElse(null)
+        u.userId = department.userId
+        val user: UsersEntity = usersRepo.findById(u.userId?.toLong() ?: -1).orElse(null)
+        u.varField3 = user.firstName + " " + user.lastName
+        departmentRepository.save(u)
+        return ProcessInstanceResponseValue(department.id, "Complete", true, "assignment")
+
+    }
+
+    fun assignTcMembers(tcUserAssignments: List<TcUserAssignment>): ProcessInstanceResponseValue {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val currentTime = Timestamp(System.currentTimeMillis())
+
+        val updatedTcUserAssignments = tcUserAssignments.map { tcUserAssignment ->
+            tcUserAssignment.apply {
+                createdOn = currentTime
+                createdBy = loggedInUser.id.toString()
+                status = 1
+            }
+        }
+
+        tcUserAssignmentRepository.saveAll(updatedTcUserAssignments)
+
+        return ProcessInstanceResponseValue(null, "Complete", true, "assignment")
+    }
+
+
     fun getSPCSecTasks(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_SPC_SEC).list()
         return getTaskDetails(tasks)
@@ -860,6 +896,27 @@ class StandardRequestService(
         return users
     }
 
+    fun getAllHofs(): MutableList<UsersEntity> {
+        val users: MutableList<UsersEntity> = ArrayList()
+
+        userRolesRepo.findByRoleNameAndStatus("HOF_SD", 1)
+            ?.let { role ->
+                userRolesAssignRepo.findByRoleIdAndStatus(role.id, 1)
+                    ?.let { roleAssigns ->
+                        roleAssigns.forEach { roleAssign ->
+                            usersRepo.findByIdOrNull(roleAssign.userId)
+                                ?.let { user ->
+                                    users.add(user)
+                                }
+                        }
+                    }
+                    ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
+
+            }
+            ?: throw Exception("User role name does not exist")
+        return users
+    }
+
     fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
         val historyService = processEngine.historyService
         val activities = historyService
@@ -880,43 +937,6 @@ class StandardRequestService(
     }
 
 
-//    fun deleteTask(taskId: ID) {
-//        val deleteReason = "test"
-//        val cascade = true
-//        println("ID passed to services is" + taskId)
-//        val historyService = processEngine.historyService
-//
-//
-//         val activities = historyService
-//            .createHistoricActivityInstanceQuery()
-//            .processInstanceId(taskId.ID)
-////        val taskIdb = taskId.replace("\"", "");
-////        val taskIdbc = taskIdb.replace("{", "").replace("}", "");
-////        val taskIdc = taskIdbc.replace("id:", "");
-//        println("Final ID passed to services is" + taskId.toString())
-//        val tasks = CommandContextUtil.getTaskService().findTasksByProcessInstanceId("b88aa534-d97f-11eb-82cd-fe5c68490b49")
-//        for (task in tasks) {
-//            if (CommandContextUtil.getEventDispatcher().isEnabled && !task.isCanceled) {
-//                task.isCanceled = true
-//                val execution = CommandContextUtil.getExecutionEntityManager().findById(task.executionId)
-//                CommandContextUtil.getEventDispatcher()
-//                    .dispatchEvent(
-//                        FlowableEventBuilder
-//                            .createActivityCancelledEvent(
-//                                execution.activityId, task.name,
-//                                task.executionId, task.processInstanceId,
-//                                task.processDefinitionId, "userTask", deleteReason
-//                            )
-//                    )
-//            }
-//            deleteTask(task, deleteReason, cascade, true, true)
-//        }
-//    }
-
-    //    fun deleteTask(task: TaskEntity, deleteReason: String?, cascade: Boolean, b: Boolean, b1: Boolean) {
-//        TaskHelper.deleteTask(task.toString(), deleteReason, cascade)
-//
-//    }
     fun closeTask(taskId: String) {
         taskService.complete(taskId)
         taskService.deleteTask(taskId, true)

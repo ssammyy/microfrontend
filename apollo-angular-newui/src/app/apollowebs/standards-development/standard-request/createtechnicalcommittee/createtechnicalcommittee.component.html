@@ -38,6 +38,8 @@
                                         <th class="id">Number</th>
                                         <th class="task">Technical Committee Name</th>
                                         <th class="task">Department Name</th>
+                                        <th class="task">Tc Sec</th>
+
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -47,13 +49,14 @@
 
                                         <td>{{tcTask.tc_Title}}</td>
                                         <td>{{tcTask.name}}</td>
+                                        <td>{{tcTask.v5}} {{tcTask.v6}}</td>
                                         <td><a (click)="onOpenModal(tcTask,'edit')" class="btn btn-info"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Edit</a>
                                             <br>
-                                            <a class="btn btn-danger"
+                                            <a (click)="onOpenModal(tcTask,'addTcSec')" class="btn btn-info"
                                                data-placement="top"
-                                               data-original-title="Upload NWI">Delete</a>
+                                               data-original-title="Upload NWI">Assign TcSec</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -96,51 +99,6 @@
                                     </div>
 
 
-                                    <div class="form-group col-6">
-                                        <label><b>Select Department</b><span
-                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                class="form-control" required
-                                                name="departmentId"
-                                                ngModel="{{tscsecRequest?.v3}}"
-
-
-                                        >
-                                            <option disabled>--Select Department--</option>
-                                            <option *ngFor="let department of departments"
-                                                    [selected]="tscsecRequest?.v3"
-
-                                                    value="{{department.id}}">{{department.name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="row col-12">
-                                    <div class="form-group col-6">
-                                        <label><b>Technical Committee Number</b><span
-                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                        <input
-                                                oninput="this.value = this.value.toUpperCase()"
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                name="technical_committee_no"
-                                                ngModel="{{tscsecRequest?.v2}}"
-
-                                                placeholder="Technical Committee Number" type="text">
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Parent Committee Number</b><span
-                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                        <input
-                                                oninput="this.value = this.value.toUpperCase()"
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                name="parentCommitte"
-                                                ngModel="{{tscsecRequest?.v1}}"
-
-                                                placeholder="Parent Committee Number" type="text">
-                                    </div>
-
                                 </div>
 
 
@@ -153,6 +111,64 @@
                                 </button>
                                 <button class="btn btn-info"
                                         (click)="uploadJustification(editForm.value)">Submit
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade " id="addTcSec" tabindex="-1" role="dialog"
+                 aria-labelledby="updateExampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTcSecModalLabel">Add Tc Secretary</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalB>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form #editFormB="ngForm">
+                            <div class="modal-body">
+
+                                <div class="row col-12">
+
+                                    <div class="form-group col-12">
+                                        <label><b>Technical Committee Name</b><span
+                                                style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                value="{{tscsecRequest?.tc_Title}}"
+                                                readonly
+                                                type="text">
+                                    </div>
+                                    <div class="col-12 checkbox-radios">
+                                        <label><b>Tc Sec Assignment</b></label>
+
+                                        <ng-select [(ngModel)]="filteredTcSec"
+                                                   class="custom-ng-select" name="userId">
+                                            <ng-option *ngFor="let tcSec of tcSecs"
+                                                       [value]="tcSec.id">{{tcSec.firstName}}  {{tcSec.lastName}} </ng-option>
+                                        </ng-select>
+                                    </div>
+                                    <input ngModel="{{tscsecRequest?.id}}"
+                                            name="id"
+                                            type="hidden">
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeModalB
+                                        (click)="hideModel()" data-dismiss="modal">Close
+                                </button>
+                                <button class="btn btn-info"
+                                        (click)="assignTcSec(editFormB.value)">Submit
                                 </button>
 
                             </div>

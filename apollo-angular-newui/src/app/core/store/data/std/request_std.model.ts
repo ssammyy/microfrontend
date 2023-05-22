@@ -75,6 +75,16 @@ export interface Department {
     createdBy: string;
     createdOn: string;
     status: string;
+    userId: number;
+    varField3:string;
+
+
+}
+export interface TcAssignment {
+    tcId: number;
+    userId: string;
+
+
 
 }
 
@@ -174,7 +184,7 @@ export interface Stdtsectask {
     referenceNumber: string;
     dateOfPresentation: string;
     nameOfTC: string;
-    id: string;
+    id: number;
     taskData: StandardRequestB;
 }
 
@@ -211,7 +221,7 @@ export interface NwiItem {
     referenceNumber: string;
     dateOfPresentation: string;
     nameOfTC: string;
-    id: string;
+    id: number;
     standardId: string;
     tcSec: string;
     processStatus: string;

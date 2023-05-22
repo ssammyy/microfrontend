@@ -660,8 +660,9 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standards',
         type: 'sub',
         children: [
+            {path: 'department', title: 'Department Management', ab: 'DM', privilege: ['SYSADMIN_VIEW']},
             {path: 'technicalCommittee', title: 'TC Management', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
-            {path: 'Technical Committee', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'technicalCommitteeManagement', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
             {path: 'Technical Committee', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
 
         ],

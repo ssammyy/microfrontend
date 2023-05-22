@@ -1,45 +1,37 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import java.io.Serializable
 import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name = "SD_DEPARTMENT")
-@EnableAutoConfiguration
-class Department {
-
+@Table(name = "SD_TC_USER_ASSIGNMENT")
+class TcUserAssignment : Serializable {
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id:Long =0
+    @Column(name = "ID")
+    var id: Long = 0
 
-    @Column(name = "NAME")
+    @Column(name = "TC_ID")
     @Basic
-    var name: String? = null
+    var tcId: Long = 0
 
-    @Column(name = "CODES")
+    @Column(name = "USER_ID")
     @Basic
-    var codes: String? = null
+    var userId: Long = 0
 
-    @Column(name = "ABBREVIATIONS")
-    @Basic
-    var abbreviations: String? = null
 
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
 
-
-
-    @Column(name = "USER_ID")
+    @Column(name = "VAR_FIELD_1")
     @Basic
-    var userId: Int? = null
+    var varField1: String? = null
 
     @Column(name = "VAR_FIELD_2")
     @Basic
-    var department: String? = null
+    var varField2: String? = null
 
     @Column(name = "VAR_FIELD_3")
     @Basic
@@ -96,8 +88,6 @@ class Department {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
-
 
 
 }

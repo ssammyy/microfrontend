@@ -307,6 +307,37 @@ class StandardRequestController(
         )
     }
 
+
+    @PostMapping("standard/assignTcSec")
+    @ResponseBody
+    fun assignTcSec(@RequestBody technicalCommittee: TechnicalCommittee): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully Assigned Tc Sec",
+            standardRequestService.assignTcSec(technicalCommittee)
+        )
+    }
+
+    @PostMapping("standard/assignHof")
+    @ResponseBody
+    fun assignHof(@RequestBody department: Department): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully Assigned HOF",
+            standardRequestService.assignHof(department)
+        )
+    }
+
+    @PostMapping("standard/assignTcMembers")
+    @ResponseBody
+    fun assignTcMembers(@RequestBody tcUserAssignments: List<TcUserAssignment>): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully Assigned Members",
+            standardRequestService.assignTcMembers(tcUserAssignments)
+        )
+    }
+
     @GetMapping("standard/getJustificationsPendingDecision")
     fun getJustificationsPendingDecision(): List<StandardJustification> {
         return standardRequestService.getJustificationsPendingDecision()
@@ -559,6 +590,11 @@ class StandardRequestController(
     @GetMapping("standard/getAllTcSec")
     fun getAllTcSec(): List<UsersEntity> {
         return standardRequestService.getAllTcSec()
+    }
+
+    @GetMapping("standard/getAllHofs")
+    fun getAllHofs(): List<UsersEntity> {
+        return standardRequestService.getAllHofs()
     }
 
     @GetMapping("standard/getAllStds")

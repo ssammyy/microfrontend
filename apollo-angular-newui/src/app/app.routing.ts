@@ -878,6 +878,7 @@ import {
     AuthorizerApproveApplicationComponent
 } from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
 import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
+import {TcManagementComponent} from "./apollowebs/admin/tc-management/tc-management.component";
 
 export const routes: Routes = [
     {
@@ -2184,12 +2185,16 @@ export const routes: Routes = [
         children: [{path: '', component: StdTcWorkplanComponent}],
     },
     {
-        path: 'department', component: AdminLayoutComponent,
+        path: 'sdAdmin/department', component: AdminLayoutComponent,
         children: [{path: '', component: CreateDepartmentComponent}],
     },
     {
         path: 'sdAdmin/technicalCommittee', component: AdminLayoutComponent,
         children: [{path: '', component: CreatetechnicalcommitteeComponent}],
+    },
+    {
+        path: 'sdAdmin/technicalCommitteeManagement', component: AdminLayoutComponent,
+        children: [{path: '', component: TcManagementComponent}],
     },
     {
         path: 'productCategory', component: AdminLayoutComponent,
