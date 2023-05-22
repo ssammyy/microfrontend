@@ -757,6 +757,7 @@ export interface ISAdoptionProposal {
     stEmail: string;
     stName: string;
     stStatus: number;
+    proposalId: number;
     stTelephone: string;
     tcSecAssigned:string;
 
@@ -769,6 +770,7 @@ export interface ISAdoptionProposal {
     commentId: number;
     edition: string;
     tcDecision: string;
+    draftReviewStatus: number;
 
 }
 export interface ISComments{
@@ -934,6 +936,7 @@ export interface IStandardUpload {
     accentTo: boolean;
     proposalId: number;
     requestId: number;
+    draftReviewStatus: number;
     id: number;
     standardNumber: string;
     comStdNumber: string;
@@ -954,6 +957,7 @@ export interface IStandardUpload {
     contactThreeEmail: string;
     companyName: string;
     companyPhone: string;
+    standardType:string;
 }
 export interface ComStdDraftEdit{
     id: number;
@@ -1000,6 +1004,7 @@ export interface IStandardDraftEdit {
     proposalId: number;
     docName: string;
     standardNumber: string;
+    standardType:string;
 }
 export interface InterNationalStdDecision{
     comments:string;
@@ -1122,6 +1127,7 @@ export interface ISDraftDecision {
     draftStatus: string;
     coverPageStatus: string;
     assignedTo: number;
+    draftReviewStatus: number;
 }
 
 export interface ISDraftDecisionStd {
@@ -2151,6 +2157,7 @@ export interface ISCheckRequirements {
     circulationDate: Timestamp<any>;
     closingDate: Timestamp<any>;
     durationTaken: string;
+    draftReviewStatus: number;
 }
 
 export interface ComStdRequest {

@@ -136,6 +136,8 @@ class BallotService(
         return ballotvoteRepository.findAll()
     }
 
+
+
     fun makeDecisionOnBallotDraft(ballot: Ballot) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val approveBallotDraft =
@@ -154,13 +156,14 @@ class BallotService(
             val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
             val tcSecId= standardRequest.tcSecAssigned?.toLong()
 
+
             approveBallotDraft.status = "Standard Approved"
             approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
             val proposal=ISAdoptionProposal()
-            val closingDate=Timestamp.valueOf(nwiItem.closingDate+"00:00:00")
-            val circulationDate=Timestamp.valueOf(nwiItem.circulationDate+"00:00:00")
+            val closingDate=commonDaoServices.convertStringToTimestamp(nwiItem.closingDate)
+            val circulationDate=commonDaoServices.convertStringToTimestamp(nwiItem.circulationDate)
             proposal.proposal_doc_name="Public Review Draft"
             proposal.circulationDate=circulationDate
             proposal.closingDate=closingDate
@@ -180,7 +183,7 @@ class BallotService(
             comDraft.scope=nwiItem.scope
             comDraft.normativeReference=nwiItem.referenceNumber
             comDraft.uploadDate=uploadedDate
-            comDraft.deadlineDate=Timestamp.valueOf(nwiItem.targetDate+"00:00:00")
+            comDraft.deadlineDate=commonDaoServices.convertStringToTimestamp(nwiItem.targetDate+" 00:00:00")
             comDraft.uploadedBy=loggedInUser.id
             comDraft.createdBy=userListRepository.findNameById(loggedInUser.id)
             comDraft.requestNumber=standardRequest.requestNumber

@@ -116,6 +116,11 @@ class IntStandardService(
         return userListRepository.getProofReaderDetails()
     }
 
+    fun getTcSecDetails(): List<UserDetailHolder> {
+        return userListRepository.getTcSecDetails()
+    }
+
+
     //find stakeholder
     fun findStandardStakeholders(): List<UserDetailHolder>? {
         return userListRepository.findStandardStakeholders()
@@ -1100,10 +1105,12 @@ class IntStandardService(
         com.draftId = isDraftDto.draftId
         com.departmentId = isDraftDto.departmentId
         com.subject = isDraftDto.subject
+        com.proposalId = isDraftDto.proposalId
         com.description = isDraftDto.description
         com.status = 1
-        com.standardType = "International Standard"
+        com.standardType =isDraftDto.standardType
         com.preparedBy = loggedInUser.firstName + loggedInUser.lastName
+        com.draftReviewStatus=isDraftDto.draftReviewStatus
 
 
         val draftStandard = companyStandardRepository.save(com)
@@ -1662,6 +1669,10 @@ class IntStandardService(
         val comRemarks = CompanyStandardRemarks()
         //val decision=iSDraftDecisions.accentTo
         val timeOfRemark = Timestamp(System.currentTimeMillis())
+        val decision = iSDraftDecisions.accentTo
+        val typeOfStandard=iSDraftDecisions.standardType
+        val reviewDraftStatus=iSDraftDecisions.draftReviewStatus
+        val toCheckCom: Long = 0
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1674,48 +1685,119 @@ class IntStandardService(
         comRemarks.role = "HOP"
         var url = ""
 
-        // if (decision == "Yes") {
-        companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+         if (decision == "Yes") {
+             if(typeOfStandard=="Public Review Draft"){
+                 if(reviewDraftStatus==toCheckCom){
+                     companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
-            with(companyStandard) {
-                status = 8
+                         with(companyStandard) {
+                             status = 25
 
-            }
-            // if(typeOfStandard=="International Standard"){
-            //   url="intSacList"
-            // }else if(typeOfStandard=="Company Standard"){
-            url = "intSacList"
-//                }else if(typeOfStandard=="Kenya Standard"){
-//                    url="intSacList"
-//                }
-            companyStandardRepository.save(companyStandard)
-            companyStandardRemarksRepository.save(comRemarks)
-            var userList = companyStandardRepository.getSacSecEmailList()
-            val targetUrl = "${callUrl}/$url";
-            userList.forEach { item ->
-                //val recipient="stephenmuganda@gmail.com"
-                val recipient = item.getUserEmail()
-                val subject = "New Standard"
-                val messageBody =
-                    "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
-                if (recipient != null) {
-                    // notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
-        } ?: throw Exception("DRAFT NOT FOUND")
+                         }
 
-//        } else if (decision == "No") {
-//
-//            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-//                with(companyStandard) {
-//                        status = 1
-//                    }
-//                companyStandardRepository.save(companyStandard)
-//                    companyStandardRemarksRepository.save(comRemarks)
-//
-//                } ?: throw Exception("DRAFT NOT FOUND")
-//
-//        }
+                         url = "intSacList"
+                         companyStandardRepository.save(companyStandard)
+                         companyStandardRemarksRepository.save(comRemarks)
+                     } ?: throw Exception("DRAFT NOT FOUND")
+
+                     comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraftTbl ->
+
+                         with(comStdDraftTbl) {
+                             status = 25
+                             draftReviewStatus=1
+
+                         }
+
+                         url = "intSacList"
+                         comStdDraftRepository.save(comStdDraftTbl)
+                     } ?: throw Exception("DRAFT NOT FOUND")
+
+                 }else{
+                     companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                         with(companyStandard) {
+                             status = 8
+
+                         }
+                         url = "intSacList"
+                         companyStandardRepository.save(companyStandard)
+                         companyStandardRemarksRepository.save(comRemarks)
+                         var userList = companyStandardRepository.getSacSecEmailList()
+                         val targetUrl = "${callUrl}/$url";
+                         userList.forEach { item ->
+                             //val recipient="stephenmuganda@gmail.com"
+                             val recipient = item.getUserEmail()
+                             val subject = "New Standard"
+                             val messageBody =
+                                 "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
+                             if (recipient != null) {
+                                 // notifications.sendEmail(recipient, subject, messageBody)
+                             }
+                         }
+                     } ?: throw Exception("DRAFT NOT FOUND")
+                 }
+
+
+             }else{
+                 companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                     with(companyStandard) {
+                         status = 8
+
+                     }
+
+                     url = "intSacList"
+                     companyStandardRepository.save(companyStandard)
+                     companyStandardRemarksRepository.save(comRemarks)
+                     var userList = companyStandardRepository.getSacSecEmailList()
+                     val targetUrl = "${callUrl}/$url";
+                     userList.forEach { item ->
+                         //val recipient="stephenmuganda@gmail.com"
+                         val recipient = item.getUserEmail()
+                         val subject = "New Standard"
+                         val messageBody =
+                             "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
+                         if (recipient != null) {
+                             // notifications.sendEmail(recipient, subject, messageBody)
+                         }
+                     }
+                 } ?: throw Exception("DRAFT NOT FOUND")
+             }
+
+
+        } else if (decision == "No") {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                        status = 21
+                    }
+                companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                } ?: throw Exception("STD DRAFT NOT FOUND")
+
+             comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+                 with(comStdDraft) {
+                     status = 4
+
+                 }
+                 comStdDraftRepository.save(comStdDraft)
+                 //companyStandardRemarksRepository.save(companyStandardRemarks)
+                 // response = "Justification Was Approved"
+             } ?: throw Exception("DRAFT NOT FOUND")
+
+             isAdoptionProposalRepository.findByIdOrNull(iSDraftDecisions.proposalId)?.let { prop ->
+                 with(prop) {
+                     tcSecAssigned=iSDraftDecisions.assignedTo.toString()
+
+                 }
+                 isAdoptionProposalRepository.save(prop)
+                 //companyStandardRemarksRepository.save(companyStandardRemarks)
+                 // response = "Justification Was Approved"
+             } ?: throw Exception("PROPOSAL NOT FOUND")
+
+
+
+        }
 
         return "Actioned"
     }
@@ -1913,7 +1995,7 @@ class IntStandardService(
         standard.scope = iStandardUploadDto.scope
         standard.special = iStandardUploadDto.special
         standard.standardNumber = iStandardUploadDto.standardNumber
-        standard.standardType = "International Standard"
+        standard.standardType = iStandardUploadDto.standardType
         standard.status = 0
         standard.dateFormed = timeOfRemark
         standard.createdBy = loggedInUser.id

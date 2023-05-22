@@ -59,7 +59,6 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
@@ -824,6 +823,26 @@ class CommonDaoServices(
         val month = Calendar.getInstance()[Calendar.MONTH]
         return month.toString()
     }
+
+
+
+    fun convertStringToTimestamp(strDate: String?): Timestamp? {
+        val dateString = "2023-03-09"
+        val pattern = "yyyy-MM-dd"
+        val sdf = SimpleDateFormat(pattern)
+        val date = sdf.parse(dateString)
+
+        return Timestamp(date.time)
+
+    }
+
+//    fun convertStringToTimestamp(strDate: String?): Timestamp? {
+//        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-dd-mm")
+//        return Optional.ofNullable(strDate) //
+//            .map { str -> LocalDateTime.parse(str, formatter) }
+//            .map(Timestamp::valueOf) //
+//            .orElse(null)
+//    }
 
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name

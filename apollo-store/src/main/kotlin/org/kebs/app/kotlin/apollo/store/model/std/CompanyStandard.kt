@@ -156,6 +156,14 @@ class CompanyStandard {
     @Basic
     var assignedTo: Long? = null
 
+    @Column(name = "DRAFT_REVIEW_STATUS")
+    @Basic
+    var draftReviewStatus: Long? = null
+
+    @Column(name = "PROPOSAL_ID")
+    @Basic
+    var proposalId: Long? = null
+
 
 
 }

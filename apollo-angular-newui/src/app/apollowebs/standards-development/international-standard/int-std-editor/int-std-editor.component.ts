@@ -92,7 +92,10 @@ export class IntStdEditorComponent implements OnInit {
           contactOneTelephone:[],
           contactOneEmail:[],
           companyName:[],
-          companyPhone:[]
+          companyPhone:[],
+          standardType:[],
+          proposalId:[],
+          draftReviewStatus:[]
 
       });
   }
@@ -231,6 +234,9 @@ export class IntStdEditorComponent implements OnInit {
                     contactOneFullName:this.actionRequests.contactOneFullName,
                     contactOneTelephone:this.actionRequests.contactOneTelephone,
                     contactOneEmail:this.actionRequests.contactOneEmail,
+                    standardType:this.actionRequests.standardType,
+                    proposalId:this.actionRequests.id,
+                    draftReviewStatus:this.actionRequests.draftReviewStatus
                 }
             );
 
@@ -354,10 +360,10 @@ export class IntStdEditorComponent implements OnInit {
         this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.SpinnerService.hide();
                 this.onClickSaveUploads(response.body.draftId)
                 this.uploadDraftStandardFormGroup.reset();
                 this.getApprovedJustification();
-                this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
 
             },
@@ -390,6 +396,8 @@ export class IntStdEditorComponent implements OnInit {
                 },
             );
 
+        }else{
+            this.onClickUploadCoverPages(comStdDraftID)
         }
 
     }
@@ -420,6 +428,8 @@ export class IntStdEditorComponent implements OnInit {
                 },
             );
 
+        }else{
+            this.SpinnerService.hide();
         }
 
     }

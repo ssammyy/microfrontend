@@ -62,6 +62,13 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
+    public getTcSecDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_TC_SEC_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+
 
 
 
