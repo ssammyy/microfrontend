@@ -772,7 +772,7 @@ export class PublicReviewDraftComponent implements OnInit {
 
     uploadProposal(): void {
         this.SpinnerService.show();
-        this.committeeService.prepareAdoptionProposal(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+        this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
             (response) => {
                 //console.log(response);
                 this.SpinnerService.hide();

@@ -2314,8 +2314,8 @@ class IntStandardService(
                     }
 
                     "Kenya Standard" -> {
-                        var kenyaStd = getKSNumber()
-                        var ks = SDWorkshopStd()
+                        val kenyaStd = getKSNumber()
+                        val ks = SDWorkshopStd()
                         ks.nwaStdNumber = kenyaStd
                         ks.requestId = draftId
                         companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->

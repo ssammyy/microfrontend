@@ -738,7 +738,11 @@ export class PredefinedSDCommentsFields {
     draftID: number;
     observation: string;
 }
-
+export interface PublicReviewDto {
+    prId: number,
+    stakeholdersList: string[];
+    addStakeholdersList: StakeHoldersFields[]
+}
 
 export interface ISAdoptionProposal {
     taskId: string;

@@ -10,6 +10,7 @@ import {
     StandardDocuments
 } from "./commitee-model";
 import {DataHolderB, Department} from "./request_std.model";
+import {ISAdoptionProposal, PublicReviewDto, StakeHoldersFields} from "./std.model";
 
 @Injectable({
     providedIn: 'root'
@@ -138,6 +139,20 @@ export class PublicReviewService {
         const params = new HttpParams()
             .set('publicReviewDraftId', publicReviewDraftId)
         return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'editPrd', publicReviewDraft, {params})
+    }
+
+    public sendPublicReview(publicReviewDto: PublicReviewDto,stakeHoldersFields: StakeHoldersFields[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_UPLOAD_STAKE_HOLDERS);
+        const params = new HttpParams();
+        publicReviewDto.addStakeholdersList=stakeHoldersFields
+        return this.http.post<ISAdoptionProposal>(url, publicReviewDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
     }
 
     //postToWebsite
