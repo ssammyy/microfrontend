@@ -119,6 +119,8 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       nameProduct: ['', null],
       function: ['', null],
       outletName: ['', null],
+      selectedOfficers: [[], null],
+      selectedDivisions: [[], null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

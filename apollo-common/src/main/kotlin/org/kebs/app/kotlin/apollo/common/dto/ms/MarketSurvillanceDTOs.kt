@@ -1229,6 +1229,8 @@ data class SubmittedSamplesSummaryViewSearchValues(
         var nameProduct: String? = null,
         var function: String? = null,
         var outletName: String? = null,
+        var selectedOfficers: Array<String>? = null,
+        var selectedDivisions: Array<String>? = null,
 )
 
 data class ConsumerComplaintViewSearchValues(
@@ -1239,8 +1241,8 @@ data class ConsumerComplaintViewSearchValues(
         var sectorID: Long? = null,
         var regionID: String? = null,
         var departmentID: String? = null,
-//        var selectedOfficers: List<Long>? = null,
-//        var selectedDivisions: List<String>? = null,
+        var selectedOfficers: Array<Long>? = null,
+        var selectedDivisions: Array<String>? = null,
 )
 
 data class selectedOfficersList(
@@ -1255,6 +1257,8 @@ data class FieldInspectionSummarySearch(
         var sectorID: Long? = null,
         var outletName: String? =null,
         var divisionName: String? =null,
+        var selectedOfficers: Array<Long>? = null,
+        var selectedDivisions: Array<String>? = null,
 )
 
 data class SeizeViewSearchValues(
@@ -1266,6 +1270,8 @@ data class SeizeViewSearchValues(
         var nameOutlet: String? = null,
         var productsDueForDestruction: String? = null,
         var productsDueForRelease: String? = null,
+        var officerID: String? = null,
+        var selectedOfficers: Array<String>? = null,
 )
 
 data class ComplaintViewSearchValues(

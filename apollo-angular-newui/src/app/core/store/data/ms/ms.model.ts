@@ -701,13 +701,11 @@ export class ConsumerComplaintViewSearchValues {
     departmentID: string;
     regionID: string;
     divisionName: string;
-    // selectedOfficers: number[];
-    // selectedDivisions: string[];
+    selectedOfficers: number[];
+    selectedDivisions: string[];
 }
 
-export class officersID{
-    officerID: number;
-}
+
 
 export class SubmittedSamplesSummaryViewSearchValues {
     sampleReferences: string;
@@ -718,6 +716,8 @@ export class SubmittedSamplesSummaryViewSearchValues {
     startDate: Date;
     endDate: Date;
     sectorID: string;
+    selectedOfficers: string[];
+    selectedDivisions: string[];
 }
 
 export class SeizeViewSearchValues {
@@ -729,12 +729,15 @@ export class SeizeViewSearchValues {
     nameOutlet: string;
     productsDueForDestruction: string;
     productsDueForRelease: string;
+    officerID: string;
+    selectedOfficers: string[];
 
 }
 
 export class MsSeizedGoodsReportViewEntity {
     id: number;
     dateofSeizure: string;
+    officer: string;
     marketCentre: string;
     nameOutlet: string;
     descriptionProductsSeized: string;
@@ -812,6 +815,7 @@ export class FieldInspectionSummaryReportViewEntity {
     dateofVisit: string;
     dateofSurveillanceReport: string;
     marketCentre: string;
+    officerName: string;
     nameOutlet: string;
     noSamplesDrawnSubmitted: string;
     compliancePhysicalInspection: string;

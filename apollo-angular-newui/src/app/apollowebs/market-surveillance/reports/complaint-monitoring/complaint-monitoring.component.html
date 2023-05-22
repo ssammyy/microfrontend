@@ -140,6 +140,29 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Officer Name</b></label>
+                                                    <select id="officerID" class="form-control" formControlName="officerID" type="text"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignIO">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.firstName + ' ' + integCustomer.lastName"
+                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Officers</b></label>
+                                                    <mat-select id="selectedOfficers"
+                                                                class="form-control"
+                                                                formControlName="selectedOfficers" multiple>
+                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [value]="integCustomer.firstName +' '+integCustomer.lastName">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->
@@ -198,6 +221,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th class="knw">DATE OF SEIZURE</th>
+                                            <th class="knw">SEIZING OFFICER</th>
                                             <th class="knw">MARKET CENTRE</th>
                                             <th class="knw">NAME OUTLET</th>
                                             <th class="knw">DESCRIPTION PRODUCTS SEIZED</th>
@@ -217,6 +241,7 @@
                                         <tr  *ngFor="let companyModel of loadedData let i=index ">
                                             <td >{{i+1}} </td>
                                             <td>{{companyModel?.dateofSeizure}}</td>
+                                            <td>{{companyModel?.officer}}</td>
                                             <td>{{companyModel?.marketCentre }}</td>
                                             <td>{{companyModel?.nameOutlet}}</td>
                                             <td>{{companyModel?.descriptionProductsSeized}}</td>

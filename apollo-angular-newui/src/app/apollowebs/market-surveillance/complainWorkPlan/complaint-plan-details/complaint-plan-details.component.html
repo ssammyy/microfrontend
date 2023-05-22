@@ -6490,8 +6490,9 @@
 <!--                                                </datalist>-->
 <!--                                            </div>-->
                                             <div class="form-group">
-                                                <label><b>Select the Data Report</b></label>
+                                                <label><b>Select the Data Report <span class="mandatorySSFFields">*</span></b></label>
                                                 <select class="form-control two-column-input" formControlName="dataReportSelected" name="dataReportSelected" (change)="onSelectedDataReport($event.target.value)">
+                                                    <option selected disabled>Please Select Data Report</option>
                                                     <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
                                                 </select>
                                             </div>
@@ -6500,8 +6501,9 @@
 
                                         <div class="col">
                                             <div *ngIf="showDataReportProduct" class="form-group">
-                                                <label><b>Select the Product in the Data Report</b></label>
+                                                <label><b>Select the Product in the Data Report <span class="mandatorySSFFields">*</span></b></label>
                                                 <select class="form-control two-column-input" formControlName="productSelected" name="productSelected" (change)="onSelectProductInDataReport()">
+                                                    <option selected disabled>Please Select A product</option>
                                                     <option *ngFor="let productSheet of selectedDataSheet?.productsList" [value]="productSheet.id">{{productSheet.typeBrandName}}</option>
                                                 </select>
                                             </div>
@@ -6816,15 +6818,15 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SUBMISSION DATE <span class="mandatorySSFFields">*</span></b></label>
+                                        <label><b>SUBMISSION DATE </b></label>
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sendersDate" name="sendersDate" disabled
-                                               [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sendersDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sendersDate.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                              >
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.sendersDate.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.sendersDate.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 

@@ -118,6 +118,8 @@ export class FieldInspectionSummaryComponent implements OnInit {
       sectorID: ['', null],
       outletName: ['', null],
       divisionName: ['', null],
+      selectedOfficers: [[], null],
+      selectedDivisions: [[], null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

@@ -115,8 +115,8 @@ export class AcknowledgementComponent implements OnInit {
       sectorID: ['', null],
       regionID: ['', null],
       departmentID: ['', null],
-      // selectedOfficers: [[]],
-      // selectedDivisions: [[]],
+      selectedOfficers: [[]],
+      selectedDivisions: [[]],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

@@ -105,6 +105,32 @@
                                                            name="endDate"  type="date">
                                                 </div>
                                             </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Officers</b></label>
+                                                    <mat-select id="selectedOfficers"
+                                                                class="form-control"
+                                                                formControlName="selectedOfficers" multiple>
+                                                        <mat-option selected disabled>Please Select Officer</mat-option>
+                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [value]="integCustomer.id">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Divisions </b></label>
+                                                    <mat-select multiple class="form-control" formControlName="selectedDivisions" name="selectedDivisions">
+                                                        <mat-option disabled selected>Please Select Division</mat-option>
+                                                        <mat-option [value]="'Agriculture'">Agriculture</mat-option>
+                                                        <mat-option [value]="'Chemical'">Chemical</mat-option>
+                                                        <mat-option [value]="'Civil'">Civil</mat-option>
+                                                        <mat-option [value]="'Electrical'">Electrical</mat-option>
+                                                        <mat-option [value]="'Food'">Food</mat-option>
+                                                        <mat-option [value]="'Mechanical'">Mechanical</mat-option>
+                                                        <mat-option [value]="'Textile'">Textile</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -169,6 +195,7 @@
                                             <th>#</th>
                                             <th class="sl">DATE OF VISIT</th>
                                             <th class="knw">MARKET CENTER</th>
+                                            <th class="knw">OFFICER NAME</th>
                                             <th class="knw">NAME OF OUTLET</th>
 
                                             <th class="knw">DEPARTMENT</th>
@@ -189,6 +216,7 @@
                                             <td >{{i+1}} </td>
                                             <td>{{companyModel?.dateofVisit}}</td>
                                             <td>{{companyModel?.marketCentre }}</td>
+                                            <td>{{companyModel?.officerName }}</td>
                                             <td>{{companyModel?.nameOutlet}}</td>
 
                                             <td>{{companyModel?.sectorName}}</td>
