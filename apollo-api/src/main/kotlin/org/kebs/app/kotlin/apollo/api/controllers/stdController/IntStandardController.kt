@@ -82,6 +82,12 @@ class IntStandardController(
         return internationalStandardService.getProofReaderDetails()
     }
 
+    @GetMapping("/international_standard/getTcSecDetails")
+    @ResponseBody
+    fun getTcSecDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getTcSecDetails()
+    }
+
     @GetMapping("/international_standard/findStandardStakeholders")
     @ResponseBody
     fun findStandardStakeholders(): List<UserDetailHolder>? {

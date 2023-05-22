@@ -138,18 +138,41 @@
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <div class="form-group col-12">
+                                                                                        <label><b>Decision on Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control" required
+                                                                                                formControlName="accentTo"
+                                                                                                name="accentTo" #teams (change)="onSelected(teams.value)"
+                                                                                        >
+                                                                                            <option disabled>--Select Option--</option>
+                                                                                            <option  value="Yes">Recommend</option>
+                                                                                            <option value="No">Not Recommend</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-12" *ngIf="selectedOption=='No'">
+                                                                                        <label><b>Select TC Sec</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                                                        <ng-select [(ngModel)]="tcSecretary"  class="form-control" formControlName="assignedTo" name="assignedTo"  >
+                                                                                            <ng-option *ngFor="let user of tcSecretaries" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                                        </ng-select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="form-group col-12">
                                                                                         <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
 
                                                                                 </div>
+                                                                                <input type="hidden" formControlName="draftReviewStatus" name="draftReviewStatus" value="{{actionRequests?.draftReviewStatus}}" >
                                                                                 <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
+                                                                                <input type="hidden" formControlName="standardType" name="standardType" value="{{actionRequests?.standardType}}" >
+                                                                                <input type="text" formControlName="proposalId" name="proposalId" value="{{actionRequests?.proposalId}}" >
                                                                                 <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >
                                                                                 <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save and Approve</button>
+                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save and Submit</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

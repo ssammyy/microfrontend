@@ -73,6 +73,7 @@ class PvocRouter {
             GET("/foreign/cocs", handler::listForeignCoc)
             GET("/foreign/cocorcoi/{cocCoiId}", handler::getForeignCoiOrCoc)
             GET("/foreign/cor", handler::listForeignCor)
+            GET("/foreign/ncr-cor", handler::listForeignCor)
             GET("/foreign/cor/{corId}", handler::getForeignCor)
         }
     }

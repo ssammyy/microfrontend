@@ -266,7 +266,7 @@ export const ROUTES: RouteInfo[] = [
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
-                path: 'foreign/cors',
+                path: 'foreign/cors/cor',
                 title: 'Foreign COR',
                 ab: 'CO',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
@@ -288,8 +288,15 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'foreign/documents/ncr',
-                title: 'Foreign NCR',
-                ab: 'CN',
+                title: 'Foreign NCR(COC)',
+                ab: 'FC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
+                // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'foreign/cors/ncr-cor',
+                title: 'Foreign NCR (COR)',
+                ab: 'FR',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
@@ -827,20 +834,20 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
 
         children: [
-            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
-            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
-            {
-                path: 'draughtsmanTasks',
-                title: 'Draught Draft Standards',
-                ab: 'DDS',
-                privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
-            },
-            {
-                path: 'proofReaderTasks',
-                title: 'Proofread Draft Standards',
-                ab: 'PDS',
-                privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
-            },
+            //{path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
+            //{path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
+            // {
+            //     path: 'draughtsmanTasks',
+            //     title: 'Draught Draft Standards',
+            //     ab: 'DDS',
+            //     privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
+            // },
+            // {
+            //     path: 'proofReaderTasks',
+            //     title: 'Proofread Draft Standards',
+            //     ab: 'PDS',
+            //     privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
+            // },
             {
                 path: 'isUploadDraft',
                 title: 'Upload Draft For Editing',

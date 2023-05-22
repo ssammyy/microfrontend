@@ -53,6 +53,24 @@ class ForeignPvocIntegrations(
     private final val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM")
     private final val REPORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd")
 
+    fun findRfcForCoc(rfcNumber: String, version: Long?): RfcEntity? {
+        return rfcRepository.findByRfcNumberAndVersion(rfcNumber, version ?: 1)
+    }
+
+    fun findRfcForCor(rfcNumber: String, version: Long?): RfcCorEntity? {
+        return rfcCorRepository.findByRfcNumberAndStatus(rfcNumber, version ?: 1)
+    }
+
+    fun findRfc(rfcNumber: String, version: Long?): Pair<Long, String>? {
+        val coc = findRfcForCoc(rfcNumber, version)
+        if (coc != null) {
+            return Pair(coc.id ?: 0, "COC")
+        }
+        return findRfcForCor(rfcNumber, version)?.let { cor ->
+            Pair(cor.id ?: 0, "COR")
+        }
+    }
+
     @Transactional
     fun foreignCoc(
         user: PvocPartnersEntity,
@@ -787,7 +805,7 @@ class ForeignPvocIntegrations(
                 transmission = cor.transmission ?: "NA"
                 route = cor.route
                 version = cor.version ?: 1
-                approvalStatus = "!"
+                approvalStatus = "0"
                 ucrNumber = cor.ucrNumber ?: ""
                 inspectionFeeCurrency = cor.inspectionFeeCurrency ?: "USD"
                 inspectionFee = cor.inspectionFee ?: 0.0
@@ -824,6 +842,7 @@ class ForeignPvocIntegrations(
         this.rfcRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
+            // Find previous active rfc version and mark as inactive
             this.rfcRepository.findByRfcNumberAndStatus(rfc.rfcNumber!!, 1)?.let { existing ->
                 existing.status = 0
                 existing.modifiedBy = auth.name

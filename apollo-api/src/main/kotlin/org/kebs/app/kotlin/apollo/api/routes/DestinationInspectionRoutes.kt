@@ -62,6 +62,7 @@ class DestinationInspectionRoutes {
             GET("/coc", handler::listCocCertificates)
             GET("/coi", handler::listCoiCertificates)
             GET("/ncr", handler::listNcrCertificates)
+            GET("/ncr-cor", handler::listNcrCorCertificates)
         }
     }
 
