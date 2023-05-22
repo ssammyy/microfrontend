@@ -10,7 +10,7 @@ import {
     SectionsEntityDto,
     SubSectionsL1EntityDto,
     SubSectionsL2EntityDto, TitlesEntityDto, TownsDto,
-    UserSearchValues, UserTypeEntityDto, AddMssingStandardDto
+    UserSearchValues, UserTypeEntityDto, AddMssingStandardDto, tieFmarkToSmarkDto, updateStandardDto
 } from './master.model';
 import {UserEntityDto} from "../users";
 import {TivetEntity} from "../companies";
@@ -117,6 +117,43 @@ export class MasterService {
             })
         )
 
+    }
+    public tieFmark(data: tieFmarkToSmarkDto) : any{
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TIE_FMARK_SMARK);
+        return this.http.post<tieFmarkToSmarkDto>(url, data).pipe(
+            map(function (response: tieFmarkToSmarkDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        )
+
+    }
+    public updateInvoice(data: updateStandardDto) : any{
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPDATE_INVOICE_STATUS);
+        return this.http.post<updateStandardDto>(url, data).pipe(
+            map(function (response: updateStandardDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        )
+    }
+    public updateBranch(data: updateStandardDto) : any{
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPDATE_USER_BRANCH);
+        return this.http.post<updateStandardDto>(url, data).pipe(
+            map(function (response: updateStandardDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        )
     }
     public removeInspectionReportsDuplicates(){
 

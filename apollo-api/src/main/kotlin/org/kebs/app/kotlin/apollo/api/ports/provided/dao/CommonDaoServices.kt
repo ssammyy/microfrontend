@@ -64,6 +64,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraSer
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.dto.qa.branchUpdateDTO
 import org.kebs.app.kotlin.apollo.common.dto.qa.fmarkSmarkDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
@@ -129,6 +130,7 @@ enum class UserTypes(val typeName: String) {
 
 @Service
 class CommonDaoServices(
+    private val gson: Gson,
     private val jasyptStringEncryptor: StringEncryptor,
     private val usersRepo: IUserRepository,
     private val companyProfileRepo: ICompanyProfileRepository,
@@ -275,19 +277,17 @@ class CommonDaoServices(
     fun deleteDuplicatePermits(): String {
         val permits = inspectionReportRepository.findAll()
         val duplicatePermitIds = permits
-            .filter { it.permitId != null } // Filter out permits with null permitId
+            .filter { it.permitId != null }
             .groupBy { it.permitId }
             .filter { it.value.size > 1 }
             .keys
 
         for (permitId in duplicatePermitIds) {
             val permitsWithId = permits.filter { it.permitId == permitId }
-            val duplicatePermit = permitsWithId.firstOrNull() // Delete the first duplicate, change as needed
+            val duplicatePermit = permitsWithId.firstOrNull()
 
             if (duplicatePermit != null) {
                 duplicatePermit.permitId = null
-//                val entity = QaInspectionReportRecommendationEntity
-//                entity.per
                 inspectionReportRepository.save(duplicatePermit)
             }
         }
@@ -298,8 +298,83 @@ class CommonDaoServices(
         }
     }
 
+    fun updateInvoiceStatus(dto: fmarkSmarkDTO): ResponseEntity<String> {
+        val responseObject = JsonObject()
+
+        try {
+            val entity: ManufacturePlantDetailsEntity? = dto.invoiceRef?.let {
+                manufacturePlantRepository.findByInvoiceSharedId(
+                    it
+                )
+            }
+            if (entity != null) {
+                entity.invoiceInspectionGenerated = 1
+                entity.endingDate = dto.endingDate
+                entity.paidDate = dto.paidDate
+                manufacturePlantRepository.save(entity)
+//                responseObject.add("data", gson.toJsonTree(savedEntity))
+                responseObject.addProperty("message", "Record updated successfully")
+                responseObject.addProperty("status", 200)
+                return ResponseEntity.ok(responseObject.toString())
+            } else {
+                responseObject.addProperty("message", "Record with that reference not found")
+                responseObject.addProperty("status", 400)
+                return ResponseEntity.ok(responseObject.toString())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            responseObject.addProperty("message", "An error occurred try again later")
+            responseObject.addProperty("status", 500)
+            return ResponseEntity.ok(responseObject.toString())
+        }
+
+    }
+
+    fun updateUserBranch(dto: branchUpdateDTO): ResponseEntity<String> {
+        println("incoming request :::  "+ dto.toString())
+        val responseObject = JsonObject()
+
+        if (dto.userEmail===null || dto.branchId ===null) {
+            responseObject.addProperty("message", "please input mandatory fields")
+            responseObject.addProperty("status", 400)
+            return ResponseEntity.ok(responseObject.toString())
+        }
+        try {
+            val entity: UsersEntity? = dto.userEmail?.let {
+                usersRepo.findByEmail(
+                    it
+                )
+            }
+            if (entity != null) {
+                entity.plantId = dto.branchId
+                usersRepo.save(entity)
+                responseObject.addProperty("message", "User Branch updated successfully")
+                responseObject.addProperty("status", 200)
+                return ResponseEntity.ok(responseObject.toString())
+            } else {
+                responseObject.addProperty("message", "User with that email not found")
+                responseObject.addProperty("status", 400)
+                return ResponseEntity.ok(responseObject.toString())
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            responseObject.addProperty("message", "An error occurred, please try again later")
+            responseObject.addProperty("status", 500)
+            return ResponseEntity.ok(responseObject.toString())
+        }
+
+    }
+
     fun tieFmarkToSmark(entity: fmarkSmarkDTO): ResponseEntity<String> {
         val responseObject = JsonObject()
+
+//        null check
+        if (entity.fmarkId === null || entity.smarkId === null) {
+            responseObject.addProperty("status", 400)
+            responseObject.addProperty("message", "Please input mandatory fields")
+            return ResponseEntity.ok(responseObject.toString())
+        }
         try {
             val newEntity = QaSmarkFmarkEntity()
             val user = loggedInUserDetails()
@@ -308,7 +383,7 @@ class CommonDaoServices(
             newEntity.fmarkId = entity.fmarkId
             newEntity.smarkId = entity.smarkId
             newEntity.createdOn = Timestamp(System.currentTimeMillis())
-            newEntity.createdBy = user.userName
+            newEntity.createdBy = concatenateName(user)
             iQaSmarkFmarkRepository.save(newEntity)
             responseObject.addProperty("status", 200)
             responseObject.addProperty("message", "Entity saved successfully")

@@ -51,7 +51,7 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['SYSADMIN_VIEW', 'TIVET_MANAGE']
             },
             {path: 'business_management', title: 'Business Management', ab: 'BM', privilege: ['SYSADMIN_VIEW']},
-            {path: 'admin_fixes', title: 'admin_fixes', ab: 'FX', privilege: ['SYSADMIN_VIEW']},
+            {path: 'admin_fixes', title: 'Fault Mitigation', ab: 'AF', privilege: ['SYSADMIN_VIEW']},
 
         ],
         icontype: 'dashboard',

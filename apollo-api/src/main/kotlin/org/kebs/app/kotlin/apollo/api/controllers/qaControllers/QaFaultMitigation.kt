@@ -2,24 +2,20 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 import com.google.gson.JsonObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.qa.branchUpdateDTO
 import org.kebs.app.kotlin.apollo.common.dto.qa.fmarkSmarkDTO
 import org.kebs.app.kotlin.apollo.store.model.SampleStandardsEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.QaSmarkFmarkEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import java.sql.Timestamp
-import java.time.LocalDateTime
-import java.time.LocalDateTime.now
-import java.time.format.DateTimeFormatter
 
 @Controller
 @RequestMapping("/api/v1/migration/qa/fixes/")
-class QaFixes(
+class QaFaultMitigation(
     private val sampleStandardsRepo: ISampleStandardsRepository,
     private val commonDaoServices: CommonDaoServices,
     ) {
@@ -54,6 +50,16 @@ class QaFixes(
     @PostMapping("/tie-fmark-smark")
     fun tieFmarkToSmark(@RequestBody entity : fmarkSmarkDTO): ResponseEntity<String>{
         return commonDaoServices.tieFmarkToSmark(entity)
+    }
+
+
+    @PostMapping("/update-invoice-status")
+    fun updateInvoiceStatus(@RequestBody entity : fmarkSmarkDTO): ResponseEntity<String>{
+        return commonDaoServices.updateInvoiceStatus(entity)
+    }
+    @PostMapping("/update-user-branch")
+    fun updateUserBranch(@RequestBody entity : branchUpdateDTO): ResponseEntity<String>{
+        return commonDaoServices.updateUserBranch(entity)
     }
 
 }

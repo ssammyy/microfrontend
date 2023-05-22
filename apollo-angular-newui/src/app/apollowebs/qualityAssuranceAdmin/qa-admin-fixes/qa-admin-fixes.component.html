@@ -1,13 +1,13 @@
 <div class="container-fluid" style="margin-top: 5%" id="main-container" xmlns="http://www.w3.org/1999/html">
     <div class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                size="medium"
-                color="#fff"
-                type="ball-scale-multiple"
-        >
-            <!--            <p style="font-size: 20px; color: white">{{loadingText}}</p>-->
-        </ngx-spinner>
+<!--        <ngx-spinner-->
+<!--                bdColor="rgba(51,51,51,0.8)"-->
+<!--                size="medium"-->
+<!--                color="#fff"-->
+<!--                type="ball-scale-multiple"-->
+<!--        >-->
+<!--            &lt;!&ndash;            <p style="font-size: 20px; color: white">{{loadingText}}</p>&ndash;&gt;-->
+<!--        </ngx-spinner>-->
     </div>
     <div class="main-content" style="margin-bottom: -400px">
         <div class="container-fluid">
@@ -19,7 +19,7 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
-                                <h3>Missing Standard in KIMS</h3>
+                                <h3>1. Missing Standard in KIMS</h3>
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
@@ -39,7 +39,7 @@
                                         <!--                                        <td><a  (click)="onOpenModal()" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Run Fix</a></td>-->
                                         <td><a class="btn btn-info btn-sm tooltips" title="Add Standard"
                                                data-placement="top" style="width: 130px" data-toggle="modal"
-                                               data-target="#assignPrivilege">Run Fix</a></td>
+                                               data-target="#assignPrivilege">Add Standard</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -75,7 +75,7 @@
                                                                                class="form-control two-column-input"
                                                                                formControlName="standardNumber"
                                                                                name="standardNumber" required
-                                                                               type="text">>
+                                                                               type="text">
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label><b>Sub Category Id </b></label>
@@ -131,7 +131,7 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
-                                <h3>Tie Fmark To Smark</h3>
+                                <h3>2. Tie Fmark To Smark</h3>
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
@@ -172,37 +172,47 @@
                                                     <div class="form-group bmd-form-group is-filled">
                                                         <div class="row">
                                                             <div class="col">
-                                                                <div class="form-group">
+                                                                <div class="form-group-double">
                                                                     <div class="form-group">
-                                                                        <label><b>F mark wareva  </b></label>
-                                                                        <input [class.is-invalid]="formAddStandards.standardTitle.invalid && formAddStandards.standardTitle.touched"
+                                                                        <label><b>smark Id </b></label>
+                                                                        <input [class.is-invalid]="formTieFmarks.smarkId.invalid && formTieFmarks.smarkId.touched"
                                                                                class="form-control two-column-input"
-                                                                               formControlName="standardTitle"
-                                                                               name="standardTitle" required
+                                                                               formControlName="smarkId"
+                                                                               name="smark Id" required
                                                                                type="text">
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label><b>Standard Number </b></label>
-                                                                        <input [class.is-invalid]="formAddStandards.standardNumber.invalid && formAddStandards.standardNumber.touched"
+                                                                        <label><b>fmark Id </b></label>
+                                                                        <input [class.is-invalid]="formTieFmarks.fmarkId.invalid && formTieFmarks.fmarkId.touched"
                                                                                class="form-control two-column-input"
-                                                                               formControlName="standardNumber"
-                                                                               name="standardNumber" required
-                                                                               type="text">>
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label><b>Sub Category Id </b></label>
-                                                                        <input [class.is-invalid]="formAddStandards.subCategoryId.invalid && formAddStandards.subCategoryId.touched"
-                                                                               class="form-control two-column-input"
-                                                                               formControlName="subCategoryId"
-                                                                               name="subCategoryId" required
+                                                                               formControlName="fmarkId"
+                                                                               name="fmarkId" required
                                                                                type="text">
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label><b>Number Of Pages </b></label>
-                                                                        <input [class.is-invalid]="formAddStandards.numberOfPages.invalid && formAddStandards.numberOfPages.touched"
+                                                                        <label><b>Description </b></label>
+                                                                        <input [class.is-invalid]="formTieFmarks.description.invalid && formTieFmarks.description.touched"
                                                                                class="form-control two-column-input"
-                                                                               formControlName="numberOfPages"
-                                                                               name="numberOfPages" required
+                                                                               formControlName="description"
+                                                                               name="description" required
+                                                                               type="text">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label><b>Smark Permit Reference
+                                                                            Number </b></label>
+                                                                        <input [class.is-invalid]="formTieFmarks.smarkPermitRefNumber.invalid && formTieFmarks.smarkPermitRefNumber.touched"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="smarkPermitRefNumber"
+                                                                               name="smarkPermitRefNumber" required
+                                                                               type="text">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label><b>Fmark Permit Reference
+                                                                            Number </b></label>
+                                                                        <input [class.is-invalid]="formTieFmarks.fmarkPermitRefNumber.invalid && formTieFmarks.smarkPermitRefNumber.touched"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="fmarkPermitRefNumber"
+                                                                               name="fmarkPermitRefNumber" required
                                                                                type="text">
                                                                     </div>
                                                                 </div>
@@ -216,7 +226,123 @@
                                                     <button type="button" class="btn btn-default btn-sm"
                                                             data-dismiss="modal">Close
                                                     </button>
-                                                    <button (click)="onClickSubmit()" type="submit"
+                                                    <button (click)="tieFmark()" type="submit"
+                                                            class="btn btn-primary btn-sm">Submit
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    Inspection invoice Status  -->
+
+    <div class="main-content" style="margin-bottom: -400px">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables table-responsive">
+                                <h3>3. Update Inspection Invoice status</h3>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Error Description</th>
+                                        <th class="knw">Fix Description</th>
+                                        <th class="knw">Entities</th>
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>unable to generate inspection invoice</td>
+                                        <td>Update the invoice status</td>
+                                        <td>DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION</td>
+                                        <!--                                        <td><a  (click)="onOpenModal()" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Run Fix</a></td>-->
+                                        <td><a class="btn btn-info btn-sm tooltips" title="Update invoice status"
+                                               data-placement="top" style="width: 130px" data-toggle="modal"
+                                               data-target="#updateInvoiceStatus">Update status</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="modal fade" id="updateInvoiceStatus" tabindex="-1" role="dialog"
+                                     aria-labelledby="approveChangesLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="updateInvoiceStatusLable">Update Inspection Invoice</h3>
+                                                <button type="button" #closeModalChanges class="close"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form class="form" [formGroup]="formUpdateInvoiceStatus">
+                                                <div class="modal-body">
+                                                    <div class="form-group bmd-form-group is-filled">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group-double">
+                                                                    <div class="form-group">
+                                                                        <label><b>Manufucturer Id</b></label>
+                                                                        <input [class.is-invalid]="formUpdateInvoiceStatuses.manufucturerID.invalid && formUpdateInvoiceStatuses.manufucturerID.touched"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="manufucturerID"
+                                                                               name="manufucturerID" required
+                                                                               type="text">
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label><b>Paid Date </b></label>
+                                                                        <mat-form-field>
+                                                                            <input matInput [matDatepicker]="picker"
+                                                                                   [class.is-invalid]="formUpdateInvoiceStatuses.paidDate.invalid && formUpdateInvoiceStatuses.paidDate.touched"
+                                                                                   placeholder="Select a date"
+                                                                                   formControlName="paidDate"
+                                                                                   name="paidDate" required>
+                                                                            <mat-datepicker-toggle matSuffix
+                                                                                                   [for]="picker"></mat-datepicker-toggle>
+                                                                            <mat-datepicker #picker></mat-datepicker>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label><b>Ending Date </b></label>
+                                                                        <mat-form-field>
+                                                                            <input matInput [matDatepicker]="pickerII"
+                                                                                   [class.is-invalid]="formUpdateInvoiceStatuses.endingDate.invalid && formUpdateInvoiceStatuses.endingDate.touched"
+                                                                                   placeholder="Select a date"
+                                                                                   formControlName="endingDate"
+                                                                                   name="endingDate" required>
+                                                                            <mat-datepicker-toggle matSuffix
+                                                                                                   [for]="pickerII"></mat-datepicker-toggle>
+                                                                            <mat-datepicker #pickerII></mat-datepicker>
+                                                                        </mat-form-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                    <button (click)="updateInvoiceStatus()" type="submit"
                                                             class="btn btn-primary btn-sm">Submit
                                                     </button>
                                                 </div>
@@ -247,7 +373,7 @@
 
 
                             <div class="material-datatables table-responsive">
-                                <h3>Inspection Report Error</h3>
+                                <h3>4. Inspection Report Error</h3>
 
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
@@ -323,6 +449,107 @@
             </div>
         </div>
     </div>
+
+<!--    update user branch after creation-->
+    <div class="main-content" style="margin-bottom: -400px">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables table-responsive">
+                                <h3>5. Update user branch</h3>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Error Description</th>
+                                        <th class="knw">Fix Description</th>
+                                        <th class="knw">Entities</th>
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Update user branch</td>
+                                        <td>Update branch</td>
+                                        <td>APOLLO.DAT_KEBS_USERS</td>
+                                        <!--                                        <td><a  (click)="onOpenModal()" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Run Fix</a></td>-->
+                                        <td><a class="btn btn-info btn-sm tooltips" title="Tie Fmark to Smark"
+                                               data-placement="top" style="width: 130px" data-toggle="modal"
+                                               data-target="#updateBranch">Update User branch</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="modal fade" id="updateBranch" tabindex="-1" role="dialog"
+                                     aria-labelledby="approveChangesLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="updateUserBranchLabel">Update User Branch</h3>
+                                                <button type="button" #closeModalChanges class="close"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form class="form" [formGroup]="formUpdateBranch">
+                                                <div class="modal-body">
+                                                    <div class="form-group bmd-form-group is-filled">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group-double">
+                                                                    <div class="form-group">
+                                                                        <label><b>User Email </b></label>
+                                                                        <input [class.is-invalid]="formUpdateBranches.userEmail.invalid && formUpdateBranches.userEmail.touched"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="userEmail"
+                                                                               name="smark Id" required
+                                                                               type="text">
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label><b>new Branch Id </b></label>
+                                                                        <input [class.is-invalid]="formUpdateBranches.branchId.invalid && formUpdateBranches.branchId.touched"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="branchId"
+                                                                               name="branchId" required
+                                                                               type="number">
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                    <button (click)="updateBranch()" type="submit"
+                                                            class="btn btn-primary btn-sm">Submit
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 </div>
 
