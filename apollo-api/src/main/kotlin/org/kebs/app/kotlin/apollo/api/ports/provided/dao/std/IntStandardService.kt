@@ -71,7 +71,8 @@ class IntStandardService(
     private val applicationMapProperties: ApplicationMapProperties,
     private val stakeholdersSdListRepository: StakeholdersSdListRepository,
     private val stakeholdersCategoriesRepository: StakeholdersCategoriesRepository,
-    private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository
+    private val stakeholdersSubCategoriesRepository: StakeholdersSubCategoriesRepository,
+    private val publicReviewDraftRepository: PublicReviewDraftRepository,
 
 
 ) {
@@ -442,7 +443,7 @@ class IntStandardService(
 
             }
             comStdDraftRepository.save(comStdDraft)
-        } ?: throw Exception("REQUEST NOT FOUND")
+        } ?: throw Exception("DRAFT NOT FOUND")
 
         iStdStakeHoldersRepository.findByIdOrNull(com.stakeHolderId)?.let { stakeHolder ->
             with(stakeHolder) {
@@ -1088,53 +1089,83 @@ class IntStandardService(
     fun submitDraftForEditing(isDraftDto: CSDraftDto): CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val draftStatus=isDraftDto.draftReviewStatus
+        val toCheckCom: Long = 1
+        val draftStandard= CompanyStandard()
 
-        val com = CompanyStandard()
+        if(draftStatus==toCheckCom){
+            val standardData: CompanyStandard? =
+                isDraftDto.draftId?.let { companyStandardRepository.findAllByDraftId(it) };
+            comStdDraftRepository.findByIdOrNull(isDraftDto.draftId)?.let { comStdDraft ->
+                with(comStdDraft) {
+                    status=6
 
-        com.comStdNumber = isDraftDto.comStdNumber
-        com.title = isDraftDto.title
-        com.scope = isDraftDto.scope
-        com.normativeReference = isDraftDto.normativeReference
-        com.symbolsAbbreviatedTerms = isDraftDto.symbolsAbbreviatedTerms
-        com.clause = isDraftDto.clause
-        com.documentType = isDraftDto.documentType
-        com.preparedBy = isDraftDto.preparedBy
-        com.documentType = isDraftDto.docName
-        com.special = isDraftDto.special
-        com.requestId = isDraftDto.requestId
-        com.draftId = isDraftDto.draftId
-        com.departmentId = isDraftDto.departmentId
-        com.subject = isDraftDto.subject
-        com.proposalId = isDraftDto.id
-        com.description = isDraftDto.description
-        com.status = 1
-        com.standardType =isDraftDto.standardType
-        com.preparedBy = loggedInUser.firstName + loggedInUser.lastName
-        com.draftReviewStatus=isDraftDto.draftReviewStatus
+                }
+                comStdDraftRepository.save(comStdDraft)
+            } ?: throw Exception("DRAFT NOT FOUND")
 
+            if (standardData != null) {
+                companyStandardRepository.findByIdOrNull(standardData.id)?.let { stdDraft ->
+                    with(stdDraft) {
+                        status=1
+                        standardType =isDraftDto.standardType
 
-        val draftStandard = companyStandardRepository.save(com)
-        comStdDraftRepository.findByIdOrNull(isDraftDto.draftId)?.let { comStdDraft ->
-            with(comStdDraft) {
-                status = 6
-
+                    }
+                    companyStandardRepository.save(stdDraft)
+                } ?: throw Exception("STD DRAFT NOT FOUND")
             }
-            comStdDraftRepository.save(comStdDraft)
-        } ?: throw Exception("DRAFT NOT FOUND")
 
-        var userList = companyStandardRepository.getHopEmailList()
+        }else{
+            val com = CompanyStandard()
 
-        //email to Head of publishing
-        val targetUrl = "${callUrl}/";
-        userList.forEach { item ->
-            //val recipient="stephenmuganda@gmail.com"
-            val recipient = item.getUserEmail()
-            val subject = "Standard"
-            val messageBody = "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded."
-            if (recipient != null) {
-                // notifications.sendEmail(recipient, subject, messageBody)
+            com.comStdNumber = isDraftDto.comStdNumber
+            com.title = isDraftDto.title
+            com.scope = isDraftDto.scope
+            com.normativeReference = isDraftDto.normativeReference
+            com.symbolsAbbreviatedTerms = isDraftDto.symbolsAbbreviatedTerms
+            com.clause = isDraftDto.clause
+            com.documentType = isDraftDto.documentType
+            com.preparedBy = isDraftDto.preparedBy
+            com.documentType = isDraftDto.docName
+            com.special = isDraftDto.special
+            com.requestId = isDraftDto.requestId
+            com.draftId = isDraftDto.draftId
+            com.departmentId = isDraftDto.departmentId
+            com.subject = isDraftDto.subject
+            com.proposalId = isDraftDto.id
+            com.description = isDraftDto.description
+            com.status = 1
+            com.standardType =isDraftDto.standardType
+            com.preparedBy = loggedInUser.firstName + loggedInUser.lastName
+            com.draftReviewStatus=isDraftDto.draftReviewStatus
+            com.prId=isDraftDto.prId
+
+
+            companyStandardRepository.save(com)
+            comStdDraftRepository.findByIdOrNull(isDraftDto.draftId)?.let { comStdDraft ->
+                with(comStdDraft) {
+                    status = 6
+
+                }
+                comStdDraftRepository.save(comStdDraft)
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+            var userList = companyStandardRepository.getHopEmailList()
+
+            //email to Head of publishing
+            val targetUrl = "${callUrl}/";
+            userList.forEach { item ->
+                //val recipient="stephenmuganda@gmail.com"
+                val recipient = item.getUserEmail()
+                val subject = "Standard"
+                val messageBody = "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded."
+                if (recipient != null) {
+                    // notifications.sendEmail(recipient, subject, messageBody)
+                }
             }
         }
+
+
         return draftStandard
     }
 
@@ -1394,6 +1425,46 @@ class IntStandardService(
 
                 } ?: throw Exception("DRAFT NOT FOUND")
             } else if (typeOfStandard == "International Standard") {
+                comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 4
+                        draftStatus = iSDraftDecisions.draftStatus
+                        coverPageStatus = iSDraftDecisions.coverPageStatus
+
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                        with(companyStandard) {
+                            status = 11
+                        }
+                        companyStandardRepository.save(companyStandard)
+
+                    } ?: throw Exception("STANDARD NOT FOUND")
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }else if (typeOfStandard == "FD KS") {
+                comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 4
+                        draftStatus = iSDraftDecisions.draftStatus
+                        coverPageStatus = iSDraftDecisions.coverPageStatus
+
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                        with(companyStandard) {
+                            status = 11
+                        }
+                        companyStandardRepository.save(companyStandard)
+
+                    } ?: throw Exception("STANDARD NOT FOUND")
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }else if (typeOfStandard == "Public Review Draft") {
                 comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
                     with(comStdDraft) {
                         status = 4
@@ -1688,10 +1759,26 @@ class IntStandardService(
          if (decision == "Yes") {
              if(typeOfStandard=="Public Review Draft"){
                  if(reviewDraftStatus==toCheckCom){
+
+                     publicReviewDraftRepository.findByIdOrNull(iSDraftDecisions.prId)?.let { prd ->
+
+                         with(prd) {
+                             status = "Approved by HOP"
+                             modifiedOn=timeOfRemark
+                             modifiedBy=loggedInUser.id.toString()
+                             stdDraftId=iSDraftDecisions.draftId
+                             stdId=iSDraftDecisions.id
+                             draftReviewStatus=1
+
+                         }
+                         publicReviewDraftRepository.save(prd)
+                     } ?: throw Exception("PUBLIC REVIEW DRAFT NOT FOUND")
+
                      companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
                          with(companyStandard) {
                              status = 25
+                             draftReviewStatus=1
 
                          }
 
@@ -1707,8 +1794,6 @@ class IntStandardService(
                              draftReviewStatus=1
 
                          }
-
-                         url = "intSacList"
                          comStdDraftRepository.save(comStdDraftTbl)
                      } ?: throw Exception("DRAFT NOT FOUND")
 

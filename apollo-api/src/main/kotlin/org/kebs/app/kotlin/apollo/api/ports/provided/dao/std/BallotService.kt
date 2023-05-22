@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -149,44 +150,15 @@ class BallotService(
             approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
-            val proposal=ISAdoptionProposal()
-            val closingDate=commonDaoServices.convertStringToTimestamp(nwiItem.closingDate)
-            val circulationDate=commonDaoServices.convertStringToTimestamp(nwiItem.circulationDate)
-            proposal.proposal_doc_name="Public Review Draft"
-            proposal.circulationDate=circulationDate
-            proposal.closingDate=closingDate
-            proposal.tcSecName=userListRepository.findNameById(tcSecId)
-            proposal.tcSecEmail=userListRepository.findEmailById(tcSecId)
-            proposal.preparedDate=uploadedDate
-            proposal.title=nwiItem.proposalTitle
-            proposal.scope=nwiItem.scope
-            proposal.requestId=standardRequest.id
-            proposal.iStandardNumber=publicReviewDraft.ksNumber
-            proposal.tcSecAssigned=standardRequest.tcSecAssigned
 
-            val prop=isAdoptionProposalRepository.save(proposal)
+            comStdDraftRepository.findByIdOrNull(publicReviewDraft.stdDraftId)?.let { comStdDraft ->
+                with(comStdDraft) {
+                    standardType="FD KS"
+                    status=4
 
-            val comDraft = ComStdDraft()
-            comDraft.title=nwiItem.proposalTitle
-            comDraft.scope=nwiItem.scope
-            comDraft.normativeReference=nwiItem.referenceNumber
-            comDraft.uploadDate=uploadedDate
-            comDraft.deadlineDate=commonDaoServices.convertStringToTimestamp(nwiItem.targetDate+" 00:00:00")
-            comDraft.uploadedBy=loggedInUser.id
-            comDraft.createdBy=userListRepository.findNameById(loggedInUser.id)
-            comDraft.requestNumber=standardRequest.requestNumber
-            comDraft.requestId=standardRequest.id
-            comDraft.status=4
-            comDraft.comStdNumber=publicReviewDraft.ksNumber
-            comDraft.departmentId= standardRequest.departmentId?.toLong()
-            comDraft.departmentName=standardRequest.departmentName
-            comDraft.subject=standardRequest.subject
-            comDraft.description=standardRequest.description
-            comDraft.standardType="Public Review Draft"
-            comDraft.proposalId=prop.id
-            comDraft.draftReviewStatus=0
-
-            val draftId=comStdDraftRepository.save(comDraft)
+                }
+                comStdDraftRepository.save(comStdDraft)
+            } ?: throw Exception("DRAFT NOT FOUND")
 
 
         } else if (ballot.approvalStatus.equals("Not Approved")) {

@@ -511,6 +511,7 @@ interface ProposalDetails{
     fun getStStatus(): Long?
     fun getStTelephone(): String?
     fun getCommentId(): Long?
+    fun getPrId(): Long?
     fun getTcDecision(): String?
 }
 interface PermitsAwarded{
@@ -811,6 +812,7 @@ interface ComStandard {
     fun getUploadDate(): String?
     fun getStatus(): Long?
     fun getRequestId(): Long?
+    fun getPrId(): Long?
     fun getProposalId(): Long?
     fun getDraftReviewStatus(): Long?
     fun getDraftId(): Long?

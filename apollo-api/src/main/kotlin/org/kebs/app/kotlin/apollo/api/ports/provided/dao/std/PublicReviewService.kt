@@ -10,8 +10,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.sql.Timestamp
@@ -27,6 +29,8 @@ class PublicReviewService(
     val commonDaoServices: CommonDaoServices,
     private val commentsRepository: CommentsRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val publicReviewStakeHoldersRepo: PublicReviewStakeHoldersRepository,
+    private val usersRepo: IUserRepository,
 
     ) {
     val PROCESS_DEFINITION_KEY = "publicreview"
@@ -137,6 +141,64 @@ class PublicReviewService(
             publicReviewDraftToBeUpdated.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         publicReviewDraftRepository.save(publicReviewDraftToBeUpdated)
+
+    }
+    fun sendPublicReview(publicReviewDto: PublicReviewDto): PublicReviewDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val reviewDraft=PublicReviewDraft()
+        val stakeholdersOne = publicReviewDto.stakeholdersList
+        stakeholdersOne?.forEach { s ->
+            val subject = "Invitation to Provide Feedback on Proposed Adoption of International Standard"
+            val recipient = s.email
+            val user = s.name
+            val userId = usersRepo.getUserId(s.email)
+            val userPhone = usersRepo.getUserPhone(s.email)
+
+            val shs = PublicReviewStakeHolders()
+            shs.name = user
+            shs.email = recipient
+            shs.prId = publicReviewDto.prId
+            shs.dateOfCreation = Timestamp(System.currentTimeMillis())
+            shs.telephone = userPhone
+            shs.userId = userId
+            shs.status = 0
+            publicReviewStakeHoldersRepo.save(shs)
+
+
+
+
+        }
+
+        val stakeholdersTwo = publicReviewDto.addStakeholdersList
+        stakeholdersTwo?.forEach { t ->
+            val sub = "Invitation to Provide Comments on Public Review Draft"
+            val rec = t.stakeHolderEmail
+            val userN = t.stakeHolderName
+            val phoneNumber = t.stakeHolderPhone
+
+            val st = PublicReviewStakeHolders()
+            st.name = userN
+            st.email = rec
+            st.prId = publicReviewDto.prId
+            st.dateOfCreation = Timestamp(System.currentTimeMillis())
+            st.telephone = phoneNumber
+            st.status = 0
+            val sid = publicReviewStakeHoldersRepo.save(st)
+            val pid = sid.id
+        }
+
+
+            publicReviewDraftRepository.findByIdOrNull(publicReviewDto.prId)?.let { pr ->
+
+                with(pr) {
+                    status = "Posted On Website For Comments"
+
+                }
+                publicReviewDraftRepository.save(pr)
+            } ?: throw Exception("REVIEW DRAFT NOT FOUND")
+
+        return reviewDraft
 
     }
 

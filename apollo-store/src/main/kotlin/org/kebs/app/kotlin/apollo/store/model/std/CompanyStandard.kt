@@ -164,6 +164,10 @@ class CompanyStandard {
     @Basic
     var proposalId: Long? = null
 
+    @Column(name = "PR_ID")
+    @Basic
+    var prId: Long? = null
+
 
 
 }

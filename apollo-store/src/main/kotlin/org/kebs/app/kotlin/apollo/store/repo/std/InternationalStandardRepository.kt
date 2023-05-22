@@ -46,6 +46,7 @@ interface ComStandardRequestUploadsRepository : JpaRepository<ComStandardRequest
 
 interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     fun findAllByOrderByIdDesc(): MutableList<CompanyStandard>
+    fun findAllByDraftId(id: Long): CompanyStandard
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
@@ -122,7 +123,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
                 "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
-                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone,s.DRAFT_REVIEW_STATUS as draftReviewStatus,s.PROPOSAL_ID as proposalId FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone,s.DRAFT_REVIEW_STATUS as draftReviewStatus,s.PROPOSAL_ID as proposalId,s.PR_ID as prId FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
                 "WHERE  s.STATUS IN('6') ORDER BY s.ID DESC",
         nativeQuery = true
     )
@@ -443,6 +444,18 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 
 
 }
+
+interface PublicReviewStakeHoldersRepository : JpaRepository<PublicReviewStakeHolders, Long> {
+    @Query(value = "SELECT NAME as name,EMAIL as email,TELEPHONE as telephone FROM SD_PUBLIC_REVIEW_STAKE_HOLDERS WHERE PR_ID=:id  ", nativeQuery = true)
+    fun getStakeHoldersList(@Param("id") id: Long?): MutableList<EmailList>
+
+    @Query(value = "SELECT COUNT(ID) as noOfRecords  FROM SD_PUBLIC_REVIEW_STAKE_HOLDERS WHERE EMAIL=:commentEmail AND PR_ID=:id ", nativeQuery = true)
+    fun countComments(
+        @Param("commentEmail") commentEmail: String?,
+        @Param("id") id: Long?,
+    ): Long
+}
+
 interface IStdStakeHoldersRepository : JpaRepository<IStandardStakeHolders, Long> {
     @Query(value = "SELECT NAME as name,EMAIL as email,TELEPHONE as telephone FROM SD_IS_STAKE_HOLDERS WHERE DRAFT_ID=:draftId  ", nativeQuery = true)
     fun getStakeHoldersList(@Param("draftId") draftId: Long?): MutableList<EmailList>
@@ -652,7 +665,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail,d.ADOPT as voteFor,d.NOT_ADOPT as voteAgainst,r.ID as requestId,r.REQUESTOR_NAME as requesterName," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType,d.DRAFT_REVIEW_STATUS as draftReviewStatus FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE p.TC_SEC_ASSIGNED=:id AND  d.STATUS=4   ORDER BY p.ID DESC",
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone,d.DEPARTMENT as departmentId,d.DEPARTMENT_NAME as departmentName,d.STANDARD_TYPE as standardType,d.DRAFT_REVIEW_STATUS as draftReviewStatus,d.PR_ID as prId FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID LEFT JOIN SD_STANDARD_REQUEST r ON d.REQUEST_ID=r.ID WHERE p.TC_SEC_ASSIGNED=:id AND  d.STATUS=4   ORDER BY p.ID DESC",
         nativeQuery = true
     )
 

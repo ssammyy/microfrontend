@@ -788,6 +788,7 @@ export interface ISAdoptionProposal {
     edition: string;
     tcDecision: string;
     draftReviewStatus: number;
+    prId: number;
 
 }
 
@@ -955,6 +956,7 @@ export interface IStandardUpload {
     proposalId: number;
     requestId: number;
     draftReviewStatus: number;
+    prId: number;
     id: number;
     standardNumber: string;
     comStdNumber: string;
@@ -2189,6 +2191,7 @@ export interface ISCheckRequirements {
     closingDate: Timestamp<any>;
     durationTaken: string;
     draftReviewStatus: number;
+    prId: number;
 }
 
 export interface ComStdRequest {

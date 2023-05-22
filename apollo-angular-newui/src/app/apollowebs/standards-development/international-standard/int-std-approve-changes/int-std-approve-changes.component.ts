@@ -95,7 +95,8 @@ export class IntStdApproveChangesComponent implements OnInit {
         assignedTo:null,
         proposalId:null,
         standardType:null,
-        draftReviewStatus:null
+        draftReviewStatus:null,
+        prId:null
     });
   }
   ngOnDestroy(): void {
@@ -200,7 +201,8 @@ export class IntStdApproveChangesComponent implements OnInit {
             draftId: this.actionRequests.draftId,
               proposalId: this.actionRequests.proposalId,
               standardType: this.actionRequests.standardType,
-              draftReviewStatus: this.actionRequests.draftReviewStatus
+              draftReviewStatus: this.actionRequests.draftReviewStatus,
+              prId: this.actionRequests.prId
 
           }
       );
