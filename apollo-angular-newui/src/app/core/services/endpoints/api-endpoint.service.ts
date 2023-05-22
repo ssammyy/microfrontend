@@ -421,7 +421,7 @@ export class ApiEndpointService {
         NWA_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/knwStandard`,
 
         //SD PUBLIC REVIEW
-        PR_UPLOAD_STAKE_HOLDERS: `${ApiEndpointService.SD_PR_CONTEXT}/findStandardStakeholders`,
+        PR_UPLOAD_STAKE_HOLDERS: `${ApiEndpointService.SD_PR_CONTEXT}/sendPublicReview`,
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,

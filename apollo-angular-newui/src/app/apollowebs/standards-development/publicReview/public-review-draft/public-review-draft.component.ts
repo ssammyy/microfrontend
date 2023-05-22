@@ -770,7 +770,7 @@ export class PublicReviewDraftComponent implements OnInit {
         return this.isProposalFormGroup.controls;
     }
 
-    uploadProposal(): void {
+    sendPublicReview(): void {
         this.SpinnerService.show();
         this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
             (response) => {
@@ -832,7 +832,7 @@ export class PublicReviewDraftComponent implements OnInit {
         this.submitted = true;
         console.log(this.dataSaveResourcesRequiredList.length);
         if (this.dataSaveResourcesRequiredList.length > 0) {
-            this.uploadProposal();
+            this.sendPublicReview();
         }
     }
 
