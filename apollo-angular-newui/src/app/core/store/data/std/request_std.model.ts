@@ -221,7 +221,7 @@ export interface NwiItem {
     referenceNumber: string;
     dateOfPresentation: string;
     nameOfTC: string;
-    id: number;
+    id: string;
     standardId: string;
     tcSec: string;
     processStatus: string;

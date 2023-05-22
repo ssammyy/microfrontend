@@ -144,8 +144,8 @@ export class StandardDevelopmentService {
         return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwis')
     }
 
-    public getAllNwisLoggedInUserToVoteFor(): Observable<Stdtsectask[]> {
-        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
+    public getAllNwisLoggedInUserToVoteFor(): Observable<any> {
+        return this.http.get<any>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
     }
 
 
