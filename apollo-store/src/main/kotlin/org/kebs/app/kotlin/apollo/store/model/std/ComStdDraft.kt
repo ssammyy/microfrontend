@@ -185,6 +185,10 @@ class ComStdDraft {
     @Basic
     var tcAcceptanceDate: Timestamp?=null
 
+    @Column(name="TC_DECISION")
+    @Basic
+    var tcDecision: String?=null
+
     @Column(name="DRAFT_STATUS")
     @Basic
     var draftStatus: String?=null
@@ -192,6 +196,10 @@ class ComStdDraft {
     @Column(name="COVER_PAGE_STATUS")
     @Basic
     var coverPageStatus: String?=null
+
+    @Column(name = "DRAFT_REVIEW_STATUS")
+    @Basic
+    var draftReviewStatus: Long? = null
 
 
 }

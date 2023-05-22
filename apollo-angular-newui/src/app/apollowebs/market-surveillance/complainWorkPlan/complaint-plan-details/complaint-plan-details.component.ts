@@ -80,6 +80,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   showOther: boolean = false;
+  showDataReportProduct: boolean = false;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -1950,7 +1951,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       valueToClone: null,
       id: null,
-      dataReportSelected: null,
+      dataReportSelected: ['', Validators.required],
+      productSelected: ['', Validators.required],
       dataReportID: null,
       nameProduct: ['', Validators.required],
       packaging: null,
@@ -1963,7 +1965,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       sendersName: null,
       designation: null,
       address: null,
-      sendersDate: ['', Validators.required],
+      sendersDate: null,
       receiversName: null,
       productDescription: ['', Validators.required],
       receiversDate: null,
@@ -4562,17 +4564,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.standardsArray.push(standardsArrayControl.value);
     }
 
-    // if (this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
+    const SSFformControls = [
+      'dataReportSelected',
+      'nameProduct',
+      'sizeTestSample',
+      'productDescription',
+      'lbIdTradeMark'
+    ];
+
+    const invalidControls = SSFformControls.filter(controlName =>
+        this.sampleSubmitForm.get(controlName).invalid
+    );
+
+    if (invalidControls.length === 0) {
       window.$('#sampleSubmitModal').modal('hide');
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
-    // }
-    // else{
-    //   this.msService.showError("Please Fill in all the fields!");
-    // }
+    }
+    else{
+      const errorMessage = 'Please fill in The following field(s): ' + invalidControls.join(', ');
+      this.msService.showError(errorMessage);
+    }
   }
 
   saveSampleSubmitted() {
@@ -4581,6 +4596,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
+      this.dataSaveSampleSubmit.productSelected = this.sampleSubmitForm?.get('productSelected').value;
+      console.log(this.dataSaveSampleSubmit.productSelected);
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -5990,8 +6007,21 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.standardsArray.splice(index, 1);
   }
 
-  onSelectedDataReport(){
-    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportSelected')?.value);
+  onSelectedDataReport(dataReportID){
+    this.showDataReportProduct = false;
+    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id == Number(dataReportID));
+    this.showDataReportProduct = true;
+
+  }
+  onSelectProductInDataReport(){
+    // const productSelected = this.selectedDataSheet?.productsList.find(this.selectedDataSheet?.id == 1403);
+    // console.log(productSelected.productName);
+    // console.log(productSelected.importerManufacturer);
+    // console.log(productSelected.localImport);
+    // console.log(productSelected.complianceInspectionParameter);
+    // console.log(productSelected.permitNumber);
+    // console.log(productSelected.remarks);
+    // console.log(productSelected.typeBrandName);
   }
 
   onClickCloneDataSSF() {

@@ -92,7 +92,9 @@ export class IntStdEditorComponent implements OnInit {
           contactOneTelephone:[],
           contactOneEmail:[],
           companyName:[],
-          companyPhone:[]
+          companyPhone:[],
+          standardType:[],
+          draftReviewStatus:[]
 
       });
   }
@@ -220,7 +222,7 @@ export class IntStdEditorComponent implements OnInit {
             button.setAttribute('data-target', '#decisionOnJustification');
             this.uploadDraftStandardFormGroup.patchValue(
                 {
-                    requestId: this.actionRequests.id,
+                    requestId: this.actionRequests.requestId,
                     draftId: this.actionRequests.draftId,
                     title: this.actionRequests.title,
                     scope:this.actionRequests.scope,
@@ -231,6 +233,9 @@ export class IntStdEditorComponent implements OnInit {
                     contactOneFullName:this.actionRequests.contactOneFullName,
                     contactOneTelephone:this.actionRequests.contactOneTelephone,
                     contactOneEmail:this.actionRequests.contactOneEmail,
+                    standardType:this.actionRequests.standardType,
+                    id:this.actionRequests.id,
+                    draftReviewStatus:this.actionRequests.draftReviewStatus
                 }
             );
 
@@ -351,13 +356,14 @@ export class IntStdEditorComponent implements OnInit {
     submitDraftForEditing(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
+        console.log(this.uploadDraftStandardFormGroup.value)
         this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
+                this.SpinnerService.hide();
                 this.onClickSaveUploads(response.body.draftId)
                 this.uploadDraftStandardFormGroup.reset();
                 this.getApprovedJustification();
-                this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
 
             },
@@ -390,6 +396,8 @@ export class IntStdEditorComponent implements OnInit {
                 },
             );
 
+        }else{
+            this.onClickUploadCoverPages(comStdDraftID)
         }
 
     }
@@ -420,6 +428,8 @@ export class IntStdEditorComponent implements OnInit {
                 },
             );
 
+        }else{
+            this.SpinnerService.hide();
         }
 
     }

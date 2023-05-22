@@ -5,10 +5,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.RfcItemForm
-import org.kebs.app.kotlin.apollo.api.payload.response.CorEntityDao
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
-import org.kebs.app.kotlin.apollo.api.payload.response.RfcCorDao
-import org.kebs.app.kotlin.apollo.api.payload.response.RfcDao
+import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocAgentMonitoringStatusEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -115,7 +112,9 @@ class PvocMonitoringService(
                 dataMap["rfc"] = RfcDao.fromEntity(data.get())
                 val items = this.rfcItemRepository.findByRfcId(rfcId)
                 dataMap["items"] = RfcItemForm.fromList(items)
-                dataMap["queries"] = emptyArray<Any>()
+                dataMap["queries"] = data.get().rfcNumber?.let {
+                    PvocKebsQueryDao.fromList(pvocQuerriesRepository.findByRfcNumber(it))
+                } ?: emptyArray<PvocKebsQueryDao>()
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -132,16 +131,12 @@ class PvocMonitoringService(
         try {
             // Find by chassis number or RfcNumber
             val data = when {
-                !keywords.isNullOrEmpty() -> this.rfcCorRepository.findByRfcNumberContainsAndReviewStatusAndStatusOrChassisNumberContainsAndReviewStatusAndStatus(
+                !keywords.isNullOrEmpty() -> this.rfcCorRepository.findByRfcNumberContainsOrChassisNumberContains(
                     keywords,
-                    status,
-                    1,
                     keywords,
-                    status,
-                    1,
                     page
                 )
-                else -> this.rfcCorRepository.findByReviewStatusAndStatus(status, 1, page)
+                else -> this.rfcCorRepository.findByReviewStatusAndStatus(status, status.toLong(), page)
             }
             response.data = RfcCorDao.fromList(data.toList())
             response.message = "Success"
@@ -167,7 +162,9 @@ class PvocMonitoringService(
             } else {
                 val dataMap = mutableMapOf<String, Any>()
                 dataMap["rfc"] = RfcCorDao.fromEntity(data.get())
-                dataMap["queries"] = emptyArray<Any>()
+                dataMap["queries"] =
+                    data.get().rfcNumber?.let { PvocKebsQueryDao.fromList(pvocQuerriesRepository.findByRfcNumber(it)) }
+                        ?: emptyArray<PvocKebsQueryDao>()
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -188,6 +185,7 @@ class PvocMonitoringService(
         keywords: String? = null
     ): ApiResponseModel {
         val response = ApiResponseModel()
+
         try {
             val data = when (documentCategory) {
                 "F", "foreign" -> when {
@@ -277,12 +275,14 @@ class PvocMonitoringService(
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
                 dataMap["items"] = cocItemRepository.findByCocId(foreignId)
-                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(
-                    when (data.get().cocType) {
-                        "COC" -> data.get().cocNumber.orEmpty()
-                        "COI" -> data.get().coiNumber.orEmpty()
-                        else -> data.get().cocNumber.orEmpty()
-                    }
+                dataMap["queries"] = PvocKebsQueryDao.fromList(
+                    pvocQuerriesRepository.findAllByCertNumber(
+                        when (data.get().cocType) {
+                            "COC" -> data.get().cocNumber.orEmpty()
+                            "COI" -> data.get().coiNumber.orEmpty()
+                            else -> data.get().cocNumber.orEmpty()
+                        }
+                    )
                 )
                 response.data = dataMap
                 response.message = "Success"
@@ -297,47 +297,68 @@ class PvocMonitoringService(
     }
 
     fun listForeignCor(
+        documentType: String?,
         category: String?,
         reviewStatus: Int?,
         page: PageRequest,
         keywords: String? = null
     ): ApiResponseModel {
         val response = ApiResponseModel()
+        val compliant = when (documentType?.toUpperCase()) {
+            ConsignmentCertificatesIssues.NCR_COR.nameDesc -> "N"
+            else -> "Y"
+        }
         try {
             val data = when (category) {
                 "F", "foreign" -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsAndCompliantOrDocumentsTypeAndChasisNumberContainsAndCompliant(
                             "F",
                             keywords,
+                            compliant,
                             "F",
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->
-                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", status, page)
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatusAndCompliant(
+                                "F",
+                                status,
+                                compliant,
+                                page
+                            )
                         } ?: this.corBakRepository.findByDocumentsType("F", page)
                     }
                 }
                 "L", "local" -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsAndCompliantOrDocumentsTypeAndChasisNumberContainsAndCompliant(
                             "L",
                             keywords,
+                            compliant,
                             "L",
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->
-                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("L", status, page)
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatusAndCompliant(
+                                "L",
+                                status,
+                                compliant,
+                                page
+                            )
                         } ?: this.corBakRepository.findByDocumentsType("L", page)
                     }
                 }
                 else -> {
                     when {
-                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByCorNumberContainsOrChasisNumberContains(
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByCorNumberContainsAndCompliantOrChasisNumberContainsAndCompliant(
                             keywords,
+                            compliant,
                             keywords,
+                            compliant,
                             page
                         )
                         else -> reviewStatus?.let { status ->
@@ -374,7 +395,8 @@ class PvocMonitoringService(
                 dataMap["pvoc_client"] = data.get().partner?.let { partnerId ->
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
-                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty())
+                dataMap["queries"] =
+                    PvocKebsQueryDao.fromList(pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty()))
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

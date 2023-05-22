@@ -105,6 +105,7 @@
     "ngrx-store-localstorage": "^10.0.0",
     "ngx-bootstrap": "^6.2.0",
     "ngx-extended-pdf-viewer": "^10.0.0-alpha.1",
+    "ngx-intl-tel-input": "^3.1.1",
     "ngx-mat-select-search": "^3.3.3",
     "ngx-pagination": "^5.1.1",
     "ngx-spinner": "^10.0.1",

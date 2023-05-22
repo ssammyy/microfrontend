@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentCertificatesIssues
 import org.kebs.app.kotlin.apollo.api.service.PvocMonitoringService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
@@ -21,7 +22,14 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
         return ServerResponse.ok()
-            .body(pvocMonitoringService.listRfcCocCoiRequests(keywords, "COC", status?.toInt() ?: 0, page))
+            .body(
+                pvocMonitoringService.listRfcCocCoiRequests(
+                    keywords,
+                    ConsignmentCertificatesIssues.COC.nameDesc,
+                    status?.toInt() ?: 0,
+                    page
+                )
+            )
     }
 
     fun listRfcsCor(req: ServerRequest): ServerResponse {
@@ -36,7 +44,14 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
         return ServerResponse.ok()
-            .body(pvocMonitoringService.listRfcCocCoiRequests(keywords, "COI", status?.toInt() ?: 0, page))
+            .body(
+                pvocMonitoringService.listRfcCocCoiRequests(
+                    keywords,
+                    ConsignmentCertificatesIssues.COI.nameDesc,
+                    status?.toInt() ?: 0,
+                    page
+                )
+            )
     }
 
     fun getRfcForCoiOrCoc(req: ServerRequest): ServerResponse {
@@ -54,7 +69,15 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
         return ServerResponse.ok()
-            .body(pvocMonitoringService.listForeignCocCoi("COI", "F", status?.toInt() ?: 0, page, keywords))
+            .body(
+                pvocMonitoringService.listForeignCocCoi(
+                    ConsignmentCertificatesIssues.COI.nameDesc,
+                    "F",
+                    status?.toInt() ?: 0,
+                    page,
+                    keywords
+                )
+            )
     }
 
     fun listForeignNcr(req: ServerRequest): ServerResponse {
@@ -62,7 +85,15 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
         return ServerResponse.ok()
-            .body(pvocMonitoringService.listForeignCocCoi("NCR", "F", status?.toInt() ?: 0, page, keywords))
+            .body(
+                pvocMonitoringService.listForeignCocCoi(
+                    ConsignmentCertificatesIssues.NCR.nameDesc,
+                    "F",
+                    status?.toInt() ?: 0,
+                    page,
+                    keywords
+                )
+            )
     }
 
     fun listForeignCoc(req: ServerRequest): ServerResponse {
@@ -70,7 +101,15 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
         return ServerResponse.ok()
-            .body(pvocMonitoringService.listForeignCocCoi("COC", "F", status?.toInt() ?: 0, page, keywords))
+            .body(
+                pvocMonitoringService.listForeignCocCoi(
+                    ConsignmentCertificatesIssues.COC.nameDesc,
+                    "F",
+                    status?.toInt() ?: 0,
+                    page,
+                    keywords
+                )
+            )
     }
 
     fun getForeignCoiOrCoc(req: ServerRequest): ServerResponse {
@@ -82,7 +121,30 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
         val keywords = req.paramOrNull("keywords")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCor("F", status?.toInt() ?: 0, page, keywords))
+        return ServerResponse.ok().body(
+            pvocMonitoringService.listForeignCor(
+                ConsignmentCertificatesIssues.COR.nameDesc,
+                "F",
+                status?.toInt() ?: 0,
+                page,
+                keywords
+            )
+        )
+    }
+
+    fun listForeignCorNcr(req: ServerRequest): ServerResponse {
+        val page = extractPage(req)
+        val status = req.paramOrNull("rev_status")
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok().body(
+            pvocMonitoringService.listForeignCor(
+                ConsignmentCertificatesIssues.NCR_COR.nameDesc,
+                "F",
+                status?.toInt() ?: 0,
+                page,
+                keywords
+            )
+        )
     }
 
     fun getForeignCor(req: ServerRequest): ServerResponse {

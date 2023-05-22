@@ -179,10 +179,34 @@ export class ReviewApplicationsRejectedSacComponent implements OnInit {
             this.loadingText = "Sending Recommendation";
             this.membershipToTcService.resubmitReview(reviewApplicationTask, tCApplicationId).subscribe(
                 (response) => {
-                    console.log(response);
                     this.getApplicationsRejectedBySpc();
                     this.SpinnerService.hide();
                     this.notifyService.showSuccess("Success", 'Your Recommendation Has Been Sent To The SAC Secretary')
+
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+
+            this.hideModel();
+            this.clearForm();
+        }
+
+    }
+    public nonRecommendationOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number): void {
+
+        if (reviewApplicationTask.commentsBySpc === "") {
+            this.showToasterError("Error", `Please Enter Your Reason For Resubmission.`);
+
+        } else {
+            this.SpinnerService.show();
+            this.loadingText = "Not Recommending";
+            this.membershipToTcService.nonRecommend(reviewApplicationTask, tCApplicationId).subscribe(
+                (response) => {
+                    this.getApplicationsRejectedBySpc();
+                    this.SpinnerService.hide();
+                    this.notifyService.showSuccess("Success", 'Non Recommendation Successful. Email Sent To Applicant')
 
                 },
                 (error: HttpErrorResponse) => {

@@ -33,13 +33,13 @@ class Department {
 
 
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "USER_ID")
     @Basic
-    var department: String? = null
+    var userId: Int? = null
 
     @Column(name = "VAR_FIELD_2")
     @Basic
-    var varField2: String? = null
+    var department: String? = null
 
     @Column(name = "VAR_FIELD_3")
     @Basic

@@ -69,7 +69,7 @@
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
                             </div>
-                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                            <div class="card-title float-right"><button *ngIf="dataSaveResourcesRequiredList.length > 0"  class="btn btn-primary btn-sm pull-right" data-target="#approveStandards" data-toggle="modal" style="width: 185px" >Proceed to Decision View</button><button type="button" class="btn btn-sm btn-outline-warning">
                                 Tasks <span class="badge badge-primary">{{isAdoptionProposals.length}}</span>
                             </button></div>
                         </div>
@@ -78,32 +78,103 @@
 
                             </div>
                             <div class="material-datatables table-responsive">
+
+                                <form  [formGroup]="multipleApproveFormGroup" class="form">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Name</th>
-                                        <th class="knw">Title</th>
-                                        <th class="knw">Date of Circulation</th>
-                                        <th class="knw">Closing Date</th>
-                                        <th>Standard Number</th>
-                                        <th class="referenceMaterial">Prepared By</th>
+                                        <th class="knw">Department</th>
+                                        <th class="knw">Name of Officer</th>
+                                        <th class="knw">KS No,Title and Edition</th>
+                                        <th>Requested By</th>
+                                        <th class="knw">Issues Addressed</th>
+                                        <th class="knw">Reference Material</th>
+                                        <th class="knw">Background Information</th>
+                                        <th>Multiple Selections</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr  *ngFor="let isAdoptionProposal of isAdoptionProposals let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{isAdoptionProposal.docName}}</td>
-                                        <td>{{isAdoptionProposal.title}}</td>
-                                        <td>{{isAdoptionProposal.circulationDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td>{{isAdoptionProposal.closingDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td>{{isAdoptionProposal.standardNumber}}</td>
+                                        <td>{{isAdoptionProposal.departmentName}}</td>
                                         <td>{{isAdoptionProposal.tcSecName}}</td>
+                                        <td><b>KS Number:</b><br>{{isAdoptionProposal.standardNumber}}<br><b>Title:</b><br>{{isAdoptionProposal.title}},<br><b>Edition:</b><br>{{isAdoptionProposal.edition}}</td>
+                                        <td>{{isAdoptionProposal.requesterName}}</td>
+                                        <td><b>Scope:</b><br>{{isAdoptionProposal.scope}},<br><b>Purpose and Application:</b><br>{{isAdoptionProposal.purpose}},<br><b>Intended Users:</b><br>{{isAdoptionProposal.intendedUsers}}</td>
+                                        <td>{{isAdoptionProposal.referenceMaterial}}</td>
+                                        <td><b>Circulation Date:</b> <br> {{isAdoptionProposal.circulationDate | date: 'dd/MM/yyyy'}} <br><b>Closing Date</b> {{isAdoptionProposal.closingDate | date: 'dd/MM/yyyy' }} <br><b>Date of TC Acceptance</b> <br> {{isAdoptionProposal.tcAcceptanceDate | date: 'dd/MM/yyyy'}} <br><b>Date of SPC Approval</b> <br></td>
+                                        <td>
+                                            <div  >
+                                                <ng-select (change)="onClickAddResource(isAdoptionProposal)"  class="form-control" formControlName="accentTo" name="accentTo"  >
+                                                    <ng-option  [value]="approve" >Approve </ng-option>
+                                                    <ng-option  [value]="reject" >Decline </ng-option>
+                                                </ng-select>
+
+                                            </div>
+
+                                        </td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'decisionOnJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Approve Justification</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
+                                </form>
+                                <div class="modal fade" id="approveStandards" tabindex="-1" role="dialog" aria-labelledby="approveStandardsLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="approveStandardsLabel">SPC JUSTIFICATION DECISION</h3>
+                                                <button type="button" #closeModalMultiple class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="onClickMakeDecision()"  [formGroup]="multipleApproveFormGroup" class="form">
+                                                <div class="modal-body">
+                                                    <div class="form-body">
+                                                        <div class="form-group col-12">
+                                                            <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Document Type</th>
+                                                                    <th>KS Number</th>
+                                                                    <th>Title</th>
+                                                                    <th>Scope</th>
+                                                                    <th>Circulation Date</th>
+                                                                    <th>Closing Date</th>
+                                                                    <th>Decision</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr *ngFor="let r of dataSaveResourcesRequiredList; let i=index">
+                                                                    <td>{{r.standardType}}</td>
+                                                                    <td>{{r.standardNumber}}</td>
+                                                                    <td>{{r.title}}</td>
+                                                                    <td>{{r.scope}}</td>
+                                                                    <td>{{r.circulationDate | date: 'yyyy-MM-dd'}}</td>
+                                                                    <td>{{r.closingDate | date: 'yyyy-MM-dd'}}</td>
+                                                                    <td>{{r.accentTo}}</td>
+                                                                    <td><button (click)="removeDataResource(i)"
+                                                                                type="button"
+                                                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                                    </button></td>
+
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button *ngIf="dataSaveResourcesRequiredList.length > 0" type="submit" class="btn btn-primary btn-sm"  >Save and Submit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="modal fade" id="decisionOnJustification" tabindex="-1" role="dialog" aria-labelledby="decisionOnJustificationLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
@@ -123,7 +194,7 @@
                                                                     <a class="nav-item nav-link active" id="nav-jProposal-tab" data-toggle="tab" href="#nav-jProposal" role="tab" aria-controls="nav-jProposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-jProposal-comments-tab" (click)=displayDraftComments(actionRequest?.draftId) data-toggle="tab" href="#nav-jProposal-comments" role="tab" aria-controls="nav-jProposal-comments" aria-selected="false">Stakeholders Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequest?.draftId) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
-                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" (click)=getISJustification(actionRequest?.draftId) href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">Decision On Justification</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab"  href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">Decision On Justification</a>
                                                                 </div>
                                                             </nav>
                                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent-pj">
@@ -172,7 +243,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.docName}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.standardType}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
@@ -196,7 +267,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.circulationDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
@@ -208,7 +279,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.closingDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}.</p>
                                                                                 </a>
 
 
@@ -225,9 +296,6 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
                                                                                 </a>
-
-
-
 
                                                                             </div>
                                                                         </div>
@@ -309,9 +377,8 @@
                                                                         <div class="modal-body">
                                                                             <div class="form-body">
 
-                                                                                <div  class="row container col-md-12" [hidden]="isShowJustificationTabs">
-                                                                                    <div class="list-group list-group-flush" *ngFor="let iSJustificationProposal of iSJustificationProposals">
-
+                                                                                <div  class="row container col-md-12">
+                                                                                    <div class="list-group list-group-flush" >
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
                                                                                                 <div>
@@ -322,7 +389,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.meetingDate}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.meetingDate}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -334,19 +401,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.tcSec_id}}.</p>
-                                                                                        </a>
-                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                <div>
-                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
-                                                                                                    </div>
-                                                                                                </div>
-
-                                                                                            </div>
-
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.requestNumber}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.tcSecName}}.</p>
                                                                                         </a>
                                                                                         <hr>
                                                                                         <h3>STANDARDS DEVELOPED</h3>
@@ -372,7 +427,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal?.title}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -384,7 +439,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.edition}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.edition}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -396,7 +451,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.requestedBy}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.requesterName}}.</p>
                                                                                         </a>
                                                                                         <hr>
                                                                                         <h3>Issues Addressed</h3>
@@ -410,7 +465,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.scope}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -422,7 +477,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.purposeAndApplication}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.purpose}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -434,7 +489,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.intendedUsers}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.intendedUsers}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -446,7 +501,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.referenceMaterial}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.referenceMaterial}}.</p>
                                                                                         </a>
                                                                                         <hr>
                                                                                         <h2>Background Information</h2>
@@ -461,7 +516,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.circulationDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -473,7 +528,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.closingDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}.</p>
                                                                                         </a>
 
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
@@ -486,7 +541,7 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.tcAcceptanceDate | date: 'yyyy-MM-dd'}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.tcAcceptanceDate | date: 'yyyy-MM-dd'}}.</p>
                                                                                         </a>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                             <div class="d-flex w-100 justify-content-between">
@@ -498,30 +553,28 @@
 
                                                                                             </div>
 
-                                                                                            <p class="text-sm mb-0">{{iSJustificationProposal.departmentName}}.</p>
+                                                                                            <p class="text-sm mb-0">{{actionRequest?.departmentName}}.</p>
                                                                                         </a>
-                                                                                        <div  >
-                                                                                            <label><b>Make Decision On Justification</b></label>
-                                                                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                                    class="form-control" required
-                                                                                                    formControlName="accentTo"
-                                                                                                    name="accentTo"
-                                                                                            >
-                                                                                                <option disabled>--Select Option--</option>
-                                                                                                <option  value="Yes">Recommend</option>
-                                                                                                <option  value="No">Not Recommend</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <div >
-                                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-                                                                                            <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
-                                                                                        </div>
-
+                                                                                    </div>
+                                                                                </div>
+                                                                                    <div class="col-md-12" >
+                                                                                        <label><b>Make Decision On Justification</b></label>
+                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control" required
+                                                                                                formControlName="accentTo"
+                                                                                                name="accentTo"
+                                                                                        >
+                                                                                            <option disabled>--Select Option--</option>
+                                                                                            <option  value="Yes">Recommend</option>
+                                                                                            <option  value="No">Not Recommend</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="col-md-12" >
+                                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
+                                                                                        <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                     <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.id}}" >
                                                                                     <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequest?.draftId}}" >
-
-                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">

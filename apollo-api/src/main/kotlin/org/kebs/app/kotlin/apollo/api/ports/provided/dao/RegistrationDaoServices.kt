@@ -37,7 +37,6 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import com.google.gson.Gson
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -788,38 +787,47 @@ class RegistrationDaoServices(
         s: ServiceMapsEntity,
         u: UsersEntity
     ): CompanyProfileEntity{
-        var sm = StdLevyEntryNoDataMigrationEntity()
+        val sm = StdLevyEntryNoDataMigrationEntity()
         var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
-        var kraPin= cp.kraPin
+        val kraPin= cp.kraPin
         var entry=""
-        var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
+        var thisEntry=""
+        val checkEntryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
 
-        if (entryNumbers==null){
-            var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
-
-            allRequests = allRequests.plus(1)
-            val genNumber= String.format("%06d", allRequests)
-            var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
-
-            // this will convert any number sequence into 6 character.
-            entry= "${prefixText}${genNumber}"
+        if (checkEntryNumbers==null){
+            //var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
+            //allRequests = allRequests.plus(1)
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
-            sm.entryCount=allRequests
-            sm.entryNumbers=allRequests
-            sm.entryNumber=entry
+            val insertId=stdLevyEntryNoDataMigrationEntityRepository.save(sm)
 
 
-            stdLevyEntryNoDataMigrationEntityRepository.save(sm)
+            val genNumber= String.format("%06d", insertId.id)
+            val prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+            // this will convert any number sequence into 6 character.
+            entry= "${prefixText}${genNumber}"
+
+            stdLevyEntryNoDataMigrationEntityRepository.findByIdOrNull(insertId.id)?.let { slEntry ->
+
+                with(slEntry) {
+                    entryCount=insertId.id
+                    entryNumbers=insertId.id
+                    entryNumber=entry
+                }
+                stdLevyEntryNoDataMigrationEntityRepository.save(slEntry)
+            } ?: throw Exception("Record Was Not Found")
+
         }
-
-        entryNumbers = (entryNumbers ?: entry) as Long?
+        else{
+            entry= checkEntryNumbers.toString()
+        }
 
 
         with(cp) {
-            entryNumber = entryNumbers.toString()
+            entryNumber = entry
             modifiedBy = commonDaoServices.concatenateName(u)
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -828,9 +836,6 @@ class RegistrationDaoServices(
 
 
         return cp
-
-
-
 
     }
 
@@ -1241,6 +1246,7 @@ class RegistrationDaoServices(
             }else{
                 throw ExpectedDataNotFound("Error has occurred, Try again")
             }
+
 
         }
         else{

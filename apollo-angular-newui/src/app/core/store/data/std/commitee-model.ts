@@ -225,6 +225,7 @@ export interface Ballot_Draft {
     cdBy: string;
     approvalStatus: string;
     status: string;
+    prdID: number;
 
 }
 
@@ -272,6 +273,7 @@ export interface VotesTally {
     disapproved: number;
     abstention: number;
     status: string;
+    prdID: number;
 
 
 }

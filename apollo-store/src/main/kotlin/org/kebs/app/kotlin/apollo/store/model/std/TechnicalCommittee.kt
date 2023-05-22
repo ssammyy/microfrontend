@@ -36,6 +36,12 @@ class TechnicalCommittee {
     @Basic
     var wg : Int?= null
 
+
+    @Column(name = "USER_ID")
+    @Basic
+    var userId: Int?= null
+
+
     @Column(name = "PARENT_COMMITTEE")
     @Basic
     var parentCommitte : String?= null

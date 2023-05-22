@@ -1,195 +1,435 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <h4 class="card-title">Approved <small
+                        class="resolved-pill">{{approvedNwiS.length}}
+                    New Work Items</small>
+                </h4>
+
+            </div>
+            <div class="card-body">
+                <div class="toolbar">
+
+                </div>
+                <div class="material-datatables">
+                    <table class="table table-striped table-bordered table-hover" datatable
+                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                        <thead>
+                        <tr>
+                            <th class="task">Proposal Title</th>
+                            <th class="task">Scope</th>
+                            <th class="task">Name Of Proposer</th>
+                            <th class="task">Reference No</th>
+                            <th class="action">Request</th>
+                            <th class="action">Nwi</th>
+                            <th class="action">Votes</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let secTask of approvedNwiS let i= index; ">
+
+                            <td>{{secTask.proposalTitle}}</td>
+                            <td>{{secTask.scope}}</td>
+                            <td>{{secTask.nameOfProposer}}</td>
+                            <td>{{secTask.referenceNumber}}</td>
+                            <td>
+                                <a (click)="onOpenModalViewRequest(secTask.standardId,'edit')"
+                                   class="btn btn-info tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">View Request</a>
+
+                            </td>
+                            <td>
+                                <a (click)="onOpenModalViewNwi(secTask.id,'edit')"
+                                   class="btn btn-info tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">View NWI</a>
+
+                            </td>
+                            <td>
+                                <a (click)="onOpenModalViewVotes(secTask.id,'edit')"
+                                   class="btn btn-info tooltips"
+                                   data-placement="top"
+                                   data-original-title="Upload NWI">View Votes</a>
+
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
+     aria-labelledby="updateExampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateExampleModalLabelC">NEW WORK
+                    ITEM</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class=" col-12">
+                        <ul class="list-group">
+                            <li class="list-group-item active">New Work Item Details</li>
+
+                            <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
+
+
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>-->
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
+                                <!--                                            <li style="background: lightgray"-->
+                                <!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
+                            </div>
+
+                            <br><br>
+                            <li style="background: lightgray">
+                                <div class="material-datatables">
+                                    <table class="table table-striped table-bordered table-hover"
+                                           datatable
+                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger5">
+                                        <thead>
+                                        <tr>
+                                            <th class="task">Document Name</th>
+                                            <th class="task">Descritpion</th>
+
+                                            <th class="task">Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let doc of docs let i= index; ">
+
+                                            <td>{{doc.name}}</td>
+                                            <td>{{doc.description}}</td>
+
+                                            <td>
+                                                <button class="btn btn-info tooltips"
+                                                        style="width: inherit"
+                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                        data-placement="top"
+                                                ><i
+                                                        class="fa fa-eye"></i> View
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <br>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" #closeModal
+                        (click)="hideModel()"
+                        data-dismiss="modal">Close
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
+     aria-labelledby="viewRequestModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="viewRequestModalLabel">Request Details</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div *ngFor="let actionRequest of tasks let i= index; ">
 
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header card-header-primary card-header-icon">
-                                    <div class="card-icon">
-                                        <i class="material-icons">assignment</i>
-                                    </div>
-                                    <h4 class="card-title">Approved <small
-                                            class="resolved-pill">{{approvedNwiS.length}}
-                                        New Work Items</small>
-                                    </h4>
+                        <div class=" col-12">
+                            <ul class="list-group">
+                                <li class="list-group-item active">Standard
+                                    Request
+                                    Details
+                                </li>
 
-                                </div>
-                                <div class="card-body">
-                                    <div class="toolbar">
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Organisation: " + actionRequest?.organisationName}}</li>
 
-                                    </div>
-                                    <div class="mat-elevation-z8">
-                                        <mat-form-field appearance="standard" style="width:20%; float: right">
-                                            <mat-label>Search</mat-label>
-                                            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-                                        </mat-form-field>
-                                        <table class="table table-striped table-bordered table-hover" mat-table [dataSource]="dataSourceB" matSort style="width: 100%">
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Name: " + actionRequest?.name}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Phone: " + actionRequest?.phone}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Section: " + actionRequest?.departmentName}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Subject: " + actionRequest?.subject}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Description: " + actionRequest?.description}}</li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    Potential To
+                                    Contribute To Economic Efficiency :
+                                    <ngb-rating [max]="5"
+                                                *ngIf="actionRequest?.economicEfficiency!=null"
+                                                [(rate)]="actionRequest.economicEfficiency"
+                                                [readonly]="false"></ngb-rating>
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    Potential To
+                                    Safeguard Health And Safety :
+                                    <ngb-rating [max]="5"
+                                                *ngIf="actionRequest?.healthSafety!=null"
+                                                [(rate)]="actionRequest.healthSafety"
+                                                [readonly]="false"></ngb-rating>
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    Potential To
+                                    Preserve The Environment :
+                                    <ngb-rating [max]="5"
+                                                *ngIf="actionRequest?.environment!=null"
+                                                [(rate)]="actionRequest.environment"
+                                                [readonly]="false"></ngb-rating>
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    Potential To
+                                    Facilitate The Local Exchange Of Products
+                                    And
+                                    Industrial Integration :
+                                    <ngb-rating [max]="5"
+                                                *ngIf="actionRequest?.integration!=null"
+                                                [(rate)]="actionRequest.integration"
+                                                [readonly]="false"></ngb-rating>
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    Potential To
+                                    Facilitate Access To Export Markets :
+                                    <ngb-rating [max]="5"
+                                                *ngIf="actionRequest?.exportMarkets!=null"
+                                                [(rate)]="actionRequest.exportMarkets"
+                                                [readonly]="false"></ngb-rating>
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">{{"Level Of Standard: " + actionRequest?.levelOfStandard}}</li>
 
-                                            <!-- ID Column -->
-                                            <ng-container matColumnDef="proposalTitle">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Proposal Title</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.proposalTitle}} </td>
-                                            </ng-container>
+                                <li style="background: lightgray"
+                                    class="list-group-item">Additional
+                                    Information:
 
-                                            <!-- Progress Column -->
-                                            <ng-container matColumnDef="scope">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Scope</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.scope}} </td>
-                                            </ng-container>
+                                </li>
+                                <li style="background: lightgray">
+                                    <div class="material-datatables table-responsive">
+                                        <table class="table table-striped table-bordered table-hover"
+                                               datatable>
+                                            <thead>
+                                            <tr>
+                                                <th class="task">Document Name
+                                                </th>
+                                                <th class="task">Action</th>
 
-                                            <!-- Name Column -->
-                                            <ng-container matColumnDef="nameOfProposer">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name Of Proposer</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.nameOfProposer}} </td>
-                                            </ng-container>
-
-                                            <!-- Fruit Column -->
-                                            <ng-container matColumnDef="referenceNumber">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference No</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.referenceNumber}} </td>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="actions">
-                                                <th mat-header-cell *matHeaderCellDef> Actions</th>
-
-                                                <td mat-cell *matCellDef="let row">
-                                                    <a (click)="onOpenModalViewNwi(row.id,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">View NWI</a>
-                                                </td>
-                                            </ng-container>
-
-                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                                            <!-- Row shown when there is no matching data. -->
-                                            <tr class="mat-row" *matNoDataRow>
-                                                <td class="mat-cell" colspan="4">No data matching the filter
-                                                    "{{input.value}}"
-                                                </td>
                                             </tr>
-                                        </table>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let doc of docs let i= index; ">
 
-                                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
-                                                       aria-label="Select page of users"></mat-paginator>
+                                                <td>{{doc.name}}</td>
+                                                <td>
+                                                    <button class="btn btn-info tooltips"
+                                                            style="width: inherit"
+                                                            (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                            data-placement="top"
+                                                    ><i
+                                                            class="fa fa-eye"></i>
+                                                        View
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
 
+                                </li>
 
-                                </div>
-                            </div>
+                            </ul>
                         </div>
                     </div>
 
-            <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                 aria-labelledby="updateExampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabelC">NEW WORK
-                                ITEM</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <br>
+                    <div class="row">
+                        <div class=" col-12">
+                            <ul class="list-group">
+                                <li class="list-group-item active">Review
+                                    Details
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>TC Secretary
+                                    Assigned:</b>{{ actionRequest?.tcSecAssigned}}
+                                </li>
+
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>Desired
+                                    Output: </b>{{actionRequest?.desiredOutput}}
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>Desired
+                                    Result: </b>{{actionRequest?.desiredResult}}
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>Reason For
+                                    Result: </b>{{actionRequest?.reason}}
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>Reviewed
+                                    By: </b>{{actionRequest?.reviewedBy}}
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item"><b>Reviewed
+                                    On: </b>{{formatFormDate(actionRequest?.reviewDate)}}
+                                </li>
+                                <li style="background: lightgray"
+                                    class="list-group-item">
+                                    <b>Status: </b>{{actionRequest?.status}}
+                                </li>
+
+
+                            </ul>
                         </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class=" col-12">
-                                    <ul class="list-group">
-                                        <li class="list-group-item active">New Work Item Details</li>
-
-                                        <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
+                    </div>
+                </div>
 
 
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>-->
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
-                                        </div>
+            </div>
 
-                                        <br><br>
-                                        <li style="background: lightgray">
-                                            <div class="material-datatables">
-                                                <table class="table table-striped table-bordered table-hover"
-                                                       datatable
-                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger5">
-                                                    <thead>
-                                                    <tr>
-                                                        <th class="task">Document Name</th>
-                                                        <th class="task">Descritpion</th>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Close
+                </button>
 
-                                                        <th class="task">Action</th>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade " id="viewVotes" tabindex="-1" role="dialog"
+     aria-labelledby="updateExampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateExampleModalLabelD">View Votes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12">
+                    <div class="form-group col-12">
+                        <label><b>Votes</b></label>
+                        <div class="material-datatables">
+                            <table class="table table-striped table-bordered table-hover"
+                                   datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                <thead>
+                                <tr>
+                                    <th class="id">No</th>
+                                    <th class="action">Vote By</th>
+                                    <th class="action">Decision</th>
+                                    <th class="action">Comment</th>
 
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr *ngFor="let doc of docs let i= index; ">
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let voteRetrievedS of voteRetrieved let i= index; ">
+                                    <td>{{i + 1}}</td>
+                                    <td>{{voteRetrievedS.vote_By}}</td>
+                                    <td>
+                                        <ng-template
+                                                [ngIf]=" voteRetrievedS.decision=='true'">
+                                            Approved
+                                        </ng-template>
+                                        <ng-template
+                                                [ngIf]=" voteRetrievedS.decision=='false'">
+                                            Disapproved
+                                        </ng-template>
 
-                                                        <td>{{doc.name}}</td>
-                                                        <td>{{doc.description}}</td>
+                                    </td>
+                                    <td>{{voteRetrievedS.reason}}</td>
 
-                                                        <td>
-                                                            <button class="btn btn-info tooltips"
-                                                                    style="width: inherit"
-                                                                    (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                                    data-placement="top"
-                                                            ><i
-                                                                    class="fa fa-eye"></i> View
-                                                            </button>
-                                                        </td>
-
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <br>
-
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" #closeModal
-                                    (click)="hideModel()"
-                                    data-dismiss="modal">Close
-                            </button>
-
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        (click)="hideModel()" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

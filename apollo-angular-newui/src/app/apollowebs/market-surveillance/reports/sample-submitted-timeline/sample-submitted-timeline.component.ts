@@ -79,6 +79,8 @@ export class SampleSubmittedTimelineComponent implements OnInit {
   sumOfForwardingWithin14Days: number;
   percentageComplianceToForwardingWithin14Days: number;
   totalEntries: number;
+  isEngineeringSelected: boolean = true;
+
 
 
   constructor(private store$: Store<any>,
@@ -114,6 +116,11 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       sampleReferences: ['', null],
       assignIO: ['', null],
       sectorID: ['', null],
+      nameProduct: ['', null],
+      function: ['', null],
+      outletName: ['', null],
+      selectedOfficers: [[], null],
+      selectedDivisions: [[], null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
@@ -147,6 +154,13 @@ export class SampleSubmittedTimelineComponent implements OnInit {
           if (dataResponse.responseCode === '00') {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.loadedData = dataResponse?.data as SubmittedSamplesSummaryReportViewEntity[];
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].submissionWithin2Days) == 1){
+                this.loadedData[i].submissionWithin2Days = 'YES';
+              }else if(Number(this.loadedData[i].submissionWithin2Days) == 0){
+                this.loadedData[i].submissionWithin2Days = 'NO';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.calculateSampleSubmittedSummary();
             this.rerender();
@@ -194,11 +208,19 @@ export class SampleSubmittedTimelineComponent implements OnInit {
     this.SpinnerService.show();
     this.submitted = true;
     this.submittedSamplesSummarySearchValues = this.searchFormGroup.value;
+    console.log(this.submittedSamplesSummarySearchValues.assignIO);
     // tslint:disable-next-line:max-line-length
     this.msService.loadSearchSubmittedSamplesSummaryViewList(String(this.defaultPage), String(this.defaultPageSize), this.submittedSamplesSummarySearchValues).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
+            for(let i=0; i<this.loadedData.length; i++){
+              if(Number(this.loadedData[i].submissionWithin2Days) == 1){
+                this.loadedData[i].submissionWithin2Days = 'YES';
+              }else if(Number(this.loadedData[i].submissionWithin2Days) == 0){
+                this.loadedData[i].submissionWithin2Days = 'NO';
+              }
+            }
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
             this.calculateSampleSubmittedSummary();
@@ -232,6 +254,15 @@ export class SampleSubmittedTimelineComponent implements OnInit {
     }
   }
 
+  filterDivision(event){
+    //console.log(event.target.value);
+    if(event.target.value == 'Engineering'){
+      this.isEngineeringSelected = true;
+    }else if(event.target.value == 'Agro-Chemical'){
+      this.isEngineeringSelected = false;
+    }
+  }
+
   calculateSampleSubmittedSummary(){
       let arrayOfSamplesTested = [];
       let arrayOfComplianceTesting = [];
@@ -243,58 +274,72 @@ export class SampleSubmittedTimelineComponent implements OnInit {
       this.totalEntries = this.loadedData.length;
 
       for(let i=0; i < this.loadedData.length; i++){
-        if(isNaN(Number(this.loadedData[i].noSamplesTested))){
-          this.loadedData[i].noSamplesTested = '0'
-        }
-        arrayOfSamplesTested.push(Number(this.loadedData[i].noSamplesTested));
 
-        if(this.loadedData[i].complianceTesting != '100'){
-          this.loadedData[i].complianceTesting = '0'
-        }
-        arrayOfComplianceTesting.push(Number(this.loadedData[i].complianceTesting));
+          if(this.loadedData[i].complianceTesting == '100' || this.loadedData[i].complianceTesting == '0'){
+            arrayOfComplianceTesting.push(Number(this.loadedData[i].complianceTesting));
+          }
 
         if(isNaN(Number(this.loadedData[i].tcxb))){
           this.loadedData[i].tcxb = '0'
         }
         arrayOfTCXB.push(Number(this.loadedData[i].tcxb));
 
-        if(isNaN(Number(this.loadedData[i].timeTakenSubmitSample))){
-          arrayOfTimeTakenToSubmitSample.push(0);
+        if(this.loadedData[i].bsNumber == 'N/A'){
+          this.loadedData[i].noSamplesTested = 'NOT YET TESTED';
         }else{
-          arrayOfTimeTakenToSubmitSample.push(Number(this.loadedData[i].timeTakenSubmitSample)+1);
+          this.loadedData[i].noSamplesTested = '1';
+          arrayOfSamplesTested.push(1);
         }
 
-        if(isNaN(Number(this.loadedData[i].submissionWithin2Days))){
-          this.loadedData[i].submissionWithin2Days = '0'
+        if(this.loadedData[i].bsNumber != 'N/A'){
+          if(isNaN(Number(this.loadedData[i].timeTakenSubmitSample))){
+            // arrayOfTimeTakenToSubmitSample.push(0);
+          }else{
+            arrayOfTimeTakenToSubmitSample.push(Number(this.loadedData[i].timeTakenSubmitSample));
+          }
         }
-        arrayOfSubmittedWithin2Days.push(Number(this.loadedData[i].submissionWithin2Days));
+        if(this.loadedData[i].bsNumber != 'N/A'){
+          if(this.loadedData[i].submissionWithin2Days == 'YES'){
+            arrayOfSubmittedWithin2Days.push(1);
+          }else{
+            arrayOfSubmittedWithin2Days.push(0);
+          }
+        }
 
-        if(isNaN(Number(this.loadedData[i].timeTakenForwardLetters))){
-          arrayOfTimeTakenToForwardLetter.push(0);
-        }else{
-          arrayOfTimeTakenToForwardLetter.push(Number(this.loadedData[i].timeTakenForwardLetters)+1);
+
+
+        if(this.loadedData[i].timeTakenForwardLetters == 'NOT YET SENT' || this.loadedData[i].timeTakenForwardLetters == 'N/A'){
+          this.loadedData[i].forwardingWithin14DaysTesting = 'NOT YET FORWARDED';
+          console.log("Time taken to foward letters NYS or NA"+this.loadedData[i].timeTakenForwardLetters);
+        }else if(!isNaN(Number(this.loadedData[i].timeTakenForwardLetters))){
+          console.log("Time taken to foward letters is a number: "+this.loadedData[i].timeTakenForwardLetters)
+          arrayOfTimeTakenToForwardLetter.push(Number(this.loadedData[i].timeTakenForwardLetters));
+          if(Number(this.loadedData[i].timeTakenForwardLetters) <= 14){
+            this.loadedData[i].forwardingWithin14DaysTesting = 'YES';
+            arrayOfForwardingWithin14DaysOfTesting.push(1);
+          }else{
+            this.loadedData[i].forwardingWithin14DaysTesting = 'NO';
+            arrayOfForwardingWithin14DaysOfTesting.push(0);
+          }
         }
 
-        if(isNaN(Number(this.loadedData[i].forwardingWithin14DaysTesting))){
-          this.loadedData[i].forwardingWithin14DaysTesting = '0'
-        }
-        arrayOfForwardingWithin14DaysOfTesting.push(Number(this.loadedData[i].forwardingWithin14DaysTesting));
 
       }
       console.log("Array of submitted with 2 days"+arrayOfSubmittedWithin2Days);
       this.numberOfSamplesTested = arrayOfSamplesTested.reduce((a,b)=> a + b, 0);
-      this.averageTestingCompliance = this.numberOfSamplesTested/this.loadedData.length;
+
       this.sumOfComplianceToTesting = arrayOfComplianceTesting.reduce((a,b)=> a + b, 0);
+      this.averageTestingCompliance = this.sumOfComplianceToTesting/arrayOfComplianceTesting.length;
       this.sumOfTCTimesB = arrayOfTCXB.reduce((a,b)=> a + b, 0);
       this.sumOfTimeTakenToSubmitSamples = arrayOfTimeTakenToSubmitSample.reduce((a,b)=> a + b, 0);
-      this.averageTimeTakenToSubmitSamples = this.sumOfTimeTakenToSubmitSamples/this.loadedData.length;
+      this.averageTimeTakenToSubmitSamples = this.sumOfTimeTakenToSubmitSamples/arrayOfTimeTakenToSubmitSample.length;
       this.sumOfSubmissionWithin2Days = arrayOfSubmittedWithin2Days.reduce((a,b)=> a + b, 0);
-      console.log("Sum of submission within 2 days: "+this.sumOfSubmissionWithin2Days);
-      this.percentageComplianceToSubmissionWithin2days = (this.sumOfSubmissionWithin2Days/this.loadedData.length)*100;
+      // console.log("Sum of submission within 2 days: "+this.sumOfSubmissionWithin2Days);
+      this.percentageComplianceToSubmissionWithin2days = (this.sumOfSubmissionWithin2Days/arrayOfSubmittedWithin2Days.length)*100;
       this.sumOfTimeTakenToForwardLetters = arrayOfTimeTakenToForwardLetter.reduce((a,b)=> a + b, 0);
-      this.averageTimeTakenToForwardLetters = this.sumOfTimeTakenToForwardLetters/this.loadedData.length;
+      this.averageTimeTakenToForwardLetters = this.sumOfTimeTakenToForwardLetters/arrayOfTimeTakenToForwardLetter.length;
       this.sumOfForwardingWithin14Days = arrayOfForwardingWithin14DaysOfTesting.reduce((a,b)=> a + b, 0);
-      this.percentageComplianceToForwardingWithin14Days = (this.sumOfForwardingWithin14Days/this.loadedData.length)*100;
+      this.percentageComplianceToForwardingWithin14Days = (this.sumOfForwardingWithin14Days/arrayOfForwardingWithin14DaysOfTesting.length)*100;
   }
 
 }

@@ -31,6 +31,10 @@ export class ViewRfcCorDocumentsComponent implements OnInit {
         this.router.navigate(["/pvoc/foreign/rfc/cor"])
     }
 
+    reloadRfcDetails(reload) {
+        this.loadRfcDetails()
+    }
+
     loadRfcDetails() {
         this.pvocService.loadRfcCorDetails(this.rfcId).subscribe(
             res => {

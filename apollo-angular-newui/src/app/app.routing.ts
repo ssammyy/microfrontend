@@ -1065,10 +1065,6 @@ export const routes: Routes = [
                 path: 'tivet_management',
                 component: ManageTivetComponent,
             },
-            {
-                path: 'admin_fixes',
-                component: QaAdminFixesComponent,
-            },
 
         ],
     },

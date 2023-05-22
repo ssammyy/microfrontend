@@ -111,6 +111,8 @@ export class ComplaintMonitoringComponent implements OnInit {
             nameOutlet: ['', null],
             productsDueForDestruction: ['', null],
             productsDueForRelease: ['', null],
+            officerID: ['', null],
+            selectedOfficers: [[], null],
         });
 
         this.loadData(this.defaultPage, this.defaultPageSize);
@@ -240,39 +242,43 @@ export class ComplaintMonitoringComponent implements OnInit {
         for(let i=0; i < this.loadedData.length; i++){
 
             if(isNaN(Number(this.loadedData[i].quantity))){
-                this.loadedData[i].quantity = '0';
+                // this.loadedData[i].quantity = '0';
+            }else{
+                arrayOfQuantity.push(Number(this.loadedData[i].quantity));
             }
-            arrayOfQuantity.push(Number(this.loadedData[i].quantity));
+
 
             if(isNaN(Number(this.loadedData[i].unit))){
-                this.loadedData[i].unit = '0';
+                // this.loadedData[i].unit = '0';
+            }else{
+                arrayOfUnit.push(Number(this.loadedData[i].unit));
             }
-            arrayOfUnit.push(Number(this.loadedData[i].unit));
+
 
             if(isNaN(Number(this.loadedData[i].estimatedCost))){
-                this.loadedData[i].estimatedCost = '0';
+                // this.loadedData[i].estimatedCost = '0';
+            }else{
+                arrayOfEstimatedCost.push(Number(this.loadedData[i].estimatedCost));
             }
-            arrayOfEstimatedCost.push(Number(this.loadedData[i].estimatedCost));
+
 
             if(isNaN(Number(this.loadedData[i].currentLocationSeizedProducts))){
-                this.loadedData[i].currentLocationSeizedProducts = '0';
+                // this.loadedData[i].currentLocationSeizedProducts = '0';
+            }else{
+                arrayOfLocationAndSeizedGoods.push(Number(this.loadedData[i].currentLocationSeizedProducts));
             }
-            arrayOfLocationAndSeizedGoods.push(Number(this.loadedData[i].currentLocationSeizedProducts));
 
             if(this.loadedData[i].productsDueForDestruction == "YES"){
-                this.loadedData[i].productsDueForDestruction = '1';
-            }else{
-                this.loadedData[i].productsDueForDestruction = '0';
+                arrayOfProductsDueForDestruction.push(1);
             }
-            arrayOfProductsDueForDestruction.push(Number(this.loadedData[i].productsDueForDestruction));
 
         }
         this.sumOfQuantity = arrayOfQuantity.reduce((a,b)=> a + b, 0);
-        this.sumOfUnit = arrayOfUnit.reduce((a,b)=> a + b, 0);
+        // this.sumOfUnit = arrayOfUnit.reduce((a,b)=> a + b, 0);
         this.estimatedCost = arrayOfEstimatedCost.reduce((a,b)=> a + b, 0);
-        this.currentLocationOfSeizedGoods = arrayOfLocationAndSeizedGoods.reduce((a,b)=> a + b, 0);
+        // this.currentLocationOfSeizedGoods = arrayOfLocationAndSeizedGoods.reduce((a,b)=> a + b, 0);
         this.productsDueForDestruction = arrayOfProductsDueForDestruction.reduce((a,b)=> a + b, 0);
-        this.percentageOfProductDueForDestruction = this.productsDueForDestruction/this.loadedData.length;
+        this.percentageOfProductDueForDestruction = (this.productsDueForDestruction/this.loadedData.length)*100;
 
     }
 }

@@ -11,16 +11,16 @@ import {
     ISDecision, ISDraftDecision, ISDraftDecisionStd,
     ISDraftUpload,
     ISHopTASKS,
-    ISHosSicTASKS,
+    ISHosSicTASKS, ISJustification,
     ISJustificationDecision,
     ISJustificationProposal, ISProposalJustification,
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
     ISTcSecTASKS, IstProposalComment, JustificationStatus,
-    ListJustification, NwaRequestList,
+    ListJustification, MultipleApprovalFields, MultipleSpcApprovals, NwaRequestList,
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
-    ProposalComments, RolesEntityDtos,
+    ProposalComments, RolesEntityDtos, SacDecision, SpcDecision,
     StakeholderProposalComments, StakeHoldersFields, StandardBody, ThisProposalComment, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
@@ -62,6 +62,13 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
+    public getTcSecDetails(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_TC_SEC_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+
 
 
 
@@ -85,6 +92,48 @@ export class StdIntStandardService {
         })
     );
   }
+
+    public onClickMakeSacDecision(sacDecision: SacDecision,multipleApprovalFields: MultipleApprovalFields[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_MULTIPLE_SAC_LIST);
+        const params = new HttpParams();
+        sacDecision.decisionList=multipleApprovalFields
+        return this.http.post<SacDecision>(url, sacDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public onClickMakeNscDecision(sacDecision: SacDecision,multipleApprovalFields: MultipleApprovalFields[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_MULTIPLE_NSC_LIST);
+        const params = new HttpParams();
+        sacDecision.decisionList=multipleApprovalFields
+        return this.http.post<SacDecision>(url, sacDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public onClickMakeSpcDecision(spcDecision: SpcDecision,multipleSpcApprovals: MultipleSpcApprovals[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_MULTIPLE_JUSTIFICATIONS);
+        const params = new HttpParams();
+        spcDecision.decisionList=multipleSpcApprovals
+        return this.http.post<SpcDecision>(url, spcDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
     //upload Draft Document
     public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
@@ -189,7 +238,7 @@ export class StdIntStandardService {
     public getJustification(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APP_JUSTIFICATION);
         const params = new HttpParams();
-        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+        return this.http.get<ISJustification>(url, {params}).pipe();
     }
 
     public getApprovedJustification(): any {

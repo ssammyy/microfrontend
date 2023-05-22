@@ -1,13 +1,15 @@
 <div class="container-fluid" style="margin-top: 5%" id="main-container">
-    <div class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                size="medium"
-                color="#fff"
-                type="ball-scale-multiple"
-        >
-            <p style="font-size: 20px; color: white">Saving Please Wait...</p>
-        </ngx-spinner>
+    <div *ngIf="loading">
+        <div class="loading-spinner ">
+            <ngx-spinner
+                    bdColor="rgba(51,51,51,0.8)"
+                    size="medium"
+                    color="#fff"
+                    type="ball-scale-multiple"
+            >
+                <p style="font-size: 20px; color: white">{{loadingText}}</p>
+            </ngx-spinner>
+        </div>
     </div>
     <div class="main-content">
         <div class="container-fluid">
@@ -111,9 +113,10 @@
                                        [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                                     <thead>
                                     <tr>
-                                        <th class="id">Number</th>
+                                        <th class="id">Id</th>
                                         <th class="task">Department Name</th>
                                         <th class="task">Department Abbreviations</th>
+                                        <th class="task">HOF</th>
 
                                         <th class="action">Action</th>
                                     </tr>
@@ -124,13 +127,15 @@
 
                                         <td>{{dpt.name}}</td>
                                         <td>{{dpt.abbreviations}}</td>
+                                        <td>{{dpt.varField3}}</td>
+
                                         <td><a (click)="onOpenModal(dpt,'edit')" class="btn btn-info"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Edit</a>
                                             <br>
-                                            <a class="btn btn-danger"
+                                            <a (click)="onOpenModal(dpt,'addHof')" class="btn btn-info"
                                                data-placement="top"
-                                               data-original-title="Upload NWI">Delete</a>
+                                               data-original-title="Upload NWI">Assign HOF</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -220,6 +225,64 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade " id="addHof" tabindex="-1" role="dialog"
+                 aria-labelledby="updateExampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTcSecModalLabel">Add HOF</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalB>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form #editFormB="ngForm">
+                            <div class="modal-body">
+
+                                <div class="row col-12">
+
+                                    <div class="form-group col-12">
+                                        <label><b>Department Name</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{department?.name}}"
+                                                name="name"
+                                                type="text">
+                                    </div>
+                                    <div class="col-12 checkbox-radios">
+                                        <label><b>HOF Assignment</b></label>
+
+                                        <ng-select [(ngModel)]="filteredHof"
+                                                   class="custom-ng-select" name="userId">
+                                            <ng-option *ngFor="let hof of hofs"
+                                                       [value]="hof.id">{{hof.firstName}}  {{hof.lastName}} </ng-option>
+                                        </ng-select>
+                                    </div>
+                                    <input ngModel="{{department?.id}}"
+                                           name="id"
+                                           type="hidden">
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeModalB
+                                        (click)="hideModel()" data-dismiss="modal">Close
+                                </button>
+                                <button class="btn btn-info"
+                                        (click)="assignHof(editFormB.value)">Submit
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>

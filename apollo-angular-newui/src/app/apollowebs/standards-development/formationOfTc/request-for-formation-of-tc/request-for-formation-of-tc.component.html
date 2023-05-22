@@ -38,7 +38,13 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" id="rejected-proposals"
                            (click)="tabChange('Rejected Proposals')" role="tablist">
-                            <i class="material-icons"></i>Declined Proposals
+                            <i class="material-icons"></i>Declined Proposals By Hof
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="rejected-proposals-spc"
+                           (click)="tabChange('Rejected Proposals SPC')" role="tablist">
+                            <i class="material-icons"></i>Declined Proposals By SPC
                         </a>
                     </li>
 
@@ -123,6 +129,9 @@
                 </div>
                 <div *ngIf="id == 'Rejected Proposals'" class="w-100">
                     <app-rejected-proposals></app-rejected-proposals>
+                </div>
+                <div *ngIf="id == 'Rejected Proposals SPC'" class="w-100">
+                    <app-rejected-by-spc></app-rejected-by-spc>
                 </div>
 
                 <div class="modal fade" id="requestModal" tabindex="-1" role="dialog"
@@ -478,11 +487,8 @@
                                                             aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                             class="form-control one-column-input"
                                                             formControlName="isoCommittee"
-                                                            placeholder="Proposed TC Representation *" type="text">
-                                                    <app-field-error-display
-                                                            [displayError]="isFieldValid(editFormationRequestFormGroup, 'isoCommittee')"
-                                                            errorMsg="Please Enter Proposed TC Representation">
-                                                    </app-field-error-display>
+                                                            placeholder="SO/IEE/IEC Mirror Committee" type="text">
+
                                                 </mat-form-field>
                                             </div>
 

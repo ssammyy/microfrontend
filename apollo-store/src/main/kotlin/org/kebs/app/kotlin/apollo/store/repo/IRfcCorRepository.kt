@@ -15,13 +15,9 @@ interface IRfcCorRepository : HazelcastRepository<RfcCorEntity,Long> {
     fun findFirstByRfcNumberOrderByVersionDesc(rfcNumber: String): RfcCorEntity?
     fun findFirstByUcrNumberOrderByVersionDesc(ucrNumber: String): RfcCorEntity?
     fun findByReviewStatusAndStatus(reviewStatus: Int, status: Long, page: Pageable): Page<RfcCorEntity>
-    fun findByRfcNumberContainsAndReviewStatusAndStatusOrChassisNumberContainsAndReviewStatusAndStatus(
+    fun findByRfcNumberContainsOrChassisNumberContains(
         keywords: String,
-        reviewStatus: Int,
-        status: Long,
         keywords2: String,
-        reviewStatus2: Int,
-        status2: Long,
         page: Pageable
     ): Page<RfcCorEntity>
 }

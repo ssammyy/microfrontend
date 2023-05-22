@@ -94,6 +94,9 @@ interface RegionHolder{
 
 interface SiteVisitListHolder {
     fun getId(): Long?
+    fun getName(): String?
+    fun getFileType(): String?
+    fun getCreatedBy(): String?
 }
 
 
@@ -441,6 +444,26 @@ interface UserIdHolder{
 interface ManufacturerStatusHolder{
     fun getManufacturerStatus(): Long?
 }
+interface JustificationDetails{
+    fun getId(): Long?
+    fun getMeetingDate(): String?
+    fun getDepartmentName(): String?
+    fun getTcSecName(): String?
+    fun getStandardNumber(): String?
+    fun getTitle(): String?
+    fun getEdition(): String?
+    fun getRequesterName(): String?
+    fun getScope(): String?
+    fun getPurpose(): String?
+    fun getIntendedUsers(): String?
+    fun getReferenceMaterial(): String?
+    fun getCirculationDate(): Timestamp?
+    fun getClosingDate(): Timestamp?
+    fun getTcAcceptanceDate(): String?
+    fun getDraftId(): Long?
+    fun getDepartmentId(): Long?
+    fun getStandardType(): String?
+}
 
 interface ProposalDetails{
     fun getId(): Long?
@@ -450,6 +473,9 @@ interface ProposalDetails{
     fun getUploadedBy(): String?
     fun getRemarks(): String?
     fun getAssignedTo(): Long?
+    fun getRequestId(): Long?
+    fun getProposalId(): Long?
+    fun getDraftReviewStatus(): Long?
     fun getTitle(): String?
     fun getCirculationDate(): Timestamp?
     fun getNameOfOrganization(): String?
@@ -485,6 +511,7 @@ interface ProposalDetails{
     fun getStStatus(): Long?
     fun getStTelephone(): String?
     fun getCommentId(): Long?
+    fun getTcDecision(): String?
 }
 interface PermitsAwarded{
     fun getId(): Long?
@@ -784,6 +811,8 @@ interface ComStandard {
     fun getUploadDate(): String?
     fun getStatus(): Long?
     fun getRequestId(): Long?
+    fun getProposalId(): Long?
+    fun getDraftReviewStatus(): Long?
     fun getDraftId(): Long?
     fun getDepartmentId(): Long?
     fun getDepartmentName(): String?

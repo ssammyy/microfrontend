@@ -582,6 +582,13 @@ import {IntStdWebProposalComponent} from './apollowebs/standards-development/int
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
 import { QaAdminFixesComponent } from './apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component';
+import {RejectedBySpcComponent} from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
+import {AuthorizerApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
+import {ReviewNscComponent} from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
+import {ReviewApplicationRejectedByNscComponent} from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
+import {TcManagementComponent} from './apollowebs/admin/tc-management/tc-management.component';
+import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
+import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1219,6 +1226,12 @@ import { QaAdminFixesComponent } from './apollowebs/qualityAssuranceAdmin/qa-adm
         ApprovedProposalsComponent,
         RejectedProposalsComponent,
         QaAdminFixesComponent,
+        RejectedBySpcComponent,
+        AuthorizerApproveApplicationComponent,
+        ReviewNscComponent,
+        ReviewApplicationRejectedByNscComponent,
+        TcManagementComponent,
+        NcrCorCertificateComponent,
 
     ],
     entryComponents: [LoaderComponent],

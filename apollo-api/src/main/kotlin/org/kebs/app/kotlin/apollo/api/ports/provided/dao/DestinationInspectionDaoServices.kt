@@ -321,7 +321,7 @@ class DestinationInspectionDaoServices(
             ?: throw Exception("Local COC TYPE with type code = ${cocTypeCode}, does not Exist")
     }
 
-    fun findCocByCocNumber(cocNumber: String): CocsEntity? {
+    fun findCocByCocNumber(cocNumber: String, documentType: String? = null): CocsEntity? {
         return this.cocRepo.findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(
             cocNumber,
             cocNumber
@@ -926,8 +926,8 @@ class DestinationInspectionDaoServices(
         return corsBakRepository.findByConsignmentDocId(cdId)
     }
 
-    fun findCORByCorNumber(corNumber: String): CorsBakEntity? {
-        return corsBakRepository.findByCorNumber(corNumber)
+    fun findCORByCorNumber(corNumber: String, documentType: String? = null): CorsBakEntity? {
+        return corsBakRepository.findByCorNumberAndDocumentsType(corNumber, documentType ?: "COR")
     }
 
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {
@@ -2649,8 +2649,8 @@ class DestinationInspectionDaoServices(
         return cocRepo.findAllByUcrNumber(ucr)
     }
 
-    fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
+    fun findCocByUcrNumber(ucrNumber: String, documentType: String? = null): CocsEntity? {
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, documentType ?: "COC")
     }
 
     fun findCoiByUcrNumber(ucrNumber: String): CocsEntity? {

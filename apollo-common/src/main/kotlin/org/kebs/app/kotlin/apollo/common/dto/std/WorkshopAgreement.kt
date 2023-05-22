@@ -196,7 +196,14 @@ data class ISHopDecision(
      var draftId: Long?=null,
      var comments: String?=null,
      var requestId: Long?=null,
-     var id: Long?=null
+     var standardType: String?=null,
+     var id: Long?=null,
+     var accentTo: String?=null,
+     var assignedTo: Long,
+     var proposalId: Long,
+     var draftReviewStatus: Long,
+
+
 ){
 
 }
@@ -260,6 +267,7 @@ class IStandardUploadDto(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
+    @JsonProperty("standardType") val standardType: String?,
     @JsonProperty("id") val id: Long
 
 ){
@@ -359,15 +367,16 @@ class NwaPDraftAction(
     @JsonProperty("special") val special: String,
 ) {
 }
+
 data class ISAdoptionProposalDto(
     var proposal_doc_name: String?=null,
     var circulationDate: Timestamp,
-    var closingDate: String?=null,
-    var tcSecName: String?=null,
-    var title: String?=null,
+    var closingDate: String,
+    var tcSecName: String,
+    var title: String,
     var requestId: Long?=null,
-    var scope: String?=null,
-    var iStandardNumber: String?=null,
+    var scope: String,
+    var iStandardNumber: String,
     var adoptionAcceptableAsPresented: String?=null,
     var reasonsForNotAcceptance: String?=null,
     var recommendations: String?=null,
@@ -396,6 +405,41 @@ data class IStakeholderDTO(
 ){
 
 }
+
+data class ISSpcMultipleDecisionDto(
+    var decisionList: MutableList<SpcDecisionDTO>?=null,
+){
+
+}
+
+data class SpcDecisionDTO(
+
+    var accentTo:String,
+    var draftId:Long
+){
+
+}
+
+data class ISSacMultipleDecisionDto(
+    var decisionList: MutableList<SacDecisionDTO>?=null,
+){
+
+}
+
+data class SacDecisionDTO(
+
+    var accentTo:String,
+    var draftId:Long,
+    var requestId:Long,
+    var id:Long,
+    var standardType:String?=null,
+    var comStdNumber:String?=null,
+    var title:String?=null,
+    var scope:String?=null,
+){
+
+}
+
 
 data class ISPropComments(
     var commentTitle: String?=null,
@@ -539,7 +583,7 @@ data class ComDraftDto(
 }
 
 data class CSDraftDto(
-    var proposalId:Long?=null,
+    var proposalId:Long,
     var justificationNo:Long?=null,
     var id:Long,
     var title:String?=null,
@@ -558,6 +602,7 @@ data class CSDraftDto(
     var requestId:Long?=null,
     var draftId:Long?=null,
     var departmentId: Long?=null,
+    var draftReviewStatus: Long?=null,
     var subject: String?=null,
     var description: String?=null,
     var contactOneFullName: String?=null,

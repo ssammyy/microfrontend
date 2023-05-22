@@ -13,6 +13,7 @@ export class ViewOtherDocumentsComponent implements OnInit {
     message: string
     active: any = '1'
     cocDetails: BehaviorSubject<any>
+    corDetails: BehaviorSubject<any>
     documentId: any
     documentType: any
     documentTypeDesc: any
@@ -22,12 +23,16 @@ export class ViewOtherDocumentsComponent implements OnInit {
 
     ngOnInit(): void {
         this.cocDetails = new BehaviorSubject<any>(null)
+        this.corDetails = new BehaviorSubject<any>(null)
         this.activatedRoute.paramMap
             .subscribe(
                 res => {
                     this.documentId = res.get("id")
                     this.documentType = res.get('docType')
-                    if (this.documentType) {
+                    if (this.documentType.toUpperCase() === "NCR-COR") {
+                        this.documentTypeDesc = 'Certificate of Non-Compliance for Vehicles'
+                        this.loadCorDetails()
+                    } else if (this.documentType) {
                         switch (this.documentType.toUpperCase()) {
                             case 'COC':
                                 this.documentTypeDesc = 'Certificate of Compliance'
@@ -58,6 +63,22 @@ export class ViewOtherDocumentsComponent implements OnInit {
                 res => {
                     if (res.responseCode == "00") {
                         this.cocDetails.next(res.data)
+                    } else {
+                        this.message = res.message
+                    }
+                }
+            )
+    }
+
+    loadCorDetails() {
+        this.message = null
+        this.corDetails.next(null)
+
+        this.pvocService.loadCorDetails(this.documentId)
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.corDetails.next(res.data)
                     } else {
                         this.message = res.message
                     }

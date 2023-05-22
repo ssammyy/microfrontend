@@ -140,6 +140,21 @@ class JustificationForTC {
     @Basic
     var isoCommittee: String? = null
 
+    @Column(name = "COMMENT_ON_SPC_REJECTION")
+    @Basic
+    var commentOnSpcRejection: String? = null
+
+    @Column(name = "COMMENT_ON_SPC_REJECTION_DATE")
+    @Basic
+    var commentOnSpcRejectionDate: Timestamp? = null
+
+    @Column(name = "COMMENT_ON_SPC_REJECTION_BY")
+    @Basic
+    var commentOnSpcRejectionBy: Long? = null
+
+
+
+
 
 
 

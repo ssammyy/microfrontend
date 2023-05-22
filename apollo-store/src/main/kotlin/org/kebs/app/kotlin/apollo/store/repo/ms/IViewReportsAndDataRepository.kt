@@ -21,6 +21,7 @@
 
 package org.kebs.app.kotlin.apollo.store.repo.ms
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
@@ -187,22 +188,98 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
         value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
                 "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
-                "     (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
+                "   ( a.ASSIGNED_IO IN (:selectedOfficers))" +
+                "    and (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
                 "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
                 "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
+                "   ( a.DIVISION IN :selectedDivisions) and\n" +
                 "   (:regionID is null or a.REGION =:regionID)",
+
         nativeQuery = true
     )
+
     fun findFilteredConsumerComplaintReport(
         @Param("startDate") startDate: Date?,
         @Param("endDate") endDate: Date?,
-        @Param("refNumber") refNumber: String?,
         @Param("assignIO") assignIO: Long?,
+        @Param("selectedOfficers") selectedOfficers: Array<Long>?,
+        @Param("refNumber") refNumber: String?,
         @Param("sectorID") sectorID: Long?,
-        @Param("regionID") regionID: String?,
-        @Param("departmentID") departmentID: String?
+        @Param("departmentID") departmentID: String?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?,
+        @Param("regionID") regionID: String?
     ): List<ConsumerComplaintsReportViewEntity>?
+    @Query(
+        value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
+                "   ( a.ASSIGNED_IO IN (:selectedOfficers))" +
+                "    and (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
+                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
+                "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
+                "   (:regionID is null or a.REGION =:regionID)",
+
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReportWithSelectedOfficer(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("selectedOfficers") selectedOfficers: Array<Long>?,
+        @Param("refNumber") refNumber: String?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("departmentID") departmentID: String?,
+        @Param("regionID") regionID: String?
+    ): List<ConsumerComplaintsReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
+                "     (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
+                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
+                "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
+                "   ( a.DIVISION IN :selectedDivisions) and\n" +
+                "   (:regionID is null or a.REGION =:regionID)",
+
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReportWithSelectedDivisions(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("refNumber") refNumber: String?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("departmentID") departmentID: String?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?,
+        @Param("regionID") regionID: String?
+    ): List<ConsumerComplaintsReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
+                "    (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
+                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
+                "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
+                "   (:regionID is null or a.REGION =:regionID)",
+
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReportWithBothEmpty(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("refNumber") refNumber: String?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("departmentID") departmentID: String?,
+        @Param("regionID") regionID: String?
+
+    ): List<ConsumerComplaintsReportViewEntity>?
+
 }
+
+
 
 
 @Repository
@@ -211,9 +288,9 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
 
     @Query(
         value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))\n" +
+                "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
-                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
+                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:officerID is null or a.OFFICER =:officerID) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
                 "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)",
         nativeQuery = true
     )
@@ -226,6 +303,29 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
         @Param("nameOutlet") nameOutlet: String?,
         @Param("productsDueForDestruction") productsDueForDestruction: String?,
         @Param("productsDueForRelease") productsDueForRelease: String?,
+        @Param("officerID") officerID: String?,
+    ): List<MsSeizedGoodsReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
+                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:officerID is null or a.OFFICER =:officerID) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
+                "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)\n"+
+                "    AND ( a.OFFICER IN :selectedOfficers)",
+        nativeQuery = true
+    )
+    fun findFilteredSeizedGoodsReportWithMultipleOfficers(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sector") sector: String?,
+        @Param("brand") brand: String?,
+        @Param("marketCentre") marketCentre: String?,
+        @Param("nameOutlet") nameOutlet: String?,
+        @Param("productsDueForDestruction") productsDueForDestruction: String?,
+        @Param("productsDueForRelease") productsDueForRelease: String?,
+        @Param("officerID") officerID: String?,
+        @Param("selectedOfficers") selectedOfficers: Array<String>?,
     ): List<MsSeizedGoodsReportViewEntity>?
 
     fun findByMsWorkplanGeneratedId(msWorkplanGeneratedId: String): List<MsSeizedGoodsReportViewEntity>
@@ -268,17 +368,91 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
 
     @Query(
         value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
-                "    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))\n" +
-                "    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))\n" +
-                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n",
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME = :assignIO)\n" +
+                "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
+                "    AND (:function is null or a.FUNCTION =:function)\n"+
+                "    AND (:outletName is null or a.OUTLET_NAME =:outletName)\n"+
+                "    AND (:nameProduct is null or a.NAME_PRODUCT =:nameProduct)\n",
         nativeQuery = true
     )
     fun findFilteredSubmittedSamplesSummaryReport(
         @Param("startDate") startDate: Date?,
         @Param("endDate") endDate: Date?,
         @Param("sampleReferences") sampleReferences: String?,
-        @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?,
+        @Param("assignIO") assignIO: String?,
+        @Param("sectorID") sectorID: String?,
+        @Param("nameProduct") nameProduct: String?,
+        @Param("function") function: String?,
+        @Param("outletName") outletName: String?,
+    ): List<SubmittedSamplesSummaryReportViewEntity>?
+    @Query(
+        value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME = :assignIO)\n" +
+                "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
+                "    AND (:function is null or a.FUNCTION =:function)\n"+
+                "    AND (:outletName is null or a.OUTLET_NAME =:outletName)\n"+
+                "    AND (:nameProduct is null or a.NAME_PRODUCT =:nameProduct)\n"+
+                "    AND ( a.OFFICER_NAME IN :selectedOfficers)\n"+
+                "    AND ( a.FUNCTION IN :selectedDivisions)",
+        nativeQuery = true
+    )
+    fun findFilteredSubmittedSamplesSummaryReportWithBothPresent(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sampleReferences") sampleReferences: String?,
+        @Param("assignIO") assignIO: String?,
+        @Param("sectorID") sectorID: String?,
+        @Param("nameProduct") nameProduct: String?,
+        @Param("function") function: String?,
+        @Param("outletName") outletName: String?,
+        @Param("selectedOfficers") selectedOfficers: Array<String>?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?
+    ): List<SubmittedSamplesSummaryReportViewEntity>?
+    @Query(
+        value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME = :assignIO)\n" +
+                "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
+                "    AND (:function is null or a.FUNCTION =:function)\n"+
+                "    AND (:outletName is null or a.OUTLET_NAME =:outletName)\n"+
+                "    AND (:nameProduct is null or a.NAME_PRODUCT =:nameProduct)\n"+
+                "    AND ( a.OFFICER_NAME IN :selectedOfficers)\n",
+        nativeQuery = true
+    )
+    fun findFilteredSubmittedSamplesSummaryReportWithOfficers(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sampleReferences") sampleReferences: String?,
+        @Param("assignIO") assignIO: String?,
+        @Param("sectorID") sectorID: String?,
+        @Param("nameProduct") nameProduct: String?,
+        @Param("function") function: String?,
+        @Param("outletName") outletName: String?,
+        @Param("selectedOfficers") selectedOfficers: Array<String>?
+    ): List<SubmittedSamplesSummaryReportViewEntity>?
+    @Query(
+        value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE_AS_DATE <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.BS_NUMBER =:sampleReferences) and (:assignIO is null or a.OFFICER_NAME = :assignIO)\n" +
+                "    AND (:sectorID is null or a.DEPARTMENT =:sectorID)\n"+
+                "    AND (:function is null or a.FUNCTION =:function)\n"+
+                "    AND (:outletName is null or a.OUTLET_NAME =:outletName)\n"+
+                "    AND (:nameProduct is null or a.NAME_PRODUCT =:nameProduct)\n"+
+                "    AND ( a.FUNCTION IN :selectedDivisions)",
+        nativeQuery = true
+    )
+    fun findFilteredSubmittedSamplesSummaryReportWithDivisions(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sampleReferences") sampleReferences: String?,
+        @Param("assignIO") assignIO: String?,
+        @Param("sectorID") sectorID: String?,
+        @Param("nameProduct") nameProduct: String?,
+        @Param("function") function: String?,
+        @Param("outletName") outletName: String?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?
     ): List<SubmittedSamplesSummaryReportViewEntity>?
 }
 
@@ -308,6 +482,67 @@ interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<Fiel
         @Param("sectorID") sectorID: Long?,
         @Param("outletName") outletName: String?,
         @Param("divisionName") divisionName: String?
+    ): List<FieldInspectionSummaryReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
+                "AND (:outletName is null or a.NAME_OUTLET =:outletName)\n" +
+                "AND (:divisionName is null or a.DIVISION =:divisionName)" +
+                "AND ( a.DIVISION IN :selectedDivisions)"+
+                "AND ( a.OFFICER_ID IN :selectedOfficers)",
+        nativeQuery = true
+    )
+    fun findFilteredFieldInspectionSummaryReportWithBothPresent(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("outletName") outletName: String?,
+        @Param("divisionName") divisionName: String?,
+        @Param("selectedOfficers") selectedOfficers: Array<Long>?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?
+    ): List<FieldInspectionSummaryReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
+                "AND (:outletName is null or a.NAME_OUTLET =:outletName)\n" +
+                "AND (:divisionName is null or a.DIVISION =:divisionName)" +
+                "AND ( a.DIVISION IN :selectedDivisions)",
+
+        nativeQuery = true
+    )
+    fun findFilteredFieldInspectionSummaryReportWithDivisions(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("outletName") outletName: String?,
+        @Param("divisionName") divisionName: String?,
+        @Param("selectedDivisions") selectedDivisions: Array<String>?
+    ): List<FieldInspectionSummaryReportViewEntity>?
+
+    @Query(
+        value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
+                "AND (:outletName is null or a.NAME_OUTLET =:outletName)\n" +
+                "AND (:divisionName is null or a.DIVISION =:divisionName)" +
+                "AND ( a.OFFICER_ID IN :selectedOfficers)",
+
+        nativeQuery = true
+    )
+    fun findFilteredFieldInspectionSummaryReportWithOfficers(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?,
+        @Param("outletName") outletName: String?,
+        @Param("divisionName") divisionName: String?,
+        @Param("selectedOfficers") selectedOfficers: Array<Long>?,
     ): List<FieldInspectionSummaryReportViewEntity>?
 }
 

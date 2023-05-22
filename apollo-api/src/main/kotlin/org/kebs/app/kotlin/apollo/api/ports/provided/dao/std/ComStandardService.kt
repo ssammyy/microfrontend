@@ -549,7 +549,7 @@ class ComStandardService(
 
     //View Company Draft
     fun findUploadedCDRFileBYId(comStdDraftID: Long): ComStandardDraftUploads {
-        return comStandardDraftUploadsRepository.findAllByIdOrderByIdDesc(comStdDraftID)
+        return comStandardDraftUploadsRepository.findAllByIdOrderByIdAsc(comStdDraftID)
     }
 
     fun getDraftDocumentList(comStdDraftID: Long): List<SiteVisitListHolder> {
@@ -581,7 +581,7 @@ class ComStandardService(
 
     //View Company Draft
     fun findUploadedCPFileBYId(comStdDraftID: Long): ComStandardSacListUploads {
-        return comCoverPagesRepo.findAllById(comStdDraftID)
+        return comCoverPagesRepo.findAllByIdOrderByIdAsc(comStdDraftID)
     }
 
     fun getCoverPagesList(comStdDraftID: Long): List<SiteVisitListHolder> {

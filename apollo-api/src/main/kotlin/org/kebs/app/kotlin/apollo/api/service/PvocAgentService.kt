@@ -485,17 +485,40 @@ class PvocAgentService(
         return response
     }
 
-    fun certificateExists(documentType: String, certificateNumber: String, partnerId: Long?): Boolean {
-        KotlinLogging.logger { }.info("Find $documentType Certificate $certificateNumber with parterId=$partnerId")
+    fun certificateExists(
+        documentType: String,
+        certificateNumber: String,
+        partnerId: Long?,
+        rfcNumber: String? = null,
+        version: Long? = 1
+    ): Boolean {
+        KotlinLogging.logger { }
+            .info("Find $documentType Certificate $certificateNumber with parterId=$partnerId, rfc=$rfcNumber")
         return when (documentType.toUpperCase()) {
             "COC", "COI", "NCR" -> {
-                daoServices.findCocByCocNumber(certificateNumber)?.let { coc ->
+                daoServices.findCocByCocNumber(
+                    certificateNumber,
+                    documentType = documentType.toUpperCase()
+                )?.let { coc ->
                     coc.partner == partnerId
                 } ?: false
             }
             "COR" -> {
-                daoServices.findCORByCorNumber(certificateNumber)?.let { cor ->
+                daoServices.findCORByCorNumber(
+                    certificateNumber,
+                    documentType = documentType.toUpperCase()
+                )?.let { cor ->
                     cor.partner == partnerId
+                } ?: false
+            }
+            "RFC" -> {
+                rfcNumber?.let { pvocIntegrations.findRfcForCoc(it, version) }?.let { rfc ->
+                    rfc.partner == partnerId
+                } ?: false
+            }
+            "RFC_COR" -> {
+                rfcNumber?.let { pvocIntegrations.findRfcForCor(it, version) }?.let { rfc ->
+                    rfc.partner == partnerId
                 } ?: false
             }
             else -> false
@@ -510,7 +533,9 @@ class PvocAgentService(
             if (certificateExists(
                     form.documentType.orEmpty().toUpperCase(),
                     form.certNumber.orEmpty(),
-                    partner.id
+                    partner.id,
+                    rfcNumber = form.rfcNumber,
+                    version = form.version
                 )
             ) {
                 val query = PvocQueriesEntity()
@@ -520,9 +545,23 @@ class PvocAgentService(
                     query.varField1 = cd.id.toString()
                     query.cdId = cd.id
                 }
+                val data = mutableMapOf<String, Any>()
+                if ("RFC".equals(form.documentType)) {
+                    pvocIntegrations.findRfcForCoc(form.rfcNumber ?: "", form.version)?.let { rfc ->
+                        query.rfcId = rfc.id
+                        query.ucrNumber = rfc.ucrNumber
+                        query.rfcType = "RFC"
+                    }
+                } else if ("RFC_COR".equals(form.documentType)) {
+                    pvocIntegrations.findRfcForCor(form.rfcNumber ?: "", form.version)?.let { rfc ->
+                        query.rfcId = rfc.id
+                        query.rfcType = "RFC_COR"
+                    }
+                }
                 query.certNumber = form.certNumber
                 query.certType = form.documentType?.toUpperCase()
                 query.queryOrigin = "PVOC"
+                query.version = form.version ?: 1
                 query.ucrNumber = form.ucrNumber
                 query.rfcNumber = form.rfcNumber
                 query.idfNumber = form.idfNumber
@@ -537,7 +576,7 @@ class PvocAgentService(
                 query.createdOn = Timestamp.from(Instant.now())
                 query.modifiedOn = Timestamp.from(Instant.now())
                 this.partnerQuerriesRepository.save(query)
-                val data = mutableMapOf<String, Any>()
+                // Response data
                 data["certNumber"] = form.certNumber ?: "UNKNOWN"
                 data["certType"] = form.documentType ?: "UNKNOWN"
                 data["serialNumber"] = query.serialNumber ?: "NA"
@@ -547,7 +586,7 @@ class PvocAgentService(
             } else {
                 response.data = form
                 response.responseCode = ResponseCodes.NOT_FOUND
-                response.message = "Invalid Cert number, no such certificate"
+                response.message = "Invalid Cert number, no such Cert/RFC number and version"
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add PVOC query", ex)
@@ -624,6 +663,7 @@ class PvocAgentService(
                     val data = KebsQueryResponse()
                     if ("CONCLUSION".equals(form.responseType, true)) {
                         query.conclusion = form.queryResponse
+                        query.conclusionDate = Timestamp.from(Instant.now())
                         query.conclusionStatus = QueryStatuses.ACTIVE.code
                         query.responseAnalysis = form.queryAnalysis
                         query.modifiedOn = Timestamp.from(Instant.now())
@@ -682,11 +722,13 @@ class PvocAgentService(
     fun documentExists(documentType: String, ucrNumber: String, certNumber: String): Boolean {
         return when (documentType.toUpperCase()) {
             ConsignmentCertificatesIssues.COC.name, ConsignmentCertificatesIssues.NCR.name -> daoServices.findCocByUcrNumber(
-                ucrNumber
+                ucrNumber,
+                documentType.toUpperCase()
             ) != null
             ConsignmentCertificatesIssues.COI.name -> daoServices.findCoiByUcrNumber(ucrNumber) != null
             ConsignmentCertificatesIssues.COR.name, ConsignmentCertificatesIssues.NCR_COR.name -> daoServices.findCORByCorNumber(
-                certNumber
+                certNumber,
+                documentType.toUpperCase()
             ) != null
             else -> throw ExpectedDataNotFound("Invalid document type: $documentType")
         }
@@ -703,8 +745,9 @@ class PvocAgentService(
                     if (documentExists(
                             form.documentType.orEmpty(),
                             form.ucrNumber.orEmpty(),
-                            form.certNumber.orEmpty()
-                        )
+                            form.certNumber.orEmpty(),
+
+                            )
                     ) {
                         val query = PvocQueriesEntity()
                         query.serialNumber = queryReference("KEBS")
@@ -713,6 +756,7 @@ class PvocAgentService(
                         query.invoiceNumber = form.invoiceNumber
                         query.certType = form.documentType
                         query.queryOrigin = "KEBS"
+                        query.version = form.version ?: 1
                         query.ucrNumber = form.ucrNumber
                         query.rfcNumber = form.rfcNumber
                         query.queryDetails = form.kebsQuery

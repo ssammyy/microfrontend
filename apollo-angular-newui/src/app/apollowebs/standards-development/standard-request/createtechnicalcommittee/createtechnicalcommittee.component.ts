@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Department, TechnicalCommittee} from "../../../../core/store/data/std/std.model";
+import {Department, TechnicalCommittee, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -9,11 +9,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {selectUserInfo} from "../../../../core/store";
 import {Subject} from "rxjs";
-import {
-    DataHolder,
-    StdJustification, Stdtsectask,
-    StdtsecTaskJustification
-} from "../../../../core/store/data/std/request_std.model";
+import {DataHolder, StdJustification, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {DataTableDirective} from "angular-datatables";
 
 declare const $: any;
@@ -33,8 +29,9 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
     isDtInitialized: boolean = false
-    public  itemId: number;
+    public itemId: number;
 
+    filteredTcSec: number;
 
     public createTCFormGroup!: FormGroup;
 
@@ -42,6 +39,10 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     public departments !: Department[];
     public technicalCommittees !: TechnicalCommittee[];
     public tscsecRequest !: DataHolder | undefined;
+    loading = false;
+    loadingText: string;
+    public tcSecs !: UsersEntity[];
+
 
     constructor(
         private formBuilder: FormBuilder,
@@ -55,13 +56,12 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
 
     ngOnInit(): void {
         this.getDepartments();
-
-    }
-
-    ngAfterViewInit(): void {
         this.getTechnicalCommittee();
+        this.getTcSecs()
+
 
     }
+
 
     public getDepartments(): void {
         this.standardDevelopmentService.getDepartmentsb().subscribe(
@@ -77,11 +77,8 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
         });
 
         this.createTCFormGroup = this.formBuilder.group({
-            departmentId: ['', Validators.required],
+            title: ['', Validators.required]
 
-            title: ['', Validators.required],
-            technical_committee_no: ['', Validators.required],
-            parentCommitte: ['', Validators.required]
         });
     }
 
@@ -91,6 +88,11 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
+
+    }
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
 
     }
 
@@ -140,10 +142,16 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     }
 
     public getTechnicalCommittee(): void {
+        this.loadingText = "Retrieving Please Wait ...."
+        this.loading = true;
+        this.SpinnerService.show();
+
         this.standardDevelopmentService.getTechnicalCommittees().subscribe(
             (response: DataHolder[]) => {
                 console.log(response);
                 this.tcs = response;
+                this.loading = false;
+                this.SpinnerService.hide();
 
                 if (this.isDtInitialized) {
                     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -157,6 +165,8 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.loading = false;
+                this.SpinnerService.hide();
             }
         )
     }
@@ -173,6 +183,11 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
             this.itemId = this.tscsecRequest.id;
             button.setAttribute('data-target', '#uploadSPCJustification');
         }
+        if (mode === 'addTcSec') {
+            this.tscsecRequest = tcTask;
+            this.itemId = this.tscsecRequest.id;
+            button.setAttribute('data-target', '#addTcSec');
+        }
 
         // @ts-ignore
         container.appendChild(button);
@@ -181,8 +196,15 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
     public hideModel() {
         this.closeModal?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
+
+    public hideModelB() {
+        this.closeModalB?.nativeElement.click();
     }
 
     uploadJustification(stdJustification: StdJustification): void {
@@ -201,6 +223,42 @@ export class CreatetechnicalcommitteeComponent implements OnInit {
         )
     }
 
+    assignTcSec(technical: TechnicalCommittee): void {
+        this.SpinnerService.show();
+        technical.id = Number(technical.id); // Convert the id value to a number
+
+
+        if (technical.userId != null) {
+
+            this.standardDevelopmentService.assignTcSec(technical).subscribe(
+                (response: any) => {
+                     this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Technical Committee Secretary Assigned`);
+                    this.getTechnicalCommittee();
+                    this.hideModelB();
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+        } else {
+            this.showToasterError("Missing Field", `Please Select A User`);
+
+        }
+    }
+
+    public getTcSecs()
+        :
+        void {
+        this.standardDevelopmentService.getTcSec().subscribe(
+            (response: UsersEntity[]) => {
+                this.tcSecs = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
 
 
 }

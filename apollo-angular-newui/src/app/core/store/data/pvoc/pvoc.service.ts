@@ -279,7 +279,7 @@ export class PVOCService {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/status/update/" + waiverId), data)
     }
 
-    loadCorDocument(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
+    loadCorDocument(keywords: string, category: string, reviewStatus: number, page: number, size: number): Observable<any> {
         let params = {}
         params["size"] = size
         params["page"] = page
@@ -287,7 +287,7 @@ export class PVOCService {
         if (keywords) {
             params["keywords"] = keywords
         }
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor"), {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/" + category.toLowerCase()), {
             params: params
         });
     }
@@ -326,10 +326,6 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/rfc/coc/" + documentId))
     }
 
-    loadCorDetails(documentId: any): Observable<any> {
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor/" + documentId))
-    }
-
     loadCocDocument(keywords: string, reviewStatus: number, documentType: string, page: number, size: number): Observable<any> {
         let params = {}
         params["size"] = size
@@ -345,6 +341,10 @@ export class PVOCService {
 
     loadCocDetails(documentId: any): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cocorcoi/" + documentId))
+    }
+
+    loadCorDetails(documentId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor/" + documentId))
     }
 
     sendPvocQuery(data: any): Observable<any> {

@@ -17,7 +17,7 @@ interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long>
     fun findNameById(@Param("id") id: Long?): String
 
     @Query(
-        "SELECT t.ID, t.TC_TITLE,t.PARENT_COMMITTEE AS V1,t.TECHNICAL_COMMITTEE_NO AS V2, d.NAME, d.ID AS V3 FROM SD_TECHNICAL_COMMITTEE t Join SD_DEPARTMENT d ON t.DEPARTMENT_ID=d.ID ORDER BY t.ID DESC ",
+        "SELECT t.ID, t.TC_TITLE,t.PARENT_COMMITTEE AS V1,t.TECHNICAL_COMMITTEE_NO AS V2, d.NAME, d.ID AS V3, t.USER_ID AS V4, v.FIRST_NAME AS V5, v.LAST_NAME AS V6 FROM SD_TECHNICAL_COMMITTEE t  Left join APOLLO.DAT_KEBS_USERS v on t.USER_ID=v.ID   Join SD_DEPARTMENT d ON t.DEPARTMENT_ID=d.ID ORDER BY t.ID DESC ",
         nativeQuery = true
     )
     fun findAllWithDescriptionQuery(): List<DataHolder>

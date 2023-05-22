@@ -701,19 +701,23 @@ export class ConsumerComplaintViewSearchValues {
     departmentID: string;
     regionID: string;
     divisionName: string;
-    //selectedOfficers: officersID[];
+    selectedOfficers: number[];
+    selectedDivisions: string[];
 }
 
-export class officersID{
-    officerID: number;
-}
+
 
 export class SubmittedSamplesSummaryViewSearchValues {
     sampleReferences: string;
-    assignIO: number;
+    assignIO: string;
+    nameProduct: string;
+    function: string;
+    outletName: string;
     startDate: Date;
     endDate: Date;
-    sectorID: number;
+    sectorID: string;
+    selectedOfficers: string[];
+    selectedDivisions: string[];
 }
 
 export class SeizeViewSearchValues {
@@ -725,12 +729,15 @@ export class SeizeViewSearchValues {
     nameOutlet: string;
     productsDueForDestruction: string;
     productsDueForRelease: string;
+    officerID: string;
+    selectedOfficers: string[];
 
 }
 
 export class MsSeizedGoodsReportViewEntity {
     id: number;
     dateofSeizure: string;
+    officer: string;
     marketCentre: string;
     nameOutlet: string;
     descriptionProductsSeized: string;
@@ -752,36 +759,48 @@ export class MsSeizedGoodsReportViewEntity {
 
 export class SubmittedSamplesSummaryReportViewEntity {
     id: number;
-    sendersDate: Date;
-    dateVisit: Date;
-    sampleReferences: string;
-    resultsDate: Date;
-    resultSentDate: Date;
-    officerId: number;
-    complaintDepartment: number;
-    dateofVisit: string;
+    nameProduct: string;
+    productDescription: string;
+    batchNumber: string;
+    dateOfManuf: Date;
+    bsNumber: string;
+    sampleCollectionDate: Date;
     sampleSubmissionDate: string;
     marketCentre: string;
+    outletName: string;
+    outletDetails: string;
+    department: string;
+    function: string;
+    sourceProductEvidence: string;
+    officerName: string;
+
+    inspectionDate: Date;
+    importerManufacturer: string;
+    permitNumber: string;
+    ucrNumber: string;
+    actionsTaken: string;
+    failedParameters: string
+    resultsDate: Date;
+    resultSentDate: Date;
+    complianceTesting: string;
+    timeTakenForwardLetters: string;
+    officerId: number;
+    timeTakenSubmitSample: string;
+    submissionWithin2Days: string;
+    complaintDepartment: number;
+    dateofVisit: string;
+
     nameAddressOutlet: string;
-    productDescription: string;
     sector: string;
     ucrPermitNo: string;
-    sourceProductEvidence: string;
     brandAndManufacturer: string;
     noSamplesTested: string;
     natureFailure: string;
-    actionsTaken: string;
     dateofTestReport: string;
     dateofForwardingTestResults: string;
-    complianceTesting: string;
     tcxb: string;
-    timeTakenSubmitSample: string;
-    submissionWithin2Days: string;
-    timeTakenForwardLetters: string;
     forwardingWithin14DaysTesting: string;
     batchNoDateManufacture: string;
-    sampleCollectionDate: Date;
-    failedParameters: string;
 }
 
 export class FieldInspectionSummaryReportViewEntity {
@@ -796,6 +815,7 @@ export class FieldInspectionSummaryReportViewEntity {
     dateofVisit: string;
     dateofSurveillanceReport: string;
     marketCentre: string;
+    officerName: string;
     nameOutlet: string;
     noSamplesDrawnSubmitted: string;
     compliancePhysicalInspection: string;
@@ -806,6 +826,7 @@ export class FieldInspectionSummaryReportViewEntity {
     visitAspermsSchedule: string;
     timeTakenFileSurveillanceReport: string;
     filingWithin1DayafterVisit: string;
+    division: string;
 }
 
 export class WorkPlanMonitoringToolEntity {
@@ -1674,6 +1695,7 @@ export class SampleSubmissionDto {
     sourceProductEvidence: string;
     parametersList: SampleSubmissionItemsDto[];
     dataReportID: number;
+    productSelected: number;
     nameOutlet: string;
     docList: number[];
 }

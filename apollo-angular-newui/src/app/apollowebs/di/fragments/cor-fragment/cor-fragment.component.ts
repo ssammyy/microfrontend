@@ -44,6 +44,12 @@ export class CorFragmentComponent implements OnInit {
             )
     }
 
+    reloadChanged(reload: boolean) {
+        if (reload) {
+            this.changedReload.emit(true)
+        }
+    }
+
     downloadCorFile(): void {
         if (this.corDetails) {
             this.diService.downloadDocument("/api/v1/download/cor/" + this.corDetails.cor_details.id)

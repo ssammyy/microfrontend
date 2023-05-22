@@ -20,6 +20,8 @@ export class ReviewApplicationsAcceptedComponent implements OnInit {
     public actionRequest: ReviewApplicationTask | undefined;
     loadingText: string;
     public uploadedFiles: FileList;
+    public uploadedFilesB: FileList;
+
 
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
@@ -106,23 +108,32 @@ export class ReviewApplicationsAcceptedComponent implements OnInit {
     public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): void {
 
 
-        this.SpinnerService.show();
-        this.loadingText = "Sending Appointment Letter To " + reviewApplicationTask.email;
-        this.membershipToTcService.sendAppointmentEmail(reviewApplicationTask, tCApplicationId).subscribe(
-            (response) => {
-                console.log(response);
-                this.getApplicationsForReview();
-                this.SpinnerService.hide();
-                this.notifyService.showSuccess("Success", 'Appointment Letter Sent to ' + reviewApplicationTask.email)
+        if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
+            const formData = new FormData();
 
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
+            const file = this.uploadedFiles;
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
             }
-        )
+            this.SpinnerService.show();
+            this.loadingText = "Sending Appointment Letter To " + reviewApplicationTask.email;
+            this.membershipToTcService.sendAppointmentEmail(reviewApplicationTask, tCApplicationId,formData).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.getApplicationsForReview();
+                    this.SpinnerService.hide();
+                    this.notifyService.showSuccess("Success", 'Appointment Letter Sent to ' + reviewApplicationTask.email)
 
-        this.hideModel();
-        this.clearForm();
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+
+            this.hideModel();
+            this.clearForm();
+        }
 
 
     }

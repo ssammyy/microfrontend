@@ -4,8 +4,8 @@ import {Subject} from "rxjs";
 import {
     ComStdCommitteeRemarks, ComStdRemarks,
     InternationalStandardsComments,
-    ISCheckRequirements, ISJustificationProposal,
-    StakeholderProposalComments
+    ISCheckRequirements, ISJustificationProposal, MultipleApprovalFields,
+    StakeholderProposalComments, StakeHoldersFields
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -19,6 +19,7 @@ import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {PublishingService} from "../../../../core/store/data/std/publishing.service";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-sac-approval',
@@ -39,9 +40,15 @@ export class IntStdSacApprovalComponent implements OnInit {
   comStdRemarks: ComStdRemarks[] = [];
     iSJustificationProposals: ISJustificationProposal[] = [];
   loadingText: string;
+    dataSaveResourcesRequired : MultipleApprovalFields;
+    dataSaveResourcesRequiredList: MultipleApprovalFields[]=[];
+    predefinedDecisionAdded: boolean = false;
+    submitted = false;
 
-  approve: string;
-  reject: string;
+  approval: string;
+  rejection: string;
+    approve: string;
+    reject: string;
     blob: Blob;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
@@ -67,21 +74,14 @@ export class IntStdSacApprovalComponent implements OnInit {
   ngOnInit(): void {
     this.approve='Yes';
     this.reject='No';
+
     this.getAppStdPublishing();
     this.multipleApproveFormGroup= this.formBuilder.group({
-        docName: null,
-        title: null,
-        scope: null,
-        normativeReference: null,
-        symbolsAbbreviatedTerms: null,
-        clause: null,
-        special: null,
-        standardType: null,
-        comments: null,
-        accentTo: null,
-        draftId: null,
-        requestId: null,
-        id: null,
+        accentTo:null,
+        draftId:null,
+        requestId:null,
+        id:null,
+        standardType:null
     });
     this.approveRequirementsFormGroup = this.formBuilder.group({
         docName: null,
@@ -120,7 +120,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.stdComStandardService.getAppStdPublishing().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
-          console.log(this.isCheckRequirements)
+          //console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -280,7 +280,20 @@ export class IntStdSacApprovalComponent implements OnInit {
           //console.log(response);
           this.getAppStdPublishing();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Standard Approved `);
+            if(response.body.responseStatus=="success"){
+                this.showToasterSuccess('Approved', response.body.responseMessage);
+            }else if(response.body.responseStatus=="error"){
+                this.showToasterError('Not Approved', response.body.responseMessage);
+            }
+            swal.fire({
+                title: response.body.responseMsg,
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: response.body.responseButton,
+                },
+                icon: response.body.responseStatus
+            });
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -315,6 +328,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+
 
       this.stdIntStandardService.getISJustification(comStdDraftID).subscribe(
           (response: ISJustificationProposal[]) => {
@@ -394,5 +408,83 @@ export class IntStdSacApprovalComponent implements OnInit {
             }
         );
     }
+
+    onClickAddResource(isCheckRequirement: ISCheckRequirements ): void {
+        const dataSaveResourcesRequiredTest=new MultipleApprovalFields;
+        dataSaveResourcesRequiredTest.id=isCheckRequirement.id;
+        dataSaveResourcesRequiredTest.draftId=isCheckRequirement.draftId
+        dataSaveResourcesRequiredTest.standardType=isCheckRequirement.standardType
+        dataSaveResourcesRequiredTest.comStdNumber=isCheckRequirement.comStdNumber
+        dataSaveResourcesRequiredTest.title=isCheckRequirement.title
+        dataSaveResourcesRequiredTest.scope=isCheckRequirement.scope
+        dataSaveResourcesRequiredTest.requestId=isCheckRequirement.requestId
+      dataSaveResourcesRequiredTest.accentTo=this.multipleApproveFormGroup.get("accentTo").value;
+        const valueFound=this.dataSaveResourcesRequiredList.find(t=> t.id===dataSaveResourcesRequiredTest.id );
+        if(dataSaveResourcesRequiredTest.accentTo!==null){
+
+            if (valueFound === null || valueFound === undefined) {
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest);
+                console.log(this.dataSaveResourcesRequiredList);
+            }else{
+                const myArray = this.dataSaveResourcesRequiredList;
+
+                const idToRemove = valueFound.id;
+
+                const result = myArray.reduce((accumulator, currentValue) => {
+                    if (currentValue.id !== idToRemove) {
+                        accumulator.push(currentValue);
+                    }
+                    return accumulator;
+                }, []);
+
+                //console.log(result);
+                this.dataSaveResourcesRequiredList=[]
+                this.dataSaveResourcesRequiredList.push(...result);
+                this.dataSaveResourcesRequiredList.push(dataSaveResourcesRequiredTest)
+                //console.log(this.dataSaveResourcesRequiredList);
+            }
+        }
+
+
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedDecisionAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickMakeDecision() {
+        this.submitted = true;
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.stdIntStandardService.onClickMakeSacDecision(this.multipleApproveFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+                (response) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Multiple Decisions Submitted`);
+                    this.getAppStdPublishing();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error..Try Again`);
+                    alert(error.message);
+                }
+            );
+           this.hideModalMultiple();
+        }
+    }
+
+    @ViewChild('closeModalMultiple') private closeModalMultiple: ElementRef | undefined;
+
+    public hideModalMultiple() {
+        this.closeModalMultiple?.nativeElement.click();
+    }
+
+
 
 }

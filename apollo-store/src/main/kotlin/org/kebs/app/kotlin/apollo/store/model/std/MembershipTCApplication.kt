@@ -119,6 +119,15 @@ class MembershipTCApplication {
     var resubmission: String? = null
 
 
+    @Column(name = "NSC_ID")
+    @Basic
+    var nscId: String? = null
+
+    @Column(name = "COMMENTS_BY_NSC")
+    @Basic
+    var commentsByNsc: String? = null
+
+
     @Transient
     @JsonProperty("taskId")
     var taskId: String? = null

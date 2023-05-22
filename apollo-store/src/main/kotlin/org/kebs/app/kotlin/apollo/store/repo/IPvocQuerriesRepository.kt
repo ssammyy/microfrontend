@@ -10,8 +10,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface IPvocQuerriesRepository:HazelcastRepository<PvocQueriesEntity,Long> {
     //    fun findByRfcNumberOrCocNumberOrUcrNumberOrInvoiceNumber(rfcNumber:String, cocNumber:String, ucrNumber:String, invoiceNumber:String): Optional<PvocQueriesEntity>
-    fun findAllByCertNumber(cocNumber: String): List<PvocQueriesEntity>?
+    fun findAllByCertNumber(cocNumber: String): List<PvocQueriesEntity>
     fun findAllBySerialNumber(cocNumber: String): PvocQueriesEntity?
+    fun findByRfcNumber(rfcNumber: String): List<PvocQueriesEntity>
     fun findByCertNumberOrRfcNumber(cocNumber: String, rfcNumber: String): List<PvocQueriesEntity>?
     fun countAllBySerialNumberStartsWith(prefix: String): Long
     fun findAllByPartnerIdAndConclusionStatus(partnerId: Long, conclusionStatus: Int, pg: Pageable): Page<PvocQueriesEntity>

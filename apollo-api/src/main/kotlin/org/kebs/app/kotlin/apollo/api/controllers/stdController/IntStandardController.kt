@@ -82,6 +82,12 @@ class IntStandardController(
         return internationalStandardService.getProofReaderDetails()
     }
 
+    @GetMapping("/international_standard/getTcSecDetails")
+    @ResponseBody
+    fun getTcSecDetails(): List<UserDetailHolder> {
+        return internationalStandardService.getTcSecDetails()
+    }
+
     @GetMapping("/international_standard/findStandardStakeholders")
     @ResponseBody
     fun findStandardStakeholders(): List<UserDetailHolder>? {
@@ -412,7 +418,7 @@ class IntStandardController(
     //@PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getJustification")
     @ResponseBody
-    fun getJustification(): MutableList<ProposalDetails>
+    fun getJustification(): MutableList<JustificationDetails>
     {
         return internationalStandardService.getJustification()
     }
@@ -464,6 +470,14 @@ class IntStandardController(
     {
         return internationalStandardService.getApprovedJustification()
     }
+
+    @GetMapping("/international_standard/getApprovedBallotDrafts")
+    @ResponseBody
+    fun getApprovedBallotDrafts(): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getApprovedBallotDrafts()
+    }
+
 
    // @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/submitDraftForEditing")
@@ -824,6 +838,31 @@ class IntStandardController(
     fun getRQNumber(): String
     {
         return internationalStandardService.getRQNumber();
+    }
+
+    @PostMapping("/international_standard/multipleDecisionOnJustification")
+    fun multipleDecisionOnJustification(@RequestBody isSpcMultipleDecisionDto: ISSpcMultipleDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.multipleDecisionOnJustification(isSpcMultipleDecisionDto))
+
+    }
+
+    @PostMapping("/international_standard/multipleDecisionOnSacList")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun multipleDecisionOnSacList(@RequestBody isSacMultipleDecisionDto: ISSacMultipleDecisionDto): ServerResponse{
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded ",internationalStandardService.multipleDecisionOnSacList(isSacMultipleDecisionDto))
+    }
+
+    @PostMapping("/international_standard/multipleDecisionOnNscList")
+    fun multipleDecisionOnNscList(@RequestBody isSacMultipleDecisionDto: ISSacMultipleDecisionDto
+    ) : ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.multipleDecisionOnNscList(isSacMultipleDecisionDto))
+
     }
 
 }

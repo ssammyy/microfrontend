@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {ReviewApplicationTask, StandardRequest, UsersEntity} from "./std.model";
+import {ReviewApplicationTask, StandardRequest, TechnicalCommittee, UsersEntity} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
@@ -23,7 +23,7 @@ import {
     StdTCTask,
     Stdtsectask,
     StdtsecTaskJustification,
-    StdWorkPlan,
+    StdWorkPlan, TcAssignment,
     TechnicalCommitteeb,
     VotesDto
 } from './request_std.model';
@@ -94,6 +94,9 @@ export class StandardDevelopmentService {
     public getTcSec(): any {
         return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getAllTcSec')
     }
+    public getHofs(): any {
+        return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getAllHofs')
+    }
 
 
     public getProductSubcategoryb(id: bigint): any {
@@ -141,8 +144,8 @@ export class StandardDevelopmentService {
         return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwis')
     }
 
-    public getAllNwisLoggedInUserToVoteFor(): Observable<Stdtsectask[]> {
-        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
+    public getAllNwisLoggedInUserToVoteFor(): Observable<any> {
+        return this.http.get<any>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
     }
 
 
@@ -409,6 +412,16 @@ export class StandardDevelopmentService {
 
     public uploadJustification(stdJustification: StdJustification): Observable<any> {
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
+    }
+
+    public assignTcSec(technicalCommittee: TechnicalCommittee): Observable<any> {
+        return this.http.post<TechnicalCommittee>(`${this.apiServerUrl}` + 'assignTcSec', technicalCommittee)
+    }
+    public assignHof(department: Department): Observable<any> {
+        return this.http.post<Department>(`${this.apiServerUrl}` + 'assignHof', department)
+    }
+    public assignTcMembers(department: { tcId: any; userId: number }[]): Observable<any> {
+        return this.http.post<TcAssignment>(`${this.apiServerUrl}` + 'assignTcMembers', department)
     }
 
     public deferJustification(nwiItem: NwiItem): Observable<any> {

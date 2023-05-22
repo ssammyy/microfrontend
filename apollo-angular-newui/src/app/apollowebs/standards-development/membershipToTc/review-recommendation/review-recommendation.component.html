@@ -32,7 +32,15 @@
                         <a class="nav-link" data-toggle="tab" id="rejectedApplications"
                            style="border-right: 1px solid #ccc; "
                            (click)="tabChange('Rejected Applications')" role="tablist">
-                            <i class="material-icons"></i>Rejected Applications
+                            <i class="material-icons"></i>Non Recommended Applications
+
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="rejectedApplicationsNsc"
+                           style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('NSC Rejected Applications')" role="tablist">
+                            <i class="material-icons"></i>Non Recommended Applications By Nsc
 
                         </a>
                     </li>
@@ -101,6 +109,9 @@
                 </div>
                 <div *ngIf="id == 'Rejected Applications'" class="w-100">
                     <app-review-applications-rejected-sac></app-review-applications-rejected-sac>
+                </div>
+                <div *ngIf="id == 'NSC Rejected Applications'" class="w-100">
+                    <app-review-application-rejected-by-nsc></app-review-application-rejected-by-nsc>
                 </div>
             </div>
             <div class="modal fade" id="decisionModal" tabindex="-1" role="dialog"
@@ -238,6 +249,11 @@
                                                     <button class="btn btn-info"
                                                             (click)="decisionOnApplications(editForm.value,actionRequest?.id)">
                                                         Recommend
+                                                    </button>
+
+                                                    <button class="btn btn-danger" style="width: fit-content"
+                                                            (click)="nonRecommendationOnApplications(editForm.value,actionRequest?.id)">
+                                                        Do Not Recommend
                                                     </button>
 
                                                 </form>

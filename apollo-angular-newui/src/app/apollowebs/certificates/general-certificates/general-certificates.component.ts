@@ -128,7 +128,7 @@ export class GeneralCertificatesComponent implements OnInit {
                     break
                 case "ncr":
                     this.documentTypeLabel = "NCR"
-                    this.documentTitle = "NCR (Certificate of NonConformity"
+                    this.documentTitle = "COC NCR (Certificate of NonConformity)"
                     break
                 case "coc":
                     this.documentTypeLabel = "COC"

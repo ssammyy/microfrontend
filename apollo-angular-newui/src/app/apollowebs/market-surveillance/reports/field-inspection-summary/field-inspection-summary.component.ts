@@ -81,6 +81,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
   averageTimeTakenToFillSurveillanceReport: number;
   sumOfFilingWithin1DayAfterVisit: number;
   percentageFilingWithin1DayAfterVisit: number;
+  isEngineeringSelected: boolean = true;
 
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
@@ -117,6 +118,8 @@ export class FieldInspectionSummaryComponent implements OnInit {
       sectorID: ['', null],
       outletName: ['', null],
       divisionName: ['', null],
+      selectedOfficers: [[], null],
+      selectedDivisions: [[], null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);
@@ -235,6 +238,15 @@ export class FieldInspectionSummaryComponent implements OnInit {
     }
   }
 
+  filterDivision(event){
+    //console.log(event.target.value);
+    if(event.target.value == 3){
+      this.isEngineeringSelected = true;
+    }else if(event.target.value == 4){
+      this.isEngineeringSelected = false;
+    }
+  }
+
   // calculateFieldInspectionSummary(){
   //   let count = 0;
   //   for(let i=0; i < this.loadedData.length; i++){
@@ -277,40 +289,52 @@ export class FieldInspectionSummaryComponent implements OnInit {
 
     for (let i=0; i<this.loadedData.length; i++){
       if(isNaN(Number(this.loadedData[i].noOfSamplesPhysicallyInspected))){
-        this.loadedData[i].noOfSamplesPhysicallyInspected = 0
+        // this.loadedData[i].noOfSamplesPhysicallyInspected = 0
+      }else{
+        arrayOfSamplesPhysicallyInspected.push(Number(this.loadedData[i].noOfSamplesPhysicallyInspected));
       }
-      arrayOfSamplesPhysicallyInspected.push(Number(this.loadedData[i].noOfSamplesPhysicallyInspected));
+
 
       if(isNaN(Number(this.loadedData[i].visitAspermsSchedule))){
-        this.loadedData[i].visitAspermsSchedule = '0'
+        // this.loadedData[i].visitAspermsSchedule = '0'
+      }else{
+        arrayOfVisitAsPerSchedule.push(Number(this.loadedData[i].visitAspermsSchedule));
       }
-      arrayOfVisitAsPerSchedule.push(Number(this.loadedData[i].visitAspermsSchedule));
+
 
       if(isNaN(Number(this.loadedData[i].noSamplesDrawnSubmitted))){
-        this.loadedData[i].noSamplesDrawnSubmitted = '0'
+        // this.loadedData[i].noSamplesDrawnSubmitted = '0'
+      }else{
+        arrayOfSamplesDrawnAndSubmitted.push(Number(this.loadedData[i].noSamplesDrawnSubmitted));
       }
-      arrayOfSamplesDrawnAndSubmitted.push(Number(this.loadedData[i].noSamplesDrawnSubmitted));
+
 
       if(isNaN(Number(this.loadedData[i].compliancePhysicalInspection))){
-        this.loadedData[i].compliancePhysicalInspection = '0'
+        // this.loadedData[i].compliancePhysicalInspection = '0'
+      }else{
+        arrayOfComplianceToPhysicalInspection.push(Number(this.loadedData[i].compliancePhysicalInspection));
       }
-      arrayOfComplianceToPhysicalInspection.push(Number(this.loadedData[i].compliancePhysicalInspection));
+
 
       if(isNaN(Number(this.loadedData[i].pcxa))){
         this.loadedData[i].pcxa = '0'
+      }else{
+        arrayOfPCXA.push(Number(this.loadedData[i].pcxa));
       }
-      arrayOfPCXA.push(Number(this.loadedData[i].pcxa));
+
 
       if(isNaN(Number(this.loadedData[i].timeTakenFileSurveillanceReport))){
         arrayOfTimeTakenToFillSurveillanceReport.push(0);
       }else{
-        arrayOfTimeTakenToFillSurveillanceReport.push(Number(this.loadedData[i].timeTakenFileSurveillanceReport)+1);
+        arrayOfTimeTakenToFillSurveillanceReport.push(Number(this.loadedData[i].timeTakenFileSurveillanceReport));
       }
 
       if(isNaN(Number(this.loadedData[i].filingWithin1DayafterVisit))){
-        this.loadedData[i].filingWithin1DayafterVisit = '0'
+        // this.loadedData[i].filingWithin1DayafterVisit = '0'
+      }else{
+        arrayOfFilingWithin1DayAfterVisit.push(Number(this.loadedData[i].filingWithin1DayafterVisit));
       }
-      arrayOfFilingWithin1DayAfterVisit.push(Number(this.loadedData[i].filingWithin1DayafterVisit));
+
 
     }
     this.sumOfSamplesPhysicallyInspected = arrayOfSamplesPhysicallyInspected.reduce((a,b)=> a + b, 0);
@@ -318,12 +342,12 @@ export class FieldInspectionSummaryComponent implements OnInit {
     this.percentageComplianceToVisitAsPerSchedule = (this.sumOfSamplesPhysicallyInspected/this.loadedData.length)*100;
     this.sumOfNumberOfSamplesDrawnAndSubmitted = arrayOfSamplesDrawnAndSubmitted.reduce((a,b)=> a + b, 0);
     this.sumOfComplianceToPhysicalInspectionSumOfPC = arrayOfComplianceToPhysicalInspection.reduce((a,b)=> a + b, 0);
-    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/this.loadedData.length;
+    this.averageComplianceToPhysicalInspection = this.sumOfComplianceToPhysicalInspectionSumOfPC/arrayOfComplianceToPhysicalInspection.length;
     this.sumOfPCTimesA = arrayOfPCXA.reduce((a,b)=> a + b, 0);
     this.sumOfTimeTakenToFillSurveillanceReport = arrayOfTimeTakenToFillSurveillanceReport.reduce((a,b)=> a + b, 0);
-    this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/this.loadedData.length;
+    this.averageTimeTakenToFillSurveillanceReport = this.sumOfTimeTakenToFillSurveillanceReport/arrayOfTimeTakenToFillSurveillanceReport.length;
     this.sumOfFilingWithin1DayAfterVisit = arrayOfFilingWithin1DayAfterVisit.reduce((a,b)=> a + b, 0);
-    this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/this.loadedData.length)*100;
+    this.percentageFilingWithin1DayAfterVisit = (this.sumOfFilingWithin1DayAfterVisit/arrayOfFilingWithin1DayAfterVisit.length)*100;
 
 
 

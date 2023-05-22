@@ -29,7 +29,7 @@ export class PvocQueryViewComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            responseData: [""],
+            queryResponse: [""],
             serialNumber: [this.data.serialNumber],
             queryAnalysis: ["None"],
             conclusion: ["None"],

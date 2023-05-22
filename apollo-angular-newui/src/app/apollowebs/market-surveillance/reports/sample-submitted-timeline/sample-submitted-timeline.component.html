@@ -27,15 +27,14 @@
                                 <form  [formGroup]="searchFormGroup">
 
                                     <div class="form-body">
-
                                         <div class="row">
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Officer Name</b></label>
-                                                    <select id="assignIO" class="form-control" formControlName="assignIO" type="number"
+                                                    <select id="assignIO" class="form-control" formControlName="assignIO" type="text"
                                                             aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignIO">
                                                         <option  selected>Please select</option>
-                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"
+                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.firstName + ' ' + integCustomer.lastName"
                                                         >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
                                                     </select>
                                                 </div>
@@ -43,10 +42,10 @@
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
                                                     <label><b>Department</b> </label>
-                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                    <select (change)="filterDivision($event)" aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="text"
                                                             class="form-control" formControlName="sectorID" name="sectorID">
                                                         <option  selected>Please select</option>
-                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.department">{{app.department}}</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -73,21 +72,71 @@
                                                            name="sampleReferences"  type="text">
                                                 </div>
                                             </div>
-                                            <div class="col-6 col-md-3">
+                                            <div *ngIf="!isEngineeringSelected" class="col-6 col-md-3">
                                                 <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="text"
+                                                            class="form-control" formControlName="function" name="function">
+                                                        <option [value]="'Agriculture'" >Agriculture</option>
+                                                        <option [value]="'Chemical'" >Chemical</option>
+                                                        <option [value]="'Food'" >Food</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isEngineeringSelected" class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="text"
+                                                            class="form-control" formControlName="function" name="function">
+                                                        <option [value]="'Civil'" >Civil</option>
+                                                        <option [value]="'Electrical'" >Electrical</option>
+                                                        <option [value]="'Mechanical'" >Mechanical</option>
+                                                        <option [value]="'Textile'" >Textile</option>
 
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
-
+                                                    <label><b>Name of Outlet</b></label>
+                                                    <input class="form-control two-column-input" formControlName="outletName"
+                                                           name="outletName"  type="text">
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-3">
                                                 <div class="form-group">
-
+                                                    <label><b>Product Name</b></label>
+                                                    <input class="form-control two-column-input" formControlName="nameProduct"
+                                                           name="nameProduct"  type="text">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Officers</b></label>
+                                                    <mat-select id="selectedOfficers"
+                                                                class="form-control"
+                                                                formControlName="selectedOfficers" multiple>
+                                                        <mat-option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [value]="integCustomer.firstName +' '+integCustomer.lastName">{{integCustomer.firstName}} {{integCustomer.lastName}}</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Filter By Multiple Divisions </b></label>
+                                                    <mat-select multiple class="form-control" formControlName="selectedDivisions" name="selectedDivisions">
+                                                        <mat-option [value]="'Agriculture'">Agriculture</mat-option>
+                                                        <mat-option [value]="'Chemical'">Chemical</mat-option>
+                                                        <mat-option [value]="'Civil'">Civil</mat-option>
+                                                        <mat-option [value]="'Electrical'">Electrical</mat-option>
+                                                        <mat-option [value]="'Food'">Food</mat-option>
+                                                        <mat-option [value]="'Mechanical'">Mechanical</mat-option>
+                                                        <mat-option [value]="'Textile'">Textile</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="row">
@@ -127,7 +176,7 @@
                                     <th>% Compliance To Forwarding Within 14 Days</th>
                                     </thead>
                                     <tbody>
-                                    <td>{{totalEntries}}</td>
+                                    <td>{{numberOfSamplesTested}}</td>
                                     <td>{{averageTestingCompliance}}</td>
 <!--                                    <td>{{sumOfTCTimesB}}</td>-->
 <!--                                    <td>{{averageTimeTakenToSubmitSamples}}</td>-->
@@ -152,10 +201,14 @@
                                             <th>#</th>
                                             <th class="sl">DATE OF SAMPLE COLLECTION</th>
                                             <th class="knw">MARKET CENTER</th>
-                                            <th class="knw">NAME & ADDRESS OF OUTLET</th>
+                                            <th class="knw">NAME OF OUTLET</th>
+                                            <th class="knw">ADDITIONAL OUTLET DETAILS</th>
+                                            <th class="knw">PRODUCT</th>
                                             <th class="knw">PRODUCT DESCRIPTION</th>
                                             <th class="knw">BRAND/ MANUFACTURER/ IMPORTER NAME</th>
-                                            <th class="knw">SECTOR</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">SENDER'S NAME</th>
                                             <th class="knw">SMNo/UCRNo</th>
                                             <th class="knw">BATCH No./ LOT No./ DATE OF MANUFACTURE/ PRODUCTION etc.</th>
                                             <th class="knw">SOURCE OF PRODUCT AND EVIDENCE</th>
@@ -167,7 +220,7 @@
                                             <th class="knw">DATE OF TEST REPORT</th>
                                             <th class="knw">DATE OF FORWARDING OF TEST RESULTS</th>
                                             <th class="knw">ACTIONS TAKEN</th>
-                                            <th class="knw">TC x b</th>
+<!--                                            <th class="knw">TC x b</th>-->
                                             <th class="sl">TIME TAKEN TO SUBMIT SAMPLES (DAYS)</th>
                                             <th class="knw">SUBMISSION WITHIN 2 DAYS (YES/NO)</th>
                                             <th class="sl">TIME TAKEN TO FORWARD TEST RESULTS (DAYS)</th>
@@ -179,22 +232,26 @@
                                             <td >{{i+1}} </td>
                                             <td>{{companyModel?.sampleCollectionDate}}</td>
                                             <td>{{companyModel?.marketCentre }}</td>
-                                            <td>{{companyModel?.nameAddressOutlet}}</td>
+                                            <td>{{companyModel?.outletName}}</td>
+                                            <td>{{companyModel?.outletDetails}}</td>
+                                            <td>{{companyModel?.nameProduct}}</td>
                                             <td>{{companyModel?.productDescription}}</td>
-                                            <td>{{companyModel?.brandAndManufacturer}}</td>
-                                            <td>{{companyModel?.sector}}</td>
-                                            <td>{{companyModel?.ucrPermitNo}}</td>
-                                            <td>{{companyModel?.batchNoDateManufacture}}</td>
+                                            <td>{{companyModel?.importerManufacturer}}</td>
+                                            <td>{{companyModel?.department}}</td>
+                                            <td>{{companyModel?.function}}</td>
+                                            <td>{{companyModel?.officerName}}</td>
+                                            <td>{{companyModel.permitNumber}} / {{companyModel?.ucrNumber}}</td>
+                                            <td>{{companyModel?.batchNumber}} / {{companyModel.dateOfManuf}}</td>
                                             <td>{{companyModel?.sourceProductEvidence}}</td>
                                             <td>{{companyModel?.sampleSubmissionDate}}</td>
-                                            <td>{{companyModel?.sampleReferences}}</td>
+                                            <td>{{companyModel?.bsNumber}}</td>
                                             <td>{{companyModel?.noSamplesTested}}</td>
                                             <td>{{companyModel?.complianceTesting}}</td>
                                             <td>{{companyModel?.failedParameters}}</td>
-                                            <td>{{companyModel?.dateofTestReport}}</td>
-                                            <td>{{companyModel?.dateofForwardingTestResults}}</td>
+                                            <td>{{companyModel?.inspectionDate}}</td>
+                                            <td>{{companyModel?.resultSentDate}}</td>
                                             <td>{{companyModel?.actionsTaken}}</td>
-                                            <td>{{companyModel?.tcxb}}</td>
+<!--                                            <td>{{companyModel?.tcxb}}</td>-->
                                             <td>{{companyModel?.timeTakenSubmitSample}}</td>
                                             <td>{{companyModel?.submissionWithin2Days}}</td>
                                             <td>{{companyModel?.timeTakenForwardLetters}}</td>

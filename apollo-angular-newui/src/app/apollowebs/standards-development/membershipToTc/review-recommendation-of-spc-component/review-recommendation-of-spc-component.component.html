@@ -31,22 +31,25 @@
                                    [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                                 <thead>
                                 <tr>
-                                    <th class="id">ID</th>
-                                    <th class="task">Recommendation BY HOF</th>
-                                    <th class="task">Recommendation BY SPC</th>
-
-                                    <th class="task">TC</th>
-                                    <th class="task">Applicant Name</th>
+                                    <th class="id">SL No</th>
+                                    <th class="task">Name Of Nominee</th>
+                                    <th class="task">Organization</th>
+                                    <th class="task">Category</th>
+                                    <th class="task">Qualification</th>
+                                    <th class="task">Email Address</th>
+                                    <th class="task">Remarks By Division</th>
                                     <th class="action">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let tcTask of tcTasks  let i= index;">
                                     <td>{{i + 1}}</td>
-                                    <td>{{tcTask.comments_by_hof}}</td>
-                                    <td>{{tcTask.commentsBySpc}}</td>
-                                    <td>{{tcTask.technicalCommittee}}</td>
                                     <td>{{tcTask.nomineeName}}</td>
+                                    <td>{{tcTask.organisationName}}</td>
+                                    <td>{{tcTask.organisationClassification}}</td>
+                                    <td>{{tcTask.qualification}}</td>
+                                    <td>{{tcTask.email}}</td>
+                                    <td>{{tcTask.comments_by_hof}}</td>
                                     <td><a type="button" (click)="onOpenModal(tcTask)" class="btn btn-info tooltips"
                                            data-placement="top" data-original-title="View Application">View
                                         Application</a></td>
@@ -171,9 +174,9 @@
                                                     </div>
                                                     <div class="card-body ">
                                                         <div class="row">
-                                                            <form #editForm="ngForm" class="form">
+                                                            <form #editForm="ngForm" class="form" style="width: 100%;">
                                                                 <div class="row">
-                                                                    <div class=" col-12">
+                                                                    <div class="col-12">
                                                                         <label><b>Provide Your
                                                                             Recommendation</b></label>
                                                                         <textarea
@@ -188,14 +191,15 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <button class="btn btn-danger"
-                                                                        (click)="decisionOnApplications(editForm.value,actionRequest?.id,'NO')">
-                                                                    Reject
-                                                                </button>
                                                                 <button class="btn btn-info"
                                                                         (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">
-                                                                    Approve
+                                                                    Recommend
                                                                 </button>
+                                                                <button class="btn btn-danger"
+                                                                        (click)="decisionOnApplications(editForm.value,actionRequest?.id,'NO')">
+                                                                    Not Recommend
+                                                                </button>
+
 
                                                             </form>
                                                         </div>

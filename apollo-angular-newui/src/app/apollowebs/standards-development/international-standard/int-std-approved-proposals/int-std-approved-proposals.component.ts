@@ -2,10 +2,15 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-    ComStdCommitteeRemarks, ComStdRemarks,
+    ComStdCommitteeRemarks,
+    ComStdRemarks,
     Department,
     InternationalStandardsComments,
-    ISAdoptionProposal, ISJustificationProposal, JustificationStatus, ProposalComments,
+    ISAdoptionProposal,
+    ISJustificationProposal,
+    justificationEditions,
+    JustificationStatus,
+    ProposalComments,
     StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -146,6 +151,15 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     get formEditJustification(): any {
         return this.editJustificationFormGroup.controls;
     }
+    justificationEditions = [
+        "first",
+        "second",
+        "third",
+        "fourth",
+        "fifth",
+        "sixth",
+        "seventh"
+      ]
 
 
   public getDepartments(): void{
@@ -444,6 +458,8 @@ export class IntStdApprovedProposalsComponent implements OnInit {
                 '</div>'
         });
     }
+
+
 
 
 }

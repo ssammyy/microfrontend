@@ -26,6 +26,10 @@ class PvocQueriesEntity : Serializable {
     @Basic
     var cdId: Long? = null
 
+    @Column(name = "RFC_ID", nullable = true)
+    @Basic
+    var rfcId: Long? = null
+
     @Column(name = "SERIAL_NUMBER", nullable = true, length = 50)
     @Basic
     var serialNumber: String? = null
@@ -33,6 +37,10 @@ class PvocQueriesEntity : Serializable {
     @Column(name = "CERT_NUMBER", nullable = true, length = 50)
     @Basic
     var certNumber: String? = null
+
+    @Column(name = "RFC_TYPE", nullable = true, length = 50)
+    @Basic
+    var rfcType: String? = null
 
     @Column(name = "CERT_TYPE", nullable = true, length = 50)
     @Basic
@@ -54,7 +62,7 @@ class PvocQueriesEntity : Serializable {
     @Basic
     var invoiceNumber: String? = null
 
-    @Column(name = "UCR_NUMBER", nullable = false, length = 50)
+    @Column(name = "UCR_NUMBER", nullable = true, length = 255)
     @Basic
     var ucrNumber: String? = null
 
@@ -84,6 +92,10 @@ class PvocQueriesEntity : Serializable {
     @Column(name = "LINK_TO_UPLOADS", nullable = true, length = 4000)
     @Basic
     var linkToUploads: String? = null
+
+    @Column(name = "VERSION", nullable = true, precision = 0)
+    @Basic
+    var version: Long? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -166,7 +178,7 @@ class PvocQueriesEntity : Serializable {
     var conclusionStatus: Int? = null
 
     @OneToMany(mappedBy = "queryId")
-    var responses: Set<PvocQueryResponseEntity>? = null
+    var responses: List<PvocQueryResponseEntity>? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
@@ -204,34 +216,34 @@ class PvocQueriesEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                certNumber,
-                rfcNumber,
-                idfNumber,
-                invoiceNumber,
-                ucrNumber,
-                partnerResponse,
-                conclusion,
-                linkToUploads,
-                status,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn,
-                pvocAgentReplyStatus,
-                kebsReplyReplyStatus
+            id,
+            certNumber,
+            rfcNumber,
+            idfNumber,
+            invoiceNumber,
+            ucrNumber,
+            partnerResponse,
+            conclusion,
+            linkToUploads,
+            status,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn,
+            pvocAgentReplyStatus,
+            kebsReplyReplyStatus
         )
     }
 }

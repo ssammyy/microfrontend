@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {LocalDataSource} from "ng2-smart-table";
 import {DatePipe} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
-import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {UploadForeignFormComponent} from "../../../di/consignment-document-list/upload-foreign-form/upload-foreign-form.component";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-foreign-cors',
@@ -16,6 +15,8 @@ export class ForeignCorsComponent implements OnInit {
 
     dataSet: LocalDataSource = new LocalDataSource();
     message: any
+    documentTitle: string
+    documentCategory: string
     reviewStatus: number = 3
     activeStatus: any = 'under-review'
     keywords: string
@@ -97,12 +98,37 @@ export class ForeignCorsComponent implements OnInit {
         }
     };
 
-    constructor(private router: Router, private dialog: MatDialog, private pvocService: PVOCService, private diSevice: DestinationInspectionService) {
+    constructor(private router: Router, private dialog: MatDialog, private pvocService: PVOCService, private activatedRoute: ActivatedRoute) {
     }
 
     ngOnInit(): void {
-        this.loadData()
-        this.loadPartners()
+        this.activatedRoute.paramMap
+            .subscribe(
+                res => {
+                    let docType = res.get("docType");
+                    if (docType) {
+                        switch (docType.toUpperCase()) {
+                            case "COR":
+                                this.documentTitle = "COR(Certificate of Road worthiness)"
+                                this.documentCategory = "COR"
+                                break
+                            case "NCR-COR":
+                                this.documentTitle = "NCR for COR(Certificate of Road worthiness)"
+                                this.documentCategory = "NCR-COR"
+                                break
+                            default:
+                                this.message = "Invalid document type: " + docType.toUpperCase()
+                        }
+                    } else {
+                        this.documentTitle = "COR(Certificate of Road worthiness)"
+                        this.documentCategory = "COR"
+                    }
+                    if (this.documentCategory) {
+                        this.loadData()
+                        this.loadPartners()
+                    }
+                })
+
     }
 
     searchPhraseChanged() {
@@ -167,7 +193,7 @@ export class ForeignCorsComponent implements OnInit {
     }
 
     loadData() {
-        this.pvocService.loadCorDocument(this.keywords, this.reviewStatus, this.currentPageInternal, this.pageSize)
+        this.pvocService.loadCorDocument(this.keywords, this.documentCategory, this.reviewStatus, this.currentPageInternal, this.pageSize)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {

@@ -267,7 +267,7 @@ export const ROUTES: RouteInfo[] = [
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
-                path: 'foreign/cors',
+                path: 'foreign/cors/cor',
                 title: 'Foreign COR',
                 ab: 'CO',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
@@ -289,8 +289,15 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'foreign/documents/ncr',
-                title: 'Foreign NCR',
-                ab: 'CN',
+                title: 'Foreign NCR(COC)',
+                ab: 'FC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
+                // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'foreign/cors/ncr-cor',
+                title: 'Foreign NCR (COR)',
+                ab: 'FR',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
@@ -653,6 +660,27 @@ export const ROUTES: RouteInfo[] = [
     },
 
     // Standards Development
+
+
+    //Standards Development Admin
+    {
+        path: '/sdAdmin',
+        title: 'Standards',
+        type: 'sub',
+        children: [
+            {path: 'department', title: 'Department Management', ab: 'DM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'technicalCommittee', title: 'TC Management', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'technicalCommitteeManagement', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'Technical Committee', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
+
+        ],
+        icontype: 'summarize',
+        collapse: 'standards',
+        privilege: ['SYSADMIN_VIEW'],
+
+    },
+
+
     {
         path: '',
         title: 'Request Module',
@@ -807,20 +835,20 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
 
         children: [
-            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
-            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
-            {
-                path: 'draughtsmanTasks',
-                title: 'Draught Draft Standards',
-                ab: 'DDS',
-                privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
-            },
-            {
-                path: 'proofReaderTasks',
-                title: 'Proofread Draft Standards',
-                ab: 'PDS',
-                privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
-            },
+            //{path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
+            //{path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
+            // {
+            //     path: 'draughtsmanTasks',
+            //     title: 'Draught Draft Standards',
+            //     ab: 'DDS',
+            //     privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
+            // },
+            // {
+            //     path: 'proofReaderTasks',
+            //     title: 'Proofread Draft Standards',
+            //     ab: 'PDS',
+            //     privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
+            // },
             {
                 path: 'isUploadDraft',
                 title: 'Upload Draft For Editing',
@@ -968,8 +996,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ', 'DI_SDT_SD_MODIFY']
             },
             {
+                path: 'reviewRecommendationOfSac', title: 'NSC Review', ab: 'NSC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NSC_SD_READ']
+            },
+            {
                 path: 'reviewAccepted',
-                title: 'Approve Members',
+                title: 'Accept Members',
                 ab: 'AL',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DI_SDT_SD_MODIFY', 'HOD_TWO_SD_READ']
             },
@@ -1142,7 +1174,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '',
-        title: 'International Standards',
+        title: 'Adoption of International Standards',
         type: 'sub',
         children: [
             {
@@ -1186,7 +1218,7 @@ export const ROUTES: RouteInfo[] = [
         ],
         icontype: 'business',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ'],
-        collapse: 'is',
+        collapse: 'AoIS',
     },
 
     {

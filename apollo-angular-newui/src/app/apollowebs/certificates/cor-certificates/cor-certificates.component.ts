@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {LocalDataSource} from "ng2-smart-table";
 import {DatePipe} from "@angular/common";
 import {Router} from "@angular/router";
@@ -13,6 +13,10 @@ import {GenerateCorReportComponent} from "./generate-cor-report/generate-cor-rep
     styleUrls: ['./cor-certificates.component.css']
 })
 export class CorCertificatesComponent implements OnInit {
+    @Input()
+    documentType: string = "cor"
+    documentTitle: string
+    documentCategory: string
     dataSet: LocalDataSource = new LocalDataSource();
     message: any
     stations = []
@@ -37,7 +41,7 @@ export class CorCertificatesComponent implements OnInit {
             ],
             position: 'right' // left|right
         },
-        noDataMessage: 'No CORs found',
+        noDataMessage: 'No COR/NCRs found',
         columns: {
             corNumber: {
                 title: 'COR No.',
@@ -115,6 +119,7 @@ export class CorCertificatesComponent implements OnInit {
     }
 
     ngOnInit(): void {
+
         this.loadStations()
         this.loadData()
         this.loadPartners()
@@ -183,7 +188,7 @@ export class CorCertificatesComponent implements OnInit {
     }
 
     loadData() {
-        this.diSevice.loadCertificateDocument(this.keywords, this.activeStatus, "cor", this.currentPageInternal, this.pageSize)
+        this.diSevice.loadCertificateDocument(this.keywords, this.activeStatus, this.documentCategory, this.currentPageInternal, this.pageSize)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {

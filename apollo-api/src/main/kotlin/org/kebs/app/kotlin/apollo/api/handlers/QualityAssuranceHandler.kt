@@ -5180,20 +5180,23 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitNumber = req.paramOrNull("permitNumber")
                 ?: throw ExpectedDataNotFound("Required Permit Number, check config")
-            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
-            permitListAllApplications =
-                if (qaDaoServices.findPermitByPermitNumber(permitNumber).isEmpty()) {
-                    qaDaoServices.listPermitsNotMigratedWebsite(
-                        qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumber), map
-                    )
-                } else {
-                    qaDaoServices.listPermitsWebsite(
-                        qaDaoServices.findPermitByPermitNumber(
-                            permitNumber
-                        ), map
-                    )
-                }
 
+            val permitNumberToBeRetrieved = if (permitNumber.contains("#")) {
+
+                val parts = permitNumber.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                parts[1]
+            } else {
+                permitNumber
+
+            }
+
+            var permitListAllApplications: List<KebsWebistePermitSearchEntityDto>? = null
+            permitListAllApplications =
+                qaDaoServices.listSearchPermits(
+                    qaDaoServices.findPermitByPermitNumberNew(
+                        permitNumberToBeRetrieved
+                    ), map
+                )
             return ok().body(permitListAllApplications)
 
         } catch (e: Exception) {
@@ -5226,7 +5229,7 @@ class QualityAssuranceHandler(
                 "SM" -> {
 
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsite(
 
                                 qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumberToBeRetrieved), map
@@ -5234,7 +5237,7 @@ class QualityAssuranceHandler(
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )
@@ -5245,14 +5248,14 @@ class QualityAssuranceHandler(
                     permitListAllApplications =
 
 
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteFmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedFmark(permitNumberToBeRetrieved), map
                             )
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )
@@ -5261,14 +5264,14 @@ class QualityAssuranceHandler(
 
                 "DM" -> {
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumberSms(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteDmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedDmark(permitNumberToBeRetrieved), map
                             )
                         } else {
 
                             qaDaoServices.listPermitsWebsite(
-                                qaDaoServices.findPermitByPermitNumber(
+                                qaDaoServices.findPermitByPermitNumberSms(
                                     permitNumberFinal
                                 ), map
                             )

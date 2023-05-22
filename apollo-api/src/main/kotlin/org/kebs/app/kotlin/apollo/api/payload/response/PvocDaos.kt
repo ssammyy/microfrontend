@@ -8,8 +8,6 @@ import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
 import java.sql.Date
 import java.sql.Timestamp
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 class PvocComplaintDao {
     var complaintId: Long? = null
@@ -1143,73 +1141,84 @@ class CorEntityDao {
     }
 }
 
-class QueryResponseDao {
+class QueryKebsResponseDao {
     var serialNumber: String? = null
     var queryResponse: String? = null
     var responseFrom: String? = null
     var queryAnalysis: String? = null
     var responseType: String? = null
-    var linkToUploads: String? = null
+    var linkToUploads: List<String>? = null
+    var createdOn: Timestamp? = null
 
     companion object {
-        fun toEntity(response: PvocQueryResponseEntity): QueryResponseDao {
-            val res = QueryResponseDao()
+        fun toEntity(response: PvocQueryResponseEntity): QueryKebsResponseDao {
+            val res = QueryKebsResponseDao()
+            res.createdOn = response.createdOn
+            res.responseType = "RESPONSE"
             res.serialNumber = response.serialNumber
-            res.queryAnalysis = response.response
+            res.queryAnalysis = response.varField1
             res.queryResponse = response.response
             res.responseFrom = response.responseFrom
+            res.linkToUploads = response.linkToUploads?.split(",") ?: emptyList()
             return res
         }
 
-        fun fromList(responses: Iterable<PvocQueryResponseEntity>): List<QueryResponseDao> {
-            val responseList = mutableListOf<QueryResponseDao>()
+        fun fromList(responses: Iterable<PvocQueryResponseEntity>): List<QueryKebsResponseDao> {
+            val responseList = mutableListOf<QueryKebsResponseDao>()
             responses.forEach { rs ->
                 responseList.add(toEntity(rs))
-                return responseList
             }
             return responseList
         }
     }
 }
 
-class PvocQueryDao {
-    @NotNull(message = "Document partner is required")
+class PvocKebsQueryDao {
+    var queryId: Long? = null
     var partnerId: Long? = null
     var serialNumber: String? = null
-
-    @NotEmpty(message = "document type is required")
     var documentType: String? = null
-
-    @NotEmpty(message = "Certificate number is required")
     var certNumber: String? = null
-
-    //@NotEmpty(message = "RFC Number is required")
     var rfcNumber: String? = null
     var invoiceNumber: String? = null
-
-    @NotEmpty(message = "UCR number is required")
     var ucrNumber: String? = null
-
-    @NotEmpty(message = "Query details cannot be empty")
     var kebsQuery: String? = null
+    var conclusion: String? = null
+    var queryAnalysis: String? = null
+    var clossed: Boolean = false
+    var version: Long? = 1
+    var conclusionDate: Timestamp? = null
     var createdBy: String? = null
     var createdOn: Timestamp? = null
-    var responses: List<QueryResponseDao>? = null
+    var responses: List<QueryKebsResponseDao>? = null
 
     companion object {
-        fun toEntity(dt: PvocQueriesEntity): PvocQueryDao {
-            val query = PvocQueryDao()
+        fun toEntity(dt: PvocQueriesEntity): PvocKebsQueryDao {
+            val query = PvocKebsQueryDao()
+            query.queryId = dt.id
             query.serialNumber = dt.serialNumber
             query.documentType = dt.certType
             query.rfcNumber = dt.rfcNumber
             query.invoiceNumber = dt.invoiceNumber
             query.kebsQuery = dt.queryDetails
             query.ucrNumber = dt.ucrNumber
-            query.responses = dt.responses?.let { QueryResponseDao.fromList(it) }
+            query.certNumber = dt.certNumber
+            query.conclusionDate = dt.conclusionDate
+            query.conclusion = dt.conclusion
+            query.clossed = dt.conclusionStatus?.equals(1) ?: false
+            query.queryAnalysis = dt.responseAnalysis
+            query.version = dt.version
+            query.responses = dt.responses?.let { QueryKebsResponseDao.fromList(it) }
             query.partnerId = dt.partnerId
             query.createdBy = dt.createdBy
             query.createdOn = dt.createdOn
             return query
+        }
+
+        fun fromList(dts: List<PvocQueriesEntity>): List<PvocKebsQueryDao> {
+            val items = mutableListOf<PvocKebsQueryDao>()
+            dts.forEach { items.add(toEntity(it)) }
+            return items
         }
     }
 }

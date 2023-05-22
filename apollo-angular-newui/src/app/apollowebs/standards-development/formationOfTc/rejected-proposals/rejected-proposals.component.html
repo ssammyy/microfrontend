@@ -184,10 +184,60 @@
                                             errorMsg="Please Enter Proposed TC Representation">
                                     </app-field-error-display>
                                 </mat-form-field>
+
+                                <div *ngIf="roles?.includes('TC_SEC_SD_READ')">
+                                    <button *ngIf="!showEditForm" (click)="showForm()">Edit</button>
+                                    <button *ngIf="showEditForm" (click)="hideForm()">Do Not Edit</button>
+                                </div>
+
                             </div>
 
                         </div>
 
+                        <div *ngIf="showEditForm">
+
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label><b>Proposed TC Representation</b></label>
+                                    <mat-form-field>
+                                        <mat-label>Select at least three Tc Representations</mat-label>
+                                        <mat-select id="options" aria-label="Small"
+                                                    aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="proposedRepresentationArray" multiple>
+                                            <mat-option *ngFor="let option of options"
+                                                        [value]="option.value">{{ option.label }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <div *ngIf="editFormationRequestFormGroup.get('proposedRepresentationArray').invalid && (editFormationRequestFormGroup.get('proposedRepresentationArray').dirty || editFormationRequestFormGroup.get('proposedRepresentationArray').touched)">
+                                        <div *ngIf="editFormationRequestFormGroup.get('proposedRepresentationArray').errors.required">
+                                            Please select at least one option.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+
+                                    <div id="form-fields">
+                                        <ng-container *ngFor="let field of formFields">
+                                            <label for="{{field.id}}"><b>{{field.label}}</b><small> (Add
+                                                multiple by
+                                                separating with comma.)</small></label>
+                                            <mat-form-field class="example-full-width has-label">
+                                        <textarea
+                                                matInput
+                                                id="{{field.id}}"
+                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                class="form-control one-column-input" required
+                                                name="{{field.id}}" [formControl]="field.control"
+                                                type="text"></textarea>
+                                            </mat-form-field>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="form-group col-12">
@@ -198,10 +248,9 @@
                                                 class="form-control" required
                                                 formControlName="departmentId"
                                                 name="departmentId"
-                                                placeholder="{{selectedDepartment}}"
-                                                [class.is-invalid]="formEditFormationRequest.departmentId.invalid && formEditFormationRequest.departmentId.touched">
+                                                placeholder="{{selectedDepartment}}">
                                         <mat-option *ngFor="let department of departments"
-                                                    [value]="department">
+                                                    [value]="department.id +'$'+department.name">
                                             {{department.name}}
                                         </mat-option>
                                     </mat-select>
@@ -245,7 +294,7 @@
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">DECLINATION
-                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                BY:{{hofDetails?.firstName + ' ' + hofDetails?.lastName}}</li>
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">DECLINATION REASON:
@@ -268,7 +317,7 @@
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">APPROVAL
-                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                BY:{{hofDetails?.firstName + ' ' + hofDetails?.lastName}}</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item">APPROVAL REASON:
                                                 {{this.proposalRetrieved?.comments}}
@@ -316,7 +365,7 @@
 
                                             <li style="background: lightgray"
                                                 class="list-group-item">APPROVAL
-                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                BY:{{hofDetails?.firstName + ' ' + hofDetails?.lastName}}</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item">APPROVAL REASON:
                                                 {{this.proposalRetrieved?.comments}}
