@@ -581,12 +581,11 @@ import {IntStdNscApprovalComponent} from './apollowebs/standards-development/int
 import {IntStdWebProposalComponent} from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
-import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
-import { RejectedBySpcComponent } from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
-import { AuthorizerApproveApplicationComponent } from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
-import { ReviewNscComponent } from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
-import { ReviewApplicationRejectedByNscComponent } from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
-import { TcManagementComponent } from './apollowebs/admin/tc-management/tc-management.component';
+import {RejectedBySpcComponent} from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
+import {AuthorizerApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
+import {ReviewNscComponent} from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
+import {ReviewApplicationRejectedByNscComponent} from './apollowebs/standards-development/membershipToTc/review-application-rejected-by-nsc/review-application-rejected-by-nsc.component';
+import {TcManagementComponent} from './apollowebs/admin/tc-management/tc-management.component';
 import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
@@ -662,7 +661,6 @@ import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-cert
         MatSortModule,
         MatPaginatorModule,
         MatCardModule,
-        NgxIntlTelInputModule,
         RecaptchaFormsModule,
         RecaptchaModule,
         RecaptchaFormsModule,
