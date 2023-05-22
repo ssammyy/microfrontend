@@ -1105,7 +1105,7 @@ class IntStandardService(
         com.draftId = isDraftDto.draftId
         com.departmentId = isDraftDto.departmentId
         com.subject = isDraftDto.subject
-        com.proposalId = isDraftDto.proposalId
+        com.proposalId = isDraftDto.id
         com.description = isDraftDto.description
         com.status = 1
         com.standardType =isDraftDto.standardType

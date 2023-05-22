@@ -473,6 +473,7 @@ interface ProposalDetails{
     fun getUploadedBy(): String?
     fun getRemarks(): String?
     fun getAssignedTo(): Long?
+    fun getRequestId(): Long?
     fun getProposalId(): Long?
     fun getDraftReviewStatus(): Long?
     fun getTitle(): String?

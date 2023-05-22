@@ -94,7 +94,6 @@ export class IntStdEditorComponent implements OnInit {
           companyName:[],
           companyPhone:[],
           standardType:[],
-          proposalId:[],
           draftReviewStatus:[]
 
       });
@@ -223,7 +222,7 @@ export class IntStdEditorComponent implements OnInit {
             button.setAttribute('data-target', '#decisionOnJustification');
             this.uploadDraftStandardFormGroup.patchValue(
                 {
-                    requestId: this.actionRequests.id,
+                    requestId: this.actionRequests.requestId,
                     draftId: this.actionRequests.draftId,
                     title: this.actionRequests.title,
                     scope:this.actionRequests.scope,
@@ -235,7 +234,7 @@ export class IntStdEditorComponent implements OnInit {
                     contactOneTelephone:this.actionRequests.contactOneTelephone,
                     contactOneEmail:this.actionRequests.contactOneEmail,
                     standardType:this.actionRequests.standardType,
-                    proposalId:this.actionRequests.id,
+                    id:this.actionRequests.id,
                     draftReviewStatus:this.actionRequests.draftReviewStatus
                 }
             );
@@ -357,22 +356,23 @@ export class IntStdEditorComponent implements OnInit {
     submitDraftForEditing(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.onClickSaveUploads(response.body.draftId)
-                this.uploadDraftStandardFormGroup.reset();
-                this.getApprovedJustification();
-                this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
-
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Try Again`);
-                console.log(error.message);
-            }
-        );
+        console.log(this.uploadDraftStandardFormGroup)
+        // this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
+        //     (response ) => {
+        //         console.log(response);
+        //         this.SpinnerService.hide();
+        //         this.onClickSaveUploads(response.body.draftId)
+        //         this.uploadDraftStandardFormGroup.reset();
+        //         this.getApprovedJustification();
+        //         this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
+        //
+        //     },
+        //     (error: HttpErrorResponse) => {
+        //         this.SpinnerService.hide();
+        //         this.showToasterError('Error', `Error Try Again`);
+        //         console.log(error.message);
+        //     }
+        // );
         this.hideModalStdEditing();
 
     }
