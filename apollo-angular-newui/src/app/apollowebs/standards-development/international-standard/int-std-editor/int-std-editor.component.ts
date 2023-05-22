@@ -356,23 +356,23 @@ export class IntStdEditorComponent implements OnInit {
     submitDraftForEditing(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        console.log(this.uploadDraftStandardFormGroup)
-        // this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
-        //     (response ) => {
-        //         console.log(response);
-        //         this.SpinnerService.hide();
-        //         this.onClickSaveUploads(response.body.draftId)
-        //         this.uploadDraftStandardFormGroup.reset();
-        //         this.getApprovedJustification();
-        //         this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
-        //
-        //     },
-        //     (error: HttpErrorResponse) => {
-        //         this.SpinnerService.hide();
-        //         this.showToasterError('Error', `Error Try Again`);
-        //         console.log(error.message);
-        //     }
-        // );
+        console.log(this.uploadDraftStandardFormGroup.value)
+        this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.onClickSaveUploads(response.body.draftId)
+                this.uploadDraftStandardFormGroup.reset();
+                this.getApprovedJustification();
+                this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
         this.hideModalStdEditing();
 
     }
