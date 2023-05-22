@@ -1962,6 +1962,15 @@ class IntStandardService(
                     companyStandardRemarksRepository.save(comRemarks)
 
                 } ?: throw Exception("DRAFT NOT FOUND")
+            }else if (typeOfStandard == "FD KS") {
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 1
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                } ?: throw Exception("DRAFT NOT FOUND")
             }
             slFormResponse = "Standard Was Not Approved"
             responseStatus = "error"
@@ -2020,7 +2029,29 @@ class IntStandardService(
                     }
 
                 } ?: throw Exception("DRAFT NOT FOUND")
-            } else if (typeOfStandard == "Kenya Standard") {
+            }else if (typeOfStandard == "FD KS") {
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 9
+
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+                    var userList = iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
+                    val targetUrl = "${callUrl}/";
+                    userList.forEach { item ->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient = item.getEmail()
+                        val subject = "New International Standard" + standard.standardNumber
+                        val messageBody = "Dear ${item.getName()} ,Adoption for New standard has been approved "
+                        if (recipient != null) {
+                            // notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }
+            else if (typeOfStandard == "Kenya Standard") {
                 var kenyaStd = getKSNumber()
                 var ks = SDWorkshopStd()
                 ks.nwaStdNumber = kenyaStd
@@ -2248,6 +2279,15 @@ class IntStandardService(
                         //companyStandardRemarksRepository.save(comRemarks)
 
                     } ?: throw Exception("DRAFT NOT FOUND")
+                }else if (standardType == "FD KS") {
+                    companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
+                        with(companyStandard) {
+                            status = 1
+                        }
+                        companyStandardRepository.save(companyStandard)
+                        //companyStandardRemarksRepository.save(comRemarks)
+
+                    } ?: throw Exception("DRAFT NOT FOUND")
                 }
 
             }
@@ -2286,6 +2326,12 @@ class IntStandardService(
                             sdWorkshopStdRepository.save(ks)
                             companyStandardRepository.save(companyStandard)
                             //companyStandardRemarksRepository.save(comRemarks)
+                        } ?: throw Exception("DRAFT NOT FOUND")
+                    }
+
+                    "FD KS" -> {
+                        companyStandardRepository.findByIdOrNull(cid)?.let { companyStandard ->
+                            setCompanyStandardStatus(companyStandard, 9)
                         } ?: throw Exception("DRAFT NOT FOUND")
                     }
 
