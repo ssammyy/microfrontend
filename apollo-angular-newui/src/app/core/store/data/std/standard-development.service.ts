@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {ReviewApplicationTask, StandardRequest, TechnicalCommittee, UsersEntity} from "./std.model";
+import {
+    ReviewApplicationTask,
+    StandardRequest,
+    TechnicalCommittee,
+    TechnicalCommitteeBc,
+    UsersEntity
+} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
@@ -29,6 +35,8 @@ import {
 } from './request_std.model';
 import {Vote, VoteNwiRetrieved, VotesNwiTally} from "./commitee-model";
 import {Router} from "@angular/router";
+import {PermitEntityDto} from "../qa/qa.model";
+import {data} from "jquery";
 
 @Injectable({
     providedIn: 'root'
@@ -138,6 +146,9 @@ export class StandardDevelopmentService {
 
     public getTCSECTasks(): Observable<StandardRequestB[]> {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllStdsForNwi')
+    }
+    public getAllApplications(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllApplications')
     }
 
     public getAllNwisForVoting(): Observable<Stdtsectask[]> {
@@ -532,6 +543,16 @@ export class StandardDevelopmentService {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
     }
 
+    public getAllTcsWithMembers(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcsWithMembers')
+    }
+
+
+    public getSpecificAllTcsWithMembers(technicalCommittee: TechnicalCommitteeBc): Observable<TechnicalCommitteeBc[]> {
+        return this.http.get<TechnicalCommitteeBc[]>(`${this.apiServerUrl}getTcsWithMembersDetails`, { params: { tcId: technicalCommittee.id.toString() } });
+    }
+
+
     public getAllTcsForApplication(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl23}` + 'getAllTcsForApplication')
     }
@@ -613,6 +634,22 @@ export class StandardDevelopmentService {
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
             this.router.navigate([currentUrl]);
         });
+    }
+
+    deleteTcMember(s: string, data: TechnicalCommitteeBc[]) {
+        const url = `${this.apiServerUrl}deleteMember`;
+        const params = new HttpParams()
+            .set('userId', s);
+        return this.http.post<TechnicalCommitteeBc>(url, data, {params}).pipe(
+            map(function (response: TechnicalCommitteeBc) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+
     }
 }
 

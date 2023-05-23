@@ -84,7 +84,7 @@ data class NepNotificationDto(
     var proposedDateOfEntryIntoForce: Timestamp,
     var textAvailableFrom: String?=null,
     var descriptionOfContent: String?=null,
-    var pid: Long?=null,
+    var pid: Long,
     var cd_Id: Long?=null,
     var prd_name: String?=null,
     var ks_NUMBER: String?=null,

@@ -201,5 +201,9 @@ class ComStdDraft {
     @Basic
     var draftReviewStatus: Long? = null
 
+    @Column(name = "PR_ID")
+    @Basic
+    var prId: Long? = null
+
 
 }

@@ -53,6 +53,7 @@ class PublishingController(
         @RequestBody ballot: Ballot,
         @RequestParam("decision") decision: String,
     ): ServerResponse {
+
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
         return ServerResponse(
             HttpStatus.OK,

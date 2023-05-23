@@ -94,7 +94,8 @@ export class IntStdEditorComponent implements OnInit {
           companyName:[],
           companyPhone:[],
           standardType:[],
-          draftReviewStatus:[]
+          draftReviewStatus:[],
+          prId:[]
 
       });
   }
@@ -235,7 +236,8 @@ export class IntStdEditorComponent implements OnInit {
                     contactOneEmail:this.actionRequests.contactOneEmail,
                     standardType:this.actionRequests.standardType,
                     id:this.actionRequests.id,
-                    draftReviewStatus:this.actionRequests.draftReviewStatus
+                    draftReviewStatus:this.actionRequests.draftReviewStatus,
+                    prId:this.actionRequests.prId
                 }
             );
 
@@ -356,7 +358,7 @@ export class IntStdEditorComponent implements OnInit {
     submitDraftForEditing(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        console.log(this.uploadDraftStandardFormGroup.value)
+        //console.log(this.uploadDraftStandardFormGroup.value)
         this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);

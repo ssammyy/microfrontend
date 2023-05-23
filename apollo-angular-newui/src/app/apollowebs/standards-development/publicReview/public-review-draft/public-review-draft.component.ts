@@ -23,6 +23,9 @@ import {
 } from "../../../../core/store/data/std/request_std.model";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
+import {StakeHoldersFields, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 declare const $: any;
 @Component({
     selector: 'app-public-review-draft',
@@ -49,6 +52,7 @@ export class PublicReviewDraftComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
+    dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
@@ -60,6 +64,7 @@ export class PublicReviewDraftComponent implements OnInit {
 
     blob: Blob;
     public uploadedFiles: FileList;
+    public uploadedFile: FileList;
 
     loadingText: string;
     public preparePreliminaryDraftFormGroup!: FormGroup;
@@ -71,6 +76,12 @@ export class PublicReviewDraftComponent implements OnInit {
     textAvailableFrom: string;
     notifyingMember: string;
     agencyResponsible: string;
+    public isProposalFormGroup!: FormGroup;
+
+    dataSaveResourcesRequired : StakeHoldersFields;
+    dataSaveResourcesRequiredList: StakeHoldersFields[]=[];
+    predefinedSDCommentsDataAdded: boolean = false;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -80,24 +91,36 @@ export class PublicReviewDraftComponent implements OnInit {
                 private publicReviewService: PublicReviewService,
                 private notificationService: NepPointService,
                 private notifyService: NotificationService,
+                private stdIntStandardService : StdIntStandardService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
         this.getAllPrdS();
-        this.getAllDepartments()
+        this.getAllDepartments();
+        this.findStandardStakeholders()
         this.editedPublicReview_draftFormGroup = this.formBuilder.group({
             prdName: ['', Validators.required],
             ksNumber:['', Validators.required]
         });
+
         this.dropdownSettings = {
             singleSelection: false,
-            idField: 'id',
+            idField: 'email',
             textField: 'name',
             selectAllText: 'Select All',
             unSelectAllText: 'UnSelect All',
             allowSearchFilter: true
         };
+
+        this.isProposalFormGroup = this.formBuilder.group({
+            prId:null,
+            stakeholdersList:null,
+            stakeHolderName:null,
+            stakeHolderEmail:null,
+            stakeHolderPhone:null
+
+        });
 
         this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
             notifyingMember : ['', Validators.required],
@@ -149,6 +172,14 @@ export class PublicReviewDraftComponent implements OnInit {
             }
         );
 
+    }
+
+    onItemSelect(item: ListItem) {
+        console.log(item);
+    }
+
+    onSelectAll(items: any) {
+        console.log(items);
     }
 
     showToasterWarning(title:string,message:string){
@@ -510,6 +541,11 @@ export class PublicReviewDraftComponent implements OnInit {
             this.publicReviewDraftsB = publicReviewDrafts
 
             button.setAttribute('data-target', '#sendToOrganisations');
+            this.isProposalFormGroup.patchValue(
+                {
+                    prId: this.publicReviewDraftsB.id,
+                }
+            );
         }
         if (mode === 'moreDetails') {
             this.publicReviewDraftsB = publicReviewDrafts
@@ -653,7 +689,7 @@ export class PublicReviewDraftComponent implements OnInit {
         this.SpinnerService.show();
         this.notificationService.notificationOfReview(this.preparePreliminaryDraftFormGroup.value).subscribe(
             (response ) => {
-                console.log(response);
+                //console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
                 this.onClickSaveUploads(response.body.id)
@@ -666,11 +702,12 @@ export class PublicReviewDraftComponent implements OnInit {
                 console.log(error.message);
             }
         );
+        this.hideModalChanges();
     }
 
     onClickSaveUploads(draftId: string) {
-        if (this.uploadedFiles.length > 0) {
-            const file = this.uploadedFiles;
+        if (this.uploadedFile.length > 0) {
+            const file = this.uploadedFile;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
@@ -680,7 +717,7 @@ export class PublicReviewDraftComponent implements OnInit {
             this.notificationService.uploadDraft(draftId, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
-                    this.uploadedFiles = null;
+                    this.uploadedFile = null;
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
@@ -722,6 +759,81 @@ export class PublicReviewDraftComponent implements OnInit {
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
         });
+    }
+    @ViewChild('closeModalChanges') private closeModalChanges: ElementRef | undefined;
+
+    public hideModalChanges() {
+        this.closeModalChanges?.nativeElement.click();
+    }
+
+    get formISProposal(): any{
+        return this.isProposalFormGroup.controls;
+    }
+
+    sendPublicReview(): void {
+        this.SpinnerService.show();
+        this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+            (response) => {
+                //console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Sent to Organisations`);
+                this.isProposalFormGroup.reset();
+                this.getAllPrdS();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error`);
+                alert(error.message);
+            }
+        );
+        this.hideModalUploadDraft();
+    }
+
+    @ViewChild('closeDraftChanges') private closeDraftChanges: ElementRef | undefined;
+
+    public hideModalUploadDraft() {
+        this.closeDraftChanges?.nativeElement.click();
+    }
+
+    public findStandardStakeholders(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.findStandardStakeholders().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.dropdownList = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.isProposalFormGroup.value;
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        this.predefinedSDCommentsDataAdded= true;
+        this.isProposalFormGroup?.get('stakeHolderName')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderEmail')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderPhone')?.reset();
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveProposal() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.sendPublicReview();
+        }
     }
 
 }

@@ -52,14 +52,14 @@
                                         <td>{{tcTask.tc_Title}}</td>
                                         <td>{{tcTask.name}}</td>
                                         <td>{{tcTask.v5}} {{tcTask.v6}}</td>
-                                        <td>{{tcTask.v6}} {{tcTask.v6}}</td>
+                                        <td> {{tcTask.number_OF_MEMBERS}}</td>
                                         <td>
                                             <a (click)="onOpenModal(tcTask,'addTcSec')" class="btn btn-info"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Assign Tc Members</a>
                                         </td>
                                         <td>
-                                            <a (click)="onOpenModal(tcTask,'addTcSec')" class="btn btn-info"
+                                            <a (click)="gotoTcDetails(String(tcTask.id))" class="btn btn-info"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Manage Members</a>
                                         </td>

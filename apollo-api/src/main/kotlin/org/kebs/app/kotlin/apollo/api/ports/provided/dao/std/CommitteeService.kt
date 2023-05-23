@@ -33,6 +33,7 @@ class CommitteeService(
     private val notifications: Notifications,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
     private val publicReviewDraftRepository: PublicReviewDraftRepository,
+    private val standardRequestRepository: StandardRequestRepository,
 
 
     ) {
@@ -87,6 +88,16 @@ class CommitteeService(
 //        b.pdStatus = "Preliminary Draft Uploaded";
         b.prPdStatus = "Preliminary Draft Uploaded"
         standardNWIRepository.save(b)
+
+        val standardRequestToUpdate = b.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Preliminary Draft Uploaded"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
 
         return ProcessInstanceResponseValue(committeePD.id, "Complete", true, "committeePD.id")
 
@@ -341,6 +352,19 @@ class CommitteeService(
         b.status = "Committee Draft Uploaded"
         committeePDRepository.save(b)
 
+
+
+        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+        val standardRequestToUpdate = c.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Committee Draft Uploaded"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
+
         return ProcessInstanceResponseValue(committeeCD.id, "Complete", true, "committeePD.id")
 
     }
@@ -403,6 +427,19 @@ class CommitteeService(
         notifications.sendEmail("2nduatsd@gmail.com", "Committee Draft Creation", messageBody)
 
         committeeCDRepository.save(approveCommitteeDraft)
+
+        //update PD with CD Status
+        val b: CommitteePD = committeePDRepository.findById(approveCommitteeDraft.pdID).orElse(null)
+        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+        val standardRequestToUpdate = c.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Committee Draft Approved. Prepare Public Review Draft"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
 
     }
     // get all work items that have been approved and have a workPlan attached

@@ -366,6 +366,8 @@ import {
 } from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
 import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
 import {TcManagementComponent} from "./apollowebs/admin/tc-management/tc-management.component";
+import {ManageTcMembersComponent} from "./apollowebs/admin/manage-tc-members/manage-tc-members.component";
+import {QaAdminFixesComponent} from "./apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component";
 
 export const routes: Routes = [
     {
@@ -552,6 +554,10 @@ export const routes: Routes = [
             {
                 path: 'tivet_management',
                 component: ManageTivetComponent,
+            },
+            {
+                path: 'admin_fixes',
+                component: QaAdminFixesComponent,
             },
 
         ],
@@ -1687,6 +1693,10 @@ export const routes: Routes = [
     {
         path: 'sdAdmin/technicalCommitteeManagement', component: AdminLayoutComponent,
         children: [{path: '', component: TcManagementComponent}],
+    },
+    {
+        path: 'sdAdmin/manageTcMembers/:id', component: AdminLayoutComponent,
+        children: [{path: '', component: ManageTcMembersComponent}],
     },
     {
         path: 'productCategory', component: AdminLayoutComponent,

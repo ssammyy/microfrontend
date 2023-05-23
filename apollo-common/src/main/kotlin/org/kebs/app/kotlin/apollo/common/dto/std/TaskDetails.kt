@@ -70,7 +70,7 @@ data class StandardsDto(
     var levelOfStandard: String? = null,
     var status: String? = null,
     var departmentName: String? = null,
-    var standardCreationDate:Timestamp?=null,
+    var standardCreationDate: Timestamp? = null,
     //HOF Feedback
     var tcSecAssigned: String? = null,
     var reviewedBy: String? = null,
@@ -79,6 +79,38 @@ data class StandardsDto(
     var desiredResult: String? = null,
     var reason: String? = null,
 
+    var createdBy: String? = null,
+    var createdOn: Timestamp? = null,
+    var modifiedOn: Timestamp? = null,
+    var deletedOn: Timestamp? = null,
+    var deleteBy: String? = null,
+
+
+    )
+
+data class AllApplicationsStandardsDto(
+    var id: Long? = null,
+    var requestNumber: String? = null,
+    var rank: String? = null,
+    var name: String? = null,
+    var phone: String? = null,
+    var email: String? = null,
+    var submissionDate: Timestamp? = null,
+    var departmentId: String? = null,
+    var tcId: String? = null,
+    var organisationName: String? = null,
+    var subject: String? = null,
+    var description: String? = null,
+    var economicEfficiency: String? = null,
+    var healthSafety: String? = null,
+    var environment: String? = null,
+    var integration: String? = null,
+    var exportMarkets: String? = null,
+    var levelOfStandard: String? = null,
+    var status: String? = null,
+    var departmentName: String? = null,
+    var standardCreationDate: Timestamp? = null,
+    var ongoingStatus: String? = null,
     var createdBy: String? = null,
     var createdOn: Timestamp? = null,
     var modifiedOn: Timestamp? = null,
@@ -138,6 +170,6 @@ data class JustificationDetailsDto(
     var cdNumber: String? = null,
     var createdOn: Timestamp? = null,
     var createdBy: Long? = null,
-    )
+)
 
 
