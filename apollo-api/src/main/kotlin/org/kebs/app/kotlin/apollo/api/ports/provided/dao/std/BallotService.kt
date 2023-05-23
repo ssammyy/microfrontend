@@ -151,10 +151,19 @@ class BallotService(
             approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
             approveBallotDraft.modifiedBy = loggedInUser.id.toString()
 
+//            isAdoptionProposalRepository.findByIdOrNull(publicReviewDraft.stdDraftId)?.let { prop ->
+//                with(prop) {
+//                    proposal_doc_name="Kenya Standard"
+//
+//                }
+//                isAdoptionProposalRepository.save(prop)
+//            } ?: throw Exception("PROPOSAL NOT FOUND")
+
             comStdDraftRepository.findByIdOrNull(publicReviewDraft.stdDraftId)?.let { comStdDraft ->
                 with(comStdDraft) {
                     standardType="FD KS"
                     status=4
+
 
                 }
                 comStdDraftRepository.save(comStdDraft)
