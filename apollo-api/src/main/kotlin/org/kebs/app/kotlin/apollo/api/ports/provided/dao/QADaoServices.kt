@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import lombok.SneakyThrows
 import mu.KotlinLogging
 import org.apache.commons.lang3.SerializationUtils
 import org.jasypt.encryption.StringEncryptor
@@ -2905,6 +2906,16 @@ class QADaoServices(
 
 
             } ?: throw NullValueNotAllowedException("Record not found")
+    }
+    @SneakyThrows
+    fun updateStandard(
+        user: UsersEntity,
+        number: String,
+        dto: String
+    ){
+//        val updateStandard = ()
+//       save the data in the dto in users' table
+
     }
 
     fun updateInspectionFeesDetailsDetails(
@@ -9265,6 +9276,13 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, invoiceGenerated)
+    }
+    fun updateMissingStandard(
+        number: String,
+        standard: SampleStandardsEntity,
+        user: UsersEntity
+    ){
+
     }
 
     fun permitInvoiceSTKPush(

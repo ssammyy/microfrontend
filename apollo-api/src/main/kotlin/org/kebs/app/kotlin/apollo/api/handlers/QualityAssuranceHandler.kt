@@ -25,8 +25,10 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import lombok.SneakyThrows
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.json.XMLTokener.entity
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -66,6 +68,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import reactor.core.publisher.Mono
 import java.math.BigDecimal
 import java.sql.Date
 import java.text.SimpleDateFormat
@@ -2436,6 +2439,26 @@ class QualityAssuranceHandler(
             KotlinLogging.logger { }.error(e.message)
             onErrors(e.message)
         }
+    }
+
+    @SneakyThrows
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleUpdateMissingStandard(req: ServerRequest): ServerResponse{
+//        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val body = req.body(ByteArray::class.java) ?: return ServerResponse.badRequest().build()
+        val payload = String(body)
+        val mapper = ObjectMapper()
+        val jsonNode = mapper.readTree(payload)
+        val standardNumber = jsonNode.get("standardNumber").asText()
+        qaDaoServices.updateStandard(loggedInUser, standardNumber, payload)
+        println("this is the entity mate "+ entity.toString())
+
+        println("this is the payload "+ payload)
+        //            val standardNumber = req.paramOrNull("standardNumber")
+            println("gets in here mate ::: tunasonga "+ req.paramOrNull("standardNumber").toString())
+        println("this is the request body "+ req.params())
+        return ok().body("success")
     }
 
 

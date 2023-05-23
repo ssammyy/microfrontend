@@ -149,7 +149,7 @@ class PublicReviewService(
         val reviewDraft=PublicReviewDraft()
         val stakeholdersOne = publicReviewDto.stakeholdersList
         stakeholdersOne?.forEach { s ->
-            val subject = "Invitation to Provide Feedback on Proposed Adoption of International Standard"
+            val subject = "Invitation to Provide Comments on Public Review Draft"
             val recipient = s.email
             val user = s.name
             val userId = usersRepo.getUserId(s.email)

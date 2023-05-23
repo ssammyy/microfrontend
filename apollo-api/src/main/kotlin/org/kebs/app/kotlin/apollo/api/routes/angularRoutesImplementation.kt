@@ -512,6 +512,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 POST("/generate-inspection-fee", handler::handleGenerateInspectionFeesDetails)
             }
+            "/fixes".nest{
+                POST("/add/standard/test", handler:: handleUpdateMissingStandard)
+            }
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
