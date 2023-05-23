@@ -1,13 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    Input,
-    OnInit,
-    QueryList,
-    ViewChild,
-    ViewChildren,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {
     DataHolder,
@@ -22,13 +13,14 @@ import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
-import {Department, StandardRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {Department, StandardRequest} from "../../../../core/store/data/std/std.model";
 import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
+import {NgSelectComponent} from "@ng-select/ng-select";
 
 @Component({
     selector: 'app-standard-task',
@@ -72,7 +64,7 @@ export class StandardTaskComponent implements OnInit {
     // from the calling component add:
     @Input() selectSeason: string;
     public departments !: Department[];
-    public tcSecs !: UsersEntity[];
+    public tcSecs !: DataHolder[];
     @Input() selectDesiredResult: string;
 
     p = 1;
@@ -101,6 +93,7 @@ export class StandardTaskComponent implements OnInit {
     public taskData: TaskData | undefined;
 
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
+    selectedTc: number;
 
 
     filteredTcs: any[] = [];
@@ -109,6 +102,7 @@ export class StandardTaskComponent implements OnInit {
 
     countries: DataHolder[] = this.tcs;
     filteredCountries: Record<string, string>[] = [];
+
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
@@ -134,7 +128,7 @@ export class StandardTaskComponent implements OnInit {
         this.getHOFTasks();
         this.getOnHoldTasks();
         this.getTechnicalCommittee();
-        this.getTcSecs()
+        // this.getTcSecs()
 
 
         this.stdDepartmentChange = this.formBuilder.group({
@@ -434,16 +428,16 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
-    public getTcSecs(): void {
-        this.standardDevelopmentService.getTcSec().subscribe(
-            (response: UsersEntity[]) => {
-                this.tcSecs = response;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
+    // public getTcSecs(): void {
+    //     this.standardDevelopmentService.getTcSec().subscribe(
+    //         (response: UsersEntity[]) => {
+    //             this.tcSecs = response;
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             alert(error.message);
+    //         }
+    //     );
+    // }
 
     @ViewChild('matRef') matRef: MatSelect;
 
@@ -505,7 +499,35 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
+    onSelectTc(selectedValue: any): void {
+        console.log('Selected TC:', selectedValue);
 
+        this.standardDevelopmentService.getTechnicalCommitteeSec(selectedValue).subscribe(
+            (response: DataHolder[]) => {
+                console.log(response);
+                this.tcSecs = response
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    // onSelectTc(value: any): any {
+    //     console.log('Selected TC:', value);
+    //
+    //     this.standardDevelopmentService.getTechnicalCommitteeSec(value).subscribe(
+    //         (response: DataHolder[]) => {
+    //             console.log(response);
+    //             this.tcs = response
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             alert(error.message);
+    //         }
+    //     );
+    // }
+
+    @ViewChild('tcSelect') tcSelect: any;
 
 
 }

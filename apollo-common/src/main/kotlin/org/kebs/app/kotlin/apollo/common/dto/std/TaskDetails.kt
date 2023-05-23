@@ -111,6 +111,7 @@ data class AllApplicationsStandardsDto(
     var departmentName: String? = null,
     var standardCreationDate: Timestamp? = null,
     var ongoingStatus: String? = null,
+    var tcSecAssigned: String? = null,
     var createdBy: String? = null,
     var createdOn: Timestamp? = null,
     var modifiedOn: Timestamp? = null,

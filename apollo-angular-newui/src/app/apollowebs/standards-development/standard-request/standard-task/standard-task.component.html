@@ -280,12 +280,12 @@
                                                             <label><b>Technical Committee (TC) Name : (Select one from
                                                                 the dropdown list)</b></label>
                                                             <div class="default">
-
-                                                                <ng-select [(ngModel)]="filteredTc"
+                                                                <ng-select #tcSelect [(ngModel)]="selectedTc"
                                                                            formControlName="tcId"
-                                                                           class="custom-ng-select" name="tcId">
+                                                                           class="custom-ng-select"
+                                                                           (change)="onSelectTc($event)">
                                                                     <ng-option *ngFor="let tc of tcs"
-                                                                               [value]="tc.id">{{tc.tc_Title}} </ng-option>
+                                                                               [value]="tc.id">{{ tc.tc_Title }}</ng-option>
                                                                 </ng-select>
                                                             </div>
                                                         </div>
@@ -296,7 +296,7 @@
                                                                        formControlName="isTc"
                                                                        class="custom-ng-select" name="isTc">
                                                                 <ng-option *ngFor="let tcSec of tcSecs"
-                                                                           [value]="tcSec.id">{{tcSec.firstName}}  {{tcSec.lastName}} </ng-option>
+                                                                           [value]="tcSec.v1">{{tcSec.v5}}  {{tcSec.v6}} </ng-option>
                                                             </ng-select>
                                                         </div>
 
