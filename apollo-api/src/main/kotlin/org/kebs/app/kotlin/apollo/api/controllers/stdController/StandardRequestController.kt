@@ -169,6 +169,11 @@ class StandardRequestController(
         return standardRequestService.getHOFTasks()
     }
 
+    @GetMapping("standard/getAllApplications")
+    fun getAllApplications(): List<AllApplicationsStandardsDto> {
+        return standardRequestService.getAllApplications()
+    }
+
     @PostMapping("standard/process")
     @ResponseBody
     fun checkState(@RequestBody id: ID): ServerResponse {
@@ -413,15 +418,20 @@ class StandardRequestController(
 
 
         return try {
-            if (type == "FilePurposeAnnex") {
-                val newItemId = itemId.replace("/", ".")
-                purposeAnnexService.store(file, newItemId)
-            } else if (type == "RelevantDocumentsNWI") {
-                val newItemId = itemId.replace("/", ".")
-                relevantDocumentsNWIService.store(file, newItemId)
-            } else if (type == "ReferenceMaterialJustification") {
-                val newItemId = itemId.replace("/", ".")
-                referenceMaterialJustificationService.store(file, newItemId)
+
+            when (type) {
+                "FilePurposeAnnex" -> {
+                    val newItemId = itemId.replace("/", ".")
+                    purposeAnnexService.store(file, newItemId)
+                }
+                "RelevantDocumentsNWI" -> {
+                    val newItemId = itemId.replace("/", ".")
+                    relevantDocumentsNWIService.store(file, newItemId)
+                }
+                "ReferenceMaterialJustification" -> {
+                    val newItemId = itemId.replace("/", ".")
+                    referenceMaterialJustificationService.store(file, newItemId)
+                }
             }
 
             message = "Uploaded the file successfully: ${file.originalFilename}"
@@ -440,57 +450,61 @@ class StandardRequestController(
     ): ResponseEntity<List<ResponseFile>> {
 
         var files: List<ResponseFile>? = null
-        if (type == "FilePurposeAnnex") {
+        when (type) {
+            "FilePurposeAnnex" -> {
 
-            files = purposeAnnexService.getAllFiles(itemId).map { dbFile ->
-                val fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/standard/files/")
-                    .path(dbFile.id)
-                    .toUriString()
+                files = purposeAnnexService.getAllFiles(itemId).map { dbFile ->
+                    val fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/standard/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
-                ResponseFile(
-                    dbFile.name,
-                    fileDownloadUri,
-                    dbFile.type,
-                    dbFile.data.size
-                )
+                    ResponseFile(
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
-            }.collect(Collectors.toList())
-        } else if (type == "RelevantDocumentsNWI") {
+                }.collect(Collectors.toList())
+            }
+            "RelevantDocumentsNWI" -> {
 
-            files = relevantDocumentsNWIService.getAllFiles(itemId).map { dbFile ->
-                val fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/standard/files/")
-                    .path(dbFile.id)
-                    .toUriString()
+                files = relevantDocumentsNWIService.getAllFiles(itemId).map { dbFile ->
+                    val fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/standard/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
-                ResponseFile(
-                    dbFile.name,
-                    fileDownloadUri,
-                    dbFile.type,
-                    dbFile.data.size
-                )
+                    ResponseFile(
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
-            }.collect(Collectors.toList())
-        } else if (type == "ReferenceMaterialJustification") {
+                }.collect(Collectors.toList())
+            }
+            "ReferenceMaterialJustification" -> {
 
-            files = referenceMaterialJustificationService.getAllFiles(itemId).map { dbFile ->
-                val fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/standard/files/")
-                    .path(dbFile.id)
-                    .toUriString()
+                files = referenceMaterialJustificationService.getAllFiles(itemId).map { dbFile ->
+                    val fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/standard/files/")
+                        .path(dbFile.id)
+                        .toUriString()
 
-                ResponseFile(
-                    dbFile.name,
-                    fileDownloadUri,
-                    dbFile.type,
-                    dbFile.data.size
-                )
+                    ResponseFile(
+                        dbFile.name,
+                        fileDownloadUri,
+                        dbFile.type,
+                        dbFile.data.size
+                    )
 
-            }.collect(Collectors.toList())
+                }.collect(Collectors.toList())
+            }
         }
 
 
@@ -555,6 +569,14 @@ class StandardRequestController(
         return standardRequestService.getAllTcs()
     }
 
+    @GetMapping("standard/getAllTcsWithMembers")
+    fun getAllTcsWithMembers(): List<DataHolder> {
+        return standardRequestService.getAllTcsWithMembers()
+    }
+    @GetMapping("standard/getTcsWithMembersDetails")
+    fun getTcsWithMembersDetails(@RequestParam("tcId") tcId: Long): List<TcMembers> {
+        return standardRequestService.getTcsWithMembersDetails(tcId)
+    }
 
     @GetMapping("standard/getAllProductCategories")
     fun getAllProductCategories(): List<DataHolder> {

@@ -7,10 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.NationalEnquiryEntityRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.NationalEnquiryPointRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.SdNepDocUploadsEntityRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.SdNepDraftRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Propagation
@@ -30,6 +27,7 @@ class NationalEnquiryPointController(
     private val nationalEnquiryEntityRepository: NationalEnquiryEntityRepository,
     private val commonDaoServices: CommonDaoServices,
     private val nepDraftRepo: SdNepDraftRepository,
+    private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository
 ) {
 
     //********************************************************** deployment endpoints **********************************************************
@@ -224,10 +222,7 @@ class NationalEnquiryPointController(
 
     @PostMapping("/National_enquiry_point/notificationOfReview")
     fun notificationOfReview(@RequestBody nep: NepNotificationDto): ServerResponse? {
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(nep) }
-        return ServerResponse(
-            HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
             notificationOfReview(nep))
 
     }
@@ -248,7 +243,7 @@ class NationalEnquiryPointController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
 
-        val nepRequest = nepDraftRepo.findByIdOrNull(draftId)?: throw Exception("DRAFT ID DOES NOT EXIST")
+        val nepRequest = nepNotificationFormEntityRepo.findByIdOrNull(draftId)?: throw Exception("NOTIFICATION ID DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = SdNepDraftUploadsEntity()

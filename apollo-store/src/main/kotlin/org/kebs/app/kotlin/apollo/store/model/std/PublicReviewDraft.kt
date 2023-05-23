@@ -94,5 +94,17 @@ class PublicReviewDraft {
     @Basic
     var ksNumber: String? = null
 
+    @Column(name = "STD_DRAFT_ID")
+    @Basic
+    var stdDraftId: Long? = 0
+
+    @Column(name = "STD_ID")
+    @Basic
+    var stdId: Long? = 0
+
+    @Column(name = "DRAFT_REVIEW_STATUS")
+    @Basic
+    var draftReviewStatus: Long? = 0
+
 
 }

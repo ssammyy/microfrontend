@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import org.springframework.format.annotation.DateTimeFormat
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 
@@ -53,6 +54,21 @@ interface DataHolder {
     fun getV4(): String?
     fun getV5(): String?
     fun getV6(): String?
+
+    fun getNUMBER_OF_MEMBERS(): String?
+
+
+}
+interface TcMembers {
+    fun getId(): Long?
+    fun getTC_ID(): String?
+    fun getUSER_ID(): String?
+    fun getFIRST_NAME(): String?
+    fun getLAST_NAME(): String?
+    fun getTC_TITLE(): String?
+    fun getLAST_MODIFIED_ON(): String?
+
+
 
 }
 interface UserTypeHolder {
@@ -511,6 +527,7 @@ interface ProposalDetails{
     fun getStStatus(): Long?
     fun getStTelephone(): String?
     fun getCommentId(): Long?
+    fun getPrId(): Long?
     fun getTcDecision(): String?
 }
 interface PermitsAwarded{
@@ -811,6 +828,7 @@ interface ComStandard {
     fun getUploadDate(): String?
     fun getStatus(): Long?
     fun getRequestId(): Long?
+    fun getPrId(): Long?
     fun getProposalId(): Long?
     fun getDraftReviewStatus(): Long?
     fun getDraftId(): Long?

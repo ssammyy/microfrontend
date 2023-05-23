@@ -2220,5 +2220,36 @@ begin
     end if;
 end;
 
+create  table SD_PUBLIC_REVIEW_STAKE_HOLDERS
+(
+    id                   number   not null primary key,
+    PR_ID            int,
+    NAME           varchar(1000 char),
+    EMAIL           varchar(1000 char),
+    TELEPHONE           varchar(1000 char),
+    DATE_OF_CREATION           TIMESTAMP,
+    USER_ID     int,
+    STATUS   int,
+    COMMENT_ID  int
+)
+/
+create sequence SD_PUBLIC_REVIEW_STAKE_HOLDERS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger SD_PUBLIC_REVIEW_STAKE_HOLDERS_trg
+    before
+        insert
+    on SD_PUBLIC_REVIEW_STAKE_HOLDERS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select SD_PUBLIC_REVIEW_STAKE_HOLDERS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
 
 

@@ -104,7 +104,44 @@ class NepNotificationFormEntity  : Serializable {
     @Basic
     var documentAttached: Long? = 0
 
+    @Column(name = "P_ID")
+    @Basic
+    var pid: Long? = 0
 
+    @Column(name = "CD_ID")
+    @Basic
+    var cd_Id: Long? = 0
 
+    @Column(name = "PRD_NAME")
+    @Basic
+    var prd_name: String? = null
+
+    @Column(name = "KS_NUMBER")
+    @Basic
+    var ks_NUMBER: String? = null
+
+    @Column(name = "ORGANIZATION")
+    @Basic
+    var organization: String? = null
+
+    @Column(name = "PRD_BY")
+    @Basic
+    var prd_by: String? = null
+
+    @Column(name = "PRD_STATUS")
+    @Basic
+    var prdStatus: String? = null
+
+    @Column(name = "PRD_CREATED_ON")
+    @Basic
+    var created_on: String? = null
+
+    @Column(name = "NO_OF_COMMENTS")
+    @Basic
+    var number_OF_COMMENTS: String? = null
+
+    @Column(name = "VAR_FIELD_ONE")
+    @Basic
+    var var_FIELD_1: String? = null
 
 }

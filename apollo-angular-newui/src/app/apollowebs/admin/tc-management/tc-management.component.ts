@@ -11,6 +11,7 @@ import {NotificationService} from "../../../core/store/data/std/notification.ser
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
+import * as CryptoJS from 'crypto-js';
 
 declare const $: any;
 
@@ -127,7 +128,7 @@ export class TcManagementComponent implements OnInit {
         this.loading = true;
         this.SpinnerService.show();
 
-        this.standardDevelopmentService.getTechnicalCommittees().subscribe(
+        this.standardDevelopmentService.getAllTcsWithMembers().subscribe(
             (response: DataHolder[]) => {
                 console.log(response);
                 this.tcs = response;
@@ -187,6 +188,7 @@ export class TcManagementComponent implements OnInit {
     public hideModelB() {
         this.closeModalB?.nativeElement.click();
     }
+
     assignTcMembers(formValue: any): void {
         this.loadingText = "Assigning Tc Members ...."
         this.loading = true;
@@ -233,5 +235,19 @@ export class TcManagementComponent implements OnInit {
         return `${tcSec.firstName} ${tcSec.lastName}`;
     }
 
+    gotoTcDetails(tcID: string) {
 
+        var text = tcID;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        this.router.navigate(['sdAdmin/manageTcMembers/', encrypted])
+
+
+    }
+
+
+    protected readonly String = String;
 }

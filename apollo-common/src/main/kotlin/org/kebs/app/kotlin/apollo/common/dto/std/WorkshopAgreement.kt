@@ -202,6 +202,7 @@ data class ISHopDecision(
      var assignedTo: Long,
      var proposalId: Long,
      var draftReviewStatus: Long,
+     var prId: Long
 
 
 ){
@@ -367,6 +368,12 @@ class NwaPDraftAction(
     @JsonProperty("special") val special: String,
 ) {
 }
+data class PublicReviewDto(
+    var stakeholdersList: MutableList<NamesList>?=null,
+    var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
+    var prId: Long?=null,
+
+){}
 
 data class ISAdoptionProposalDto(
     var proposal_doc_name: String?=null,
@@ -586,6 +593,7 @@ data class CSDraftDto(
     var proposalId:Long,
     var justificationNo:Long?=null,
     var id:Long,
+    var prId:Long,
     var title:String?=null,
     var scope:String?=null,
     var normativeReference:String?=null,

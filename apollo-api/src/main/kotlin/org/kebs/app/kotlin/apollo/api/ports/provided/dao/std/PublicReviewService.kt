@@ -10,23 +10,27 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.sql.Timestamp
 
 @Service
 class PublicReviewService(
-    private val runtimeService: RuntimeService,
+    private val committeePDRepository: CommitteePDRepository,
     private val committeeCDRepository: CommitteeCDRepository,
-    @Qualifier("processEngine") private val processEngine: ProcessEngine,
+    private val standardNWIRepository: StandardNWIRepository,
     private val repositoryService: RepositoryService,
     private val publicReviewDraftRepository: PublicReviewDraftRepository,
-    private val publicReviewDraftCommentsRepository: PublicReviewDraftCommentsRepository,
+    private val standardRequestRepository: StandardRequestRepository,
     val commonDaoServices: CommonDaoServices,
     private val commentsRepository: CommentsRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val publicReviewStakeHoldersRepo: PublicReviewStakeHoldersRepository,
+    private val usersRepo: IUserRepository,
 
     ) {
     val PROCESS_DEFINITION_KEY = "publicreview"
@@ -54,25 +58,15 @@ class PublicReviewService(
     ): ProcessInstanceResponseValue {
         //Save Preliminary Draft
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        publicReviewDraft.prdName?.let { variable.put("prdName", it) }
-        publicReviewDraft.ksNumber?.let { variable.put("ksNumber", it) }
 
         publicReviewDraft.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = publicReviewDraft.createdOn!!
         publicReviewDraft.cdID = cdId
-        variable["cdID"] = publicReviewDraft.cdID
         publicReviewDraft.prdBy = loggedInUser.id!!
-        variable["prdBy"] = publicReviewDraft.prdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         publicReviewDraft.createdBy = loggedInUser.id.toString()
-        variable["createdBy"] = publicReviewDraft.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         publicReviewDraft.status = "Send Draft To Head Of Trade Affairs"
-        variable["status"] = publicReviewDraft.status!!
         publicReviewDraft.versionNumber = 1.toString()
-        variable["varField8"] = publicReviewDraft.versionNumber!!
 
         publicReviewDraftRepository.save(publicReviewDraft)
-
-        publicReviewDraft.id.let { variable.put("id", it) }
 
         //update documents with PRDId
         try {
@@ -86,6 +80,20 @@ class PublicReviewService(
         val committeeDraft: CommitteeCD = committeeCDRepository.findById(cdId).orElse(null);
         committeeDraft.status = "Public Review Draft Uploaded";
         committeeCDRepository.save(committeeDraft)
+
+
+        val b: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
+        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+        val standardRequestToUpdate = c.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Under Public Review"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
+
 
 //        //update NWI with Pd Status
 //        val b: StandardNWI = standardNWIRepository.findById(nwIId).orElse(null);
@@ -129,14 +137,68 @@ class PublicReviewService(
                 .orElseThrow { RuntimeException("No public review draft found") }
 
         publicReviewDraftToBeUpdated.status = "Sent To Head Of Trade Affairs"
-        variable["status"] = publicReviewDraftToBeUpdated.status!!
         publicReviewDraftToBeUpdated.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = publicReviewDraftToBeUpdated.modifiedOn!!
         publicReviewDraftToBeUpdated.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] =
-            publicReviewDraftToBeUpdated.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         publicReviewDraftRepository.save(publicReviewDraftToBeUpdated)
+
+    }
+    fun sendPublicReview(publicReviewDto: PublicReviewDto): PublicReviewDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val reviewDraft=PublicReviewDraft()
+        val stakeholdersOne = publicReviewDto.stakeholdersList
+        stakeholdersOne?.forEach { s ->
+            val subject = "Invitation to Provide Feedback on Proposed Adoption of International Standard"
+            val recipient = s.email
+            val user = s.name
+            val userId = usersRepo.getUserId(s.email)
+            val userPhone = usersRepo.getUserPhone(s.email)
+
+            val shs = PublicReviewStakeHolders()
+            shs.name = user
+            shs.email = recipient
+            shs.prId = publicReviewDto.prId
+            shs.dateOfCreation = Timestamp(System.currentTimeMillis())
+            shs.telephone = userPhone
+            shs.userId = userId
+            shs.status = 0
+            publicReviewStakeHoldersRepo.save(shs)
+
+
+
+
+        }
+
+        val stakeholdersTwo = publicReviewDto.addStakeholdersList
+        stakeholdersTwo?.forEach { t ->
+            val sub = "Invitation to Provide Comments on Public Review Draft"
+            val rec = t.stakeHolderEmail
+            val userN = t.stakeHolderName
+            val phoneNumber = t.stakeHolderPhone
+
+            val st = PublicReviewStakeHolders()
+            st.name = userN
+            st.email = rec
+            st.prId = publicReviewDto.prId
+            st.dateOfCreation = Timestamp(System.currentTimeMillis())
+            st.telephone = phoneNumber
+            st.status = 0
+            val sid = publicReviewStakeHoldersRepo.save(st)
+            val pid = sid.id
+        }
+
+
+            publicReviewDraftRepository.findByIdOrNull(publicReviewDto.prId)?.let { pr ->
+
+                with(pr) {
+                    status = "Posted On Website For Comments"
+
+                }
+                publicReviewDraftRepository.save(pr)
+            } ?: throw Exception("REVIEW DRAFT NOT FOUND")
+
+        return reviewDraft
 
     }
 
@@ -145,12 +207,9 @@ class PublicReviewService(
         val publicReviewDraftToBeUpdated =
             publicReviewDraftRepository.findById(publicReviewId).orElseThrow { RuntimeException("No comment found") }
         publicReviewDraftToBeUpdated.status = "Sent To Departments"
-        variable["status"] = publicReviewDraftToBeUpdated.status!!
         publicReviewDraftToBeUpdated.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = publicReviewDraftToBeUpdated.modifiedOn!!
         publicReviewDraftToBeUpdated.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] =
-            publicReviewDraftToBeUpdated.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
         var allOrganization = ""
         val klaxon = Klaxon()
         JsonReader(StringReader(department.department.toString())).use { reader ->
@@ -162,9 +221,7 @@ class PublicReviewService(
             }
         }
         publicReviewDraftToBeUpdated.varField1 = allOrganization
-        println(allOrganization)
 
-        variable["varField1"] = publicReviewDraftToBeUpdated.varField1!!
 
 
         publicReviewDraftRepository.save(publicReviewDraftToBeUpdated)
@@ -178,14 +235,9 @@ class PublicReviewService(
                 .orElseThrow { RuntimeException("No PRD found") }
 
         publicReviewDraftToBeUpdated.status = "Posted On Website For Comments"
-        variable["status"] = publicReviewDraftToBeUpdated.status!!
         publicReviewDraftToBeUpdated.varField2 = "Posted On Website For Comments"
-        variable["varField1"] = publicReviewDraftToBeUpdated.varField2!!
         publicReviewDraftToBeUpdated.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = publicReviewDraftToBeUpdated.modifiedOn!!
         publicReviewDraftToBeUpdated.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] =
-            publicReviewDraftToBeUpdated.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         publicReviewDraftRepository.save(publicReviewDraftToBeUpdated)
 
@@ -254,15 +306,10 @@ class PublicReviewService(
         publicReviewDraft.ksNumber?.let { variable.put("ksNumber", it) }
 
         publicReviewDraft.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = publicReviewDraft.createdOn!!
         publicReviewDraft.cdID = editedCommitteeDraft.cdID
-        variable["cdID"] = publicReviewDraft.cdID
         publicReviewDraft.prdBy = loggedInUser.id!!
-        variable["prdBy"] = publicReviewDraft.prdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         publicReviewDraft.createdBy = loggedInUser.id.toString()
-        variable["createdBy"] = publicReviewDraft.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         publicReviewDraft.status = "Send Draft To Head Of Trade Affairs"
-        variable["status"] = publicReviewDraft.status!!
         publicReviewDraftRepository.save(publicReviewDraft)
         publicReviewDraft.versionNumber = (editedCommitteeDraft.versionNumber?.toInt()?.plus(1)).toString()
         publicReviewDraft.previousVersion = editedCommitteeDraft.id.toString()
@@ -279,7 +326,6 @@ class PublicReviewService(
         publicReviewDraftRepository.save(publicReviewDraft)
 
         editedCommitteeDraft.status = "Edited"
-        variable["status"] = editedCommitteeDraft.status!!
         publicReviewDraftRepository.save(editedCommitteeDraft)
         return ProcessInstanceResponseValue(publicReviewDraft.id, "Complete", true, "editedPublicReviewDraft.id")
 
@@ -293,13 +339,9 @@ class PublicReviewService(
                 .orElseThrow { RuntimeException("No Public Review Draft found") }
 
         approveCommitteeDraft.status = "Approved For Balloting"
-        variable["status"] = approveCommitteeDraft.status!!
         approveCommitteeDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = approveCommitteeDraft.modifiedOn!!
         approveCommitteeDraft.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = approveCommitteeDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
         approveCommitteeDraft.varField3 = "Approved"
-        variable["varField3"] = approveCommitteeDraft.varField3!!
         publicReviewDraftRepository.save(approveCommitteeDraft)
 
 

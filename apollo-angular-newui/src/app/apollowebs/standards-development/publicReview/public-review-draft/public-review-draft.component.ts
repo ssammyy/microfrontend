@@ -22,7 +22,11 @@ import {
     Department
 } from "../../../../core/store/data/std/request_std.model";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
-
+import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
+import {StakeHoldersFields, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
+declare const $: any;
 @Component({
     selector: 'app-public-review-draft',
     templateUrl: './public-review-draft.component.html',
@@ -48,6 +52,7 @@ export class PublicReviewDraftComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
+    dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
@@ -59,6 +64,24 @@ export class PublicReviewDraftComponent implements OnInit {
 
     blob: Blob;
     public uploadedFiles: FileList;
+    public uploadedFile: FileList;
+
+    loadingText: string;
+    public preparePreliminaryDraftFormGroup!: FormGroup;
+    addressOfAgency: string;
+    telephoneOfAgency: string;
+    faxOfAgency: string;
+    emailOfAgency: string;
+    websiteOfAgency: string;
+    textAvailableFrom: string;
+    notifyingMember: string;
+    agencyResponsible: string;
+    public isProposalFormGroup!: FormGroup;
+
+    dataSaveResourcesRequired : StakeHoldersFields;
+    dataSaveResourcesRequiredList: StakeHoldersFields[]=[];
+    predefinedSDCommentsDataAdded: boolean = false;
+
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -66,26 +89,105 @@ export class PublicReviewDraftComponent implements OnInit {
                 private router: Router,
                 private standardDevelopmentService: StandardDevelopmentService,
                 private publicReviewService: PublicReviewService,
+                private notificationService: NepPointService,
                 private notifyService: NotificationService,
+                private stdIntStandardService : StdIntStandardService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
         this.getAllPrdS();
-        this.getAllDepartments()
+        this.getAllDepartments();
+        this.findStandardStakeholders()
         this.editedPublicReview_draftFormGroup = this.formBuilder.group({
             prdName: ['', Validators.required],
             ksNumber:['', Validators.required]
         });
+
         this.dropdownSettings = {
             singleSelection: false,
-            idField: 'id',
+            idField: 'email',
             textField: 'name',
             selectAllText: 'Select All',
             unSelectAllText: 'UnSelect All',
             allowSearchFilter: true
         };
 
+        this.isProposalFormGroup = this.formBuilder.group({
+            prId:null,
+            stakeholdersList:null,
+            stakeHolderName:null,
+            stakeHolderEmail:null,
+            stakeHolderPhone:null
+
+        });
+
+        this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
+            notifyingMember : ['', Validators.required],
+            agencyResponsible : ['', Validators.required],
+            addressOfAgency : ['', Validators.required],
+            telephoneOfAgency : ['', Validators.required],
+            faxOfAgency : ['', Validators.required],
+            emailOfAgency : ['', Validators.required],
+            websiteOfAgency : ['', Validators.required],
+            notifiedUnderArticle : ['', Validators.required],
+            productsCovered : ['', Validators.required],
+            descriptionOfNotifiedDoc : ['', Validators.required],
+            descriptionOfContent : ['', Validators.required],
+            objectiveAndRationale : ['', Validators.required],
+            relevantDocuments : ['', Validators.required],
+            proposedDateOfAdoption : ['', Validators.required],
+            proposedDateOfEntryIntoForce : [],
+            textAvailableFrom : ['', Validators.required],
+            pid:null,
+            cd_Id:null,
+            prd_name:null,
+            ks_NUMBER:null,
+            organization:null,
+            prd_by: null,
+            status: null,
+            created_on: null,
+            number_OF_COMMENTS: null,
+            var_FIELD_1: null
+
+        });
+        this.notifyingMember="Republic of Kenya"
+        this.agencyResponsible="Kenya Bureau of Standards - KEBS"
+        this.addressOfAgency="P.O. Box: 54974-00200, Nairobi, Kenya"
+        this.telephoneOfAgency="+ (254) 020 605490, 605506/6948258"
+        this.faxOfAgency="+ (254) 020 609660/609665"
+        this.emailOfAgency="info@kebs.org"
+        this.websiteOfAgency="Website: http://www.kebs.org"
+        this.textAvailableFrom="Kenya Bureau of Standards\n WTO/TBT National Enquiry Point\n P.O. Box: 54974-00200, Nairobi, Kenya\n Telephone: + (254) 020 605490, 605506/6948258\n Fax: + (254) 020 609660/609665\n E-mail: info@kebs.org; Website: http://www.kebs.org\n"
+        this.preparePreliminaryDraftFormGroup.patchValue(
+            {
+                addressOfAgency: this.addressOfAgency,
+                telephoneOfAgency: this.telephoneOfAgency,
+                faxOfAgency: this.faxOfAgency,
+                emailOfAgency: this.emailOfAgency,
+                websiteOfAgency: this.websiteOfAgency,
+                textAvailableFrom: this.textAvailableFrom,
+                notifyingMember:this.notifyingMember,
+                agencyResponsible:this.agencyResponsible
+            }
+        );
+
+    }
+
+    onItemSelect(item: ListItem) {
+        console.log(item);
+    }
+
+    onSelectAll(items: any) {
+        console.log(items);
+    }
+
+    showToasterWarning(title:string,message:string){
+        this.notifyService.showWarning(message, title)
+
+    }
+    get formPreparePD(): any {
+        return this.preparePreliminaryDraftFormGroup.controls;
     }
 
     public getAllPrdS(): void {
@@ -398,6 +500,32 @@ export class PublicReviewDraftComponent implements OnInit {
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
+        if (mode === 'prepareNotification') {
+            this.publicReviewDraftsB = publicReviewDrafts
+            button.setAttribute('data-target', '#prepareNotification');
+            this.preparePreliminaryDraftFormGroup.patchValue(
+                {
+                    addressOfAgency: this.addressOfAgency,
+                    telephoneOfAgency: this.telephoneOfAgency,
+                    faxOfAgency: this.faxOfAgency,
+                    emailOfAgency: this.emailOfAgency,
+                    websiteOfAgency: this.websiteOfAgency,
+                    textAvailableFrom: this.textAvailableFrom,
+                    notifyingMember:this.notifyingMember,
+                    agencyResponsible:this.agencyResponsible,
+                    pid:this.publicReviewDraftsB.id,
+                    cd_Id:this.publicReviewDraftsB.cd_Id,
+                    prd_name:this.publicReviewDraftsB.prd_name,
+                    ks_NUMBER:this.publicReviewDraftsB.ks_NUMBER,
+                    organization:this.publicReviewDraftsB.organization,
+                    prd_by:this.publicReviewDraftsB.prd_by,
+                    status:this.publicReviewDraftsB.status,
+                    created_on:this.publicReviewDraftsB.created_on,
+                    number_OF_COMMENTS:this.publicReviewDraftsB.number_OF_COMMENTS,
+                    var_FIELD_1:this.publicReviewDraftsB.var_FIELD_1
+                }
+            );
+        }
         if (mode === 'comments') {
             console.log(publicReviewDrafts)
             this.publicReviewDraftsB = publicReviewDrafts;
@@ -413,6 +541,11 @@ export class PublicReviewDraftComponent implements OnInit {
             this.publicReviewDraftsB = publicReviewDrafts
 
             button.setAttribute('data-target', '#sendToOrganisations');
+            this.isProposalFormGroup.patchValue(
+                {
+                    prId: this.publicReviewDraftsB.id,
+                }
+            );
         }
         if (mode === 'moreDetails') {
             this.publicReviewDraftsB = publicReviewDrafts
@@ -550,4 +683,157 @@ export class PublicReviewDraftComponent implements OnInit {
         this.notifyService.showError(message, title)
 
     }
+
+    notificationOfReview(): void {
+        this.loadingText = "Saving...";
+        this.SpinnerService.show();
+        this.notificationService.notificationOfReview(this.preparePreliminaryDraftFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
+                this.onClickSaveUploads(response.body.id)
+                this.preparePreliminaryDraftFormGroup.reset();
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalChanges();
+    }
+
+    onClickSaveUploads(draftId: string) {
+        if (this.uploadedFile.length > 0) {
+            const file = this.uploadedFile;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.notificationService.uploadDraft(draftId, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFile = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Thank you....',
+                        html:'Uploaded',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(r => this.preparePreliminaryDraftFormGroup.reset());
+                },
+            );
+        }
+    }
+
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
+    }
+    @ViewChild('closeModalChanges') private closeModalChanges: ElementRef | undefined;
+
+    public hideModalChanges() {
+        this.closeModalChanges?.nativeElement.click();
+    }
+
+    get formISProposal(): any{
+        return this.isProposalFormGroup.controls;
+    }
+
+    sendPublicReview(): void {
+        this.SpinnerService.show();
+        this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+            (response) => {
+                //console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Sent to Organisations`);
+                this.isProposalFormGroup.reset();
+                this.getAllPrdS();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error`);
+                alert(error.message);
+            }
+        );
+        this.hideModalUploadDraft();
+    }
+
+    @ViewChild('closeDraftChanges') private closeDraftChanges: ElementRef | undefined;
+
+    public hideModalUploadDraft() {
+        this.closeDraftChanges?.nativeElement.click();
+    }
+
+    public findStandardStakeholders(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.findStandardStakeholders().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.dropdownList = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.isProposalFormGroup.value;
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        this.predefinedSDCommentsDataAdded= true;
+        this.isProposalFormGroup?.get('stakeHolderName')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderEmail')?.reset();
+        this.isProposalFormGroup?.get('stakeHolderPhone')?.reset();
+    }
+
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveProposal() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.sendPublicReview();
+        }
+    }
+
 }

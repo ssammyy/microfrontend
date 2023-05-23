@@ -83,6 +83,7 @@ export class ApiEndpointService {
     public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
+    public static SD_PR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publicReview`;
     public static SD_ICT_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/company_standard`;
     public static SD_DR_CONTEXT = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
     public static SD_SR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard_review`;
@@ -426,6 +427,9 @@ export class ApiEndpointService {
         NWA_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/preliminaryDraft`,
         NWA_UPLOAD_DATA_VIEW_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/workShopDraft`,
         NWA_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/knwStandard`,
+
+        //SD PUBLIC REVIEW
+        PR_UPLOAD_STAKE_HOLDERS: `${ApiEndpointService.SD_PR_CONTEXT}/sendPublicReview`,
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,

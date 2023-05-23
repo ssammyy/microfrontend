@@ -236,6 +236,13 @@ class PublicReviewController(
             publicReviewService.sendToOrganisation(publicReviewDraft)
         )
     }
+    @PostMapping("/sendPublicReview")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun sendPublicReview(@RequestBody publicReviewDto: PublicReviewDto): ServerResponse{
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",publicReviewService.sendPublicReview(publicReviewDto))
+    }
 
     @PostMapping("/sendToDepartments")
     fun sendToDepartments(

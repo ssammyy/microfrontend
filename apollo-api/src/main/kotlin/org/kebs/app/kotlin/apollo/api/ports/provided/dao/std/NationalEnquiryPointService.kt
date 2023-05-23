@@ -39,7 +39,15 @@ class NationalEnquiryPointService(
     private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository,
     private val nepWtoNotificationRepo: NEPWtoNotificationRepository,
     private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository,
-    private val applicationMapProperties: ApplicationMapProperties
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val publicReviewDraftRepository: PublicReviewDraftRepository,
+    private val userListRepository: UserListRepository,
+    private val comStdDraftRepository: ComStdDraftRepository,
+    private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
+    private val standardRequestRepository: StandardRequestRepository,
+    private val committeeCDRepository: CommitteeCDRepository,
+    private val committeePDRepository: CommitteePDRepository,
+    private val standardNWIRepository: StandardNWIRepository,
 
     ) {
     val callUrl=applicationMapProperties.mapKebsLevyUrl
@@ -422,8 +430,20 @@ class NationalEnquiryPointService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val sNep=NepNotificationFormEntity();
         val currentTime=Timestamp(System.currentTimeMillis())
+
+        publicReviewDraftRepository.findByIdOrNull(nep.pid)?.let { prd ->
+
+            with(prd) {
+                status="Sent To Head Of Trade Affairs"
+                modifiedOn=currentTime
+                modifiedBy=loggedInUser.id.toString()
+
+            }
+            publicReviewDraftRepository.save(prd)
+        }?: throw Exception("No public review draft found")
+
         sNep.datePrepared=currentTime
-        val deadline: Timestamp = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(60))
+        val commentDeadline: Timestamp = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(60))
         sNep.notifyingMember=nep.notifyingMember
         sNep.agencyResponsible=nep.agencyResponsible
         sNep.addressOfAgency=nep.addressOfAgency
@@ -439,12 +459,77 @@ class NationalEnquiryPointService(
         sNep.descriptionOfContent=nep.descriptionOfContent
         sNep.proposedDateOfAdoption=nep.proposedDateOfAdoption
         sNep.proposedDateOfEntryIntoForce=nep.proposedDateOfEntryIntoForce
-        sNep.finalDateForComments=deadline
+        sNep.finalDateForComments=commentDeadline
         sNep.textAvailableFrom=nep.textAvailableFrom
         sNep.preparedBy=loggedInUser.firstName + loggedInUser.lastName
         sNep.status=0
+        sNep.pid=nep.pid
+        sNep.cd_Id=nep.cd_Id
+        sNep.prd_name=nep.prd_name
+        sNep.ks_NUMBER=nep.ks_NUMBER
+        sNep.organization=nep.organization
+        sNep.prd_by=nep.prd_by
+        sNep.prdStatus=nep.status
+        sNep.created_on=nep.created_on
+        sNep.number_OF_COMMENTS=nep.number_OF_COMMENTS
+        sNep.var_FIELD_1=nep.var_FIELD_1
 
-        return nepNotificationFormEntityRepo.save(sNep)
+        val notification= nepNotificationFormEntityRepo.save(sNep)
+
+        val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(nep.pid).orElse(null);
+        val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
+        val preliminaryDraft: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
+        val nwiItem: StandardNWI =
+            standardNWIRepository.findById(preliminaryDraft.nwiID?.toLong() ?: -1).orElse(null)
+        val standardRequest: StandardRequest =
+            standardRequestRepository.findById(nwiItem.standardId ?: -1).orElse(null)
+        val uploadedDate= Timestamp(System.currentTimeMillis())
+        val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
+        val tcSecId= standardRequest.tcSecAssigned?.toLong()
+
+        val proposal=ISAdoptionProposal()
+        val closingDate=commonDaoServices.convertStringToTimestamp(nwiItem.closingDate)
+        val circulationDate=commonDaoServices.convertStringToTimestamp(nwiItem.circulationDate)
+        proposal.proposal_doc_name="Public Review Draft"
+        proposal.circulationDate=circulationDate
+        proposal.closingDate=closingDate
+        proposal.tcSecName=userListRepository.findNameById(tcSecId)
+        proposal.tcSecEmail=userListRepository.findEmailById(tcSecId)
+        proposal.preparedDate=uploadedDate
+        proposal.title=nwiItem.proposalTitle
+        proposal.scope=nwiItem.scope
+        proposal.requestId=standardRequest.id
+        proposal.iStandardNumber=publicReviewDraft.ksNumber
+        proposal.tcSecAssigned=standardRequest.tcSecAssigned
+
+        val prop=isAdoptionProposalRepository.save(proposal)
+
+        val comDraft = ComStdDraft()
+        comDraft.title=nwiItem.proposalTitle
+        comDraft.scope=nwiItem.scope
+        comDraft.normativeReference=nwiItem.referenceNumber
+        comDraft.uploadDate=uploadedDate
+        comDraft.deadlineDate=commonDaoServices.convertStringToTimestamp(nwiItem.targetDate+" 00:00:00")
+        comDraft.uploadedBy=loggedInUser.id
+        comDraft.createdBy=userListRepository.findNameById(loggedInUser.id)
+        comDraft.requestNumber=standardRequest.requestNumber
+        comDraft.requestId=standardRequest.id
+        comDraft.status=4
+        comDraft.comStdNumber=publicReviewDraft.ksNumber
+        comDraft.departmentId= standardRequest.departmentId?.toLong()
+        comDraft.departmentName=standardRequest.departmentName
+        comDraft.subject=standardRequest.subject
+        comDraft.description=standardRequest.description
+        comDraft.standardType="Public Review Draft"
+        comDraft.proposalId=prop.id
+        comDraft.draftReviewStatus=0
+        comDraft.prId=nep.pid
+
+        val draftId=comStdDraftRepository.save(comDraft)
+
+        return notification
+
+
     }
 
     fun uploadNepDraftDoc(
