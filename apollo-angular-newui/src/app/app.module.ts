@@ -581,6 +581,7 @@ import {IntStdNscApprovalComponent} from './apollowebs/standards-development/int
 import {IntStdWebProposalComponent} from './apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component';
 import {ApprovedProposalsComponent} from './apollowebs/standards-development/formationOfTc/approved-proposals/approved-proposals.component';
 import {RejectedProposalsComponent} from './apollowebs/standards-development/formationOfTc/rejected-proposals/rejected-proposals.component';
+import { QaAdminFixesComponent } from './apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component';
 import {RejectedBySpcComponent} from './apollowebs/standards-development/formationOfTc/rejected-by-spc/rejected-by-spc.component';
 import {AuthorizerApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component';
 import {ReviewNscComponent} from './apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component';
@@ -664,7 +665,6 @@ import { AllApplicationsRequestsComponent } from './apollowebs/standards-develop
         MatSortModule,
         MatPaginatorModule,
         MatCardModule,
-        NgxIntlTelInputModule,
         RecaptchaFormsModule,
         RecaptchaModule,
         RecaptchaFormsModule,
@@ -1227,6 +1227,7 @@ import { AllApplicationsRequestsComponent } from './apollowebs/standards-develop
         IntStdWebProposalComponent,
         ApprovedProposalsComponent,
         RejectedProposalsComponent,
+        QaAdminFixesComponent,
         RejectedBySpcComponent,
         AuthorizerApproveApplicationComponent,
         ReviewNscComponent,

@@ -409,6 +409,15 @@ data class MigratedPermitDto(
     @NotEmpty(message = "is required")
     var name: String
 )
+data class UpdateStandardDto(
+    var standardTitle: String,
+    @NotEmpty(message = "is required ")
+
+    var standardNumber: String,
+    var subCategoryId: String,
+    var numberOfPages: String
+
+)
 
 data class MPesaMessageDto(
     var message: String? = null,

@@ -267,3 +267,30 @@ export class UserTypeBEntityDto {
     defaultRole?: bigint;
 
 }
+
+export class AddMssingStandardDto{
+    standardNumber?: string;
+    subCategoryId ?: string;
+    standardTitle ?: string;
+    numberOfPages ?: string;
+}
+export class tieFmarkToSmarkDto {
+    smarkId ?: bigint;
+    fmarkId ?: bigint;
+    description ?: string;
+    smarkPermitRefNumber ?: string;
+    fmarkPermitRefNumber ?: string;
+}
+export class updateStandardDto {
+    smarkId ?: bigint;
+    fmarkId ?: bigint;
+    description ?: string;
+    permitId ?: bigint;
+    endingDate ?: Date;
+    paidDate ?: Date;
+    manufucturerID ?: bigint;
+    branchName ?: string;
+    branchId?: bigint;
+    userEmail?: string;
+
+}

@@ -162,7 +162,6 @@ class RegisterController(
 
         result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
 
-
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
         sm.message = "You have Successful Updated Your Profile"
