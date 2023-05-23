@@ -133,7 +133,7 @@ export class QaAdminFixesComponent implements OnInit {
     );
   }
   updateBranch() {
-    this.masterService.updateBranch(this.formUpdateBranch.value).subscribe(
+    this.masterService.updateBranch(this.formUpdateInvoiceStatus.value).subscribe(
         (response: any) => {
           this.fmarkDto = response;
           if (response.status === 200) {
@@ -211,7 +211,7 @@ export class QaAdminFixesComponent implements OnInit {
     });
     this.formUpdateBranch = this.formBuilder.group({
       userEmail: ['', Validators.required],
-      branchId: ['', Validators.required],
+      userBranch: ['', Validators.required],
 
     });
 
