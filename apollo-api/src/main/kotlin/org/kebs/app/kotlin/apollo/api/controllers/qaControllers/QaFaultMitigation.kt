@@ -11,40 +11,27 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import java.sql.Timestamp
 
 @Controller
 @RequestMapping("/api/v1/migration/qa/fixes/")
 class QaFaultMitigation(
-    private val sampleStandardsRepo: ISampleStandardsRepository,
     private val commonDaoServices: CommonDaoServices,
     ) {
     @PostMapping("/add/standard")
     fun updateStandard(@RequestBody sample : SampleStandardsEntity): ResponseEntity<SampleStandardsEntity> {
-        val sampleWithCreatedBy = SampleStandardsEntity()
-        sampleWithCreatedBy.createdBy="admin"
-        sampleWithCreatedBy.status=1
-        sampleWithCreatedBy.createdOn= Timestamp(System.currentTimeMillis())
-        sampleWithCreatedBy.modifiedOn= Timestamp(System.currentTimeMillis())
-        sampleWithCreatedBy.modifiedBy= "admin"
-        sampleWithCreatedBy.standardNumber=sample.standardNumber
-        sampleWithCreatedBy.noOfPages=4
-        sampleWithCreatedBy.standardTitle=sample.standardTitle
-        val savedEntity = sampleStandardsRepo.save(sampleWithCreatedBy)
-        return ResponseEntity.ok(savedEntity)
+        return commonDaoServices.addStandard(sample)
     }
     @PostMapping("/inspection-report/clean-up")
     fun removeInspectionReportDuplicates(): ResponseEntity<String>{
         val responseObject = JsonObject()
-        if (!commonDaoServices.deleteDuplicatePermits().equals("No duplicates found.")) {
+        return if (!commonDaoServices.deleteDuplicatePermits().equals("No duplicates found.")) {
             responseObject.addProperty("status",200)
             responseObject.addProperty("message","Duplicate records removed sucessfully")
-            return ResponseEntity.ok(responseObject.toString())
-        }
-        else {
+            ResponseEntity.ok(responseObject.toString())
+        } else {
             responseObject.addProperty("status",400)
             responseObject.addProperty("message","No Duplicates Found")
-            return ResponseEntity.ok(responseObject.toString())
+            ResponseEntity.ok(responseObject.toString())
         }
     }
     @PostMapping("/tie-fmark-smark")

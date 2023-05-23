@@ -367,6 +367,7 @@ import {
 import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
 import {TcManagementComponent} from "./apollowebs/admin/tc-management/tc-management.component";
 import {ManageTcMembersComponent} from "./apollowebs/admin/manage-tc-members/manage-tc-members.component";
+import {QaAdminFixesComponent} from "./apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component";
 
 export const routes: Routes = [
     {
@@ -553,6 +554,10 @@ export const routes: Routes = [
             {
                 path: 'tivet_management',
                 component: ManageTivetComponent,
+            },
+            {
+                path: 'admin_fixes',
+                component: QaAdminFixesComponent,
             },
 
         ],

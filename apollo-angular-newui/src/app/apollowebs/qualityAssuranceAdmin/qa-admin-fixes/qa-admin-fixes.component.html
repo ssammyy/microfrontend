@@ -104,7 +104,7 @@
                                                     <button type="button" class="btn btn-default btn-sm"
                                                             data-dismiss="modal">Close
                                                     </button>
-                                                    <button (click)="onClickSubmit()" type="submit"
+                                                    <button [disabled]="formAddStandard.invalid" (click)="onClickSubmit()" type="submit"
                                                             class="btn btn-primary btn-sm">Submit
                                                     </button>
                                                 </div>
@@ -226,7 +226,7 @@
                                                     <button type="button" class="btn btn-default btn-sm"
                                                             data-dismiss="modal">Close
                                                     </button>
-                                                    <button (click)="tieFmark()" type="submit"
+                                                    <button [disabled]="formTieFmarks.invalid" (click)="tieFmark()" type="submit"
                                                             class="btn btn-primary btn-sm">Submit
                                                     </button>
                                                 </div>
@@ -342,7 +342,7 @@
                                                     <button type="button" class="btn btn-default btn-sm"
                                                             data-dismiss="modal">Close
                                                     </button>
-                                                    <button (click)="updateInvoiceStatus()" type="submit"
+                                                    <button [disabled]="formUpdateInvoiceStatus.invalid" (click)="updateInvoiceStatus()" type="submit"
                                                             class="btn btn-primary btn-sm">Submit
                                                     </button>
                                                 </div>
@@ -393,7 +393,7 @@
                                         <td>DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION</td>
                                         <!--                                        <td><a  (click)="onOpenModal()" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Run Fix</a></td>-->
                                         <td><a class="btn btn-info btn-sm tooltips" title="Remove Duplicates"
-                                               (click)="checkInspectionReportsDuplicates()" type="submit">Run Fix</a>
+                                               (click)="checkInspectionReportsDuplicates()" type="submit">Remove Duplicates</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -437,7 +437,7 @@
                                                 <button type="button" class="btn btn-default btn-sm"
                                                         data-dismiss="modal">Close
                                                 </button>
-                                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                                <button [disabled]="formUpdateBranch.invalid" type="submit" class="btn btn-primary btn-sm">Save</button>
                                             </div>
                                         </form>
                                     </div>
@@ -479,9 +479,9 @@
                                         <td>Update branch</td>
                                         <td>APOLLO.DAT_KEBS_USERS</td>
                                         <!--                                        <td><a  (click)="onOpenModal()" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Run Fix</a></td>-->
-                                        <td><a class="btn btn-info btn-sm tooltips" title="Tie Fmark to Smark"
+                                        <td><a class="btn btn-info btn-sm tooltips" title="Update user branch"
                                                data-placement="top" style="width: 130px" data-toggle="modal"
-                                               data-target="#updateBranch">Update User branch</a></td>
+                                               data-target="#updateBranch">Update Branch</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -532,7 +532,7 @@
                                                     <button type="button" class="btn btn-default btn-sm"
                                                             data-dismiss="modal">Close
                                                     </button>
-                                                    <button (click)="updateBranch()" type="submit"
+                                                    <button [disabled]="formUpdateBranch.invalid" (click)="updateBranch()" type="submit"
                                                             class="btn btn-primary btn-sm">Submit
                                                     </button>
                                                 </div>

@@ -328,11 +328,22 @@ class CommonDaoServices(
         }
 
     }
+    fun addStandard(sample: SampleStandardsEntity): ResponseEntity<SampleStandardsEntity> {
+        val sampleWithCreatedBy = SampleStandardsEntity()
+        sampleWithCreatedBy.createdBy="admin"
+        sampleWithCreatedBy.status=1
+        sampleWithCreatedBy.createdOn= Timestamp(System.currentTimeMillis())
+        sampleWithCreatedBy.modifiedOn= Timestamp(System.currentTimeMillis())
+        sampleWithCreatedBy.modifiedBy= "admin"
+        sampleWithCreatedBy.standardNumber=sample.standardNumber
+        sampleWithCreatedBy.noOfPages=4
+        sampleWithCreatedBy.standardTitle=sample.standardTitle
+        val savedEntity = sampleStandardsRepository.save(sampleWithCreatedBy)
+        return ResponseEntity.ok(savedEntity)
+    }
 
     fun updateUserBranch(dto: branchUpdateDTO): ResponseEntity<String> {
-        println("incoming request :::  "+ dto.toString())
         val responseObject = JsonObject()
-
         if (dto.userEmail===null || dto.branchId ===null) {
             responseObject.addProperty("message", "please input mandatory fields")
             responseObject.addProperty("status", 400)
@@ -2813,6 +2824,7 @@ class CommonDaoServices(
         }
 
     }
+
 
     fun sendOtpViaEmail(token: EmailVerificationTokenEntity, userEmail: String?): CustomResponse {
         try {
