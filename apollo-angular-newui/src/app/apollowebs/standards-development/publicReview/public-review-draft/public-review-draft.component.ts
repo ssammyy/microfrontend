@@ -447,7 +447,7 @@ export class PublicReviewDraftComponent implements OnInit {
         }
     }
 
-    public approveDraft(publicReviewDrafts: PublicReviewDraftWithName) {
+    public approveDraftD(publicReviewDrafts: PublicReviewDraftWithName) {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',

@@ -25,6 +25,13 @@ interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long>
 
 
     @Query(
+        "SELECT t.ID As Id, v.ID AS V1, v.FIRST_NAME AS V5, v.LAST_NAME AS V6 FROM SD_TECHNICAL_COMMITTEE t  Left join APOLLO.DAT_KEBS_USERS v on t.USER_ID=v.ID  where t.ID=:id",
+        nativeQuery = true
+    )
+    fun findTcSecQuery(id: Long?): List<DataHolder>
+
+
+    @Query(
         "SELECT    t.ID, t.TC_TITLE,t.PARENT_COMMITTEE AS V1,t.TECHNICAL_COMMITTEE_NO AS V2, d.NAME, d.ID AS V3, t.USER_ID AS V4, v.FIRST_NAME AS V5, v.LAST_NAME AS V6,NVL(c2.Count_P_ID,0) AS NUMBER_OF_MEMBERS FROM SD_TECHNICAL_COMMITTEE t  Left join APOLLO.DAT_KEBS_USERS v on t.USER_ID=v.ID   Join SD_DEPARTMENT d ON t.DEPARTMENT_ID=d.ID  left outer join (select COUNT(c.TC_ID) Count_P_ID,TC_ID from SD_TC_USER_ASSIGNMENT c where c.STATUS=1 group by TC_ID) c2 on t.ID = c2.TC_ID  ",
         nativeQuery = true
     )

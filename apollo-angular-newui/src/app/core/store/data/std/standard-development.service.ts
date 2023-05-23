@@ -115,6 +115,22 @@ export class StandardDevelopmentService {
         return this.http.get<any>(`${this.apiServerUrl2}getTechnicalCommittee/${id}`)
     }
 
+
+    public getTechnicalCommitteeSec(tcId: string): Observable<any> {
+
+        const url = `${this.apiServerUrl}getTechnicalCommitteeSecretary`;
+        const params = new HttpParams().set('tcId', tcId)
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
     public decisionOnApplications(decisionFeedback: DecisionFeedback): Observable<DecisionFeedback> {
         return this.http.post<DecisionFeedback>(`${this.apiMembershipToTCUrl}` + 'decisionOnApplicantRecommendation', decisionFeedback)
     }
@@ -137,6 +153,9 @@ export class StandardDevelopmentService {
 
     public updateDepartmentStandardRequest(standardRequest: StandardRequest): Observable<any> {
         return this.http.post<StandardRequest>(`${this.apiServerUrl}` + 'updateDepartmentStandardRequest', standardRequest)
+    }
+    public updateTcSec(standardRequest: StandardRequest): Observable<any> {
+        return this.http.post<StandardRequest>(`${this.apiServerUrl}` + 'updateTcSec', standardRequest)
     }
 
     public getLiaisonOrganization(): any {

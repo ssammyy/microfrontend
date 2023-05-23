@@ -61,6 +61,8 @@ export class PrepareBallotingDraftComponent implements OnInit {
     public uploadedFilesB: FileList;
     public uploadedFilesC: FileList;
     public uploadedFilesD: FileList;
+    loading = false;
+    loadingText: string;
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
