@@ -668,6 +668,7 @@ import { AllApplicationsRequestsComponent } from './apollowebs/standards-develop
         RecaptchaFormsModule,
         RecaptchaModule,
         RecaptchaFormsModule,
+        NgxIntlTelInputModule
 
 
         // NgxDocViewerModule
