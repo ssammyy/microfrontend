@@ -57,7 +57,10 @@ class ComStandardService(
     private val sdDocumentsRepository: StandardsDocumentsRepository,
     private val comContactDetailsRepository: ComContactDetailsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
-    private val comCoverPagesRepo: ComStandardSacListUploadsRepository
+    private val comCoverPagesRepo: ComStandardSacListUploadsRepository,
+    private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository,
+    private val nepWtoNotificationRepo: NEPWtoNotificationRepository,
+    private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository,
 ) {
     val callUrl=applicationMapProperties.mapKebsLevyUrl
     //request for company standard
@@ -578,6 +581,7 @@ class ComStandardService(
 
         return comCoverPagesRepo.save(uploads)
     }
+
 
     //View Company Draft
     fun findUploadedCPFileBYId(comStdDraftID: Long): ComStandardSacListUploads {
@@ -1518,5 +1522,7 @@ class ComStandardService(
     fun findUploadedStandard(standardId: Long): DatKebsSdStandardsEntity {
         return sdDocumentsRepository.findStandardUpload(standardId)
     }
+
+
 
 }

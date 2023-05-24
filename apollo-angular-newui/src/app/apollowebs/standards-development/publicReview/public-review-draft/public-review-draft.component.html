@@ -77,11 +77,10 @@
                                                data-original-title="Upload NWI">Send To
                                                 Organizations/Departments </a>
                                         </td>
-                                        <td *ngIf="publicReviewDraft.status==='Sent To Departments'"><a
-                                                (click)="postToWebsite(publicReviewDraft)"
-                                                class="btn btn-info tooltips"
-                                                data-placement="top" style="width: 250px"
-                                                data-original-title="Upload NWI">Post To Website</a></td>
+                                        <td *ngIf="publicReviewDraft.status==='Sent To Departments'"><a (click)="postToWebsite(publicReviewDraft)"
+                                                                                                        class="btn btn-info tooltips"
+                                                                                                        data-placement="top" style="width: 250px"
+                                                                                                        data-original-title="Upload NWI">Post To Website</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Edited'"></td>
                                         <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"><a
                                                 (click)="approveDraftD(publicReviewDraft)"
@@ -306,15 +305,13 @@
                                                 </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
-                                                        <label><b>Upload Attachment </b> <span
-                                                                style="font-size: xx-small; color: blue;">(*)Optional</span></label><br>
-                                                        <form #demoForm="ngForm">
-                                                            <input type="file" name="uploadedFile"
-                                                                   [(ngModel)]="uploadedFile" multiple>
-                                                            <file-upload [(ngModel)]="uploadedFile" name="uploadedFile"
-                                                                         fileslimit="1"
-                                                                         accept=".pdf,.docx"></file-upload>
-                                                        </form>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <form #demoForm="ngForm">
+                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>
+                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                                            </form>
+                                                        </div>
                                                     </div>
 
 

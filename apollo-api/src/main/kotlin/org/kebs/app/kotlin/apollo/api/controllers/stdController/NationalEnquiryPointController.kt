@@ -234,37 +234,9 @@ class NationalEnquiryPointController(
         return nationalEnquiryPointService.getDraftNotification()
     }
 
-    @PostMapping("/National_enquiry_point/uploadNepDraftDoc")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun uploadNepDraftDoc(
-        @RequestParam("draftId") draftId: Long,
-        @RequestParam("docFile") docFile: List<MultipartFile>,
-        model: Model
-    ): CommonDaoServices.MessageSuccessFailDTO {
 
 
-        val nepRequest = nepNotificationFormEntityRepo.findByIdOrNull(draftId)?: throw Exception("NOTIFICATION ID DOES NOT EXIST")
 
-        docFile.forEach { u ->
-            val upload = SdNepDraftUploadsEntity()
-            with(upload) {
-                nepDraftId = nepRequest.id
-
-            }
-            nationalEnquiryPointService.uploadNepDraftDoc(
-                upload,
-                u,
-                "UPLOADS",
-                "NEP Request",
-                "Request Document"
-            )
-        }
-
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successfully"
-
-        return sm
-    }
 
     @GetMapping("/National_enquiry_point/viewDraftUpload")
     fun viewDraftUpload(
@@ -328,11 +300,56 @@ class NationalEnquiryPointController(
 
     }
 
+
     @GetMapping("/National_enquiry_point/getUploadedNotification")
     @ResponseBody
     fun getUploadedNotification(): MutableList<NepNotificationFormEntity>
     {
         return nationalEnquiryPointService.getUploadedNotification()
+    }
+
+    @PostMapping("/National_enquiry_point/uploadNepDraftDoc")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadNepDraftDoc(
+        @RequestParam("draftId") draftId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val uploadedBy=loggedInUser.firstName + loggedInUser.lastName
+        val nepRequest = nepNotificationFormEntityRepo.findByIdOrNull(draftId)?: throw Exception("NOTIFICATION ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SdNepUploadsEntity()
+            with(upload) {
+                nepDraftId = nepRequest.id
+
+            }
+            nationalEnquiryPointService.uploadNepDraftDoc(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "Request Document",
+                draftId
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @PostMapping("/National_enquiry_point/uploadNepDocumentStatus")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadNepDocumentStatus(
+        @RequestParam("draftId") draftId: Long
+    ): ServerResponse? {
+        return ServerResponse(
+            HttpStatus.OK,"Successfully uploaded",nationalEnquiryPointService.
+            uploadNepDocumentStatus(draftId))
     }
 
 
