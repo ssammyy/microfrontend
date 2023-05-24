@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
@@ -10,8 +10,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {DatePipe} from "@angular/common";
 import swal from "sweetalert2";
 import {TechnicalCommittee} from "../../../../core/store/data/std/std.model";
-import {ErrorStateMatcher} from "@angular/material/core";
-// import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
+import {ErrorStateMatcher, MatOptionSelectionChange} from "@angular/material/core";
+import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
 import {DataHolder} from "../../../../core/store/data/std/request_std.model";
 import {take, takeUntil,} from 'rxjs/operators';
 import {ReplaySubject, Subject} from "rxjs";
@@ -35,7 +35,7 @@ export const _filter = (opt: string[], value: string): string[] => {
     templateUrl: './submit-application.component.html',
     styleUrls: ['./submit-application.component.css']
 })
-export class SubmitApplicationComponent implements OnInit {
+export class SubmitApplicationComponent implements OnInit,AfterViewInit {
     public submitApplicationsTask: TechnicalCommittee[] = [];
     public actionRequest: TechnicalCommittee | undefined;
     public prepareDraftStandardFormGroup!: FormGroup;
@@ -74,10 +74,10 @@ export class SubmitApplicationComponent implements OnInit {
     removeValidation = false;
 
 
-    // SearchCountryField = SearchCountryField;
-    // CountryISO = CountryISO;
-    // PhoneNumberFormat = PhoneNumberFormat;
-    // preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
+    SearchCountryField = SearchCountryField;
+    CountryISO = CountryISO;
+    PhoneNumberFormat = PhoneNumberFormat;
+    preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
 
     public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
 
@@ -85,6 +85,10 @@ export class SubmitApplicationComponent implements OnInit {
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
 
     public websiteFilterCtrl: FormControl = new FormControl();
+    selectedTc:any
+    @Output() onSelectionChange: EventEmitter<any> = new EventEmitter<any>();
+    selectedTcId: string;
+
 
     constructor(private formBuilder: FormBuilder,
                 private standardDevelopmentService: StandardDevelopmentService,
@@ -186,11 +190,15 @@ export class SubmitApplicationComponent implements OnInit {
             this.filteredTcs.next(this.tcs.slice());
             return;
         } else {
-            search = search.toLowerCase();
+            search = search.toLowerCase();// Assign the selected value to the variable
         }
         this.filteredTcs.next(
             this.tcs.filter(bank => bank.tc_Title.toLowerCase().indexOf(search) > -1)
         );
+    }
+    onTcOptionSelected(tc: any): void {
+        this.selectedTc = tc;
+        console.log(tc)
     }
 
     get formStdApplicationToATc(): any {
@@ -209,7 +217,6 @@ export class SubmitApplicationComponent implements OnInit {
             }
         )
     }
-
     formatDate(date: string): string {
 
 
@@ -261,6 +268,7 @@ export class SubmitApplicationComponent implements OnInit {
     saveApplication(formDirective): void {
         this.isFormSubmitted = true;
 
+        this.applicationToATcFormGroup.controls['tcId'].setValue(this.selectedTc.id)
         if (this.applicationToATcFormGroup.valid) {
 
             if ( !this.removeValidation && this.applicationToATcFormGroup.controls['email'].value == this.applicationToATcFormGroup.controls['authorizingPersonEmail'].value) {

@@ -973,7 +973,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ'],
         collapse: 'formation',
     },
     {
@@ -1040,7 +1040,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'groups',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ','NSC_SD_READ'],
         collapse: 'membership',
 
     },

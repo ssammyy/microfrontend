@@ -47,7 +47,7 @@ class MembershipToTCService(
     private val templateEngine: TemplateEngine
 
 
-    ) {
+) {
 
 
     fun deployProcessDefinition(): Deployment = repositoryService
@@ -104,6 +104,9 @@ class MembershipToTCService(
         val encryptedId = BCryptPasswordEncoder().encode(membershipTCApplication.tcId.toString())
         membershipTCApplication.varField10 = encryptedId
         membershipTCApplication.technicalCommittee = u.title
+        if (membershipTCApplication.organisationClassification.equals("Renown Professionals/experts")) {
+            membershipTCApplication.approvedByOrganization = "APPROVED"
+        }
 
 
         if (membershipTCApplication.authorizingPerson != null) {
@@ -120,7 +123,6 @@ class MembershipToTCService(
                         "Director Standards Development and Trade"
             )
         } else {
-            membershipTCApplication.approvedByOrganization = "APPROVED"
             notifications.sendEmail(
                 membershipTCApplication.email!!,
                 "Application Acknowledgement:  ${u.title} - Evaluation in Progress",
@@ -235,7 +237,7 @@ class MembershipToTCService(
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
-        return membershipTCRepository.findByStatusIsNull()
+        return membershipTCRepository.findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals("APPROVED")
 
     }
 
@@ -400,7 +402,7 @@ class MembershipToTCService(
         context.setVariable("nomineeName", u.nomineeName)
         context.setVariable("technicalCommittee", u.technicalCommittee)
         context.setVariable("link", link)
-        context.setVariable("diUser", user.firstName +" "+user.lastName)
+        context.setVariable("diUser", user.firstName + " " + user.lastName)
         if (signatureFromDb != null) {
             mySignature = signatureFromDb.signature
             image = mySignature?.let { convertByteArrayToBase64(it) }
@@ -408,12 +410,12 @@ class MembershipToTCService(
         }
 
         u.email?.let {
-                notifications.processEmailAttachment(
-                    it,
-                    "Technical Committee Appointment Letter",
-                    docFile,
-                    context,image
-                )
+            notifications.processEmailAttachment(
+                it,
+                "Technical Committee Appointment Letter",
+                docFile,
+                context, image
+            )
 
         }
 

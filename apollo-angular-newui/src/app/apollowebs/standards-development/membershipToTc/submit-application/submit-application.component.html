@@ -43,16 +43,17 @@
                 <label><b>Technical Committee (TC) Name : (Select one from the dropdown list)</b></label>
 
                 <mat-form-field>
-                    <mat-select formControlName="tcId" placeholder="Technical Committee" #singleSelect>
+                    <mat-select formControlName="tcId" placeholder="Technical Committee" [(ngModel)]="selectedTc" #singleSelect>
                         <mat-option>
                             <ngx-mat-select-search [formControl]="websiteFilterCtrl"
                                                    placeholderLabel="Search"
                                                    noEntriesFoundLabel="'No matching TC found'"
+                                                   (optionSelected)="onTcOptionSelected($event.option.value)"
                             ></ngx-mat-select-search>
                         </mat-option>
 
-                        <mat-option *ngFor="let tc of filteredTcs | async" [value]="tc.id">
-                            {{tc.tc_Title}}
+                        <mat-option *ngFor="let tc of filteredTcs | async" [value]="tc">
+                            {{ tc.tc_Title }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
