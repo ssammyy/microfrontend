@@ -63,8 +63,13 @@
                                                 data-original-title="View Comments"> {{publicReviewDraft.number_OF_COMMENTS}}
                                             Comment(s)</a></span></td>
                                         <td *ngIf="publicReviewDraft.status==='Send Draft To Head Of Trade Affairs'">
-                                            <a  (click)="onOpenModal(publicReviewDraft,'prepareNotification')" style="width: 250px" class="btn btn-info tooltips" data-placement="top" data-original-title="Upload NWI">Prepare WTO Notification</a></td>
-                                        <td *ngIf="publicReviewDraft.status==='Sent To Head Of Trade Affairs'"><a  class="btn btn-success tooltips" style="width: 250px" data-placement="top" data-original-title="Upload NWI">In Publishing and NEP</a></td>
+                                            <a (click)="onOpenModal(publicReviewDraft,'prepareNotification')"
+                                               style="width: 250px" class="btn btn-info tooltips" data-placement="top"
+                                               data-original-title="Upload NWI">Prepare WTO Notification</a></td>
+                                        <td *ngIf="publicReviewDraft.status==='Sent To Head Of Trade Affairs'"><a
+                                                class="btn btn-success tooltips" style="width: 250px"
+                                                data-placement="top" data-original-title="Upload NWI">In Publishing and
+                                            NEP</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Approved by HOP'">
                                             <a (click)="onOpenModal(publicReviewDraft,'sendToOrganisations')"
                                                class="btn btn-warning tooltips"
@@ -77,7 +82,11 @@
                                                                                                         data-placement="top" style="width: 250px"
                                                                                                         data-original-title="Upload NWI">Post To Website</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Edited'"></td>
-                                        <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"></td>
+                                        <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"><a
+                                                (click)="approveDraftD(publicReviewDraft)"
+                                                class="btn btn-success tooltips"
+                                                data-placement="top"
+                                                data-original-title="Upload NWI">Approve Public Review Draft</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Ballot Draft Uploaded'"></td>
                                         <td *ngIf="publicReviewDraft.status==='Approved For Balloting'">
                                             <a (click)="onOpenModal(publicReviewDraft,'moreDetails')"
@@ -95,63 +104,99 @@
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h2 style="font-weight: bold" class="modal-title" id="prepareNotificationModalLabel">WTO Notification</h2>
-                                            <button type="button" #closeModalChanges class="close" data-dismiss="modal" aria-label="Close">
+                                            <h2 style="font-weight: bold" class="modal-title"
+                                                id="prepareNotificationModalLabel">WTO Notification</h2>
+                                            <button type="button" #closeModalChanges class="close" data-dismiss="modal"
+                                                    aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div  style="text-align: center;">
-                                            <h4>The following notification is being circulated in accordance with Article 10.6</h4>
+                                        <div style="text-align: center;">
+                                            <h4>The following notification is being circulated in accordance with
+                                                Article 10.6</h4>
                                         </div>
-                                        <form (ngSubmit)="notificationOfReview()" [formGroup]="preparePreliminaryDraftFormGroup" class="form" style="width: 100%">
+                                        <form (ngSubmit)="notificationOfReview()"
+                                              [formGroup]="preparePreliminaryDraftFormGroup" class="form"
+                                              style="width: 100%">
                                             <div class="modal-body">
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
-                                                        <label>Notifying Member: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <h3>If applicable, name of local government involved (Article 3.2 and 7.2):</h3>
-                                                        <textarea [class.is-invalid]="formPreparePD.notifyingMember.invalid && formPreparePD.notifyingMember.touched"
-                                                                  class="form-control" value="{{notifyingMember}}" formControlName="notifyingMember" name="notifyingMember" type="text"></textarea>
+                                                        <label>Notifying Member: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <h3>If applicable, name of local government involved (Article
+                                                            3.2 and 7.2):</h3>
+                                                        <textarea
+                                                                [class.is-invalid]="formPreparePD.notifyingMember.invalid && formPreparePD.notifyingMember.touched"
+                                                                class="form-control" value="{{notifyingMember}}"
+                                                                formControlName="notifyingMember" name="notifyingMember"
+                                                                type="text"></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Agency responsible <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.agencyResponsible.invalid && formPreparePD.agencyResponsible.touched"
-                                                              class="form-control" value="{{agencyResponsible}}"  formControlName="agencyResponsible" name="agencyResponsible" type="text"></textarea>
+                                                    <label>Agency responsible <span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.agencyResponsible.invalid && formPreparePD.agencyResponsible.touched"
+                                                            class="form-control" value="{{agencyResponsible}}"
+                                                            formControlName="agencyResponsible" name="agencyResponsible"
+                                                            type="text"></textarea>
 
                                                 </div>
-                                                <h3>Name and address (including telephone and fax numbers, email and website addresses, if available) of agency or
-                                                    authority designated to handle comments regarding the notification shall be indicated if different from above:</h3>
+                                                <h3>Name and address (including telephone and fax numbers, email and
+                                                    website addresses, if available) of agency or
+                                                    authority designated to handle comments regarding the notification
+                                                    shall be indicated if different from above:</h3>
                                                 <hr>
                                                 <div class="form-group col-12 ">
                                                     <label>Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.addressOfAgency.invalid && formPreparePD.addressOfAgency.touched"
-                                                              class="form-control" value="{{addressOfAgency}}" formControlName="addressOfAgency" name="addressOfAgency" type="text"></textarea>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.addressOfAgency.invalid && formPreparePD.addressOfAgency.touched"
+                                                            class="form-control" value="{{addressOfAgency}}"
+                                                            formControlName="addressOfAgency" name="addressOfAgency"
+                                                            type="text"></textarea>
 
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.telephoneOfAgency.invalid && formPreparePD.telephoneOfAgency.touched"
-                                                              class="form-control" value="{{telephoneOfAgency}}"  formControlName="telephoneOfAgency" name="telephoneOfAgency" type="text"></textarea>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.telephoneOfAgency.invalid && formPreparePD.telephoneOfAgency.touched"
+                                                            class="form-control" value="{{telephoneOfAgency}}"
+                                                            formControlName="telephoneOfAgency" name="telephoneOfAgency"
+                                                            type="text"></textarea>
                                                 </div>
 
                                                 <div class="form-group col-12">
-                                                    <label>Fax<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.faxOfAgency.invalid && formPreparePD.faxOfAgency.touched"
-                                                              class="form-control" value="{{faxOfAgency}}"  formControlName="faxOfAgency" name="faxOfAgency" type="text"></textarea>
+                                                    <label>Fax<span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.faxOfAgency.invalid && formPreparePD.faxOfAgency.touched"
+                                                            class="form-control" value="{{faxOfAgency}}"
+                                                            formControlName="faxOfAgency" name="faxOfAgency"
+                                                            type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>E-Mail<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.emailOfAgency.invalid && formPreparePD.emailOfAgency.touched"
-                                                              class="form-control"  value="{{emailOfAgency}}" formControlName="emailOfAgency" name="emailOfAgency" type="text"></textarea>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.emailOfAgency.invalid && formPreparePD.emailOfAgency.touched"
+                                                            class="form-control" value="{{emailOfAgency}}"
+                                                            formControlName="emailOfAgency" name="emailOfAgency"
+                                                            type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>Website<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.websiteOfAgency.invalid && formPreparePD.websiteOfAgency.touched"
-                                                              class="form-control" value="{{websiteOfAgency}}" formControlName="websiteOfAgency" name="websiteOfAgency" type="text"></textarea>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.websiteOfAgency.invalid && formPreparePD.websiteOfAgency.touched"
+                                                            class="form-control" value="{{websiteOfAgency}}"
+                                                            formControlName="websiteOfAgency" name="websiteOfAgency"
+                                                            type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Notified under Article<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <select class="form-control" [class.is-invalid]="formPreparePD.notifiedUnderArticle.invalid && formPreparePD.notifiedUnderArticle.touched" formControlName="notifiedUnderArticle" name="notifiedUnderArticle">
+                                                    <label>Notified under Article<span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <select class="form-control"
+                                                            [class.is-invalid]="formPreparePD.notifiedUnderArticle.invalid && formPreparePD.notifiedUnderArticle.touched"
+                                                            formControlName="notifiedUnderArticle"
+                                                            name="notifiedUnderArticle">
                                                         <option value="2.9.2">2.9.2</option>
                                                         <option value="2.10.1">2.10.1</option>
                                                         <option value="5.6.2">5.6.2</option>
@@ -160,56 +205,103 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Products covered (HS or CCCN where applicable, otherwise national tariff heading. ICS numbers may be provided in addition, where applicable):<span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.productsCovered.invalid && formPreparePD.productsCovered.touched"
-                                                              class="form-control"  formControlName="productsCovered" name="productsCovered" type="text"></textarea>
+                                                    <label>Products covered (HS or CCCN where applicable, otherwise
+                                                        national tariff heading. ICS numbers may be provided in
+                                                        addition, where applicable):<span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.productsCovered.invalid && formPreparePD.productsCovered.touched"
+                                                            class="form-control" formControlName="productsCovered"
+                                                            name="productsCovered" type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Title, number of pages and language(s) of the notified document: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.descriptionOfNotifiedDoc.invalid && formPreparePD.descriptionOfNotifiedDoc.touched"
-                                                              class="form-control" placeholder="i.e Title , 8 page(s), in English"  formControlName="descriptionOfNotifiedDoc" name="descriptionOfNotifiedDoc" type="text"></textarea>
+                                                    <label>Title, number of pages and language(s) of the notified
+                                                        document: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.descriptionOfNotifiedDoc.invalid && formPreparePD.descriptionOfNotifiedDoc.touched"
+                                                            class="form-control"
+                                                            placeholder="i.e Title , 8 page(s), in English"
+                                                            formControlName="descriptionOfNotifiedDoc"
+                                                            name="descriptionOfNotifiedDoc" type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Description of content: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.descriptionOfContent.invalid && formPreparePD.descriptionOfContent.touched"
-                                                              class="form-control" placeholder=""  formControlName="descriptionOfContent" name="descriptionOfContent" type="text"></textarea>
+                                                    <label>Description of content: <span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.descriptionOfContent.invalid && formPreparePD.descriptionOfContent.touched"
+                                                            class="form-control" placeholder=""
+                                                            formControlName="descriptionOfContent"
+                                                            name="descriptionOfContent" type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Objective and rationale, including the nature of urgent problems where applicable: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.objectiveAndRationale.invalid && formPreparePD.objectiveAndRationale.touched"
-                                                              class="form-control" placeholder=""  formControlName="objectiveAndRationale" name="objectiveAndRationale" type="text"></textarea>
+                                                    <label>Objective and rationale, including the nature of urgent
+                                                        problems where applicable: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.objectiveAndRationale.invalid && formPreparePD.objectiveAndRationale.touched"
+                                                            class="form-control" placeholder=""
+                                                            formControlName="objectiveAndRationale"
+                                                            name="objectiveAndRationale" type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label>Relevant documents:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.relevantDocuments.invalid && formPreparePD.relevantDocuments.touched"
-                                                              class="form-control" placeholder=""  formControlName="relevantDocuments" name="relevantDocuments" type="text"></textarea>
+                                                    <label>Relevant documents: <span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.relevantDocuments.invalid && formPreparePD.relevantDocuments.touched"
+                                                            class="form-control" placeholder=""
+                                                            formControlName="relevantDocuments" name="relevantDocuments"
+                                                            type="text"></textarea>
                                                 </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-6">
-                                                        <label>Proposed date of adoption:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <label>Proposed date of adoption: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input [class.is-invalid]="formPreparePD.proposedDateOfAdoption.invalid && formPreparePD.proposedDateOfAdoption.touched"
-                                                               class="form-control" placeholder=""  formControlName="proposedDateOfAdoption" name="proposedDateOfAdoption" type="date">
+                                                               class="form-control" placeholder=""
+                                                               formControlName="proposedDateOfAdoption"
+                                                               name="proposedDateOfAdoption" type="date">
                                                     </div>
                                                     <div class="form-group col-6">
-                                                        <label>Proposed date of entry into force:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <label>Proposed date of entry into force: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input [class.is-invalid]="formPreparePD.proposedDateOfEntryIntoForce.invalid && formPreparePD.proposedDateOfEntryIntoForce.touched"
-                                                               class="form-control" placeholder=""  formControlName="proposedDateOfEntryIntoForce" name="proposedDateOfEntryIntoForce" type="date">
+                                                               class="form-control" placeholder=""
+                                                               formControlName="proposedDateOfEntryIntoForce"
+                                                               name="proposedDateOfEntryIntoForce" type="date">
                                                     </div>
                                                 </div>
-                                                <input type="hidden" formControlName="pid" name="pid" value="{{publicReviewDraftsB?.id}}" >
-                                                <input type="hidden" formControlName="cd_Id" name="cd_Id" value="{{publicReviewDraftsB?.cd_Id}}" >
-                                                <input type="hidden" formControlName="prd_name" name="prd_name" value="{{publicReviewDraftsB?.prd_name}}" >
-                                                <input type="hidden" formControlName="ks_NUMBER" name="ks_NUMBER" value="{{publicReviewDraftsB?.ks_NUMBER}}" >
-                                                <input type="hidden" formControlName="organization" name="organization" value="{{publicReviewDraftsB?.organization}}" >
-                                                <input type="hidden" formControlName="prd_by" name="prd_by" value="{{publicReviewDraftsB?.prd_by}}" >
-                                                <input type="hidden" formControlName="status" name="status" value="{{publicReviewDraftsB?.status}}" >
-                                                <input type="hidden" formControlName="created_on" name="created_on" value="{{publicReviewDraftsB?.created_on}}" >
-                                                <input type="hidden" formControlName="number_OF_COMMENTS" name="number_OF_COMMENTS" value="{{publicReviewDraftsB?.number_OF_COMMENTS}}" >
-                                                <input type="hidden" formControlName="var_FIELD_1" name="var_FIELD_1" value="{{publicReviewDraftsB?.var_FIELD_1}}" >
+                                                <input type="hidden" formControlName="pid" name="pid"
+                                                       value="{{publicReviewDraftsB?.id}}">
+                                                <input type="hidden" formControlName="cd_Id" name="cd_Id"
+                                                       value="{{publicReviewDraftsB?.cd_Id}}">
+                                                <input type="hidden" formControlName="prd_name" name="prd_name"
+                                                       value="{{publicReviewDraftsB?.prd_name}}">
+                                                <input type="hidden" formControlName="ks_NUMBER" name="ks_NUMBER"
+                                                       value="{{publicReviewDraftsB?.ks_NUMBER}}">
+                                                <input type="hidden" formControlName="organization" name="organization"
+                                                       value="{{publicReviewDraftsB?.organization}}">
+                                                <input type="hidden" formControlName="prd_by" name="prd_by"
+                                                       value="{{publicReviewDraftsB?.prd_by}}">
+                                                <input type="hidden" formControlName="status" name="status"
+                                                       value="{{publicReviewDraftsB?.status}}">
+                                                <input type="hidden" formControlName="created_on" name="created_on"
+                                                       value="{{publicReviewDraftsB?.created_on}}">
+                                                <input type="hidden" formControlName="number_OF_COMMENTS"
+                                                       name="number_OF_COMMENTS"
+                                                       value="{{publicReviewDraftsB?.number_OF_COMMENTS}}">
+                                                <input type="hidden" formControlName="var_FIELD_1" name="var_FIELD_1"
+                                                       value="{{publicReviewDraftsB?.var_FIELD_1}}">
                                                 <div class="form-group col-12">
-                                                    <label>Text available from:  National enquiry point [X], or address, telephone and fax numbers, e-mail and web-site addresses, if available of the other body:   <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <textarea [class.is-invalid]="formPreparePD.textAvailableFrom.invalid && formPreparePD.textAvailableFrom.touched"
-                                                              class="form-control" placeholder="" value="{{textAvailableFrom}}"  formControlName="textAvailableFrom" name="textAvailableFrom" rows="5" type="text"></textarea>
+                                                    <label>Text available from: National enquiry point [X], or address,
+                                                        telephone and fax numbers, e-mail and web-site addresses, if
+                                                        available of the other body: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <textarea
+                                                            [class.is-invalid]="formPreparePD.textAvailableFrom.invalid && formPreparePD.textAvailableFrom.touched"
+                                                            class="form-control" placeholder=""
+                                                            value="{{textAvailableFrom}}"
+                                                            formControlName="textAvailableFrom" name="textAvailableFrom"
+                                                            rows="5" type="text"></textarea>
                                                 </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
@@ -226,8 +318,12 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
-                                                <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                                <button *ngIf="preparePreliminaryDraftFormGroup.valid"
+                                                        [disabled]="!preparePreliminaryDraftFormGroup.valid"
+                                                        class="btn btn-sm btn-primary float-right" type="submit">Submit
+                                                </button>
+                                                <button *ngIf="!preparePreliminaryDraftFormGroup.valid"
+                                                        class="btn btn-sm btn-primary float-right"
                                                         (click)="showNotification('top','right')">Submit
                                                 </button>
                                             </div>
@@ -654,15 +750,19 @@
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="sendToOrganisationsModalLabel">Send To
                                                 Organisations/Departments That Are Interested</h5>
-                                            <button type="button" #closeDraftChanges class="close" data-dismiss="modal" aria-label="Close">
+                                            <button type="button" #closeDraftChanges class="close" data-dismiss="modal"
+                                                    aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form (ngSubmit)="sendPublicReview()" [formGroup]="isProposalFormGroup" class="form">
+                                        <form (ngSubmit)="sendPublicReview()" [formGroup]="isProposalFormGroup"
+                                              class="form">
                                             <div class="modal-body">
-                                                <input type="hidden" value="{{publicReviewDraftsB?.id}}" formControlName="prId" name="prId" >
+                                                <input type="hidden" value="{{publicReviewDraftsB?.id}}"
+                                                       formControlName="prId" name="prId">
                                                 <div class="form-group col-12">
-                                                    <label><b>Select Interested Stake Holders</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <label><b>Select Interested Stake Holders</b><span
+                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                     <ng-multiselect-dropdown
                                                             [placeholder]="'Select Stakeholders to send Adoption proposal'"
                                                             [settings]="dropdownSettings"
@@ -676,36 +776,57 @@
 
                                                 <div class="row col-12">
                                                     <br>
-                                                    <p style="color: red">(*)Type Emails,Phone Number and Names of Interested Stake Holders that are not on the Dropdown Select List(Comma Separated)</p>
-                                                    <label><b>Stake Holders Contacts</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                    <p style="color: red">(*)Type Emails,Phone Number and Names of
+                                                        Interested Stake Holders that are not on the Dropdown Select
+                                                        List(Comma Separated)</p>
+                                                    <label><b>Stake Holders Contacts</b><span
+                                                            style="font-size: xx-small; color: red;"></span></label>
                                                     <div class="form-group col-4">
-                                                        <label><b>Names</b><span style="font-size: xx-small; color: red;"></span></label>
-                                                        <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
-                                                                 class="form-control one-column-input" formControlName="stakeHolderName"  name="stakeHolderName"
-                                                                 placeholder="" type="text">
+                                                        <label><b>Names</b><span
+                                                                style="font-size: xx-small; color: red;"></span></label>
+                                                        <input aria-describedby="inputGroup-sizing-sm"
+                                                               aria-label="Small"
+                                                               [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                               class="form-control one-column-input"
+                                                               formControlName="stakeHolderName" name="stakeHolderName"
+                                                               placeholder="" type="text">
                                                     </div>
                                                     <div class="form-group col-4">
-                                                        <label><b>Email</b><span style="font-size: xx-small; color: red;"></span></label>
-                                                        <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
-                                                                 class="form-control one-column-input" formControlName="stakeHolderEmail"  name="stakeHolderEmail"
-                                                                 placeholder="" type="text">
+                                                        <label><b>Email</b><span
+                                                                style="font-size: xx-small; color: red;"></span></label>
+                                                        <input aria-describedby="inputGroup-sizing-sm"
+                                                               aria-label="Small"
+                                                               [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                               class="form-control one-column-input"
+                                                               formControlName="stakeHolderEmail"
+                                                               name="stakeHolderEmail"
+                                                               placeholder="" type="text">
                                                     </div>
                                                     <div class="form-group col-4">
-                                                        <label><b>Phone Number</b><span style="font-size: xx-small; color: red;"></span></label>
-                                                        <input   aria-describedby="inputGroup-sizing-sm" aria-label="Small" [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
-                                                                 class="form-control one-column-input" formControlName="stakeHolderPhone"  name="stakeHolderPhone"
-                                                                 placeholder="" type="text">
+                                                        <label><b>Phone Number</b><span
+                                                                style="font-size: xx-small; color: red;"></span></label>
+                                                        <input aria-describedby="inputGroup-sizing-sm"
+                                                               aria-label="Small"
+                                                               [class.is-invalid]="formISProposal.stakeHolderName.touched && formISProposal.stakeHolderEmail.touched && formISProposal.stakeHolderPhone.touched "
+                                                               class="form-control one-column-input"
+                                                               formControlName="stakeHolderPhone"
+                                                               name="stakeHolderPhone"
+                                                               placeholder="" type="text">
                                                     </div>
                                                     <div class="col">
                                                         <div class="form-group">
                                                             <button *ngIf="isProposalFormGroup.valid" mat-raised-button
-                                                                    class="btn btn-success float-right" (click)="onClickAddResource()" type="button" >Add StakeHolder
+                                                                    class="btn btn-success float-right"
+                                                                    (click)="onClickAddResource()" type="button">Add
+                                                                StakeHolder
                                                             </button>
                                                         </div>
                                                     </div>
                                                     <div class="col-12" *ngIf="isProposalFormGroup.valid">
                                                         <div class="table-responsive">
-                                                            <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                                            <table class="table table-striped table-bordered table-hover"
+                                                                   datatable [dtOptions]="dtOptions"
+                                                                   [dtTrigger]="dtTrigger">
                                                                 <thead>
                                                                 <tr>
                                                                     <th>Names</th>
@@ -735,35 +856,38 @@
 
                                                 </div>
 
-<!--                                                <div class="row col-12">-->
-<!--                                                    <label><b> Interested Departments</b></label>-->
-<!--                                                    <br>-->
-<!--                                                    <ng-multiselect-dropdown style="width: inherit"-->
-<!--                                                            [placeholder]="'Select Interested Departments'"-->
-<!--                                                            [settings]="dropdownSettings"-->
-<!--                                                            [data]="dropdownList"-->
-<!--                                                            [(ngModel)]="selectedItems"-->
+                                                <!--                                                <div class="row col-12">-->
+                                                <!--                                                    <label><b> Interested Departments</b></label>-->
+                                                <!--                                                    <br>-->
+                                                <!--                                                    <ng-multiselect-dropdown style="width: inherit"-->
+                                                <!--                                                            [placeholder]="'Select Interested Departments'"-->
+                                                <!--                                                            [settings]="dropdownSettings"-->
+                                                <!--                                                            [data]="dropdownList"-->
+                                                <!--                                                            [(ngModel)]="selectedItems"-->
 
-<!--                                                                             name="departmentData"-->
-<!--                                                    >-->
-<!--                                                    </ng-multiselect-dropdown>-->
-<!--                                                </div>-->
-<!--                                                <div class="row col-12">-->
-<!--                                                </div>-->
+                                                <!--                                                                             name="departmentData"-->
+                                                <!--                                                    >-->
+                                                <!--                                                    </ng-multiselect-dropdown>-->
+                                                <!--                                                </div>-->
+                                                <!--                                                <div class="row col-12">-->
+                                                <!--                                                </div>-->
 
                                             </div>
-<!--                                            <div class="modal-footer">-->
-<!--                                                <button type="button" class="btn btn-secondary" #closeModalB-->
-<!--                                                        (click)="hideModelB()" data-dismiss="modal">Close-->
-<!--                                                </button>-->
-<!--                                                <button class="btn btn-primary"-->
-<!--                                                        (click)="sendToDepartment(editFormB.value, publicReviewDraftsB?.id)"-->
-<!--                                                        type="submit">SUBMIT-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div class="modal-footer">-->
+                                            <!--                                                <button type="button" class="btn btn-secondary" #closeModalB-->
+                                            <!--                                                        (click)="hideModelB()" data-dismiss="modal">Close-->
+                                            <!--                                                </button>-->
+                                            <!--                                                <button class="btn btn-primary"-->
+                                            <!--                                                        (click)="sendToDepartment(editFormB.value, publicReviewDraftsB?.id)"-->
+                                            <!--                                                        type="submit">SUBMIT-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
                                         </form>
-                                        <div class="row col-12 float-right modal-footer" *ngIf="isProposalFormGroup.valid">
-                                            <button  class="btn btn-sm btn-info float-right" (click)="onClickSaveProposal()" type="button">Submit</button>
+                                        <div class="row col-12 float-right modal-footer"
+                                             *ngIf="isProposalFormGroup.valid">
+                                            <button class="btn btn-sm btn-info float-right"
+                                                    (click)="onClickSaveProposal()" type="button">Submit
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -774,57 +898,58 @@
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editPublicReviewDraftModalLabel">Edit Public Review
+                                            <h5 class="modal-title" id="editPublicReviewDraftModalLabel">Edit Public
+                                                Review
                                                 Draft</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                            <div class="modal-body">
-                                                <div class="row col-12">
-                                                    <div class="form-group col-12">
+                                        <div class="modal-body">
+                                            <div class="row col-12">
+                                                <div class="form-group col-12">
 
-                                                        <form (ngSubmit)="uploadPublicReviewDraft()"
-                                                              [formGroup]="editedPublicReview_draftFormGroup" class="form">
-                                                            <div class="form-group">
-                                                                <label for="pdName">KS Number</label>
-                                                                <input type="text" class="form-control" id="ksNo"
-                                                                       ngModel="{{publicReviewDraftsB?.ks_NUMBER}}"
-                                                                       required formControlName="ksNumber" name="ksNumber">
+                                                    <form (ngSubmit)="uploadPublicReviewDraft()"
+                                                          [formGroup]="editedPublicReview_draftFormGroup" class="form">
+                                                        <div class="form-group">
+                                                            <label for="pdName">KS Number</label>
+                                                            <input type="text" class="form-control" id="ksNo"
+                                                                   ngModel="{{publicReviewDraftsB?.ks_NUMBER}}"
+                                                                   required formControlName="ksNumber" name="ksNumber">
 
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="pdName">Edited Public Review Draft Name</label>
-                                                                <input type="text" class="form-control" id="pdName"
-                                                                       required formControlName="prdName" name="prdName">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="pdName">Edited Public Review Draft Name</label>
+                                                            <input type="text" class="form-control" id="pdName"
+                                                                   required formControlName="prdName" name="prdName">
 
-                                                            </div>
-                                                        </form>
-                                                        <label><b>Please Upload The Edited Public Review Draft</b> <a
-                                                                href="https://www.w3schools.com/"> (Download Public
-                                                            Review
-                                                            Draft Template Here)</a></label>
+                                                        </div>
+                                                    </form>
+                                                    <label><b>Please Upload The Edited Public Review Draft</b> <a
+                                                            href="https://www.w3schools.com/"> (Download Public
+                                                        Review
+                                                        Draft Template Here)</a></label>
 
-                                                        <form #demoForm="ngForm">
-                                                            <file-upload [(ngModel)]="uploadedFiles"
-                                                                         name="uploadedFiles" fileslimit="1"
-                                                                         required
-                                                                         accept=".pdf"></file-upload>
-                                                            <input class="form-control one-column-input"
-                                                                   ngModel="EACGazette"
-                                                                   name="DocDescription" type="hidden">
-                                                        </form>
-                                                    </div>
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedFiles"
+                                                                     name="uploadedFiles" fileslimit="1"
+                                                                     required
+                                                                     accept=".pdf"></file-upload>
+                                                        <input class="form-control one-column-input"
+                                                               ngModel="EACGazette"
+                                                               name="DocDescription" type="hidden">
+                                                    </form>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeModalC
-                                                        (click)="hideModelC()" data-dismiss="modal">Close
-                                                </button>
-                                                <button class="btn btn-primary" (click)="uploadPublicReviewDraft()"
-                                                        type="submit">SUBMIT
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" #closeModalC
+                                                    (click)="hideModelC()" data-dismiss="modal">Close
+                                            </button>
+                                            <button class="btn btn-primary" (click)="uploadPublicReviewDraft()"
+                                                    type="submit">SUBMIT
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

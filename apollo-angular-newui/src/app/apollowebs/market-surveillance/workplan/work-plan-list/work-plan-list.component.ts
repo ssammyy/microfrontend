@@ -484,7 +484,7 @@ export class WorkPlanListComponent implements OnInit {
     this.addCountyTownForm.controls.townsId.enable();
     console.log(`county selectedCountyName to ${this.selectedCountyName}`);
     console.log(`county set to ${this.selectedCounty}`);
-    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    this.msTowns = this.msTownsOriginal.filter(x => String(this.selectedCounty) === String(x.countyId));
     console.log(`towns list set to ${this.msTowns}`);
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
     // this.msService.msCountiesListDetails().subscribe(
@@ -496,7 +496,7 @@ export class WorkPlanListComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.addCountyTownForm?.get('townsId')?.value;
-    this.selectedTownName = this.msTowns.find(pr => pr.id === this.selectedTown)?.town;
+    this.selectedTownName = this.msTownsOriginal.find(pr => pr.id === this.selectedTown)?.town;
     // // tslint:disable-next-line:no-shadowed-variable
     // this.selectedTownName = this.msTowns?.find(x => x.id === this.selectedTown).town;
     // console.log(`town set to ${this.selectedTown}`);

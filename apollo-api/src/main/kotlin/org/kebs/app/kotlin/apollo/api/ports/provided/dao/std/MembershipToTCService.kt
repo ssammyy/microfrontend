@@ -13,12 +13,15 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.thymeleaf.TemplateEngine
+import org.thymeleaf.context.Context
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -40,9 +43,11 @@ class MembershipToTCService(
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val draftDocumentService: DraftDocumentService,
+    private val usersSignatureRepository: UserSignatureRepository,
+    private val templateEngine: TemplateEngine
 
 
-    ) {
+) {
 
 
     fun deployProcessDefinition(): Deployment = repositoryService
@@ -99,6 +104,9 @@ class MembershipToTCService(
         val encryptedId = BCryptPasswordEncoder().encode(membershipTCApplication.tcId.toString())
         membershipTCApplication.varField10 = encryptedId
         membershipTCApplication.technicalCommittee = u.title
+        if (membershipTCApplication.organisationClassification.equals("Renown Professionals/experts")) {
+            membershipTCApplication.approvedByOrganization = "APPROVED"
+        }
 
 
         if (membershipTCApplication.authorizingPerson != null) {
@@ -115,7 +123,6 @@ class MembershipToTCService(
                         "Director Standards Development and Trade"
             )
         } else {
-            membershipTCApplication.approvedByOrganization = "APPROVED"
             notifications.sendEmail(
                 membershipTCApplication.email!!,
                 "Application Acknowledgement:  ${u.title} - Evaluation in Progress",
@@ -230,7 +237,7 @@ class MembershipToTCService(
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
-        return membershipTCRepository.findByStatusIsNull()
+        return membershipTCRepository.findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals("APPROVED")
 
     }
 
@@ -377,34 +384,53 @@ class MembershipToTCService(
         applicationID: Long,
         docFile: List<MultipartFile>
     ) {
+        val user = commonDaoServices.findUserByID(4102)
+        val mySignature: ByteArray?
+        var image: String? = null
+        val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+
+        // Convert the image ByteArray to Base64-encoded string
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
-        //send email
+
+        // Send email
         val encryptedId = BCryptPasswordEncoder().encode(u.id.toString())
-        val link =
-            "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
-        val messageBody =
-            " Hello ${u.nomineeName} \n Thank you for your application. You have been appointed as a member of " +
-                    "${u.technicalCommittee}. Please find attached the Terms Of Reference and the Non Disclosure Agreement. Also please click on the following link to confirm appointment  \n " +
-                    link +
-                    "\n\n\n\n\n\n"
+        val link = "${applicationMapProperties.baseUrlQRValue}approveApplication?applicationID=${encryptedId}"
 
-
+// Load the email template
+        val context = Context()
+        context.setVariable("subject", "Technical Committee Appointment Letter")
+        context.setVariable("nomineeName", u.nomineeName)
+        context.setVariable("technicalCommittee", u.technicalCommittee)
+        context.setVariable("link", link)
+        context.setVariable("diUser", user.firstName + " " + user.lastName)
+        if (signatureFromDb != null) {
+            mySignature = signatureFromDb.signature
+            image = mySignature?.let { convertByteArrayToBase64(it) }
+            context.setVariable("image", image)
+        }
 
         u.email?.let {
             notifications.processEmailAttachment(
                 it,
-                "Technical Committee Appointment  Letter",
-                messageBody,
-                docFile
+                "Technical Committee Appointment Letter",
+                docFile,
+                context, image
             )
+
         }
-        u.status = "5" // approved and appointment letter email has been sent by HOD
+
+        u.status = "5" // Approved and appointment letter email has been sent by HOD
         u.varField10 = encryptedId
-
-
 
         membershipTCRepository.save(u)
     }
+
+    fun convertByteArrayToBase64(byteArray: ByteArray): String {
+        val base64Encoder = Base64.getEncoder()
+        val encodedBytes = base64Encoder.encode(byteArray)
+        return String(encodedBytes)
+    }
+
 
     //Approve Process
     fun approveUser(

@@ -1,13 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    Input,
-    OnInit,
-    QueryList,
-    ViewChild,
-    ViewChildren,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {
     DataHolder,
@@ -22,13 +13,24 @@ import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
-import {Department, StandardRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {Department, StandardRequest} from "../../../../core/store/data/std/std.model";
 import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
+
+
+function validateLink(control: FormControl): { [key: string]: any } | null {
+    const linkRegex = /^(?:(ftp|http|https)?:\/\/)?(?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}$/gi;
+
+    if (control.value && !linkRegex.test(control.value)) {
+        return {invalidLink: true};
+    }
+
+    return null;
+}
 
 @Component({
     selector: 'app-standard-task',
@@ -43,7 +45,7 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
 
     dtTrigger4: Subject<any> = new Subject<any>();
-    filteredTc: number;
+    filteredTc: any;
     filteredTcSec: number;
 
     onApproveApplication: boolean = false;
@@ -72,7 +74,7 @@ export class StandardTaskComponent implements OnInit {
     // from the calling component add:
     @Input() selectSeason: string;
     public departments !: Department[];
-    public tcSecs !: UsersEntity[];
+    public tcSecs !: DataHolder[];
     @Input() selectDesiredResult: string;
 
     p = 1;
@@ -101,6 +103,7 @@ export class StandardTaskComponent implements OnInit {
     public taskData: TaskData | undefined;
 
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
+    selectedTc: number;
 
 
     filteredTcs: any[] = [];
@@ -109,6 +112,7 @@ export class StandardTaskComponent implements OnInit {
 
     countries: DataHolder[] = this.tcs;
     filteredCountries: Record<string, string>[] = [];
+
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
@@ -132,9 +136,8 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
-        this.getOnHoldTasks();
         this.getTechnicalCommittee();
-        this.getTcSecs()
+        // this.getTcSecs()
 
 
         this.stdDepartmentChange = this.formBuilder.group({
@@ -151,7 +154,7 @@ export class StandardTaskComponent implements OnInit {
             sdResult: ['', Validators.required],
             reason: [''],
             rejectionReason: [''],
-            link: [''],
+            link: ['', validateLink],
             tcId: [''],
 
 
@@ -216,17 +219,7 @@ export class StandardTaskComponent implements OnInit {
     }
 
 
-    public getOnHoldTasks(): void {
-        this.standardDevelopmentService.getOnHoldReviewsForStandards().subscribe(
-            (response: StandardRequestB[]) => {
-                this.onHoldTasks = response;
 
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
 
     public getTechnicalCommitteeName(id: number): void {
         this.standardDevelopmentService.getTechnicalCommitteeName(id).subscribe(
@@ -240,7 +233,9 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public onReviewTask(): void {
-        this.SpinnerService.show();
+        this.loading=true
+        this.loadingText="Submitting Review"
+        this.SpinnerService.show()
 
         if (this.stdHOFReview.controls['sdResult'].value == 'On Hold' && this.stdHOFReview.controls['reason'].value == '') {
             this.showToasterError("Error", `Please Enter A Reason For Putting On Hold.`);
@@ -254,10 +249,18 @@ export class StandardTaskComponent implements OnInit {
             } else if (this.stdHOFReview.controls['reason'].value == '') {
                 this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
             } else {
-                this.submitTask();
+                if (this.stdHOFReview.valid) {
+                    this.submitTask();
+                }
+
             }
             this.SpinnerService.hide();
             return;
+        }
+        if (this.stdHOFReview.controls['sdResult'].value == 'Approve For Review') {
+            this.stdHOFReview.controls['rejectionReason'].setValue('');
+            this.stdHOFReview.controls['reason'].setValue('');
+            this.stdHOFReview.controls['link'].setValue('');
         }
 
         if (!this.stdHOFReview.valid) {
@@ -278,13 +281,18 @@ export class StandardTaskComponent implements OnInit {
             return;
         }
 
-        if (this.stdHOFReview.controls['isTcSec'].value == '1' && this.stdHOFReview.controls['isTc'].value == '') {
-            this.showToasterError("Error", `Please Select A Technical Committee Secretary`);
+        if (
+            this.stdHOFReview.controls['isTcSec'].value === '1' &&
+            (typeof this.stdHOFReview.controls['isTc'].value === 'undefined' ||
+                this.stdHOFReview.controls['isTc'].value === "")
+        ) {
+            this.showToasterError("Error", "Please Select A Technical Committee Secretary");
             this.SpinnerService.hide();
             return;
         }
 
         this.submitTask();
+
     }
 
     private submitTask(): void {
@@ -292,7 +300,7 @@ export class StandardTaskComponent implements OnInit {
             (response) => {
                 this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                 this.SpinnerService.hide();
-                this.getOnHoldTasks();
+                this.loading=false
                 this.getHOFTasks();
                 this.stdHOFReview.reset();
                 this.hideModel();
@@ -300,6 +308,8 @@ export class StandardTaskComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 alert(error.message);
                 this.SpinnerService.hide();
+                this.loading=false
+
             }
         );
     }
@@ -434,16 +444,16 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
-    public getTcSecs(): void {
-        this.standardDevelopmentService.getTcSec().subscribe(
-            (response: UsersEntity[]) => {
-                this.tcSecs = response;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
+    // public getTcSecs(): void {
+    //     this.standardDevelopmentService.getTcSec().subscribe(
+    //         (response: UsersEntity[]) => {
+    //             this.tcSecs = response;
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             alert(error.message);
+    //         }
+    //     );
+    // }
 
     @ViewChild('matRef') matRef: MatSelect;
 
@@ -505,8 +515,45 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
+    onSelectTc(selectedValue: any): void {
+        if (typeof selectedValue !== 'undefined' && selectedValue !== "") {
+            this.standardDevelopmentService.getTechnicalCommitteeSec(selectedValue).subscribe(
+                (response: DataHolder[]) => {
+                    console.log(response);
+                    this.tcSecs = response
+                    this.filteredTc = undefined; // Reset the filteredTc value when no option is selected
 
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            );
+        }
+    }
 
+    onIsTcChange(value: any) {
+        if (value) {
+            this.stdHOFReview.get('isTc').reset();
+        }
+    }
+
+    // onSelectTc(value: any): any {
+    //     console.log('Selected TC:', value);
+    //
+    //     this.standardDevelopmentService.getTechnicalCommitteeSec(value).subscribe(
+    //         (response: DataHolder[]) => {
+    //             console.log(response);
+    //             this.tcs = response
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             alert(error.message);
+    //         }
+    //     );
+    // }
+
+    @ViewChild('tcSelect') tcSelect: any;
+
+// Custom validator function for link validation
 
 }
 

@@ -168,6 +168,14 @@ class StandardRequestController(
     fun getHOFTasks(): List<TaskDetails> {
         return standardRequestService.getHOFTasks()
     }
+    @GetMapping("standard/getTechnicalCommitteeSecretary")
+    @ResponseBody
+    fun getTcSecForTc(@RequestParam("tcId") tcId: Long): List<DataHolder> {
+        return standardRequestService.getTechnicalCommitteeSec(tcId)
+    }
+
+
+
 
     @GetMapping("standard/getAllApplications")
     fun getAllApplications(): List<AllApplicationsStandardsDto> {
@@ -608,6 +616,17 @@ class StandardRequestController(
             standardRequestService.updateDepartmentStandardRequest(standardRequest)
         )
     }
+
+    @PostMapping("standard/updateTcSec")
+    @ResponseBody
+    fun updateTcSec(@RequestBody standardRequest: StandardRequest): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Updated Department For Request",
+            standardRequestService.updateTcSec(standardRequest)
+        )
+    }
+
 
     @GetMapping("standard/getAllTcSec")
     fun getAllTcSec(): List<UsersEntity> {

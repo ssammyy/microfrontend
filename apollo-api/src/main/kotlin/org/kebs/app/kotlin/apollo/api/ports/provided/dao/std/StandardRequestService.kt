@@ -129,6 +129,19 @@ class StandardRequestService(
         standardRequestRepository.save(standardRequestToUpdate)
     }
 
+    fun updateTcSec(standardRequest: StandardRequest) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val standardRequestToUpdate = standardRequestRepository.findById(standardRequest.id)
+            .orElseThrow { RuntimeException("No Standard Request found") }
+
+
+        standardRequestToUpdate.tcSecAssigned = standardRequest.tcSecAssigned
+        standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+        standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+        standardRequestRepository.save(standardRequestToUpdate)
+    }
+
     fun evaluateStandardRequest(tcId: String, departmentId: String): String {
         return rankingCriteriaRepository.findRankByAll(departmentId.toLong(), tcId.toLong()).toString()
     }
@@ -219,7 +232,10 @@ class StandardRequestService(
                 p.status,
                 departmentRepository.findNameByIdB(p.departmentId?.toLong()) ?: "",
                 p.createdOn,
-                p.ongoingStatus
+                p.ongoingStatus,
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
 
 
                 )
@@ -271,7 +287,7 @@ class StandardRequestService(
                     val subject = "Request Declination"
                     val body = buildString {
                         append("Dear ${standardRequestToUpdate.name},\n\n")
-                        append("Your request has been declined because of ${hofFeedback.rejectionReason}.\n")
+                        append("Your request has been declined because of ${hofFeedback.reason}.\n")
                         if (hofFeedback.link != null) {
                             append("Kindly click on the link and follow the instructions.\n")
                             append("${hofFeedback.link}\n")
@@ -948,6 +964,9 @@ class StandardRequestService(
 
     fun getTechnicalCommittee(id: Long?): MutableList<TechnicalCommittee> {
         return technicalCommitteeRepository.findByDepartmentId(id)
+    }
+    fun getTechnicalCommitteeSec(tcId: Long?): List<DataHolder> {
+        return technicalCommitteeRepository.findTcSecQuery(tcId)
     }
 
     fun getDepartment(id: Long): MutableList<Department> {

@@ -9,6 +9,7 @@ export interface StandardRequest {
     departmentId: number;
     product_category: number;
     taskId: string;
+    tcSecAssigned: string;
 
 
 }

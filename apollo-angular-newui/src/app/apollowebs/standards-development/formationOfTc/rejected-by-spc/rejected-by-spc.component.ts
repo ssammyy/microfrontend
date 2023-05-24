@@ -435,6 +435,7 @@ export class RejectedBySpcComponent implements OnInit {
                     this.SpinnerService.hide();
                     this.showToasterSuccess(response.httpStatus, 'Comment Successful');
                     this.getAllRejectedJustificationsBySpc();
+                    this.hideModelB()
 
                     formDirective.resetForm()
 

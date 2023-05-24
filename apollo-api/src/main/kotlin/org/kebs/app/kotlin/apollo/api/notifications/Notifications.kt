@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
+import org.thymeleaf.TemplateEngine
+import org.thymeleaf.context.Context
 import java.lang.Double
 import java.util.*
 import javax.activation.DataHandler
@@ -38,7 +40,6 @@ import kotlin.let
 import kotlin.run
 import kotlin.toString
 
-
 @Component
 class Notifications(
     private val repositoryService: RepositoryService,
@@ -48,8 +49,11 @@ class Notifications(
     val bpmnCommonFunctions: BpmnCommonFunctions,
     val applicationMapProperties: ApplicationMapProperties,
     val jasyptStringEncryptor: StringEncryptor,
-    val companyProfileRepo: ICompanyProfileRepository
+    val companyProfileRepo: ICompanyProfileRepository,
+    private val templateEngine: TemplateEngine
+
 ) {
+
 //    @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
 //    lateinit var smtpStartTlsEnable: String
 //    @Value("\${qa.bpmn.email.smtpHost}")
@@ -303,7 +307,14 @@ class Notifications(
 //        }
     }
 
-    fun processEmailAttachment(recipientEmail: String, subject: String, messageText: String, docFiles: List<MultipartFile>?) {
+    fun processEmailAttachment(
+        recipientEmail: String,
+        subject: String,
+        docFiles: List<MultipartFile>?,
+        context: Context,
+        base64Image: String?
+
+    ) {
         KotlinLogging.logger { }.info("Sending email to=$recipientEmail, Attachments=$docFiles")
 
         val props = Properties()
@@ -341,10 +352,24 @@ class Notifications(
                 )
             )
             //val messageText = message
+            val emailContent = templateEngine.process("email-template.html", context)
+            println(emailContent)
+
             val messageBodyPart: BodyPart = MimeBodyPart()
-            messageBodyPart.setText(messageText)
+            messageBodyPart.setContent(emailContent, "text/html; charset=utf-8")
             val multipart: Multipart = MimeMultipart()
             multipart.addBodyPart(messageBodyPart)
+            val multiPart = MimeMultipart("alternative")
+            val rawImage = Base64.getDecoder().decode(base64Image)
+            val imagePart = MimeBodyPart()
+            val imageDataSource = ByteArrayDataSource(rawImage, "image/png")
+
+            imagePart.dataHandler = DataHandler(imageDataSource)
+            imagePart.setHeader("Content-ID", "<qrImage>")
+            imagePart.fileName = "someFileName.png"
+
+            multipart.addBodyPart(imagePart)
+
 
             if (docFiles != null) {
                 for (docFile in docFiles) {
@@ -373,5 +398,11 @@ class Notifications(
 //            KotlinLogging.logger { }.error(e.message, e)
 //        }
     }
+
+
+
+
+
+
 
 }

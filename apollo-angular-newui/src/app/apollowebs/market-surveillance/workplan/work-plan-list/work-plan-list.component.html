@@ -459,8 +459,7 @@
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                         class="form-control" formControlName="townsId" name="townsId" required>
                                                     <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of msTowns"
-                                                            [ngValue]="app?.id">{{app?.town}}</option>
+                                                    <option *ngFor="let app of msTowns" [ngValue]="app?.id">{{app?.town}}</option>
                                                 </select>
                                                 <div *ngIf="submitted && formAddCountyTownForm.townsId.errors" class="invalid-feedback">
                                                     <div *ngIf="formAddCountyTownForm.townsId.errors.required">Town/Market center is required</div>
