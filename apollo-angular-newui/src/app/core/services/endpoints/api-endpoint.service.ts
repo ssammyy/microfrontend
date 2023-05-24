@@ -659,6 +659,7 @@ export class ApiEndpointService {
 
         NEP_SEND_DRAFT: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notificationOfReview`,
         NEP_UPLOAD_DRAFT_ATTACHMENT: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNepDraftDoc`,
+        NEP_UPDATE_NOTIFICATION_STATUS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNepDocumentStatus`,
         NEP_GET_DRAFT_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getDraftNotification`,
         NEP_VIEW_DRAFT_UPLOADS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNepDraftDoc`,
         NEP_DECISION_ON_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/decisionOnReviewDraft`,

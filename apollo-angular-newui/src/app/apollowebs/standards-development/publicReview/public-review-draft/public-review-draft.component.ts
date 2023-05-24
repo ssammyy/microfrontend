@@ -23,9 +23,10 @@ import {
 } from "../../../../core/store/data/std/request_std.model";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
-import {StakeHoldersFields, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {StakeHoldersFields, UploadedDataId, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 declare const $: any;
 @Component({
     selector: 'app-public-review-draft',
@@ -56,7 +57,7 @@ export class PublicReviewDraftComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
-
+    uploadedDataId !:UploadedDataId;
     public departments !: Department[];
     dropdownList: any[] = [];
     selectedItems?: Department;
@@ -92,6 +93,7 @@ export class PublicReviewDraftComponent implements OnInit {
                 private notificationService: NepPointService,
                 private notifyService: NotificationService,
                 private stdIntStandardService : StdIntStandardService,
+                private stdComStandardService:StdComStandardService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
@@ -687,12 +689,13 @@ export class PublicReviewDraftComponent implements OnInit {
     notificationOfReview(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
+        //this.onClickSaveUploads("65")
         this.notificationService.notificationOfReview(this.preparePreliminaryDraftFormGroup.value).subscribe(
-            (response ) => {
+            (response  ) => {
                 //console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
-                this.onClickSaveUploads(response.body.id)
+                this.onClickSaveUploads(response.body.savedRowID)
                 this.preparePreliminaryDraftFormGroup.reset();
 
             },
@@ -705,12 +708,28 @@ export class PublicReviewDraftComponent implements OnInit {
         this.hideModalChanges();
     }
 
+    onSubmit(draftId: string){
+        this.SpinnerService.show();
+        this.notificationService.updateNotificationStatus(draftId).subscribe(
+            (data: any) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess(data.httpStatus, `Status Updated`);
+            },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error running update`);
+                    console.log(error.message);
+                }
+        );
+
+    }
+
     onClickSaveUploads(draftId: string) {
         if (this.uploadedFile.length > 0) {
             const file = this.uploadedFile;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
+                //console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
@@ -718,7 +737,7 @@ export class PublicReviewDraftComponent implements OnInit {
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFile = null;
-                    console.log(data);
+                    this.getAllPrdS();
                     swal.fire({
                         title: 'Thank you....',
                         html:'Uploaded',

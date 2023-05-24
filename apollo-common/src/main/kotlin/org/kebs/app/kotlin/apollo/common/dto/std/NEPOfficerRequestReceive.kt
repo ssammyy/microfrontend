@@ -126,6 +126,7 @@ data class NepDraftDecisionDto(
 
 }
 
+
 data class NepDraftDecDto(
     var draftId: Long,
     var remarks: String?=null,

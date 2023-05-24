@@ -216,23 +216,9 @@ export class NepPointService {
         );
     }
 
-    public uploadDraft(draftId: string, data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_DRAFT_ATTACHMENT);
 
-        return this.http.post<any>(url, data, {
-            headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'draftId': draftId}
-        }).pipe(
-            map(function (response: any) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
-                return throwError(fault);
-            })
-        );
-    }
+
+
 
     public getDraftNotification(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_GET_DRAFT_NOTIFICATIONS);
@@ -300,6 +286,38 @@ export class NepPointService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_NOTIFICATION);
         const params = new HttpParams();
         return this.http.post<DecisionOnPreparedNotification>(url, dec, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public updateNotificationStatus(draftId: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPDATE_NOTIFICATION_STATUS);
+        return this.http.post<any>(url,  {
+             params: {'draftId': draftId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+    }
+
+    public uploadDraft(draftId: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_DRAFT_ATTACHMENT);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'draftId': draftId}
+        }).pipe(
             map(function (response: any) {
                 return response;
             }),

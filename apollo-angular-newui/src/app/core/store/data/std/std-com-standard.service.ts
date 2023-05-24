@@ -290,6 +290,7 @@ export class StdComStandardService {
     );
   }
 
+
   public uploadCoverPages(comStdDraftID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_CP);
 

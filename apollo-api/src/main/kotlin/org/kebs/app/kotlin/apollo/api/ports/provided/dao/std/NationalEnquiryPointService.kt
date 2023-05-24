@@ -10,7 +10,9 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -36,6 +38,7 @@ class NationalEnquiryPointService(
     private val nationalEnquiryEntityRepository: NationalEnquiryEntityRepository,
     private val sdNepDocUploads: SdNepDocUploadsEntityRepository,
     private val nepDraftRepo: SdNepDraftRepository,
+    private val nepUploadsRepo: SdNepUploadsEntityRepository,
     private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository,
     private val nepWtoNotificationRepo: NEPWtoNotificationRepository,
     private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository,
@@ -426,7 +429,7 @@ class NationalEnquiryPointService(
 
     }
     //make enquiry and process initiation function
-    fun notificationOfReview(nep: NepNotificationDto): NepNotificationFormEntity {
+    fun notificationOfReview(nep: NepNotificationDto): UploadedDataId {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val sNep=NepNotificationFormEntity();
         val currentTime=Timestamp(System.currentTimeMillis())
@@ -526,44 +529,16 @@ class NationalEnquiryPointService(
         comDraft.prId=nep.pid
 
         val draftId=comStdDraftRepository.save(comDraft)
+        val uploadStatus="Success"
 
-        return notification
+        return  UploadedDataId(notification.id,uploadStatus)
 
 
     }
 
-    fun uploadNepDraftDoc(
-        uploads: SdNepDraftUploadsEntity,
-        docFile: MultipartFile,
-        doc: String,
-        user: String,
-        DocDescription: String
-    ): SdNepDraftUploadsEntity {
-
-        with(uploads) {
-
-            name = commonDaoServices.saveDocuments(docFile)
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
-            documentType = doc
-            description = DocDescription
-            document = docFile.bytes
-            transactionDate = commonDaoServices.getCurrentDate()
-            status = 1
-            createdBy = user
-            createdOn = commonDaoServices.getTimestamp()
-        }
-        val saved= nepDraftDocRepo.save(uploads)
-        nepNotificationFormEntityRepo.findByIdOrNull(saved.nepDraftId)?.let { sts ->
-
-            with(sts) {
-                documentAttached = 1
-
-            }
-        }?: throw Exception("FORM NOT FOUND")
 
 
-        return saved
-    }
+
 
     fun getDraftNotification(): MutableList<NepNotificationFormEntity>
     {
@@ -571,10 +546,6 @@ class NationalEnquiryPointService(
     }
 
 
-
-    fun findUploadedDraftBYId(draftId: Long): SdNepDraftUploadsEntity {
-        return nepDraftDocRepo.findAllByNepDraftId(draftId)
-    }
 
     fun decisionOnReviewDraft(
         nep: NepDraftDecisionDto
@@ -695,6 +666,7 @@ class NationalEnquiryPointService(
         return nepNotificationFormEntityRepo.getDraftNotificationForUpload()
     }
 
+
     fun uploadNotification(nep: NepDraftDecDto): NepNotificationFormEntity {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val sNep=NepNotificationFormEntity();
@@ -726,6 +698,58 @@ class NationalEnquiryPointService(
 
         }
         return sNep
+    }
+
+    fun uploadNepDraftDoc(
+        uploads: SdNepUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String,
+        draftId: Long
+    ): SdNepUploadsEntity {
+
+        with(uploads) {
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+        val saved= nepUploadsRepo.save(uploads)
+        nepNotificationFormEntityRepo.findByIdOrNull(saved.nepDraftId)?.let { sts ->
+
+            with(sts) {
+                documentAttached = 1
+                documentName=commonDaoServices.saveDocuments(docFile)
+                documentType=docFile.contentType
+
+            }
+            nepNotificationFormEntityRepo.save(sts)
+        }?: throw Exception("FORM NOT FOUND")
+
+        return saved
+    }
+
+    fun uploadNepDocumentStatus(draftId: Long): String{
+        nepNotificationFormEntityRepo.findByIdOrNull(draftId)?.let { sts ->
+
+            with(sts) {
+                documentAttached = 1
+
+            }
+          nepNotificationFormEntityRepo.save(sts)
+        }?: throw Exception("FORM NOT FOUND")
+
+      return "Updated"
+    }
+
+    fun findUploadedDraftBYId(draftId: Long): SdNepUploadsEntity {
+        return nepUploadsRepo.findAllByNepDraftId(draftId)
     }
 
     fun getUploadedNotification(): MutableList<NepNotificationFormEntity>

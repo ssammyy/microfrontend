@@ -104,6 +104,14 @@ class NepNotificationFormEntity  : Serializable {
     @Basic
     var documentAttached: Long? = 0
 
+    @Column(name = "DOCUMENT_NAME")
+    @Basic
+    var documentName: String? = null
+
+    @Column(name = "DOCUMENT_TYPE")
+    @Basic
+    var documentType: String? = null
+
     @Column(name = "P_ID")
     @Basic
     var pid: Long? = 0

@@ -1119,7 +1119,7 @@ export const ROUTES: RouteInfo[] = [
             },
             //{path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
             {path: 'sendFeedBack', title: 'Send Feedback', ab: 'SF'},
-            {path: 'prepareReviewDraft', title: 'Prepare Review Draft', ab: 'PR'},
+            // {path: 'prepareReviewDraft', title: 'Prepare Review Draft', ab: 'PR'},
             {path: 'viewDraftNotification', title: 'View Draft', ab: 'VD'},
             {path: 'managerViewNotification', title: 'View Notification', ab: 'VN'},
             {path: 'uploadNotification', title: 'Upload Notification', ab: 'UN'},

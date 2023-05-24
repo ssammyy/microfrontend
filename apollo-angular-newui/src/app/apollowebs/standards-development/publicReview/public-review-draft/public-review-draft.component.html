@@ -213,11 +213,13 @@
                                                 </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
-                                                        <label><b>Upload Attachment  </b> <span style="font-size: xx-small; color: blue;">(*)Optional</span></label><br>
-                                                        <form #demoForm="ngForm">
-                                                            <input type="file" name="uploadedFile" [(ngModel)]="uploadedFile"  multiple>
-                                                            <file-upload [(ngModel)]="uploadedFile" name="uploadedFile"   fileslimit="1" accept=".pdf,.docx" ></file-upload>
-                                                        </form>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <form #demoForm="ngForm">
+                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>
+                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                                            </form>
+                                                        </div>
                                                     </div>
 
 

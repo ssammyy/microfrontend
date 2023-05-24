@@ -55,6 +55,12 @@ interface SdNepDraftRepository : JpaRepository<SdNepDraft, Long> {
         value = "SELECT * FROM SD_NEP_DRAFT  WHERE STATUS=2 ORDER BY ID DESC",nativeQuery = true)
     fun getDraftNotificationForUpload(): MutableList<SdNepDraft>
 }
+
+
+interface SdNepUploadsEntityRepository : JpaRepository<SdNepUploadsEntity, Long> {
+    fun findAllByNepDraftId(id: Long): SdNepUploadsEntity
+}
+
 interface SdNepDraftUploadsEntityRepository : JpaRepository<SdNepDraftUploadsEntity, Long> {
     fun findAllByNepDraftId(id: Long): SdNepDraftUploadsEntity
 }
