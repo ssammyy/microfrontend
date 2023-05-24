@@ -591,6 +591,8 @@ import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-cert
 import {ManageTcMembersComponent} from './apollowebs/admin/manage-tc-members/manage-tc-members.component';
 import {AllApplicationsRequestsComponent} from './apollowebs/standards-development/standard-request/standard-task/all-applications-requests/all-applications-requests.component';
 
+import { ApproveMembersForTcCreationComponent } from './apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -1234,6 +1236,7 @@ import {AllApplicationsRequestsComponent} from './apollowebs/standards-developme
         NcrCorCertificateComponent,
         ManageTcMembersComponent,
         AllApplicationsRequestsComponent,
+        ApproveMembersForTcCreationComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -1,19 +1,20 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
+import {ReviewApplicationTask} from "../../../core/store/data/std/request_std.model";
+import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {MembershipToTcService} from "../../../core/store/data/std/membership-to-tc.service";
+import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
-import {DataTableDirective} from "angular-datatables";
+import swal from "sweetalert2";
 
 @Component({
-    selector: 'app-approved-members',
-    templateUrl: './approved-members.component.html',
-    styleUrls: ['./approved-members.component.css']
+    selector: 'app-approve-members-for-tc-creation',
+    templateUrl: './approve-members-for-tc-creation.component.html',
+    styleUrls: ['./approve-members-for-tc-creation.component.css']
 })
-export class ApprovedMembersComponent implements OnInit {
+export class ApproveMembersForTcCreationComponent implements OnInit {
 
     p = 1;
     p2 = 1;
@@ -21,6 +22,8 @@ export class ApprovedMembersComponent implements OnInit {
     public actionRequest: ReviewApplicationTask | undefined;
     loadingText: string;
     public uploadedFiles: FileList;
+    loading = false;
+
 
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
@@ -30,7 +33,6 @@ export class ApprovedMembersComponent implements OnInit {
     isDtInitialized: boolean = false
     blob: Blob;
     display = 'none'; //default Variable
-    loading = false;
 
 
     constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
@@ -46,7 +48,7 @@ export class ApprovedMembersComponent implements OnInit {
 
     public getApplicationsForReview(): void {
 
-        this.loading=true
+        this.loading = true
         this.loadingText = "Retrieving Approved Applicants Please Wait ...."
         this.SpinnerService.show();
         this.membershipToTcService.getApprovedMembers().subscribe(
@@ -54,7 +56,6 @@ export class ApprovedMembersComponent implements OnInit {
                 console.log(response);
                 this.tcTasks = response;
                 this.SpinnerService.hide();
-                this.loading= false
                 if (this.isDtInitialized) {
                     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                         dtInstance.destroy();
@@ -111,39 +112,52 @@ export class ApprovedMembersComponent implements OnInit {
 
 
     public decisionOnApplications(reviewApplicationTask: ReviewApplicationTask, tCApplicationId: number, decision: string): void {
+        this.loading = true
+        this.SpinnerService.show();
+        this.loadingText = "Creating Account";
+        this.membershipToTcService.decisionOnForwardToHodIct(reviewApplicationTask, tCApplicationId, decision).subscribe(
+            (response) => {
 
-        this.loading=true
-
-            this.SpinnerService.show();
-            this.loadingText = "Forwarding To HOD-ICT";
-            this.membershipToTcService.decisionOnForwardToHodIct(reviewApplicationTask, tCApplicationId, decision).subscribe(
-                (response) => {
-                    console.log(response);
-                    this.getApplicationsForReview();
-                    this.loading=false
-
+                if(response ==='User With Email already Exists')
+                {
+                    this.loading = false
                     this.SpinnerService.hide();
-                    this.notifyService.showSuccess("Success", 'Forwarded To HOD-ICT')
-
-                },
-                (error: HttpErrorResponse) => {
-                    alert(error.message);
+                    swal.fire({
+                        title: 'User With Email already Exists.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'error'
+                    });
                 }
-            )
+                else {
+                    this.getApplicationsForReview();
+                    this.loading = false
+                    this.SpinnerService.hide();
+                    this.notifyService.showSuccess("Success", 'Account Successfully Created')
 
-            this.hideModel();
-            this.clearForm();
+                }
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+
+        this.hideModel();
+        this.clearForm();
 
 
     }
 
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-        this.loading=true
+        this.loading = true
         this.SpinnerService.show();
         this.membershipToTcService.viewDEditedApplicationPDF(pdfId, "ApplicantCV").subscribe(
             (dataPdf: any) => {
-                this.loading=false
+                this.loading = false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
 
@@ -158,3 +172,4 @@ export class ApprovedMembersComponent implements OnInit {
         );
     }
 }
+

@@ -475,6 +475,14 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.standards.development}")
     val mapStandardsDevelopment: Int = 0
 
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.sd.employee}")
+    val mapUserSdEmployeeID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.sd.tcMember}")
+    val mapUserSdTcMemberID: Long = 0L
+
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance}")
     val mapMarketSurveillance: Int = 0
 

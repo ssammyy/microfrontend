@@ -7,12 +7,19 @@ import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.UserRoleAssignmentsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.IServiceMapsRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -44,10 +51,14 @@ class MembershipToTCService(
     private val applicationMapProperties: ApplicationMapProperties,
     private val draftDocumentService: DraftDocumentService,
     private val usersSignatureRepository: UserSignatureRepository,
-    private val templateEngine: TemplateEngine
+    private val templateEngine: TemplateEngine,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val usersRepo: IUserRepository,
+    private val registrationDaoServices: RegistrationDaoServices,
+    private val tcUserAssignmentRepository: TcUserAssignmentRepository,
+    private val userRolesRepo: IUserRoleAssignmentsRepository,
 
-
-) {
+    ) {
 
 
     fun deployProcessDefinition(): Deployment = repositoryService
@@ -237,7 +248,9 @@ class MembershipToTCService(
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
-        return membershipTCRepository.findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals("APPROVED")
+        return membershipTCRepository.findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals(
+            "APPROVED"
+        )
 
     }
 
@@ -468,16 +481,91 @@ class MembershipToTCService(
 
     //HOD Forwards to HOD-ICT
     fun decisionOnApprovedHof(
-        membershipTCApplication: MembershipTCApplication,
         applicationID: Long,
         decision: String
-    ) {
+    ): ResponseEntity<String> {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null)
-        u.status = "7" // approved and send to HOD-ICT
-        u.varField9 = decision //this is scope that is defined
-        membershipTCRepository.save(u)
+        //let us check if email and phonenumber exists
+        val b: UsersEntity? = u.email?.let { usersRepo.findByEmail(it) }
+        if (b == null) {
+            //let us create Account
+            val string = u.nomineeName?.split(" ", limit = 2)
+            val password = generateRandomText(12, "SHA1PRNG", "SHA-512")
+            val encryptedPassword = BCryptPasswordEncoder().encode(password)
+
+            u.status = "8" // approved and send to HOD-ICT and credentials created
+            u.varField9 = decision //this is scope that is defined
+            membershipTCRepository.save(u)
+
+            val user = UsersEntity().apply {
+                firstName = string?.getOrNull(0) ?: ""
+                lastName = string?.getOrNull(1) ?: ""
+                email = u.email
+                personalContactNumber = u.mobileNumber
+                registrationDate = java.sql.Date(Date().time)
+                typeOfUser = applicationMapProperties.transactionActiveStatus
+                userName = u.email
+                cellphone = u.mobileNumber
+                userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
+                credentials = encryptedPassword
+                confirmCredentials = encryptedPassword
+                enabled = applicationMapProperties.transactionActiveStatus
+                status = applicationMapProperties.transactionActiveStatus
+                accountLocked = applicationMapProperties.transactionInactiveStatus
+                approvedDate = Timestamp.from(Instant.now())
+                registrationDate = java.sql.Date(Date().time)
+            }
+
+            usersRepo.save(user)
+
+            val userRoles = listOf(
+                applicationMapProperties.mapUserSdTcMemberID,
+                applicationMapProperties.mapUserRegistrationUserRoleID,
+                applicationMapProperties.mapUserSdEmployeeID
+            ).map { roleId ->
+                registrationDaoServices.userRoleAssignment(user, 1, roleId)
+            }
+
+            userRolesRepo.saveAll(userRoles)
+
+            val tc = TcUserAssignment().apply {
+                tcId = u.tcId!!
+                userId = user.id!!
+                status = 1
+                createdBy = loggedInUser.id?.toString()
+                createdOn = Timestamp.from(Instant.now())
+            }
+            tcUserAssignmentRepository.save(tc)
+
+            val link = applicationMapProperties.baseUrlQRValue
+            val messageBody = "Dear ${u.nomineeName}: \n" +
+                    "\n " +
+                    "Your Account Has Been Created:" +
+                    "\n " +
+                    "To Login Please Follow The Link Below:" +
+                    "\n $link" +
+                    "\n Your login credentials are your email address and password which is $password. Please note this is a temporary password" +
+                    "\n Please Immediately Change Your Password After Successful Login."
+
+            u.email?.let {
+                notifications.sendEmail(
+                    it,
+                    "Technical Committee Appointment Letter",
+                    messageBody
+                )
+            }
+
+            return ResponseEntity.ok("Tc Member Successfully Created")
+        } else {
+            return ResponseEntity.ok("User With Email already Exists")
+        }
     }
+
+
+
 
 
     //HOD ICT gets forwarded users
