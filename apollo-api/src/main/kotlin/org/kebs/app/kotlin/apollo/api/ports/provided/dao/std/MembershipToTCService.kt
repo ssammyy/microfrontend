@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
-import java.io.ByteArrayInputStream
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -385,7 +384,7 @@ class MembershipToTCService(
     ) {
         val user = commonDaoServices.findUserByID(4102)
         val mySignature: ByteArray?
-        val image: ByteArray?
+        var image: String? = null
         val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
 
         // Convert the image ByteArray to Base64-encoded string
@@ -401,11 +400,11 @@ class MembershipToTCService(
         context.setVariable("nomineeName", u.nomineeName)
         context.setVariable("technicalCommittee", u.technicalCommittee)
         context.setVariable("link", link)
+        context.setVariable("diUser", user.firstName +" "+user.lastName)
         if (signatureFromDb != null) {
             mySignature = signatureFromDb.signature
             image = mySignature?.let { convertByteArrayToBase64(it) }
             context.setVariable("image", image)
-
         }
 
         u.email?.let {
@@ -413,7 +412,7 @@ class MembershipToTCService(
                     it,
                     "Technical Committee Appointment Letter",
                     docFile,
-                    context
+                    context,image
                 )
 
         }
@@ -424,10 +423,11 @@ class MembershipToTCService(
         membershipTCRepository.save(u)
     }
 
-    fun convertByteArrayToBase64(bytes: ByteArray): ByteArray {
-        return Base64.getEncoder().encode(bytes)
+    fun convertByteArrayToBase64(byteArray: ByteArray): String {
+        val base64Encoder = Base64.getEncoder()
+        val encodedBytes = base64Encoder.encode(byteArray)
+        return String(encodedBytes)
     }
-
 
 
     //Approve Process
