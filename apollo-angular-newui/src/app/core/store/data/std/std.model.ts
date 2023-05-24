@@ -2792,6 +2792,8 @@ export interface NepNotificationForm {
     preparedBy: string;
     status: number;
     documentAttached: number;
+    documentName: string;
+    documentType: string;
 }
 
 export interface HistoricalData {
@@ -2910,4 +2912,8 @@ export interface ISJustification {
     standardType: string;
 }
 
+export interface UploadedDataId {
+    uploadedId: string;
+    httpStatus: string;
+}
 

@@ -814,3 +814,5 @@ data class ISDraftDecisions(
 
 }
 
+class UploadedDataId (val savedRowID: Long?,val httpStatus: String) {
+}

@@ -52,7 +52,7 @@
                                         <td>{{task.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}</td>
                                         <td>{{task.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}</td>
                                         <td>{{task.finalDateForComments | date: 'dd/MM/yyyy'}}</td>
-                                        <td *ngIf="task.documentAttached==1"><button mat-raised-button type="button" (click)="viewDraftUpload( task.id,'Download'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                        <td *ngIf="task.documentAttached==1"><button mat-raised-button type="button" (click)="viewDraftUpload( task.id,task.documentName, task.documentType)" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="fa fa-download"></i>Download</button></td>
                                         <td *ngIf="task.documentAttached==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
                                             <i class="fa fa-download"></i>NA</button></td>
