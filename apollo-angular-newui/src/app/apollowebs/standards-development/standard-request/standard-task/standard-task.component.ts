@@ -20,7 +20,17 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
-import {NgSelectComponent} from "@ng-select/ng-select";
+
+
+function validateLink(control: FormControl): { [key: string]: any } | null {
+    const linkRegex = /^(?:(ftp|http|https)?:\/\/)?(?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}$/gi;
+
+    if (control.value && !linkRegex.test(control.value)) {
+        return {invalidLink: true};
+    }
+
+    return null;
+}
 
 @Component({
     selector: 'app-standard-task',
@@ -35,7 +45,7 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
 
     dtTrigger4: Subject<any> = new Subject<any>();
-    filteredTc: number;
+    filteredTc: any;
     filteredTcSec: number;
 
     onApproveApplication: boolean = false;
@@ -126,7 +136,6 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
-        this.getOnHoldTasks();
         this.getTechnicalCommittee();
         // this.getTcSecs()
 
@@ -145,7 +154,7 @@ export class StandardTaskComponent implements OnInit {
             sdResult: ['', Validators.required],
             reason: [''],
             rejectionReason: [''],
-            link: [''],
+            link: ['', validateLink],
             tcId: [''],
 
 
@@ -210,17 +219,7 @@ export class StandardTaskComponent implements OnInit {
     }
 
 
-    public getOnHoldTasks(): void {
-        this.standardDevelopmentService.getOnHoldReviewsForStandards().subscribe(
-            (response: StandardRequestB[]) => {
-                this.onHoldTasks = response;
 
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
 
     public getTechnicalCommitteeName(id: number): void {
         this.standardDevelopmentService.getTechnicalCommitteeName(id).subscribe(
@@ -234,7 +233,9 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public onReviewTask(): void {
-        this.SpinnerService.show();
+        this.loading=true
+        this.loadingText="Submitting Review"
+        this.SpinnerService.show()
 
         if (this.stdHOFReview.controls['sdResult'].value == 'On Hold' && this.stdHOFReview.controls['reason'].value == '') {
             this.showToasterError("Error", `Please Enter A Reason For Putting On Hold.`);
@@ -248,10 +249,18 @@ export class StandardTaskComponent implements OnInit {
             } else if (this.stdHOFReview.controls['reason'].value == '') {
                 this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
             } else {
-                this.submitTask();
+                if (this.stdHOFReview.valid) {
+                    this.submitTask();
+                }
+
             }
             this.SpinnerService.hide();
             return;
+        }
+        if (this.stdHOFReview.controls['sdResult'].value == 'Approve For Review') {
+            this.stdHOFReview.controls['rejectionReason'].setValue('');
+            this.stdHOFReview.controls['reason'].setValue('');
+            this.stdHOFReview.controls['link'].setValue('');
         }
 
         if (!this.stdHOFReview.valid) {
@@ -272,13 +281,18 @@ export class StandardTaskComponent implements OnInit {
             return;
         }
 
-        if (this.stdHOFReview.controls['isTcSec'].value == '1' && this.stdHOFReview.controls['isTc'].value == '') {
-            this.showToasterError("Error", `Please Select A Technical Committee Secretary`);
+        if (
+            this.stdHOFReview.controls['isTcSec'].value === '1' &&
+            (typeof this.stdHOFReview.controls['isTc'].value === 'undefined' ||
+                this.stdHOFReview.controls['isTc'].value === "")
+        ) {
+            this.showToasterError("Error", "Please Select A Technical Committee Secretary");
             this.SpinnerService.hide();
             return;
         }
 
         this.submitTask();
+
     }
 
     private submitTask(): void {
@@ -286,7 +300,7 @@ export class StandardTaskComponent implements OnInit {
             (response) => {
                 this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                 this.SpinnerService.hide();
-                this.getOnHoldTasks();
+                this.loading=false
                 this.getHOFTasks();
                 this.stdHOFReview.reset();
                 this.hideModel();
@@ -294,6 +308,8 @@ export class StandardTaskComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 alert(error.message);
                 this.SpinnerService.hide();
+                this.loading=false
+
             }
         );
     }
@@ -500,17 +516,25 @@ export class StandardTaskComponent implements OnInit {
     }
 
     onSelectTc(selectedValue: any): void {
-        console.log('Selected TC:', selectedValue);
+        if (typeof selectedValue !== 'undefined' && selectedValue !== "") {
+            this.standardDevelopmentService.getTechnicalCommitteeSec(selectedValue).subscribe(
+                (response: DataHolder[]) => {
+                    console.log(response);
+                    this.tcSecs = response
+                    this.filteredTc = undefined; // Reset the filteredTc value when no option is selected
 
-        this.standardDevelopmentService.getTechnicalCommitteeSec(selectedValue).subscribe(
-            (response: DataHolder[]) => {
-                console.log(response);
-                this.tcSecs = response
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            );
+        }
+    }
+
+    onIsTcChange(value: any) {
+        if (value) {
+            this.stdHOFReview.get('isTc').reset();
+        }
     }
 
     // onSelectTc(value: any): any {
@@ -529,6 +553,7 @@ export class StandardTaskComponent implements OnInit {
 
     @ViewChild('tcSelect') tcSelect: any;
 
+// Custom validator function for link validation
 
 }
 

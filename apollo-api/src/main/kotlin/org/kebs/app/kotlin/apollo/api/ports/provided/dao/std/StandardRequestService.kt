@@ -287,7 +287,7 @@ class StandardRequestService(
                     val subject = "Request Declination"
                     val body = buildString {
                         append("Dear ${standardRequestToUpdate.name},\n\n")
-                        append("Your request has been declined because of ${hofFeedback.rejectionReason}.\n")
+                        append("Your request has been declined because of ${hofFeedback.reason}.\n")
                         if (hofFeedback.link != null) {
                             append("Kindly click on the link and follow the instructions.\n")
                             append("${hofFeedback.link}\n")

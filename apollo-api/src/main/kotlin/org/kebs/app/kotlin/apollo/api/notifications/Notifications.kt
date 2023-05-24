@@ -311,7 +311,8 @@ class Notifications(
         recipientEmail: String,
         subject: String,
         docFiles: List<MultipartFile>?,
-        context: Context
+        context: Context,
+        base64Image: String?
 
     ) {
         KotlinLogging.logger { }.info("Sending email to=$recipientEmail, Attachments=$docFiles")
@@ -356,10 +357,19 @@ class Notifications(
 
             val messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setContent(emailContent, "text/html; charset=utf-8")
-
-//            messageBodyPart.setText(messageText)
             val multipart: Multipart = MimeMultipart()
             multipart.addBodyPart(messageBodyPart)
+            val multiPart = MimeMultipart("alternative")
+            val rawImage = Base64.getDecoder().decode(base64Image)
+            val imagePart = MimeBodyPart()
+            val imageDataSource = ByteArrayDataSource(rawImage, "image/png")
+
+            imagePart.dataHandler = DataHandler(imageDataSource)
+            imagePart.setHeader("Content-ID", "<qrImage>")
+            imagePart.fileName = "someFileName.png"
+
+            multipart.addBodyPart(imagePart)
+
 
             if (docFiles != null) {
                 for (docFile in docFiles) {
@@ -388,6 +398,10 @@ class Notifications(
 //            KotlinLogging.logger { }.error(e.message, e)
 //        }
     }
+
+
+
+
 
 
 
