@@ -185,7 +185,7 @@ export class RequestStandardFormComponent implements OnInit {
             // }
            // e164Number:"+254702882256"
             let Data:any = this.stdRequestFormGroup.controls['phone'].value;
-            this.stdRequestFormGroup.controls['phone'].setValue(Data.e164Number)
+            this.stdRequestFormGroup.controls['phone'].setValue(Data.e164Number.replace('+', ''))
             this.SpinnerService.show();
             this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
                 (response) => {

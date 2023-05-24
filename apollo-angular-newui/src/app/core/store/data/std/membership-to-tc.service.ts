@@ -269,18 +269,16 @@ export class MembershipToTcService {
         const params = new HttpParams()
             .set('tCApplicationId', String(tCApplicationId))
             .set('decision', String(decision))
-
-        return this.http.post<ReviewApplicationTask>(`${this.apiMembershipToTCUrl}` + 'forwardToHodIct',
-            reviewApplicationTask, {params, responseType: 'arraybuffer' as 'json'})
-            .pipe(
-                map(function (response: any) {
-                    return response;
-                }),
-                catchError((fault: HttpErrorResponse) => {
-                    // console.warn(`getAllFault( ${fault.message} )`);
-                    return throwError(fault);
-                })
-            );
+        const url = `${this.apiMembershipToTCUrl}` + 'forwardToHodIct';
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
     }
 
 

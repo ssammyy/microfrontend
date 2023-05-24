@@ -129,7 +129,7 @@ export class SubmitApplicationComponent implements OnInit,AfterViewInit {
             tcId: ['', Validators.required],
             organisationClassification: ['', Validators.required],
             organisationName: ['', Validators.required],
-            nomineeName: ['', Validators.required],
+            nomineeName: ['', [Validators.required, Validators.minLength(10)]],
             position: ['', Validators.required],
             postalAddress: ['', Validators.required],
             mobileNumber: ['', Validators.required],
@@ -282,7 +282,7 @@ export class SubmitApplicationComponent implements OnInit,AfterViewInit {
 
             else {
                 let Data: any = this.applicationToATcFormGroup.controls['mobileNumber'].value;
-                this.applicationToATcFormGroup.controls['mobileNumber'].setValue(Data.e164Number)
+                this.applicationToATcFormGroup.controls['mobileNumber'].setValue(Data.e164Number.replace('+', ''))
                 this.SpinnerService.show();
                 this.membershipToTcService.onSubmitApplication(this.applicationToATcFormGroup.value).subscribe(
                     (response) => {
@@ -366,6 +366,14 @@ export class SubmitApplicationComponent implements OnInit,AfterViewInit {
         field2Control.updateValueAndValidity();
         field2Control3.updateValueAndValidity();
 
+    }
+
+    getErrorMessage(fieldName: string): string {
+        const field = this.applicationToATcFormGroup.get(fieldName);
+        if (field && field.errors && field.errors.minlength) {
+            return 'Minimum length is 10 characters.';
+        }
+        return 'Please Enter The Nominee Full Names';
     }
 
 

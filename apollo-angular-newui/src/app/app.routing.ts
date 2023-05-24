@@ -368,6 +368,9 @@ import {ReviewNscComponent} from "./apollowebs/standards-development/membershipT
 import {TcManagementComponent} from "./apollowebs/admin/tc-management/tc-management.component";
 import {ManageTcMembersComponent} from "./apollowebs/admin/manage-tc-members/manage-tc-members.component";
 import {QaAdminFixesComponent} from "./apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component";
+import {
+    ApproveMembersForTcCreationComponent
+} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
 
 export const routes: Routes = [
     {
@@ -1697,6 +1700,12 @@ export const routes: Routes = [
     {
         path: 'sdAdmin/manageTcMembers/:id', component: AdminLayoutComponent,
         children: [{path: '', component: ManageTcMembersComponent}],
+    },
+    {
+        path: 'sdAdmin/approvedMembers',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ApproveMembersForTcCreationComponent}],
     },
     {
         path: 'productCategory', component: AdminLayoutComponent,

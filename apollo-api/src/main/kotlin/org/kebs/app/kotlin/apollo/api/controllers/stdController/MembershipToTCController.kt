@@ -240,14 +240,13 @@ class MembershipToTCController(
         return membershipToTCService.getApprovedEmail()
     }
 
-    @PostMapping("/membershipToTC/forwardToHodIct")
+    @GetMapping("/membershipToTC/forwardToHodIct")
     @ResponseBody
     fun forwardToHodIct(
-        @RequestBody membershipTCApplication: MembershipTCApplication,
         @RequestParam("tCApplicationId") tCApplicationId: Long,
         @RequestParam("decision") decision: String //scope
-    ) {
-        return membershipToTCService.decisionOnApprovedHof(membershipTCApplication, tCApplicationId, decision)
+    )  :ResponseEntity<String>{
+        return membershipToTCService.decisionOnApprovedHof( tCApplicationId, decision)
 
     }
 
