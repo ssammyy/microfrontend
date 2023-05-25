@@ -183,7 +183,7 @@ class IntStandardService(
 
        val proposalNo= "$startId/$proposalId:$year";
 
-        isAdoptionProposalRepository.findByIdOrNull(isAdoptionProposalDto.requestId)?.let { prn ->
+        isAdoptionProposalRepository.findByIdOrNull(proposal.id)?.let { prn ->
 
             with(prn) {
                 proposalNumber=proposalNo
