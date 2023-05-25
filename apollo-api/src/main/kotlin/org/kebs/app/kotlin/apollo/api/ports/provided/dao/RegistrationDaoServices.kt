@@ -37,6 +37,7 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.Gson
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -811,6 +812,7 @@ class RegistrationDaoServices(
             entry= "${prefixText}${genNumber}"
 
             stdLevyEntryNoDataMigrationEntityRepository.findByIdOrNull(insertId.id)?.let { slEntry ->
+
 
                 with(slEntry) {
                     entryCount=insertId.id

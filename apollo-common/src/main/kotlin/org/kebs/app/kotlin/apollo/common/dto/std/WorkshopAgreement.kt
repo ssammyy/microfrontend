@@ -404,6 +404,34 @@ data class ISAdoptionProposalDto(
 
 }
 
+data class ISAdoptionProposalDtos(
+    var proposal_doc_name: String?=null,
+    var circulationDate: Timestamp,
+    var tcSecName: String,
+    var title: String,
+    var requestId: Long?=null,
+    var scope: String,
+    var iStandardNumber: String,
+    var adoptionAcceptableAsPresented: String?=null,
+    var reasonsForNotAcceptance: String?=null,
+    var recommendations: String?=null,
+    var nameOfRespondent: String?=null,
+    var positionOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var dateOfApplication: String?=null,
+    var adoptionProposalLink: String?=null,
+    var uploadedBy: String?=null,
+    var stakeholdersList: MutableList<NamesList>?=null,
+    //var addStakeholdersList: List<String>?=null,
+    var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
+    var departmentId: Long?=null,
+    var departmentName: String?=null,
+    var tcSecAssigned: String?=null
+
+){
+
+}
+
 data class IStakeholderDTO(
 
     var stakeHolderEmail: String?=null,
