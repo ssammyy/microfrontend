@@ -248,9 +248,7 @@ class MembershipToTCService(
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
-        return membershipTCRepository.findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals(
-            "APPROVED"
-        )
+        return membershipTCRepository.findByApprovedByOrganizationAndStatusIsNotNull("APPROVED")
 
     }
 
@@ -535,6 +533,7 @@ class MembershipToTCService(
                 tcId = u.tcId!!
                 userId = user.id!!
                 status = 1
+                organization = u.organisationName
                 createdBy = loggedInUser.id?.toString()
                 createdOn = Timestamp.from(Instant.now())
             }

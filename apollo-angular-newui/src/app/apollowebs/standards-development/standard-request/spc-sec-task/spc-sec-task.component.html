@@ -72,7 +72,7 @@
 
                                             <a (click)="onOpenModal(tcTask,'reject')" type="button"
                                                class="btn btn-danger tooltips" data-placement="top"
-                                               data-original-title="Reject">Reject</a>
+                                               data-original-title="Reject">Decline</a>
                                             <br>
 
 
@@ -194,7 +194,7 @@
 
                                                 <div class="row">
                                                     <div class=" col-12">
-                                                        <label><b>Provide reason for rejecting</b></label>
+                                                        <label><b>Provide reason for deferring</b></label>
                                                         <textarea
                                                                 aria-describedby="inputGroup-sizing-sm" ngModel
                                                                 name="reason" id="reason" aria-label="Small"
@@ -206,7 +206,7 @@
 
                                             </div>
                                             <input hidden ngModel="{{actionRequest?.id}}" name="justificationId">
-                                            <input hidden ngModel="Rejected" name="decision">
+                                            <input hidden ngModel="Declined" name="decision">
 
 
                                             <div class="modal-footer">
@@ -214,7 +214,7 @@
                                                         (click)="hideModelB()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-danger"
-                                                        (click)="decisionOnJustification(editFormRejected.value)">Reject
+                                                        (click)="decisionOnJustification(editFormRejected.value)">Decline
                                                 </button>
                                             </div>
                                         </form>
@@ -289,14 +289,14 @@
 
                                             </div>
                                             <input hidden ngModel="{{actionRequest?.id}}" name="justificationId">
-                                            <input hidden ngModel="Rejected With Amendments" name="decision">
+                                            <input hidden ngModel="Deffered With Amendments" name="decision">
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" #closeViewModalD
                                                         (click)="hideModelD()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-danger"
                                                         (click)="decisionOnJustification(editFormRejectWithAmendments.value)">
-                                                    Differ
+                                                    Deffer
                                                 </button>
                                             </div>
                                         </form>

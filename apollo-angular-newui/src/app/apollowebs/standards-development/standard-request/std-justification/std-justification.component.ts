@@ -150,7 +150,6 @@ export class StdJustificationComponent implements OnInit {
             stdJustification.edition == '' ||
             stdJustification.requestedBy == '' ||
             stdJustification.scope == '' ||
-            stdJustification.ksIsoNumber == '' ||
             stdJustification.purpose == '' ||
             stdJustification.intendedUsers == '' ||
             stdJustification.tcAcceptanceDate == '') {

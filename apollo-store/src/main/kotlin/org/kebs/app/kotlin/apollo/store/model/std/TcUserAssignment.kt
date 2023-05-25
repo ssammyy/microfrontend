@@ -25,13 +25,13 @@ class TcUserAssignment : Serializable {
     @Basic
     var status: Int? = null
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "ORGANISATION")
     @Basic
-    var varField1: String? = null
+    var organization: String? = null
 
-    @Column(name = "VAR_FIELD_2")
+    @Column(name = "PRINCIPAL")
     @Basic
-    var varField2: String? = null
+    var principal: String? = null
 
     @Column(name = "VAR_FIELD_3")
     @Basic
