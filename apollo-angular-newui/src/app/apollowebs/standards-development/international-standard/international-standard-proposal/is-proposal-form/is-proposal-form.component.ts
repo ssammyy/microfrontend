@@ -196,7 +196,7 @@ export class IsProposalFormComponent implements OnInit {
         (response) => {
           //console.log(response);
           this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `Proposal Uploaded`);
+            this.showToasterSuccess('Success', `Proposal Uploaded`);
           //this.onClickSaveUPLOADS(response.body.id)
           this.isProposalFormGroup.reset();
           this.getIntStandardProposals();
