@@ -589,6 +589,8 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
 
 interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionProposal>
+    @Query(value = "SELECT max(ID)  FROM SD_ADOPTION_PROPOSAL", nativeQuery = true)
+    fun getMaxProposal(): Long
 
     @Query(
         value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
