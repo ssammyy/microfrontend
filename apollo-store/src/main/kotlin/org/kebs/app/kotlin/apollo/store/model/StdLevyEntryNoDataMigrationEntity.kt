@@ -30,7 +30,7 @@ class StdLevyEntryNoDataMigrationEntity : Serializable{
 
     @Column(name = "ENTRY_NUMBERS")
     @Basic
-    var entryNumbers: Long? = null
+    var entryNumbers: Long? = 0
 
     @Column(name = "ENTRY_NUMBER")
     @Basic
@@ -38,7 +38,7 @@ class StdLevyEntryNoDataMigrationEntity : Serializable{
 
     @Column(name = "ENTRY_COUNT")
     @Basic
-    var entryCount: Long? = null
+    var entryCount: Long? = 0
 
 
 

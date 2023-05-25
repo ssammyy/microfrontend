@@ -140,7 +140,7 @@ class IntStandardService(
 
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(isAdoptionProposalDto: ISAdoptionProposalDto): ComStdDraft {
+    fun prepareAdoptionProposal(isAdoptionProposalDto: ISAdoptionProposalDtos): ComStdDraft {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
