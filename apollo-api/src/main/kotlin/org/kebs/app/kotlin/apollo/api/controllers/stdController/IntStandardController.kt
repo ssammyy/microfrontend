@@ -109,7 +109,7 @@ class IntStandardController(
     @PostMapping("/international_standard/prepareAdoptionProposal")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDto): ServerResponse{
+    fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDtos): ServerResponse{
 
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposalDto))
     }
