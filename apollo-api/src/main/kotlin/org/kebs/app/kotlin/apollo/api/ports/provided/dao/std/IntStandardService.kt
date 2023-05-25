@@ -172,13 +172,26 @@ class IntStandardService(
         iSAdoptionProposal.uploadedBy = isAdoptionProposalDto.uploadedBy
         iSAdoptionProposal.preparedDate = datePrepared
         iSAdoptionProposal.status = 0
-        iSAdoptionProposal.proposalNumber = getPRNumber()
         val deadline: Timestamp = Timestamp.valueOf(datePrepared.toLocalDateTime().plusDays(30))
         iSAdoptionProposal.deadlineDate = deadline
 
         val proposal = isAdoptionProposalRepository.save(iSAdoptionProposal)
 
         val proposalId = proposal.id
+        var startId = "PR"
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+       val proposalNo= "$startId/$proposalId:$year";
+
+        isAdoptionProposalRepository.findByIdOrNull(isAdoptionProposalDto.requestId)?.let { prn ->
+
+            with(prn) {
+                proposalNumber=proposalNo
+
+            }
+            isAdoptionProposalRepository.save(prn)
+        } ?: throw Exception("PROPOSAL NOT FOUND")
+
 
         val cs = ComStdDraft()
         cs.draftNumber = getDRNumber()
