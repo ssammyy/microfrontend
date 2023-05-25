@@ -685,7 +685,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'department', title: 'Department Management', ab: 'DM', privilege: ['SYSADMIN_VIEW']},
             {path: 'technicalCommittee', title: 'TC Management', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
             {path: 'technicalCommitteeManagement', title: 'TC Members', ab: 'TM', privilege: ['SYSADMIN_VIEW']},
-            {path: 'Technical Committee', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
+            {path: 'approvedMembers', title: 'Approve Members', ab: 'AM', privilege: ['SYSADMIN_VIEW']},
 
         ],
         icontype: 'summarize',
@@ -867,7 +867,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isUploadDraft',
                 title: 'Upload Draft For Editing',
                 ab: 'UD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ', 'TC_SEC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
             },
             {
                 path: 'isCheckRequirements',
@@ -1030,12 +1030,6 @@ export const ROUTES: RouteInfo[] = [
                 path: 'approvedMembers',
                 title: 'Approved Members',
                 ab: 'AM',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
-            },
-            {
-                path: 'createCredentials',
-                title: 'Credentials Creation',
-                ab: 'CC',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'DI_SDT_SD_MODIFY']
             },
             {

@@ -62,7 +62,7 @@ export class TcManagementComponent implements OnInit {
 
     ngOnInit(): void {
         this.getTechnicalCommittee();
-        this.getTcSecs()
+        this.getTcMembers()
         this.dropdownSettings = {
             singleSelection: false,
             idField: 'id',
@@ -194,29 +194,38 @@ export class TcManagementComponent implements OnInit {
         this.loading = true;
         this.SpinnerService.show();
         const tcId = formValue.tcId;
-        const tcMembers = this.selectedItems.map(item => ({tcId, userId: item.id}));
+        const organization = formValue.organization;
 
-        // Use the `tcMembers` array as needed for further processing or submission
-        this.standardDevelopmentService.assignTcMembers(tcMembers).subscribe(
-            (response: any) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Members Successfully Assigned`);
-                this.getTechnicalCommittee();
-                this.hideModelB();
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide();
-                this.hideModelB();
+        const tcMembers = this.selectedItems.map(item => ({tcId, organization,userId: item.id}));
+
+        console.log(formValue.organization)
 
 
-            }
-        )
+
+
+            // Use the `tcMembers` array as needed for further processing or submission
+            this.standardDevelopmentService.assignTcMembers(tcMembers).subscribe(
+                (response: any) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Members Successfully Assigned`);
+                    this.getTechnicalCommittee();
+                    this.hideModelB();
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                    this.SpinnerService.hide();
+                    this.hideModelB();
+
+
+                }
+            )
+
+
 
     }
 
-    public getTcSecs(): void {
-        this.standardDevelopmentService.getTcSec().subscribe(
+    public getTcMembers(): void {
+        this.standardDevelopmentService.getTcMembers().subscribe(
             (response: UsersEntity[]) => {
                 this.tcSecs = response;
                 this.dropdownList = response.map(tcSec => ({...tcSec, fullName: this.getFullName(tcSec)}));

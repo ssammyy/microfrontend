@@ -353,8 +353,6 @@ class Notifications(
             )
             //val messageText = message
             val emailContent = templateEngine.process("email-template.html", context)
-            println(emailContent)
-
             val messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setContent(emailContent, "text/html; charset=utf-8")
             val multipart: Multipart = MimeMultipart()

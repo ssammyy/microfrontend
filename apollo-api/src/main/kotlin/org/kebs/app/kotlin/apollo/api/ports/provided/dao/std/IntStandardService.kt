@@ -140,7 +140,7 @@ class IntStandardService(
 
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(isAdoptionProposalDto: ISAdoptionProposalDto): ComStdDraft {
+    fun prepareAdoptionProposal(isAdoptionProposalDto: ISAdoptionProposalDtos): ComStdDraft {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
@@ -172,13 +172,26 @@ class IntStandardService(
         iSAdoptionProposal.uploadedBy = isAdoptionProposalDto.uploadedBy
         iSAdoptionProposal.preparedDate = datePrepared
         iSAdoptionProposal.status = 0
-        iSAdoptionProposal.proposalNumber = getPRNumber()
         val deadline: Timestamp = Timestamp.valueOf(datePrepared.toLocalDateTime().plusDays(30))
         iSAdoptionProposal.deadlineDate = deadline
 
         val proposal = isAdoptionProposalRepository.save(iSAdoptionProposal)
 
         val proposalId = proposal.id
+        var startId = "PR"
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+       val proposalNo= "$startId/$proposalId:$year";
+
+        isAdoptionProposalRepository.findByIdOrNull(proposal.id)?.let { prn ->
+
+            with(prn) {
+                proposalNumber=proposalNo
+
+            }
+            isAdoptionProposalRepository.save(prn)
+        } ?: throw Exception("PROPOSAL NOT FOUND")
+
 
         val cs = ComStdDraft()
         cs.draftNumber = getDRNumber()
@@ -1666,7 +1679,7 @@ class IntStandardService(
             comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
 
                 with(comStdDraft) {
-                    status = 4
+                    status = 5
                 }
                 comStdDraftRepository.save(comStdDraft)
 

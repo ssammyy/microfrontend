@@ -16,14 +16,14 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title"><b>EMAIL APPROVED: AWAITING CREATION OF ACCOUNT</b></h4>
+                        <h4 class="card-title"><b>KIMS Account Creation</b></h4>
                     </div>
 
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
                                 <div class="d-flex flex-wrap align-items-center">
-                                    <h5 class="mr-4">EMAIL APPROVED: AWAITING CREATION OF ACCOUNT</h5>
+                                    <h5 class="mr-4">KIMS Account Creation</h5>
                                     <div class="resolved-pill">
                                         <p>{{tcTasks.length}}</p>
                                     </div>
@@ -51,12 +51,12 @@
                                     <td>{{i + 1}}</td>
                                     <td>{{tcTask.nomineeName}}</td>
                                     <td>{{tcTask.email}}</td>
-                                    <td>+254{{tcTask.mobileNumber}}</td>
+                                    <td>{{tcTask.mobileNumber}}</td>
                                     <td>{{tcTask.technicalCommittee}}</td>
-                                    <td><span class="badge badge-success">Email Approved: Awaiting Creation Of Account</span></td>
+                                    <td><span class="badge badge-success">Email Approved</span></td>
 
                                     <td><a type="button" (click)="onOpenModal(tcTask)" class="btn btn-success tooltips"
-                                           data-placement="top" data-original-title="View Application">View</a></td>
+                                           data-placement="top" data-original-title="View Application">Create Account</a></td>
 
                                 </tr>
                                 </tbody>
@@ -71,7 +71,8 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="updateExampleModalLabel">
-                                            EMAIL APPROVED: AWAITING CREATION OF ACCOUNT {{actionRequest?.nomineeName}}</h5>
+                                            Create {{actionRequest?.nomineeName}}
+                                            Account </h5>
                                         <button type="button" #closeViewModal class="close" data-dismiss="modal"
                                                 aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -79,25 +80,6 @@
                                     </div>
                                     <form #editForm="ngForm" class="form">
                                         <input hidden ngModel="{{actionRequest?.email}}" name="email" id="email">
-
-                                        <!--                                        <div class="row">-->
-                                        <!--                                            <div class=" col-12">-->
-                                        <!--                                                <ul class="list-group">-->
-                                        <!--                                                    <li class="list-group-item active">Standard Request Details</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Name: " + actionRequest?.nomineeName}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Phone: " + actionRequest?.mobileNumber}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Email: " + actionRequest?.email}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Organization: " + actionRequest?.organization}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Technical Committee: " + actionRequest?.technicalCommittee}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Authorizing Person Email: " + actionRequest?.authorisingPersonEmail}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Authorizing person name: " + actionRequest?.authorizingName}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Position: " + actionRequest?.position}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Postal Address: " + actionRequest?.postalAddress}}</li>-->
-                                        <!--                                                    <li class="list-group-item">{{"Qualification: " + actionRequest?.qualifications}}</li>-->
-                                        <!--                                                </ul>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </div>-->
-
                                         <div class="card-body">
                                             <form>
                                                 <div class="row">
@@ -177,8 +159,8 @@
                                                 <div class="row">
                                                     <div class="col-md-10">
                                                         <li><a
-                                                               (click)="viewPdfFile( actionRequest?.id,'CV'+actionRequest?.id, 'application/pdf')"
-                                                               target="_blank">View Curriculum Vitae</a>
+                                                                (click)="viewPdfFile( actionRequest?.id,'CV'+actionRequest?.id, 'application/pdf')"
+                                                                target="_blank">View Curriculum Vitae</a>
                                                         </li>
                                                     </div>
                                                 </div>
@@ -189,7 +171,10 @@
 
                                         <div class="modal-footer">
 
-
+                                            <button class="btn btn-success"
+                                                    (click)="decisionOnApplications(editForm.value,actionRequest?.id,'YES')">
+                                                Create Account
+                                            </button>
                                         </div>
                                     </form>
 

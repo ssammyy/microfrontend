@@ -73,10 +73,10 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
 
+    fun findByCellphoneOrPersonalContactNumber(phoneNumber: String, personalContact:String): UsersEntity?
 
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
-
 
 
     fun findByUserPinIdNumber(userPinIdNumber: String): UsersEntity?
@@ -211,7 +211,6 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         nativeQuery = true
     )
     fun getUserPhone(@Param("email") email: String?): String?
-
 
 
 }
@@ -387,10 +386,10 @@ interface BranchDetailsRepository : HazelcastRepository<BranchDetailsEntity, Lon
 interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, Long> {
     fun findByStatus(status: Int): List<CompanyProfileEntity>?
 
-    fun findAllByStatus(status: Int):List<CompanyProfileEntity>
+    fun findAllByStatus(status: Int): List<CompanyProfileEntity>
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
 
-    fun findByName(companyName:String):CompanyProfileEntity?
+    fun findByName(companyName: String): CompanyProfileEntity?
     fun findByUserId(userId: Long): CompanyProfileEntity?
     fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
@@ -400,7 +399,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
 
-    fun findAllByVarField1IsNotNullOrderByIdDesc():List<CompanyProfileEntity>?
+    fun findAllByVarField1IsNotNullOrderByIdDesc(): List<CompanyProfileEntity>?
 
     @Query(
         value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
@@ -593,7 +592,6 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getCompanyName(@Param("id") id: Long?): String?
-
 
 
     @Query(

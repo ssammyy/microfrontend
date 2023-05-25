@@ -67,8 +67,8 @@ interface TcMembers {
     fun getLAST_NAME(): String?
     fun getTC_TITLE(): String?
     fun getLAST_MODIFIED_ON(): String?
-
-
+    fun getORGANISATION(): String?
+    fun getPRINCIPAL(): String?
 
 }
 interface UserTypeHolder {
