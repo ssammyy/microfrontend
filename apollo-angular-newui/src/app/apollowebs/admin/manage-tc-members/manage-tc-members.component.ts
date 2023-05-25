@@ -93,7 +93,9 @@ export class ManageTcMembersComponent implements OnInit {
             tc_TITLE: '',
             last_MODIFIED_ON: '',
             tc_ID: tcId,
-            user_ID: tcId
+            user_ID: tcId,
+            organisation: '',
+            principal:''
 
         };
 
@@ -127,7 +129,7 @@ export class ManageTcMembersComponent implements OnInit {
     }
 
 
-    removeMember(user_ID: number) {
+    removeMember(tc: number) {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -147,12 +149,57 @@ export class ManageTcMembersComponent implements OnInit {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.SpinnerService.show();
-                this.standardDevelopmentService.deleteTcMember(String(user_ID), this.tcs).subscribe(
+                this.standardDevelopmentService.deleteTcMember(tc).subscribe(
                     (response) => {
                         this.SpinnerService.hide();
                         swalWithBootstrapButtons.fire(
                             'Success!',
                             'Successfully Deleted!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.getTechnicalCommittee(this.tcId);
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You have cancelled this operation',
+                    'error'
+                );
+            }
+        });
+
+    }
+
+    setAsPrincipal(tc: number) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your want to Set This Member As Principal?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.standardDevelopmentService.setAsPrincipal(tc).subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Success!',
+                            'Successfully Set As Principal!',
                             'success'
                         );
                         this.SpinnerService.hide();

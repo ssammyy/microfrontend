@@ -83,6 +83,8 @@ export interface TechnicalCommitteeBc {
     title: string;
     first_NAME: string;
     last_NAME: string;
+    organisation: string;
+    principal:string;
     tc_TITLE: string;
     last_MODIFIED_ON: string;
     tc_ID: number,

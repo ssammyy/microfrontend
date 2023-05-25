@@ -39,7 +39,7 @@ interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long>
 
 
     @Query(
-        "SELECT t.ID, t.TC_ID, t.USER_ID, v.FIRST_NAME, v.LAST_NAME, a.TC_TITLE, (cast(c2.LAST_MODIFIED_ON  as varchar(200))) As LAST_MODIFIED_ON  " +
+        "SELECT t.ID, t.TC_ID, t.USER_ID, t.ORGANISATION,t.PRINCIPAL, v.FIRST_NAME, v.LAST_NAME, a.TC_TITLE, (cast(c2.LAST_MODIFIED_ON  as varchar(200))) As LAST_MODIFIED_ON  " +
                 "FROM SD_TC_USER_ASSIGNMENT t " +
                 "JOIN SD_TECHNICAL_COMMITTEE a ON a.ID = t.TC_ID " +
                 "JOIN APOLLO.DAT_KEBS_USERS v ON t.USER_ID = v.ID " +

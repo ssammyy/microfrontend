@@ -42,8 +42,12 @@
                                         <th class="id">No</th>
                                         <th class="task">First Name</th>
                                         <th class="task">Last Name</th>
+                                        <th class="task">Organisation</th>
                                         <th class="task">Last Login</th>
-                                        <th class="action">Action</th>
+                                        <th class="task">Assignment</th>
+                                        <th class="action">Principal</th>
+                                        <th class="action">Remove</th>
+
 
                                     </tr>
                                     </thead>
@@ -52,12 +56,26 @@
                                         <td>{{i + 1}}</td>
                                         <td>{{tcTask.first_NAME}}</td>
                                         <td>{{tcTask.last_NAME}}</td>
+                                        <td>{{tcTask.organisation}}</td>
                                         <td> {{tcTask.last_MODIFIED_ON}}</td>
-                                                                                <td>
-                                                                                    <a (click)="removeMember(tcTask.user_ID)" class="btn btn-danger"
-                                                                                       data-placement="top"
-                                                                                       data-original-title="Upload NWI">Remove</a>
-                                                                                </td>
+                                        <td>
+                                            <div *ngIf="tcTask.principal ==='1' ">
+                                                <span class="badge badge-info">Principal</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a *ngIf="tcTask.principal !=='1'"
+                                               (click)="setAsPrincipal(tcTask.id)" class="btn btn-info"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">Set As Principal</a>
+
+                                        </td>
+                                        <td>
+                                            <a (click)="removeMember(tcTask.id)" class="btn btn-danger"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">Remove</a>
+
+                                        </td>
 
                                     </tr>
                                     </tbody>
@@ -69,7 +87,6 @@
                     </div>
                 </div>
             </div>
-
 
 
         </div>
