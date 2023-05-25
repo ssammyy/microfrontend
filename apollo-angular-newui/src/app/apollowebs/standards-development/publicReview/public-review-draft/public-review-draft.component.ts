@@ -694,14 +694,14 @@ export class PublicReviewDraftComponent implements OnInit {
             (response  ) => {
                 //console.log(response);
                 this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
+                this.showToasterSuccess(response.httpStatus, `Notification Uploaded`);
                 this.onClickSaveUploads(response.body.savedRowID)
                 this.preparePreliminaryDraftFormGroup.reset();
 
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+                this.showToasterError('Error', `Notification Was not Uploaded`);
                 console.log(error.message);
             }
         );
