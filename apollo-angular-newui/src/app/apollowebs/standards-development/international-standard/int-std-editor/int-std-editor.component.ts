@@ -355,7 +355,7 @@ export class IntStdEditorComponent implements OnInit {
 
     }
 
-    submitDraftForEditing(): void {
+    submitDraftForEditing(draftId: string): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
         //console.log(this.uploadDraftStandardFormGroup.value)
@@ -363,7 +363,7 @@ export class IntStdEditorComponent implements OnInit {
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();
-                this.onClickSaveUploads(response.body.draftId)
+                this.onClickSaveUploads(draftId)
                 this.uploadDraftStandardFormGroup.reset();
                 this.getApprovedJustification();
                 this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
