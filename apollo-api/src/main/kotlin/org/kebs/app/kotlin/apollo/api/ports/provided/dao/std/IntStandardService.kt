@@ -1666,7 +1666,7 @@ class IntStandardService(
             comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
 
                 with(comStdDraft) {
-                    status = 4
+                    status = 5
                 }
                 comStdDraftRepository.save(comStdDraft)
 
