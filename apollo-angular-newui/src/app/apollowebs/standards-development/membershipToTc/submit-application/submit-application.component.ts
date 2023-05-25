@@ -10,8 +10,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {DatePipe} from "@angular/common";
 import swal from "sweetalert2";
 import {TechnicalCommittee} from "../../../../core/store/data/std/std.model";
-import {ErrorStateMatcher, MatOptionSelectionChange} from "@angular/material/core";
-import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
+import {ErrorStateMatcher} from "@angular/material/core";
+// import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
 import {DataHolder} from "../../../../core/store/data/std/request_std.model";
 import {take, takeUntil,} from 'rxjs/operators';
 import {ReplaySubject, Subject} from "rxjs";
@@ -74,10 +74,10 @@ export class SubmitApplicationComponent implements OnInit,AfterViewInit {
     removeValidation = false;
 
 
-    SearchCountryField = SearchCountryField;
-    CountryISO = CountryISO;
-    PhoneNumberFormat = PhoneNumberFormat;
-    preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
+    // SearchCountryField = SearchCountryField;
+    // CountryISO = CountryISO;
+    // PhoneNumberFormat = PhoneNumberFormat;
+    // preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
 
     public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
 
@@ -85,7 +85,7 @@ export class SubmitApplicationComponent implements OnInit,AfterViewInit {
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
 
     public websiteFilterCtrl: FormControl = new FormControl();
-    selectedTc:any
+    selectedTc: any
     @Output() onSelectionChange: EventEmitter<any> = new EventEmitter<any>();
     selectedTcId: string;
 

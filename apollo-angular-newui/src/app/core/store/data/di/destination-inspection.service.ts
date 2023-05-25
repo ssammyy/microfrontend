@@ -601,6 +601,7 @@ export class DestinationInspectionService {
         })
     }
 
+
     listAuctionCategories(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/auction/categories"))
     }

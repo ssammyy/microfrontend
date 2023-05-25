@@ -590,6 +590,10 @@ import {TcManagementComponent} from './apollowebs/admin/tc-management/tc-managem
 import {NcrCorCertificateComponent} from './apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component';
 import {ManageTcMembersComponent} from './apollowebs/admin/manage-tc-members/manage-tc-members.component';
 import {AllApplicationsRequestsComponent} from './apollowebs/standards-development/standard-request/standard-task/all-applications-requests/all-applications-requests.component';
+import {ListRiskProfilesComponent} from './apollowebs/pvoc/risk/list-risk-profiles/list-risk-profiles.component';
+import {ViewRiskProfilesComponent} from './apollowebs/pvoc/risk/view-risk-profiles/view-risk-profiles.component';
+import {ListQueriesComponent} from './apollowebs/pvoc/queries/list-queries/list-queries.component';
+import {ViewQueryComponent} from './apollowebs/pvoc/queries/view-query/view-query.component';
 
 @NgModule({
     imports: [
@@ -1234,6 +1238,10 @@ import {AllApplicationsRequestsComponent} from './apollowebs/standards-developme
         NcrCorCertificateComponent,
         ManageTcMembersComponent,
         AllApplicationsRequestsComponent,
+        ListRiskProfilesComponent,
+        ViewRiskProfilesComponent,
+        ListQueriesComponent,
+        ViewQueryComponent,
 
     ],
     entryComponents: [LoaderComponent],

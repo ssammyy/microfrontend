@@ -1,0 +1,139 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons ">dangerous</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="queryDetails">
+                            Query Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-12">
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab tabindex="0" label="Query Responses" [hidden]="!queryDetails.query">
+                                        <app-pvoc-query-card
+                                                [queryDetails]="queryDetails.query"
+                                                (queryChanged)="loadData()"
+                                        >
+                                        </app-pvoc-query-card>
+                                    </mat-tab>
+                                    <mat-tab tabindex="1" label="Query Details" [hidden]="!queryDetails.query">
+                                        <div class="row no_margin" *ngIf="queryDetails.query">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Cert No</label>
+                                                <p>{{queryDetails.query.certNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">UCR No</label>
+                                                <p>{{queryDetails.query.ucrNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Document Type</label>
+                                                <p>{{queryDetails.query.documentType}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Cert No</label>
+                                                <p>{{queryDetails.query.certNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">RFC No</label>
+                                                <p>{{queryDetails.query.rfcNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Origin</label>
+                                                <p>{{queryDetails.query.queryOrigin}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Serial Number</label>
+                                                <p>{{queryDetails.query.serialNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Query</label>
+                                                <p>{{queryDetails.query.query}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Conclusion</label>
+                                                <p>{{queryDetails.query.conclusion}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Analysis</label>
+                                                <p>{{queryDetails.query.queryAnalysis}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Opened By</label>
+                                                <p>{{queryDetails.query.opennedBy}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="2" label="PVOC Partner" [hidden]="!queryDetails.partner">
+                                        <div class="row no_margin" *ngIf="queryDetails.partner">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner Name</label>
+                                                <p>{{queryDetails.partner.partnerName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Email Address</label>
+                                                <p>{{queryDetails.partner.partnerEmail}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">KRA PIN Number</label>
+                                                <p>{{queryDetails.partner.partnerPin}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Telephone Number</label>
+                                                <p>{{queryDetails.partner.partnerTelephoneNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Main Address</label>
+                                                <p>{{queryDetails.partner.partnerAddress1}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Alternative Address</label>
+                                                <p>{{queryDetails.partner.partnerAddress2 | money}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Fax Number</label>
+                                                <p>{{queryDetails.partner.partnerFaxNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner Country</label>
+                                                <p>{{queryDetails.partner.partnerCountry}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner City</label>
+                                                <p>{{queryDetails.partner.partnerCity}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                                <div class="col-md-2 col-sm-12">
+                                    <b>Actions</b>
+                                    <br/>
+                                    <button class="btn btn-primary" *ngIf="queryDetails.query.rfcId"
+                                            (click)="viewRfcDetails(queryDetails.query.rfcId,queryDetails.query.rfcType)">
+                                        View RFC
+                                    </button>
+                                    <button class="btn btn-primary" *ngIf="queryDetails.query.cdId"
+                                            (click)="viewCdDetails(queryDetails.query.cdId)">View Consignment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

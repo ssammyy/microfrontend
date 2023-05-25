@@ -316,6 +316,20 @@ export const ROUTES: RouteInfo[] = [
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
             {
+                path: 'query',
+                title: 'Queries',
+                ab: 'PQ',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
+                // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'risk/profiles',
+                title: 'Risk Profiles',
+                ab: 'RP',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
+                // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
                 path: 'partners',
                 title: 'Partners',
                 ab: 'PP',

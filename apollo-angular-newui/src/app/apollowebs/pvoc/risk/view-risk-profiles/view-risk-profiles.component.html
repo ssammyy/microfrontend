@@ -1,0 +1,133 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons ">dangerous</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="queryDetails">
+                            Risk Profile Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body">
+                        <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                       appMatMultilineTab
+                                       class="tab-wraps">
+                            <mat-tab tabindex="0" label="Risk Profile" [hidden]="!queryDetails.risk">
+                                <div class="row no_margin" *ngIf="queryDetails">
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">HS COde</label>
+                                        <p>{{queryDetails.risk.hsCode}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Country Of Supply</label>
+                                        <p>{{queryDetails.risk.countryOfSupply}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Product Description</label>
+                                        <p>{{queryDetails.risk.productDescription}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Brand</label>
+                                        <p>{{queryDetails.risk.brandName}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Date Generated</label>
+                                        <p>{{queryDetails.risk.receivedOn}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Categorization Date</label>
+                                        <p>{{queryDetails.risk.categorizationDate}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Risk Level</label>
+                                        <p>{{queryDetails.risk.riskLevel}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Risk Description</label>
+                                        <p>{{queryDetails.risk.riskDescription}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Manufacturer</label>
+                                        <p>{{queryDetails.risk.manufacturer}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Remarks</label>
+                                        <p>{{queryDetails.risk.remarks}}</p>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab tabindex="1" label="Importer & Exporter" [hidden]="!queryDetails.risk">
+                                <div class="row no_margin" *ngIf="queryDetails">
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Importer Name</label>
+                                        <p>{{queryDetails.risk.importerName}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Importer PIN</label>
+                                        <p>{{queryDetails.risk.importerPin}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Exporter Name</label>
+                                        <p>{{queryDetails.risk.exporterName}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Exporter PIN</label>
+                                        <p>{{queryDetails.risk.exporterPin}}</p>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab tabindex="2" label="PVOC Partner" [hidden]="!queryDetails.partner">
+                                <div class="row no_margin" *ngIf="queryDetails">
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Partner Name</label>
+                                        <p>{{queryDetails.partner.partnerName}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Email Address</label>
+                                        <p>{{queryDetails.partner.partnerEmail}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">KRA PIN Number</label>
+                                        <p>{{queryDetails.partner.partnerPin}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Telephone Number</label>
+                                        <p>{{queryDetails.partner.partnerTelephoneNumber}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Main Address</label>
+                                        <p>{{queryDetails.partner.partnerAddress1}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Alternative Address</label>
+                                        <p>{{queryDetails.partner.partnerAddress2 | money}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Fax Number</label>
+                                        <p>{{queryDetails.partner.partnerFaxNumber}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Partner Country</label>
+                                        <p>{{queryDetails.partner.partnerCountry}}</p>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4">
+                                        <label class="waiver-form-label">Partner City</label>
+                                        <p>{{queryDetails.partner.partnerCity}}</p>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
