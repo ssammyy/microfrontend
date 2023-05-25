@@ -86,6 +86,10 @@ class PvocQueriesEntity : Serializable {
     @Basic
     var conclusion: String? = null
 
+    @Column(name = "CONCLUSION_BY", nullable = true)
+    @Basic
+    var conclusionBy: String? = null
+
     @Column(name = "CONCLUSION_DATE", nullable = true)
     var conclusionDate: Timestamp? = null
 

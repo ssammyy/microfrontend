@@ -361,16 +361,15 @@ import {UserRolesComponent} from "./apollowebs/system/user-roles/user-roles.comp
 import {IntStdNscApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-nsc-approval/int-std-nsc-approval.component";
 import {IntStdWebProposalComponent} from "./apollowebs/standards-development/international-standard/int-std-web-proposal/int-std-web-proposal.component";
 import {NcrCorCertificateComponent} from "./apollowebs/certificates/ncr-cor-certificate/ncr-cor-certificate.component";
-import {
-    AuthorizerApproveApplicationComponent
-} from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
+import {AuthorizerApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/authorizer-approve-application/authorizer-approve-application.component";
 import {ReviewNscComponent} from "./apollowebs/standards-development/membershipToTc/review-nsc/review-nsc.component";
 import {TcManagementComponent} from "./apollowebs/admin/tc-management/tc-management.component";
 import {ManageTcMembersComponent} from "./apollowebs/admin/manage-tc-members/manage-tc-members.component";
 import {QaAdminFixesComponent} from "./apollowebs/qualityAssuranceAdmin/qa-admin-fixes/qa-admin-fixes.component";
-import {
-    ApproveMembersForTcCreationComponent
-} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
+import {ListQueriesComponent} from "./apollowebs/pvoc/queries/list-queries/list-queries.component";
+import {ViewQueryComponent} from "./apollowebs/pvoc/queries/view-query/view-query.component";
+import {ListRiskProfilesComponent} from "./apollowebs/pvoc/risk/list-risk-profiles/list-risk-profiles.component";
+import {ViewRiskProfilesComponent} from "./apollowebs/pvoc/risk/view-risk-profiles/view-risk-profiles.component";
 
 export const routes: Routes = [
     {
@@ -947,6 +946,32 @@ export const routes: Routes = [
                     {
                         path: 'view/:id',
                         component: ViewPartnerDetailsComponent,
+                    },
+                ],
+            },
+            {
+                path: 'query',
+                children: [
+                    {
+                        path: '',
+                        component: ListQueriesComponent,
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewQueryComponent,
+                    },
+                ],
+            },
+            {
+                path: 'risk',
+                children: [
+                    {
+                        path: 'profiles',
+                        component: ListRiskProfilesComponent,
+                    },
+                    {
+                        path: 'profile/:id',
+                        component: ViewRiskProfilesComponent,
                     },
                 ],
             },
@@ -1700,12 +1725,6 @@ export const routes: Routes = [
     {
         path: 'sdAdmin/manageTcMembers/:id', component: AdminLayoutComponent,
         children: [{path: '', component: ManageTcMembersComponent}],
-    },
-    {
-        path: 'sdAdmin/approvedMembers',
-        component: AdminLayoutComponent,
-        // canActivate: [AuthGuard],
-        children: [{path: '', component: ApproveMembersForTcCreationComponent}],
     },
     {
         path: 'productCategory', component: AdminLayoutComponent,

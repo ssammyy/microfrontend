@@ -152,4 +152,19 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
         return ServerResponse.ok().body(pvocMonitoringService.getForeignCor(corId.toLong()))
     }
 
+    fun getRiskProfile(req: ServerRequest): ServerResponse {
+        val riskId = req.pathVariable("riskId")
+        return ServerResponse.ok().body(pvocMonitoringService.getRiskProfileDetails(riskId.toLong()))
+    }
+
+    fun listRiskProfiles(req: ServerRequest): ServerResponse {
+        val page = extractPage(req)
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok().body(
+            pvocMonitoringService.listRiskProfiles(
+                keywords,
+                page
+            )
+        )
+    }
 }

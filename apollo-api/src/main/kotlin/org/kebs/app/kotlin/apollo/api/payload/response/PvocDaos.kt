@@ -597,7 +597,7 @@ class PvocPartnerCountryDao {
     }
 }
 
-
+// PVOC API
 class RiskProfileDao {
     var hsCode: String? = null
     var brandName: String? = null
@@ -644,6 +644,59 @@ class RiskProfileDao {
     }
 }
 
+// Management UI
+class UiRiskProfileDao {
+    var riskId: Long? = null
+    var hsCode: String? = null
+    var brandName: String? = null
+    var productDescription: String? = null
+    var countryOfSupply: String? = null
+    var manufacturer: String? = null
+    var importerName: String? = null
+    var importerPin: String? = null
+    var exporterName: String? = null
+    var exporterPin: String? = null
+    var riskLevel: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var receivedOn: Timestamp? = null
+    var riskDescription: String? = null
+    var remarks: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var categorizationDate: java.sql.Date? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: RiskProfileEntity): UiRiskProfileDao {
+            return UiRiskProfileDao().apply {
+                riskId = pvocPartner.id
+                receivedOn = pvocPartner.createdOn
+                hsCode = pvocPartner.hsCode
+                brandName = pvocPartner.brandName
+                productDescription = pvocPartner.productDescription
+                countryOfSupply = pvocPartner.countryOfSupply
+                manufacturer = pvocPartner.manufacturer
+                importerName = pvocPartner.importerName
+                importerPin = pvocPartner.importerPin
+                exporterName = pvocPartner.exporterName
+                exporterPin = pvocPartner.exporterPin
+                riskLevel = pvocPartner.riskLevel
+                riskDescription = pvocPartner.riskDescription
+                remarks = pvocPartner.remarks
+                categorizationDate = pvocPartner.categorizationDate
+            }
+        }
+
+        fun fromList(timelines: List<RiskProfileEntity>): List<UiRiskProfileDao> {
+            val dtos = mutableListOf<UiRiskProfileDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
 class PvocQueryResponseDao {
     var serialNumber: String? = null
     var queryResponse: String? = null
@@ -674,6 +727,7 @@ class PvocQueryResponseDao {
     }
 }
 
+// Api Query responses
 class PvocPartnerQueryDao {
     var rfcNumber: String? = null
     var idfNumber: String? = null
@@ -722,6 +776,76 @@ class PvocPartnerQueryDao {
 
         fun fromList(timelines: List<PvocQueriesEntity>): List<PvocPartnerQueryDao> {
             val dtos = mutableListOf<PvocPartnerQueryDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+// UI Query interface
+class UiPvocPartnerQueryDao {
+    var queryId: Long? = null
+    var partnerId: Long? = null
+    var cdId: Long? = null
+    var rfcId: Long? = null
+    var rfcType: String? = null
+    var rfcNumber: String? = null
+    var idfNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var serialNumber: String? = null
+    var query: String? = null
+    var queryOrigin: String? = null
+    var response: String? = null
+    var conclusion: String? = null
+    var conclusionStatus: String? = null
+
+    var opennedBy: String? = null
+    var clossedBy: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateOpened: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateClosed: Timestamp? = null
+    var responses: List<PvocQueryResponseDao>? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: PvocQueriesEntity): UiPvocPartnerQueryDao {
+            return UiPvocPartnerQueryDao().apply {
+                queryId = pvocPartner.id
+                cdId = pvocPartner.cdId
+                rfcId = pvocPartner.rfcId
+                rfcType = pvocPartner.rfcType
+                rfcNumber = pvocPartner.rfcNumber
+                idfNumber = pvocPartner.idfNumber
+                invoiceNumber = pvocPartner.invoiceNumber
+                ucrNumber = pvocPartner.ucrNumber
+                documentType = pvocPartner.certType
+                certNumber = pvocPartner.certNumber
+                serialNumber = pvocPartner.serialNumber
+                query = pvocPartner.queryDetails
+                queryOrigin = pvocPartner.queryOrigin
+                response = pvocPartner.queryResponse
+                conclusion = pvocPartner.conclusion
+                conclusionStatus = when (pvocPartner.conclusionStatus) {
+                    1 -> "COMPLETED"
+                    else -> "PENDING"
+                }
+                dateOpened = pvocPartner.createdOn
+                dateClosed = pvocPartner.conclusionDate
+                responses = PvocQueryResponseDao.fromList(pvocPartner.responses.orEmpty())
+                opennedBy = pvocPartner.createdBy
+                clossedBy = pvocPartner.conclusionBy
+            }
+        }
+
+        fun fromList(timelines: List<PvocQueriesEntity>): List<UiPvocPartnerQueryDao> {
+            val dtos = mutableListOf<UiPvocPartnerQueryDao>()
             timelines.forEach {
                 dtos.add(fromEntity(it))
             }
