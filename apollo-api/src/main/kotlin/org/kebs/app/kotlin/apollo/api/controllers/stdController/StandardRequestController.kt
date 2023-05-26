@@ -253,6 +253,12 @@ class StandardRequestController(
         return (standardRequestService.decisionOnNWI(voteOnNWI))
     }
 
+    @PostMapping("standard/decisionOnNWIVoteOnBehalf")
+    @ResponseBody
+    fun decisionOnNWIVoteOnBehalf(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
+        return (standardRequestService.decisionOnNWIVoteOnBehalf(voteOnNWI))
+    }
+
     @PostMapping("standard/reVoteOnNWI")
     @ResponseBody
     fun reVoteOnNWI(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
@@ -635,6 +641,12 @@ class StandardRequestController(
     @GetMapping("standard/getAllTcSec")
     fun getAllTcSec(): List<UsersEntity> {
         return standardRequestService.getAllTcSec()
+    }
+
+    @GetMapping("standard/getTcPrincipalMembersToVote")
+    @ResponseBody
+    fun getTcPrincipalMembersToVote(@RequestParam("nwiId") nwiId: String): List<UsersEntity> {
+        return standardRequestService.getTcPrincipalMembersToVote(nwiId.toLong())
     }
 
     @GetMapping("standard/getTcMembers")

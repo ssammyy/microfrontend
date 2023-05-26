@@ -16,6 +16,16 @@ class VoteOnNWI {
     @Basic
     var userId: Long= 1
 
+    @Column(name = "VOTED_ON_BEHALF_ON_BY")
+    @Basic
+    var votedOnBehalfBy: Long? = 0
+
+
+    @Column(name = "VOTED_ON_BEHALF_ON_STATUS")
+    @Basic
+    var votedOnBehalfStatus: Long? = 0
+
+
     @Column(name = "NWI_ID")
     @Basic
     var nwiId: Long= 1
