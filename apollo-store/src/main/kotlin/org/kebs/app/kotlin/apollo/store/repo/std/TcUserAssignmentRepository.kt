@@ -16,6 +16,8 @@ interface TcUserAssignmentRepository : JpaRepository<TcUserAssignment, Long> {
 
     fun findByTcIdAndPrincipal(tcId:Long,principal: String):List<TcUserAssignment>?
 
+    fun findByUserId(userId:Long):List<TcUserAssignment>?
+
 
 
 }

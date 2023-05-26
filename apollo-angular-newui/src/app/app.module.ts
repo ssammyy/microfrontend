@@ -595,6 +595,9 @@ import {ViewRiskProfilesComponent} from './apollowebs/pvoc/risk/view-risk-profil
 import {ListQueriesComponent} from './apollowebs/pvoc/queries/list-queries/list-queries.component';
 import {ViewQueryComponent} from './apollowebs/pvoc/queries/view-query/view-query.component';
 
+import { ApproveMembersForTcCreationComponent } from './apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component';
+import { AllVotesByOtherTcMembersComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/all-votes-by-other-tc-members/all-votes-by-other-tc-members.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -1238,10 +1241,12 @@ import {ViewQueryComponent} from './apollowebs/pvoc/queries/view-query/view-quer
         NcrCorCertificateComponent,
         ManageTcMembersComponent,
         AllApplicationsRequestsComponent,
+        ApproveMembersForTcCreationComponent,
         ListRiskProfilesComponent,
         ViewRiskProfilesComponent,
         ListQueriesComponent,
         ViewQueryComponent,
+        AllVotesByOtherTcMembersComponent,
 
     ],
     entryComponents: [LoaderComponent],

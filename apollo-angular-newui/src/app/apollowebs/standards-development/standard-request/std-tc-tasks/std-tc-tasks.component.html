@@ -31,6 +31,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="allVotes" style="border-right: 1px solid #ccc; "
+                           (click)="tabChange('All Votes')" role="tablist">
+                            <i class="material-icons"></i>All Votes
+                        </a>
+                    </li>
+
 
                 </ul>
 
@@ -83,7 +90,7 @@
                                                 <td>{{tcTask.closingDate}}</td>
 
 
-                                                <td><a (click)="onOpenModal(tcTask,'edit')"
+                                                <td><a  *ngIf="canVote" (click)="onOpenModal(tcTask,'edit')"
                                                        class="btn btn-info tooltips"
                                                        data-placement="top"
                                                        data-original-title="Upload NWI">Vote on NWI</a></td>
@@ -305,6 +312,10 @@
 
                 <div *ngIf="id == 'My Votes'" class="w-100">
                     <app-tc-member-all-votes></app-tc-member-all-votes>
+
+                </div>
+                <div *ngIf="id == 'All Votes'" class="w-100">
+                    <app-all-votes-by-other-tc-members></app-all-votes-by-other-tc-members>
 
                 </div>
             </div>

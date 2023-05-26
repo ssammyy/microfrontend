@@ -320,6 +320,11 @@ interface NwiVotesTally {
     fun getNOTAPPROVED(): Long?
     fun getSTATUS(): String?
 
+    fun getNUMBER_OF_EXPECTED_VOTES(): Long?
+    fun getTC_ID(): String?
+
+
+
 
 }
 

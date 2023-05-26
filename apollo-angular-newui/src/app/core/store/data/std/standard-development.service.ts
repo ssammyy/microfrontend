@@ -181,6 +181,9 @@ export class StandardDevelopmentService {
     public getAllNwisLoggedInUserToVoteFor(): Observable<any> {
         return this.http.get<any>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
     }
+    public getVotingStatus(): Observable<any> {
+        return this.http.get<any>(`${this.apiServerUrl}` + 'getVotingStatus')
+    }
 
 
     //retrieve vote for logged in user
@@ -192,6 +195,19 @@ export class StandardDevelopmentService {
     //get Votes Analysis
     public getAllVotesTally(): Observable<any> {
         const url = `${this.apiServerUrl}getAllVotesTally`;
+
+        return this.http.get<VotesNwiTally>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAllVotesTallyOtherTcMembers(): Observable<any> {
+        const url = `${this.apiServerUrl}getAllVotesTallyOtherTcMembers`;
 
         return this.http.get<VotesNwiTally>(url).pipe(
             map(function (response: any) {
