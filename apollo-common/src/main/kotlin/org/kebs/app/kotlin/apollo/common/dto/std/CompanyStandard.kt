@@ -56,7 +56,15 @@ class IntStdDraftDecisionDto(
     var comments: String?=null,
     var accentTo: String?=null,
     var proposalId: Long?=null,
-    var draftId: Long?=null
+    var draftId: Long?=null,
+    var standardNumber: String,
+    var requestedBy: String,
+    var department: String,
+    var scope: String,
+    var circulationDate: Timestamp,
+    var closingDate: Timestamp,
+    var tcSecName: String,
+    var title: String,
 ){
 
 }

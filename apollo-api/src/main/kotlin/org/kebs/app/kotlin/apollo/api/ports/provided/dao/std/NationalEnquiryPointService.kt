@@ -494,8 +494,8 @@ class NationalEnquiryPointService(
         val closingDate=commonDaoServices.convertStringToTimestamp(nwiItem.closingDate)
         val circulationDate=commonDaoServices.convertStringToTimestamp(nwiItem.circulationDate)
         proposal.proposal_doc_name="Public Review Draft"
-        proposal.circulationDate=circulationDate
-        proposal.closingDate=closingDate
+        //proposal.circulationDate=circulationDate
+        //proposal.closingDate=closingDate
         proposal.tcSecName=userListRepository.findNameById(tcSecId)
         proposal.tcSecEmail=userListRepository.findEmailById(tcSecId)
         proposal.preparedDate=uploadedDate
