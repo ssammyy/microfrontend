@@ -168,13 +168,12 @@ class StandardRequestController(
     fun getHOFTasks(): List<TaskDetails> {
         return standardRequestService.getHOFTasks()
     }
+
     @GetMapping("standard/getTechnicalCommitteeSecretary")
     @ResponseBody
     fun getTcSecForTc(@RequestParam("tcId") tcId: Long): List<DataHolder> {
         return standardRequestService.getTechnicalCommitteeSec(tcId)
     }
-
-
 
 
     @GetMapping("standard/getAllApplications")
@@ -432,10 +431,12 @@ class StandardRequestController(
                     val newItemId = itemId.replace("/", ".")
                     purposeAnnexService.store(file, newItemId)
                 }
+
                 "RelevantDocumentsNWI" -> {
                     val newItemId = itemId.replace("/", ".")
                     relevantDocumentsNWIService.store(file, newItemId)
                 }
+
                 "ReferenceMaterialJustification" -> {
                     val newItemId = itemId.replace("/", ".")
                     referenceMaterialJustificationService.store(file, newItemId)
@@ -477,6 +478,7 @@ class StandardRequestController(
 
                 }.collect(Collectors.toList())
             }
+
             "RelevantDocumentsNWI" -> {
 
                 files = relevantDocumentsNWIService.getAllFiles(itemId).map { dbFile ->
@@ -495,6 +497,7 @@ class StandardRequestController(
 
                 }.collect(Collectors.toList())
             }
+
             "ReferenceMaterialJustification" -> {
 
                 files = referenceMaterialJustificationService.getAllFiles(itemId).map { dbFile ->
@@ -581,6 +584,7 @@ class StandardRequestController(
     fun getAllTcsWithMembers(): List<DataHolder> {
         return standardRequestService.getAllTcsWithMembers()
     }
+
     @GetMapping("standard/getTcsWithMembersDetails")
     fun getTcsWithMembersDetails(@RequestParam("tcId") tcId: Long): List<TcMembers> {
         return standardRequestService.getTcsWithMembersDetails(tcId)
@@ -632,6 +636,12 @@ class StandardRequestController(
     fun getAllTcSec(): List<UsersEntity> {
         return standardRequestService.getAllTcSec()
     }
+
+    @GetMapping("standard/getTcMembers")
+    fun getTcMembers(): List<UsersEntity> {
+        return standardRequestService.getTcMembers()
+    }
+
 
     @GetMapping("standard/getAllHofs")
     fun getAllHofs(): List<UsersEntity> {
@@ -836,6 +846,28 @@ class StandardRequestController(
         sm.message = "Documents Uploaded successfully"
 
         return sm
+    }
+
+    @PostMapping("standard/deleteMember")
+    @ResponseBody
+    fun deleteMember(@RequestParam("tcAssignmentId") tcAssignmentId: String): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Member Deleted",
+            standardRequestService.deleteMember(tcAssignmentId)
+        )
+    }
+
+    @PostMapping("standard/setAsPrincipal")
+    @ResponseBody
+    fun setAsPrincipal(
+        @RequestParam("tcAssignmentId") tcAssignmentId: String,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Member Deleted",
+            standardRequestService.setAsPrincipal(tcAssignmentId)
+        )
     }
 
 

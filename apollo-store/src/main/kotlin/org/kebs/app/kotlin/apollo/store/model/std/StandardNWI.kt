@@ -81,6 +81,20 @@ class StandardNWI {
     @Basic
     var nameOfTC: String? = null
 
+    @Column(name = "NAME_OF_DEPARTMENT")
+    @Basic
+    var nameOfDepartment: String? = null
+
+    @Column(name = "TC_ID")
+    @Basic
+    var tcId: String? = null
+
+
+    @Column(name = "DEPARTMENT_ID")
+    @Basic
+    var departmentId: Long? = 0
+
+
     @Column(name = "REFERENCE_NUMBER")
     @Basic
     var referenceNumber: String? = null
@@ -134,7 +148,6 @@ class StandardNWI {
     @Column(name = "DEFERRED_DATE")
     @Basic
     var deferredDate: Timestamp? = null
-
 
 
 }

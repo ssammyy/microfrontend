@@ -204,9 +204,7 @@ class StandardRequestService(
 
     }
 
-    fun getAllApplications():List<AllApplicationsStandardsDto>
-
-    {
+    fun getAllApplications(): List<AllApplicationsStandardsDto> {
         val standardRequest: List<StandardRequest> =
             standardRequestRepository.findAllByProcess("Develop a standard through committee draft")
         return standardRequest.map { p ->
@@ -493,9 +491,23 @@ class StandardRequestService(
 
         }
 
+
+
+        val technicalCommittee:TechnicalCommittee = technicalCommitteeRepository.findById(standardRequestToUpdate?.tcAssigned!!.toLong()).orElse(null)
+        val department:Department = departmentRepository.findById(standardRequestToUpdate.departmentId!!.toLong()).orElse(null)
+
+
+
+
         standardNWI.status = "Vote ON NWI"
         standardNWI.createdOn = Timestamp(System.currentTimeMillis())
         standardNWI.tcSec = loggedInUser.id.toString()
+        standardNWI.tcId = standardRequestToUpdate.tcAssigned
+        standardNWI.nameOfTC =technicalCommittee.title
+        standardNWI.nameOfDepartment=department.name
+        standardNWI.organization=department.name
+
+        standardNWI.departmentId = department.id
 
         standardNWIRepository.save(standardNWI)
         return ProcessInstanceResponseValue(standardNWI.id, "Complete", true, "standardNWI.id")
@@ -514,7 +526,7 @@ class StandardRequestService(
 
     fun getAllNwisLoggedInUserToVoteFor(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return standardNWIRepository.getPendingVoting(loggedInUser.id!!)
+        return standardNWIRepository.getPendingVotingUser(loggedInUser.id!!)
     }
 
 
@@ -838,11 +850,11 @@ class StandardRequestService(
 
             }
             if (decisionJustification.decision.equals("Rejected")) {
-                j.status = "Justification Rejected"
+                j.status = "Justification Declined"
                 standardJustificationRepository.save(j)
             }
             if (decisionJustification.decision.equals("Rejected With Amendments")) {
-                j.status = "Justification Rejected With Amendments"
+                j.status = "Justification Deferred With Amendments"
                 standardJustificationRepository.save(j)
             }
         }
@@ -879,7 +891,7 @@ class StandardRequestService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         return standardJustificationRepository.findByStatusAndTcSecretary(
-            "Justification Rejected",
+            "Justification Declined",
             loggedInUser.id.toString()
         )
     }
@@ -888,7 +900,7 @@ class StandardRequestService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         return standardJustificationRepository.findByStatusAndTcSecretary(
-            "Justification Rejected With Amendments",
+            "Justification Deferred With Amendments",
             loggedInUser.id.toString()
         )
     }
@@ -965,6 +977,7 @@ class StandardRequestService(
     fun getTechnicalCommittee(id: Long?): MutableList<TechnicalCommittee> {
         return technicalCommitteeRepository.findByDepartmentId(id)
     }
+
     fun getTechnicalCommitteeSec(tcId: Long?): List<DataHolder> {
         return technicalCommitteeRepository.findTcSecQuery(tcId)
     }
@@ -987,6 +1000,26 @@ class StandardRequestService(
         val users: MutableList<UsersEntity> = ArrayList()
 
         userRolesRepo.findByRoleNameAndStatus("TC_SEC_SD", 1)
+            ?.let { role ->
+                userRolesAssignRepo.findByRoleIdAndStatus(role.id, 1)
+                    ?.let { roleAssigns ->
+                        roleAssigns.forEach { roleAssign ->
+                            usersRepo.findByIdOrNull(roleAssign.userId)
+                                ?.let { user ->
+                                    users.add(user)
+                                }
+                        }
+                    }
+                    ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
+
+            }
+            ?: throw Exception("User role name does not exist")
+        return users
+    }
+    fun getTcMembers(): MutableList<UsersEntity> {
+        val users: MutableList<UsersEntity> = ArrayList()
+
+        userRolesRepo.findByRoleNameAndStatus("TC_SD", 1)
             ?.let { role ->
                 userRolesAssignRepo.findByRoleIdAndStatus(role.id, 1)
                     ?.let { roleAssigns ->
@@ -1329,6 +1362,54 @@ class StandardRequestService(
 
     fun standardReceivedReports(): MutableList<ReceivedStandards> {
         return standardRequestRepository.getReceivedStandardsReport()
+    }
+
+    fun deleteMember(tcAssignmentId: String) {
+        val tcMemberExisting: TcUserAssignment =
+            tcUserAssignmentRepository.findById(tcAssignmentId.toLong()).orElse(null)
+        tcUserAssignmentRepository.deleteById(tcMemberExisting.id)
+    }
+
+    fun setAsPrincipal(tcAssignmentId: String) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        //we are checking if this assignment exists first
+        val tcMemberExisting: TcUserAssignment =
+            tcUserAssignmentRepository.findById(tcAssignmentId.toLong()).orElse(null)
+
+        //lets us check if another user was assigned as 1 in same organisation. We hae found assignment exists
+        val assignments: Optional<TcUserAssignment> =
+            tcUserAssignmentRepository.findByOrganizationAndTcIdAndPrincipalIsNotNull(
+                tcMemberExisting.organization!!,
+                tcMemberExisting.tcId
+            )
+        if (assignments.isPresent) {
+            //assignment exists so we remove it
+            val nonNullAssignments: TcUserAssignment = assignments.get()
+            // Case 1: Non-null assignments
+            // Perform actions with the non-null assignments
+            nonNullAssignments.principal = null
+            nonNullAssignments.modifiedBy = loggedInUser.id.toString()
+            nonNullAssignments.modifiedOn = Timestamp(System.currentTimeMillis())
+            tcUserAssignmentRepository.save(nonNullAssignments)
+            tcMemberExisting.principal = "1"
+            tcMemberExisting.modifiedBy = loggedInUser.id.toString()
+            tcMemberExisting.modifiedOn = Timestamp(System.currentTimeMillis())
+            tcUserAssignmentRepository.save(tcMemberExisting)
+
+
+        } else {
+            // Case 2: Assignments is null or empty
+            // Perform actions when assignments is null or empty
+
+            tcMemberExisting.principal = "1"
+            tcMemberExisting.modifiedBy = loggedInUser.id.toString()
+            tcMemberExisting.modifiedOn = Timestamp(System.currentTimeMillis())
+            tcUserAssignmentRepository.save(tcMemberExisting)
+
+        }
+
+
     }
 
 }

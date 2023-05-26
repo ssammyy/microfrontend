@@ -12,6 +12,8 @@ interface MembershipTCRepository : JpaRepository<MembershipTCApplication,Long>{
     fun findByStatus(status: String): MutableList<MembershipTCApplication>
     fun findByVarField10(varField10: String): MembershipTCApplication?
 
-    fun findByStatusIsNullAndApprovedByOrganizationIsNotNullAndApprovedByOrganizationEquals(approvedByOrganisation: String): MutableList<MembershipTCApplication>
+    fun findByStatusIsNullAndApprovedByOrganizationIsNotNull(): MutableList<MembershipTCApplication>
+
+    fun findByApprovedByOrganizationAndStatusIsNotNull(approved:String):MutableList<MembershipTCApplication>
 
 }

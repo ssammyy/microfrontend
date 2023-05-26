@@ -26,6 +26,7 @@ class PvocMonitoringService(
     private val rfcCorRepository: IRfcCorRepository,
     private val cocItemRepository: ICocItemRepository,
     private val corBakRepository: ICorsBakRepository,
+    private val riskProfileRepository: IRiskProfileRepository,
     private val cocCoiRepository: ICocsRepository,
     private val pvocQuerriesRepository: IPvocQuerriesRepository,
     private val partnerService: PvocPartnerService,
@@ -405,6 +406,56 @@ class PvocMonitoringService(
             KotlinLogging.logger { }.error("Failed to load foreign COR", ex)
             response.message = "Failed to get record"
             response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    fun getRiskProfileDetails(riskId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val riskOptional = this.riskProfileRepository.findById(riskId)
+            if (riskOptional.isPresent) {
+                val responseData = mutableMapOf<String, Any?>()
+                responseData["risk"] = UiRiskProfileDao.fromEntity(riskOptional.get())
+                riskOptional.get().partnerId?.let {
+                    responseData["partner"] =
+                        partnerService.getPartner(it)?.let { it1 -> PvocPartnerDto.fromEntity(it1) }
+                }
+                response.data = responseData
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Risk profile not found"
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to load risk profile by id"
+        }
+        return response
+    }
+
+    fun listRiskProfiles(keywords: String?, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val risks = when {
+                keywords.isNullOrEmpty() -> this.riskProfileRepository.findAll(page)
+                else -> this.riskProfileRepository.findByHsCodeContainsOrCreatedByContains(
+                    keywords,
+                    keywords,
+                    page
+                )
+            }
+            response.data = UiRiskProfileDao.fromList(risks.toList())
+            response.pageNo = risks.number
+            response.totalCount = risks.totalElements
+            response.totalPages = risks.totalPages
+            // Response codes
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to load risk profiles"
         }
         return response
     }

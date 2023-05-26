@@ -14,6 +14,13 @@ interface IPvocQuerriesRepository:HazelcastRepository<PvocQueriesEntity,Long> {
     fun findAllBySerialNumber(cocNumber: String): PvocQueriesEntity?
     fun findByRfcNumber(rfcNumber: String): List<PvocQueriesEntity>
     fun findByCertNumberOrRfcNumber(cocNumber: String, rfcNumber: String): List<PvocQueriesEntity>?
+    fun findByCertNumberContainsOrRfcNumberContainsOrUcrNumberContains(
+        cocNumber: String,
+        rfcNumber: String,
+        ucrNumber: String,
+        pg: Pageable
+    ): Page<PvocQueriesEntity>
+
     fun countAllBySerialNumberStartsWith(prefix: String): Long
     fun findAllByPartnerIdAndConclusionStatus(partnerId: Long, conclusionStatus: Int, pg: Pageable): Page<PvocQueriesEntity>
 }

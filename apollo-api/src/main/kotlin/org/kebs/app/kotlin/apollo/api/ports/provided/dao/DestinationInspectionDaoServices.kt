@@ -2384,8 +2384,8 @@ class DestinationInspectionDaoServices(
         return Pair(sr, saveSSF)
     }
 
-    /** A document with chasis number is consindered a vehicle, however, if hs code is categorized otherwise, then
-     *   The document is categorized as categorized on the HS codes table.
+    /** A document with chasis number is not consindered a vehicle, however, if hs code is categorized otherwise, then
+     *   The document is categorized as categorized using the HS codes table.
      *
      *   @return Chassis Number and whether this is a vehicle (L/F COR document)
      * */
@@ -2395,7 +2395,7 @@ class DestinationInspectionDaoServices(
             if (item.isPresent) {
                 return this.hsCodesRepository.findByHsCode(item.get().itemHsCode ?: "")?.let {
                     Pair(item.get().chassisNumber, it.hscategory.equals("VEHICLE", true))
-                } ?: Pair(item.get().chassisNumber, true)
+                } ?: Pair(item.get().chassisNumber, false)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Not Vehicle with", ex)

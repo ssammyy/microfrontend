@@ -38,13 +38,13 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" id="approved-justification"
                            (click)="tabChange('Approved Justification')" role="tablist">
-                            <i class="material-icons"></i>Approved Justification
+                            <i class="material-icons"></i>Approved Justifications
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" id="rejected-justification"
                            (click)="tabChange('Rejected Justification')" role="tablist">
-                            <i class="material-icons"></i>Rejected Justification
+                            <i class="material-icons"></i>Declined Justifications
                         </a>
                     </li>
 
@@ -271,21 +271,8 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="form-group col-12">
-                                            <label><b>KS ISO Number</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{formActionRequest?.ksIsoNumber}}"
-                                                    name="ksIsoNumber"
-                                                    type="text">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
                                         <div class="form-group col-6">
-                                            <label><b>SPC Meeting Date</b></label>
+                                            <label><b>SPC Preparation Date</b></label>
                                             <mat-form-field>
                                                 <input matInput [matDatepicker]="picker" [min]="todayDate" placeholder="Spc Meeting Date" name="spcMeetingDate" required >
                                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

@@ -102,6 +102,9 @@ export class StandardDevelopmentService {
     public getTcSec(): any {
         return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getAllTcSec')
     }
+    public getTcMembers(): any {
+        return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getTcMembers')
+    }
     public getHofs(): any {
         return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getAllHofs')
     }
@@ -655,12 +658,29 @@ export class StandardDevelopmentService {
         });
     }
 
-    deleteTcMember(s: string, data: TechnicalCommitteeBc[]) {
+    deleteTcMember(data: number) {
         const url = `${this.apiServerUrl}deleteMember`;
         const params = new HttpParams()
-            .set('userId', s);
-        return this.http.post<TechnicalCommitteeBc>(url, data, {params}).pipe(
-            map(function (response: TechnicalCommitteeBc) {
+            .set('tcAssignmentId', String(data))
+
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+
+    }
+    setAsPrincipal(data: number) {
+        const url = `${this.apiServerUrl}setAsPrincipal`;
+        const params = new HttpParams()
+            .set('tcAssignmentId', String(data))
+
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
