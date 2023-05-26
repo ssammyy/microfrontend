@@ -68,6 +68,15 @@ export class IntStdProposalsComponent implements OnInit {
       comments:[],
         draftId:[],
 
+        standardNumber:[],
+        requestedBy:[],
+        department:[],
+        scope:[],
+        circulationDate:[],
+        closingDate:[],
+        tcSecName:[],
+        title:[]
+
     });
     this.rejectProposalFormGroup= this.formBuilder.group({
       accentTo:[],
@@ -129,7 +138,16 @@ export class IntStdProposalsComponent implements OnInit {
           {
             accentTo: this.approve,
             proposalId: this.actionRequest.id,
-              draftId: this.actionRequest.draftId
+              draftId: this.actionRequest.draftId,
+
+              standardNumber:this.actionRequest.standardNumber,
+              requestedBy:this.actionRequest.requesterName,
+              department:this.actionRequest.departmentId,
+              scope:this.actionRequest.scope,
+              circulationDate:this.actionRequest.circulationDate,
+              closingDate:this.actionRequest.closingDate,
+              tcSecName:this.actionRequest.tcSecName,
+              title:this.actionRequest.title
           }
       );
       this.rejectProposalFormGroup.patchValue(

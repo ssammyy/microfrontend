@@ -1052,6 +1052,15 @@ export interface InterNationalStdDecision {
     accentTo: string;
     proposalId: number;
     draftId: number;
+
+    standardNumber: string;
+    requestedBy: string;
+    department: string;
+    scope: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    tcSecName: string;
+    title: string;
 }
 
 export interface ISDecision {
@@ -2910,6 +2919,7 @@ export interface ISJustification {
     draftId: number;
     departmentId: number;
     standardType: string;
+    tcDecision: string;
 }
 
 export interface UploadedDataId {
