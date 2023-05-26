@@ -283,7 +283,14 @@
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                 </div>
-
+                                                                                <input type="hidden" formControlName="standardNumber" name="standardNumber" value="{{actionRequest?.standardNumber}}" >
+                                                                                <input type="hidden" formControlName="requestedBy" name="requestedBy" value="{{actionRequest?.requesterName}}" >
+                                                                                <input type="hidden" formControlName="department" name="department" value="{{actionRequest?.departmentId}}" >
+                                                                                <input type="hidden" formControlName="scope" name="scope" value="{{actionRequest?.scope}}" >
+                                                                                <input type="hidden" formControlName="circulationDate" name="circulationDate" value="{{actionRequest?.circulationDate}}" >
+                                                                                <input type="hidden" formControlName="closingDate" name="closingDate" value="{{actionRequest?.closingDate}}" >
+                                                                                <input type="hidden" formControlName="tcSecName" name="tcSecName" value="{{actionRequest?.tcSecName}}" >
+                                                                                <input type="hidden" formControlName="title" name="title" value="{{actionRequest?.title}}" >
                                                                                 <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.id}}" >
                                                                                 <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequest?.draftId}}" >
                                                                             </div>

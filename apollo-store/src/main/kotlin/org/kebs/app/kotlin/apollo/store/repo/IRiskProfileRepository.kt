@@ -19,5 +19,11 @@ interface IRiskProfileRepository : HazelcastRepository<RiskProfileEntity, Long> 
         page: Pageable
     ): Page<RiskProfileEntity>
 
+    fun findByHsCodeContainsOrCreatedByContains(
+        keywords: String,
+        clientId: String,
+        page: Pageable
+    ): Page<RiskProfileEntity>
+
     fun countByCreatedByAndHsCode(createdBy: String, hsCode: String): Long
 }

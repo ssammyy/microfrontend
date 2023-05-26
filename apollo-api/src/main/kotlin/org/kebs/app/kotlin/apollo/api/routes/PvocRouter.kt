@@ -75,6 +75,8 @@ class PvocRouter {
             GET("/foreign/cor", handler::listForeignCor)
             GET("/foreign/ncr-cor", handler::listForeignCor)
             GET("/foreign/cor/{corId}", handler::getForeignCor)
+            GET("/risk/profiles", handler::listRiskProfiles)
+            GET("/risk/profile/{riskId}", handler::getRiskProfile)
         }
     }
 
@@ -85,6 +87,8 @@ class PvocRouter {
             POST("/request", handler::pvocPartnerQueryRequest)
             POST("/conclusion", handler::pvocPartnerQueryConclusion)
             POST("/response", handler::pvocPartnerQueryResponse)
+            GET("/queries", handler::pvocListQueries)
+            GET("/details/{queryId}", handler::pvocGetQuery)
         }
     }
 

@@ -381,7 +381,7 @@ class IntStandardController(
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(comStdDraft,companyStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(comStdDraftDecisionDto))
 
     }
 

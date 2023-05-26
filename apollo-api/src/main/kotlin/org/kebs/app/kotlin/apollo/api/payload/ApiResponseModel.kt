@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
 import mu.KotlinLogging
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.servlet.function.ServerRequest
@@ -14,6 +15,14 @@ class ApiResponseModel {
     var errors: Any? = null
     var pageNo: Int? = null
     var totalPages: Int? = null
+    fun setPage(result: Page<*>, setPayload: Boolean = false) {
+        this.totalPages = result.totalPages
+        this.totalCount = result.totalElements
+        this.pageNo = result.number
+        if (setPayload) {
+            this.data = result.toList()
+        }
+    }
 }
 
 fun extractPage(req: ServerRequest, field: String = "id"): PageRequest {

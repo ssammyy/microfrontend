@@ -4,9 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.*
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerQueryDao
-import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTimelinesDataDto
-import org.kebs.app.kotlin.apollo.api.payload.response.RiskProfileDao
+import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdInspectionStatusEvent
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -663,6 +661,7 @@ class PvocAgentService(
                     val data = KebsQueryResponse()
                     if ("CONCLUSION".equals(form.responseType, true)) {
                         query.conclusion = form.queryResponse
+                        query.conclusionBy = commonDaoServices.loggedInUserAuthentication().name
                         query.conclusionDate = Timestamp.from(Instant.now())
                         query.conclusionStatus = QueryStatuses.ACTIVE.code
                         query.responseAnalysis = form.queryAnalysis
@@ -928,6 +927,43 @@ class PvocAgentService(
             KotlinLogging.logger { }.error("Failed to process request", ex)
             response.message = "Failed, request could not be completed"
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
+    }
+
+    fun listQueryQueries(keywords: String?, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val result = when {
+            keywords.isNullOrEmpty() -> partnerQuerriesRepository.findAll(page)
+            else -> partnerQuerriesRepository.findByCertNumberContainsOrRfcNumberContainsOrUcrNumberContains(
+                keywords,
+                keywords,
+                keywords,
+                page
+            )
+        }
+        response.setPage(result)
+        response.data = UiPvocPartnerQueryDao.fromList(result.toList())
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        return response
+    }
+
+    fun getQueryDetails(queryId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        val result = this.partnerQuerriesRepository.findById(queryId)
+        if (result.isPresent) {
+            val responseData = mutableMapOf<String, Any?>()
+            responseData["query"] = UiPvocPartnerQueryDao.fromEntity(result.get())
+            result.get().partnerId?.let {
+                responseData["partner"] = partnerService.getPartner(it)?.let { it1 -> PvocPartnerDto.fromEntity(it1) }
+            }
+            response.data = responseData
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } else {
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response.message = "Query details not found"
         }
         return response
     }

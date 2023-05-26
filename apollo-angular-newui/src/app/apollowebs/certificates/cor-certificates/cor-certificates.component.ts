@@ -15,6 +15,8 @@ import {GenerateCorReportComponent} from "./generate-cor-report/generate-cor-rep
 export class CorCertificatesComponent implements OnInit {
     @Input()
     documentType: string = "cor"
+    @Input()
+    callingPage: string = "cd"
     documentTitle: string
     documentCategory: string
     dataSet: LocalDataSource = new LocalDataSource();
@@ -214,6 +216,10 @@ export class CorCertificatesComponent implements OnInit {
     }
 
     viewCor(data: any) {
-        this.router.navigate(["/pvoc/foreign/document/cor/", data.recordId])
+        this.router.navigate(["/pvoc/foreign/document/cor/", data.recordId], {
+            queryParams: {
+                caller: this.callingPage
+            }
+        })
     }
 }

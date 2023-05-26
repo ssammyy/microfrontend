@@ -479,6 +479,7 @@ interface JustificationDetails{
     fun getDraftId(): Long?
     fun getDepartmentId(): Long?
     fun getStandardType(): String?
+    fun getTcDecision(): String?
 }
 
 interface ProposalDetails{

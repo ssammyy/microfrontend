@@ -305,6 +305,38 @@ export class PVOCService {
         });
     }
 
+    loadRiskProfiles(keywords: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/risk/profiles"), {
+            params: params
+        });
+    }
+
+    loadQueries(keywords: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/queries"), {
+            params: params
+        });
+    }
+
+    loadQueryDetails(queryId: number): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/details/" + queryId));
+    }
+
+    loadRiskProfileDetails(riskId: number): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/risk/profile/" + riskId));
+    }
+
     loadRfcForCocDocuments(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
         let params = {}
         params["size"] = size

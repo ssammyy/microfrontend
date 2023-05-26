@@ -756,40 +756,41 @@ class IntStandardService(
     }
 
     fun decisionOnProposal(
-        comStdDraft: ComStdDraft,
-        companyStandardRemarks: CompanyStandardRemarks
+        comStdDraftDecisionDto: IntStdDraftDecisionDto
     ): NotificationForm {
 
         var slFormResponse = ""
         var responseStatus = ""
         var responseButton = ""
         var response = ""
+        val comDraft=ComStdDraft();
+        val companyStandardRemarks=CompanyStandardRemarks();
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        comStdDraft.accentTo = comStdDraft.accentTo
-        val decision = comStdDraft.accentTo
-        val commentNumber = comStdDraftRepository.getISDraftCommentCount(comStdDraft.id)
+        comDraft.accentTo = comStdDraftDecisionDto.accentTo
+        val decision = comStdDraftDecisionDto.accentTo
+        val commentNumber = comStdDraftRepository.getISDraftCommentCount(comStdDraftDecisionDto.draftId)
         // val countNo=commentNumber.toString()
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
         var dateOfRemark = Timestamp(System.currentTimeMillis())
-        companyStandardRemarks.requestId = comStdDraft.id
-        companyStandardRemarks.remarks = companyStandardRemarks.remarks
+        companyStandardRemarks.requestId = comStdDraftDecisionDto.draftId
+        companyStandardRemarks.remarks = comStdDraftDecisionDto.comments
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = dateOfRemark
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "TC Secretary"
         companyStandardRemarks.standardType = "International Standard"
         val deadline: Timestamp =
-            Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
+            Timestamp.valueOf(dateOfRemark.toLocalDateTime().plusMonths(5))
 
 //                val gson = Gson()
 //              KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
 
         // if (commentNumber>0){
         if (decision == "Yes") {
-            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+            comStdDraftRepository.findByIdOrNull(comStdDraftDecisionDto.draftId)?.let { comStdDraft ->
                 with(comStdDraft) {
                     status = 1
                     tcAcceptanceDate = dateOfRemark
@@ -809,10 +810,32 @@ class IntStandardService(
 
 
         } else if (decision == "No") {
-            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+            val justification = ISAdoptionJustification();
+            justification.standardNumber = comStdDraftDecisionDto.standardNumber
+            justification.requestedBy = comStdDraftDecisionDto.requestedBy
+            justification.tcAcceptanceDate = dateOfRemark.toString()
+            justification.department = comStdDraftDecisionDto.department
+            justification.proposalId = comStdDraftDecisionDto.proposalId
+            justification.draftId = comStdDraftDecisionDto.draftId
+            justification.scope = comStdDraftDecisionDto.scope
+            justification.circulationDate = comStdDraftDecisionDto.circulationDate
+            justification.closingDate = comStdDraftDecisionDto.closingDate
+            justification.tcSec_id = comStdDraftDecisionDto.tcSecName
+            justification.title = comStdDraftDecisionDto.title
+            justification.status = 0.toString()
+
+            justification.submissionDate = Timestamp(System.currentTimeMillis())
+
+            justification.requestNumber = getRQNumber()
+            justification.departmentName =
+                departmentListRepository.findNameById(comStdDraftDecisionDto.department?.toLong())
+
+            isAdoptionJustificationRepository.save(justification)
+
+            comStdDraftRepository.findByIdOrNull(comStdDraftDecisionDto.draftId)?.let { comStdDraft ->
 
                 with(comStdDraft) {
-                    status = 1
+                    status = 3
                     tcAcceptanceDate = dateOfRemark
                     tcDecision="Proposal Was not Approved by Technical Committee.The TC Secretary was $usersName"
                 }
@@ -866,7 +889,6 @@ class IntStandardService(
         justification.closingDate = isProposalJustification.closingDate
         justification.tcSec_id = isProposalJustification.tcSecName
         justification.title = isProposalJustification.title
-        justification.standardNumber = isProposalJustification.standardNumber
         justification.referenceMaterial = isProposalJustification.referenceMaterial
         justification.status = 0.toString()
 
