@@ -24,9 +24,8 @@
                         <tr>
                             <th class="task">Proposal Title</th>
                             <th class="task">Request Number</th>
-
+                            <th class="task">Expected Votes</th>
                             <th class="task">Total Votes</th>
-
                             <th class="task">Approved</th>
                             <th class="task">Not Approved</th>
                             <th class="action">Status</th>
@@ -40,6 +39,7 @@
 
                             <td>{{secTask.nwiname}}</td>
                             <td>{{secTask.reference_NUMBER}}</td>
+                            <td>{{secTask.number_OF_EXPECTED_VOTES}}</td>
 
                             <td>{{secTask.approved + secTask.notapproved }}</td>
                             <td>{{secTask.approved}}</td>
@@ -260,11 +260,11 @@ aria-hidden="true">
                             <td>
                                 <ng-template
                                         [ngIf]=" voteRetrievedS.decision=='true'">
-                                    Approved
+                                    Proposal Acceptable
                                 </ng-template>
                                 <ng-template
                                         [ngIf]=" voteRetrievedS.decision=='false'">
-                                    Disapproved
+                                    Proposal  Not Acceptable
                                 </ng-template>
 
                             </td>

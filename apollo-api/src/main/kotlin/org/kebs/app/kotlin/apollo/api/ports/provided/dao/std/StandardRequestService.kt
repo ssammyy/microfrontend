@@ -704,13 +704,43 @@ class StandardRequestService(
 
     fun getAllVotesTally(): List<NwiVotesTally> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
         return voteOnNWIRepository.getVotesTally(loggedInUser.id.toString())
 
     }
 
+    fun getAllVotesTallyOtherTcMembers(): List<NwiVotesTally> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val uList: List<TcUserAssignment>? = tcUserAssignmentRepository.findByUserId(loggedInUser.id!!)
+        val voteTallies: MutableList<NwiVotesTally> = mutableListOf()
+        if (uList != null) {
+            for (u in uList) {
+                val voteTallyList: List<NwiVotesTally> =
+                    voteOnNWIRepository.getVotesTallyLoggedInMembers(u.tcId.toString())
+                voteTallies.addAll(voteTallyList)
+            }
+        }
+        return voteTallies
+    }
+
     fun getAllVotesOnNwi(nwiId: Long): List<VotesWithNWIId> {
         return voteOnNWIRepository.getVotesByTcMembers(nwiId)
+    }
+
+
+    fun getVotingStatus(): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return if(tcUserAssignmentRepository.findByTcIdAndPrincipal(loggedInUser.id!!, "1") !=null) {
+            ServerResponse(
+                HttpStatus.OK,
+                "Approved", "Can Vote"
+            )
+        } else {
+
+            ServerResponse(
+                HttpStatus.OK,
+                "Approved", "Cannot vote"
+            )
+        }
     }
 
 
@@ -1057,6 +1087,7 @@ class StandardRequestService(
 
     fun getTcPrincipalMembersToVote(nwiId: Long): List<UsersEntity> {
         val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
+
         return u.tcId?.toLong()?.let { tcId ->
             tcUserAssignmentRepository.findByTcIdAndPrincipal(tcId, "1")?.mapNotNull { tc ->
                 usersRepo.findByIdOrNull(tc.userId)

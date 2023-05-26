@@ -275,9 +275,24 @@ class StandardRequestController(
         return standardRequestService.getAllVotesTally()
     }
 
+    @GetMapping("standard/getAllVotesTallyOtherTcMembers")
+    fun getAllVotesTallyOtherTcMembers(): List<NwiVotesTally> {
+        return standardRequestService.getAllVotesTallyOtherTcMembers()
+    }
+
     @GetMapping("standard/getAllVotesOnNwi")
     fun getAllVotesOnNwi(@RequestParam("nwiId") nwiId: Long): List<VotesWithNWIId> {
         return standardRequestService.getAllVotesOnNwi(nwiId)
+    }
+
+
+    @GetMapping("standard/getVotingStatus")
+    fun getVotingStatus(): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Voting Status",
+            standardRequestService.getVotingStatus()
+        )
     }
 
     @PostMapping("standard/approveNwi")

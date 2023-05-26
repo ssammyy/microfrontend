@@ -20,13 +20,22 @@ interface VoteOnNWIRepository : JpaRepository<VoteOnNWI, Long> {
 
 
     @Query(
-        "SELECT B.ID AS NWI_ID, B.PROPOSAL_TITLE AS NwiName, B.REFERENCE_NUMBER,   B.STATUS, count(case when v.DECISION = 'true' then NWI_ID end) as Approved, count(case when v.DECISION = 'false' then NWI_ID end) as NotApproved from SD_NWI B  left join SD_VOTE_ON_NWI v on v.NWI_ID = B.ID where B.TC_SEC=:tc_sec_id group by B.ID, B.PROPOSAL_TITLE,B.REFERENCE_NUMBER,B.STATUS ",
+        "SELECT B.ID AS NWI_ID, B.PROPOSAL_TITLE AS NwiName, B.REFERENCE_NUMBER, B.STATUS, COUNT(CASE WHEN V.DECISION = 'true' THEN NWI_ID END) AS Approved, COUNT(CASE WHEN V.DECISION = 'false' THEN NWI_ID END) AS NotApproved, T.number_of_expected_votes, B.TC_ID FROM SD_NWI B LEFT JOIN SD_VOTE_ON_NWI V ON V.NWI_ID = B.ID LEFT JOIN (SELECT COUNT(USER_ID) AS number_of_expected_votes, TC_ID FROM SD_TC_USER_ASSIGNMENT WHERE PRINCIPAL = 1 GROUP BY TC_ID) T ON T.TC_ID = B.TC_ID WHERE B.TC_SEC = :tcSecId GROUP BY B.ID, B.PROPOSAL_TITLE, B.REFERENCE_NUMBER, B.STATUS, T.number_of_expected_votes, B.TC_ID",
         nativeQuery = true
     )
-    fun getVotesTally(@Param("tc_sec_id") tcSecId: String): List<NwiVotesTally>
+    fun getVotesTally(@Param("tcSecId") tcSecId: String): List<NwiVotesTally>
 
 
-
+    @Query(
+        "SELECT B.ID AS NWI_ID, B.PROPOSAL_TITLE AS NwiName, B.REFERENCE_NUMBER, B.STATUS, \n" +
+                "       COUNT(CASE WHEN V.DECISION = 'true' THEN NWI_ID END) AS Approved, \n" +
+                "       COUNT(CASE WHEN V.DECISION = 'false' THEN NWI_ID END) AS NotApproved, \n" +
+                "       T.number_of_expected_votes, B.TC_ID FROM SD_NWI B LEFT JOIN SD_VOTE_ON_NWI V ON V.NWI_ID = B.ID \n" +
+                "           LEFT JOIN (SELECT COUNT(USER_ID) AS number_of_expected_votes, TC_ID FROM SD_TC_USER_ASSIGNMENT \n" +
+                "WHERE PRINCIPAL = 1 GROUP BY TC_ID) T ON T.TC_ID = B.TC_ID WHERE B.TC_ID = :tcId GROUP BY B.ID, B.PROPOSAL_TITLE, B.REFERENCE_NUMBER, B.STATUS, T.number_of_expected_votes, B.TC_ID",
+        nativeQuery = true
+    )
+    fun getVotesTallyLoggedInMembers(@Param("tcId") tcId: String): List<NwiVotesTally>
 
 
 }

@@ -284,8 +284,8 @@ export interface VotesNwiTally {
     nwi_ID: number;
     nwiname: string;
     status: string
-
     reference_NUMBER: string;
+    number_OF_EXPECTED_VOTES: number;
 }
 
 export interface VoteNwiRetrieved {

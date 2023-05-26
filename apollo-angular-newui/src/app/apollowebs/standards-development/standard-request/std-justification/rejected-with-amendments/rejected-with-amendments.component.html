@@ -197,6 +197,13 @@
                                    <button type="button" class="btn btn-secondary" #closeViewModal
                                            (click)="hideModel()" data-dismiss="modal">Close
                                    </button>
+
+                                   <div *ngIf="roles?.includes('TC_SEC_SD_READ') || roles?.includes( 'STANDARDS_DEVELOPMENT_FULL_ADMIN')">
+
+                                       <button class="btn btn-info" type="submit">
+                                           Resubmit
+                                       </button>
+                                   </div>
    
                                </div>
                            </form>
