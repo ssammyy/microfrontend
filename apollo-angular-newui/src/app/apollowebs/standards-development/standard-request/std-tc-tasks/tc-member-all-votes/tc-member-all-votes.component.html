@@ -164,6 +164,8 @@
                                         class="list-group-item">{{"Comment: " + actionRequest?.reason}}</li>
                                     <li style="background: lightgray"
                                         class="list-group-item">{{"Date Vote Was Cast: " + actionRequest?.dateVoteWasCast}}</li>
+                                    <li *ngIf="actionRequest?.voteOnBehalfByStatus==1" style="background: lightgray"
+                                        class="list-group-item">{{"Voted On Behalf By: " + actionRequest?.voteOnBehalfByName}}</li>
                                     <br><br>
                                     <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
 

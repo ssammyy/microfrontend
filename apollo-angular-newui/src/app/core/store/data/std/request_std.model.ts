@@ -200,6 +200,9 @@ export interface VotesDto {
     requestNumber: string;
     dateVoteWasCast: Date;
     closingDate: string;
+    voteOnBehalfBy: number;
+    voteOnBehalfByName: string;
+    voteOnBehalfByStatus: number;
 
 }
 

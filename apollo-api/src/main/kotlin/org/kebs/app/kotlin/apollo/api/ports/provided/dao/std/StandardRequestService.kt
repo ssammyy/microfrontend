@@ -492,9 +492,10 @@ class StandardRequestService(
         }
 
 
-
-        val technicalCommittee:TechnicalCommittee = technicalCommitteeRepository.findById(standardRequestToUpdate?.tcAssigned!!.toLong()).orElse(null)
-        val department:Department = departmentRepository.findById(standardRequestToUpdate.departmentId!!.toLong()).orElse(null)
+        val technicalCommittee: TechnicalCommittee =
+            technicalCommitteeRepository.findById(standardRequestToUpdate?.tcAssigned!!.toLong()).orElse(null)
+        val department: Department =
+            departmentRepository.findById(standardRequestToUpdate.departmentId!!.toLong()).orElse(null)
 
 
 
@@ -503,9 +504,9 @@ class StandardRequestService(
         standardNWI.createdOn = Timestamp(System.currentTimeMillis())
         standardNWI.tcSec = loggedInUser.id.toString()
         standardNWI.tcId = standardRequestToUpdate.tcAssigned
-        standardNWI.nameOfTC =technicalCommittee.title
-        standardNWI.nameOfDepartment=department.name
-        standardNWI.organization=department.name
+        standardNWI.nameOfTC = technicalCommittee.title
+        standardNWI.nameOfDepartment = department.name
+        standardNWI.organization = department.name
 
         standardNWI.departmentId = department.id
 
@@ -621,6 +622,33 @@ class StandardRequestService(
             }
     }
 
+    fun decisionOnNWIVoteOnBehalf(voteOnNWI: VoteOnNWI): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        //        //check if person has voted
+        voteOnNWIRepository.findByUserIdAndNwiIdAndStatus(voteOnNWI.userId, voteOnNWI.nwiId, 1)
+            ?.let {
+                // throw InvalidValueException("You Have Already Voted")
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "This Member Has Already Voted"
+                )
+
+            }
+            ?: run {
+                voteOnNWI.votedOnBehalfBy = loggedInUser.id!!
+                voteOnNWI.votedOnBehalfStatus = 1
+                voteOnNWI.createdOn = Timestamp(System.currentTimeMillis())
+                voteOnNWI.status = 1
+                voteOnNWIRepository.save(voteOnNWI)
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "You Have Voted"
+                )
+
+            }
+    }
+
     fun reVoteOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         voteOnNWI.userId = loggedInUser.id!!
@@ -647,6 +675,13 @@ class StandardRequestService(
         val voteOnNWI: List<VoteOnNWI> =
             voteOnNWIRepository.findByUserIdAndStatusOrderByIdDesc(loggedInUser.id!!, 1)
         return voteOnNWI.map { p ->
+            val fullName = if (p.votedOnBehalfBy != null) {
+                val user = usersRepo.findByIdOrNull(p.votedOnBehalfBy)
+                "${user?.firstName} ${user?.lastName}"
+            } else {
+                null
+            }
+
             VotesDto(
                 p.id,
                 p.decision,
@@ -659,6 +694,9 @@ class StandardRequestService(
                 standardNWIRepository.findByIdOrNull(p.nwiId)?.standardId?.let {
                     standardRequestRepository.findByIdOrNull(it)?.requestNumber
                 },
+                p.votedOnBehalfBy,
+                p.votedOnBehalfStatus,
+                fullName
             )
         }
     }
@@ -1016,6 +1054,16 @@ class StandardRequestService(
             ?: throw Exception("User role name does not exist")
         return users
     }
+
+    fun getTcPrincipalMembersToVote(nwiId: Long): List<UsersEntity> {
+        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
+        return u.tcId?.toLong()?.let { tcId ->
+            tcUserAssignmentRepository.findByTcIdAndPrincipal(tcId, "1")?.mapNotNull { tc ->
+                usersRepo.findByIdOrNull(tc.userId)
+            }
+        } ?: emptyList()
+    }
+
     fun getTcMembers(): MutableList<UsersEntity> {
         val users: MutableList<UsersEntity> = ArrayList()
 

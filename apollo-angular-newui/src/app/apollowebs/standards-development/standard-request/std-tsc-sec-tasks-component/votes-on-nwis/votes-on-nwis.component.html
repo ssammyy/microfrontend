@@ -76,7 +76,7 @@
                                    class="btn btn-info tooltips"
                                    data-placement="top"
                                    data-original-title="Upload NWI">View Votes</a>
-                                <a (click)="onOpenModalVote(secTask,'viewVotes')"
+                                <a *ngIf="secTask.status=='Vote ON NWI'" (click)="onOpenModalVote(secTask,'voteOnBehalf')"
                                    class="btn btn-info tooltips"
                                    data-placement="top"
                                    data-original-title="Upload NWI">Vote On Behalf</a>
@@ -285,4 +285,85 @@ aria-hidden="true">
 </div>
 </div>
 </div>
+<div class="modal fade" id="voteOnBehalf" tabindex="-1" role="dialog"
+     aria-labelledby="updateExampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voteOnBehalfId">VOTE ON NEW
+                    WORK
+                    ITEM</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close" #closeModalB>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-rose card-header-text">
+                                <div class="card-text">
+                                    <h4 class="card-title">Cast Vote On Behalf Of Member</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label><b>Tc Members</b><span style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                        <ng-multiselect-dropdown [placeholder]="'Select Tc Members'" [settings]="dropdownSettings" [data]="dropdownList"
+                                                                 formControlName="userId">
+                                        </ng-multiselect-dropdown>
+                                        <div *ngIf="stdHOFReview.get('userId').hasError('required') && stdHOFReview.get('userId').touched"
+                                             class="text-danger">
+                                            Tc Member is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h5>Please tick and fill your preference of the listed option.</h5>
+                                    </div>
+                                    <div class="col-sm-12 checkbox-radios">
+                                        <mat-radio-group class="example-radio-group" formControlName="decision" name="decision">
+                                            <div class="col-sm-6">
+                                                <mat-radio-button [value]="true">Proposal acceptable</mat-radio-button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <mat-radio-button [value]="false">Proposal not acceptable</mat-radio-button>
+                                            </div>
+                                        </mat-radio-group>
+                                        <div *ngIf="stdHOFReview.get('decision').hasError('required') && stdHOFReview.get('decision').touched"
+                                             class="text-danger">
+                                            Decision is required.
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label><b>Reasons</b></label>
+                                        <textarea class="form-control one-column-input" name="reason" formControlName="reason"
+                                                  placeholder="Reasons for the vote" type="text"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <hr/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button class="btn btn-info" type="submit" [disabled]="stdHOFReview.invalid">Submit</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" #closeModal
+                        (click)="hideModel()"
+                        data-dismiss="modal">Close
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 

@@ -131,6 +131,9 @@ data class VotesDto(
     var closingDate: String? = null,
     var standardId: Long? = null,
     var requestNumber: String? = null,
+    var voteOnBehalfBy: Long? = null,
+    var voteOnBehalfByStatus: Long? = null,
+    var voteOnBehalfByName: String? = null,
 
 
     )
