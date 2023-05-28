@@ -375,6 +375,7 @@ export class ApiEndpointService {
         TIE_FMARK_SMARK: `${ApiEndpointService.QA_CONTEXT}/fixes/tie-fmark-smark`,
         UPDATE_INVOICE_STATUS: `${ApiEndpointService.QA_CONTEXT}/fixes/update-invoice-status`,
         UPDATE_USER_BRANCH: `${ApiEndpointService.QA_CONTEXT}/fixes/update-user-branch`,
+        GET_USER_BRANCHES: `${ApiEndpointService.QA_CONTEXT}/fixes/get-user-branches`,
 
         /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement

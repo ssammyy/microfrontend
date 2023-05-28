@@ -292,5 +292,8 @@ export class updateStandardDto {
     branchName ?: string;
     branchId?: bigint;
     userEmail?: string;
+    data?: string[];
+    message?: string;
+    status?: bigint;
 
 }

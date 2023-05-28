@@ -4,7 +4,12 @@ import {MasterService} from "../../../core/store/data/master/master.service";
 import {TitlesService} from "../../../core/store/data/title";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AddMssingStandardDto, tieFmarkToSmarkDto} from "../../../core/store/data/master/master.model";
+import {
+  AddMssingStandardDto,
+  tieFmarkToSmarkDto,
+  updateStandardDto
+} from "../../../core/store/data/master/master.model";
+import {PlantDetailsDto} from "../../../core/store/data/qa/qa.model";
 
 @Component({
   selector: 'app-qa-admin-fixes',
@@ -13,11 +18,14 @@ import {AddMssingStandardDto, tieFmarkToSmarkDto} from "../../../core/store/data
 })
 export class QaAdminFixesComponent implements OnInit {
   standard : AddMssingStandardDto;
+  emailDTO : updateStandardDto;
   fmarkDto : tieFmarkToSmarkDto;
   formAddStandard: FormGroup = new FormGroup({});
   formTieFmark : FormGroup = new FormGroup({});
   formUpdateInvoiceStatus : FormGroup = new FormGroup({})
   formUpdateBranch : FormGroup = new FormGroup({})
+  plants: string[] ;
+
 
 
   data = [
@@ -186,6 +194,38 @@ export class QaAdminFixesComponent implements OnInit {
               private route: ActivatedRoute,
               private formBuilder: FormBuilder
   ) {
+    this.emailDTO = new updateStandardDto();
+    this.formUpdateBranch = this.formBuilder.group({
+      userEmail: ['', Validators.required],
+      branchId: ['', Validators.required],
+
+    });
+
+    this.formUpdateBranch.get('userEmail')?.valueChanges.subscribe(value => {
+      console.log("fetching branches ")
+      // when userEmail changes, fetch the new list of branches
+
+    });
+  }
+
+  handleGetBranches(email: string){
+    const regex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+    if(regex.test(email) ) {
+      console.log("fetching branches  " + email)
+
+      if (this.emailDTO === undefined){
+        console.log("Wololo")
+      }
+      else {
+        this.emailDTO.userEmail=email
+        this.masterService.getUserBranches(this.formUpdateBranch.value).subscribe(branches => {
+          console.log("Branches array "+ branches.data)
+          this.plants = branches.data;
+        });
+      }
+
+
+    }
   }
 
   ngOnInit(): void {
@@ -212,11 +252,6 @@ export class QaAdminFixesComponent implements OnInit {
     this.formUpdateBranch = this.formBuilder.group({
       userEmail: ['', Validators.required],
       branchId: ['', Validators.required],
-
     });
-
-
   }
-
-
 }

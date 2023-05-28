@@ -380,7 +380,9 @@ interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEnti
 }
 
 @Repository
-interface BranchDetailsRepository : HazelcastRepository<BranchDetailsEntity, Long>
+interface BranchDetailsRepository : HazelcastRepository<BranchDetailsEntity, Long>{
+    fun findByManufacturerId(manufucturerId: Long): List<BranchDetailsEntity>?
+}
 
 
 @Repository
