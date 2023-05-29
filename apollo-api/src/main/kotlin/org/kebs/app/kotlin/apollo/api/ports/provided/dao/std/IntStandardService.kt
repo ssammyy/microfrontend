@@ -127,6 +127,12 @@ class IntStandardService(
         return userListRepository.findStandardStakeholders()
     }
 
+    fun getTcSecretaries(): List<UserDetailHolder>? {
+        return userListRepository.getTcSecretaries()
+    }
+
+
+
 
     fun mapKEBSOfficersNameListDto(officersName: String): List<String>? {
         val userListType: Type = object : TypeToken<ArrayList<String?>?>() {}.type

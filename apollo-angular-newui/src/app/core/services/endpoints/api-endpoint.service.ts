@@ -433,6 +433,7 @@ export class ApiEndpointService {
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
+        IST_GET_STD_TC_SEC: `${ApiEndpointService.SD_IST_CONTEXT}/getTcSecretaries`,
         IST_GET_STD_EDITORS: `${ApiEndpointService.SD_IST_CONTEXT}/getEditorDetails`,
         IST_GET_STD_DRAUGHTSMANS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraughtsManDetails`,
         IST_GET_STD_PROOFREADERS: `${ApiEndpointService.SD_IST_CONTEXT}/getProofReaderDetails`,

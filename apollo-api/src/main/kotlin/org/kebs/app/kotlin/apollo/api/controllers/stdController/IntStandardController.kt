@@ -94,6 +94,13 @@ class IntStandardController(
         return internationalStandardService.findStandardStakeholders()
     }
 
+    @GetMapping("/international_standard/getTcSecretaries")
+    @ResponseBody
+    fun getTcSecretaries(): List<UserDetailHolder>? {
+        return internationalStandardService.getTcSecretaries()
+    }
+
+
     //Get KNW Committee
     //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('KNW_SEC_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getIntStandardProposals")

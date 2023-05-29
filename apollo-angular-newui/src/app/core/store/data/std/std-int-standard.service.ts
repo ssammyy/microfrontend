@@ -39,7 +39,7 @@ export class StdIntStandardService {
   constructor(private http: HttpClient) { }
 
     public findStandardStakeholders(): Observable<UsersEntity[]> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_STAKE_HOLDERS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_TC_SEC);
         const params = new HttpParams();
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
