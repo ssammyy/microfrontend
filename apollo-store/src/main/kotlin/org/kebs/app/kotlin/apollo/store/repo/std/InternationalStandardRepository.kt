@@ -1056,6 +1056,14 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     // Check for users who have sd access: Role Id:2522
     fun findStandardStakeholders(): List<UserDetailHolder>?
 
+    @Query(
+        "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email,u.CELL_PHONE as telephone from APOLLO.SD_TC_USER_ASSIGNMENT r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID  GROUP BY r.USER_ID ",
+        nativeQuery = true
+    )
+    fun getTcSecretaries(): List<UserDetailHolder>?
+
+
+
 
 
 
