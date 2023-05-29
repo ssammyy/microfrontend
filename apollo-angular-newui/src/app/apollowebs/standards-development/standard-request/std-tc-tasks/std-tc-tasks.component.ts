@@ -59,6 +59,9 @@ export class StdTcTasksComponent implements OnInit {
 
     displayUsers: boolean = false;
 
+    canVote: boolean = false;
+
+
     public actionRequest: NWIsForVoting | undefined;
 
     constructor(
@@ -84,6 +87,7 @@ export class StdTcTasksComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.getVotingStatus();
         this.getTCTasks();
         this.decision = this.selectSeason;
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -117,6 +121,22 @@ export class StdTcTasksComponent implements OnInit {
                 this.loading = false
                 this.displayUsers = true;
                 this.SpinnerService.hide();
+
+            }
+        )
+    }
+
+    public getVotingStatus(): void {
+        this.standardDevelopmentService.getVotingStatus().subscribe(
+            (response) => {
+                if (response.body.body === "Can Vote") {
+                    this.canVote = true;
+                }
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+
 
             }
         )

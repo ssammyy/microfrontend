@@ -37,6 +37,7 @@ import {Vote, VoteNwiRetrieved, VotesNwiTally} from "./commitee-model";
 import {Router} from "@angular/router";
 import {PermitEntityDto} from "../qa/qa.model";
 import {data} from "jquery";
+import {UserDetails} from "../master/master.model";
 
 @Injectable({
     providedIn: 'root'
@@ -180,6 +181,9 @@ export class StandardDevelopmentService {
     public getAllNwisLoggedInUserToVoteFor(): Observable<any> {
         return this.http.get<any>(`${this.apiServerUrl}` + 'getAllNwisLoggedInUserToVoteFor')
     }
+    public getVotingStatus(): Observable<any> {
+        return this.http.get<any>(`${this.apiServerUrl}` + 'getVotingStatus')
+    }
 
 
     //retrieve vote for logged in user
@@ -191,6 +195,19 @@ export class StandardDevelopmentService {
     //get Votes Analysis
     public getAllVotesTally(): Observable<any> {
         const url = `${this.apiServerUrl}getAllVotesTally`;
+
+        return this.http.get<VotesNwiTally>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAllVotesTallyOtherTcMembers(): Observable<any> {
+        const url = `${this.apiServerUrl}getAllVotesTallyOtherTcMembers`;
 
         return this.http.get<VotesNwiTally>(url).pipe(
             map(function (response: any) {
@@ -328,6 +345,20 @@ export class StandardDevelopmentService {
         );
     }
 
+    public getTcPrincipalMembersToVote(nwiId: any): Observable<any> {
+        const url = `${this.apiServerUrl}getTcPrincipalMembersToVote`;
+        const params = new HttpParams()
+            .set('nwiId', nwiId)
+        return this.http.get<UserDetails>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
     public approveNwi(nwiId: string): Observable<any> {
         const url = `${this.apiServerUrl}approveNwi`;
@@ -416,6 +447,21 @@ export class StandardDevelopmentService {
 
     public decisionOnNWI(vote: StdTCDecision): Observable<any> {
         const url = `${this.apiServerUrl}` + 'decisionOnNWI';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+    }
+
+    public decisionOnNWIVoteOnBehalf(vote: StdTCDecision): Observable<any> {
+        const url = `${this.apiServerUrl}` + 'decisionOnNWIVoteOnBehalf';
 
         return this.http.post<Vote>(url, vote).pipe(
             map(function (response: Vote) {

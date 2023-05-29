@@ -596,6 +596,7 @@ import {ListQueriesComponent} from './apollowebs/pvoc/queries/list-queries/list-
 import {ViewQueryComponent} from './apollowebs/pvoc/queries/view-query/view-query.component';
 
 import { ApproveMembersForTcCreationComponent } from './apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component';
+import { AllVotesByOtherTcMembersComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/all-votes-by-other-tc-members/all-votes-by-other-tc-members.component';
 
 @NgModule({
     imports: [
@@ -1245,6 +1246,7 @@ import { ApproveMembersForTcCreationComponent } from './apollowebs/admin/approve
         ViewRiskProfilesComponent,
         ListQueriesComponent,
         ViewQueryComponent,
+        AllVotesByOtherTcMembersComponent,
 
     ],
     entryComponents: [LoaderComponent],
