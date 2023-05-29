@@ -161,6 +161,7 @@ export class AcknowledgementComponent implements OnInit {
             this.totalCount = this.loadedData.length;
             this.rerender();
             this.calculateSummary();
+
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
                   this.msOfficerLists = dataOfficer;
@@ -181,8 +182,11 @@ export class AcknowledgementComponent implements OnInit {
                   this.msDivisions = dataDiv;
                 },
             );
+
+            this.onSubmitSearch();
+            this.clearSearch();
           }
-          this.SpinnerService.hide();
+          // this.SpinnerService.hide();
         },
         error => {
           this.SpinnerService.hide();
@@ -203,6 +207,7 @@ export class AcknowledgementComponent implements OnInit {
 
   onSubmitSearch() {
     this.SpinnerService.show();
+    console.log("Submit search called")
     this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
     // console.log('Data type of selectedOfficers:', typeof this.searchFormGroup.get('selectedOfficers').value);
@@ -210,6 +215,7 @@ export class AcknowledgementComponent implements OnInit {
     this.msService.loadSearchConsumerComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
+            console.log("Submit search called and is successfulo")
             this.loadedData = data.data;
             for(let i=0; i<this.loadedData.length; i++){
               if(Number(this.loadedData[i].resolution) == 1){
@@ -233,6 +239,7 @@ export class AcknowledgementComponent implements OnInit {
   }
 
   clearSearch() {
+    console.log("Clear search called")
     this.searchFormGroup.reset();
     this.submitted = false;
   }
