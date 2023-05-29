@@ -184,8 +184,10 @@ export class SampleSubmittedTimelineComponent implements OnInit {
                   this.msDivisions = dataDiv;
                 },
             );
+            this.onSubmitSearch();
+            this.clearSearch();
           }
-          this.SpinnerService.hide();
+          // this.SpinnerService.hide();
         },
         error => {
           this.SpinnerService.hide();
