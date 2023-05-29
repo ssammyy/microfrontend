@@ -1057,7 +1057,7 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     fun findStandardStakeholders(): List<UserDetailHolder>?
 
     @Query(
-        "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email,u.CELL_PHONE as telephone from APOLLO.SD_TC_USER_ASSIGNMENT r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID  GROUP BY r.USER_ID ",
+        "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email,u.CELL_PHONE as telephone from APOLLO.SD_TC_USER_ASSIGNMENT r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID  GROUP BY  (FIRST_NAME || ' '|| LAST_NAME),u.ID, u.EMAIL, u.CELL_PHONE ",
         nativeQuery = true
     )
     fun getTcSecretaries(): List<UserDetailHolder>?
