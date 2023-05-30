@@ -586,6 +586,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val selectedOfficers = search.selectedOfficers
         val selectedDivisions = search.selectedDivisions
 
+
         try {
             if (selectedOfficers != null && selectedDivisions != null && selectedOfficers.isNotEmpty() && selectedDivisions.isNotEmpty()) {
                 println("Selected Officers both present: $selectedOfficers")
@@ -972,7 +973,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     search.marketCentre,
                     search.nameOutlet,
                     search.productsDueForDestruction,
-                    search.productsDueForRelease,
                     search.officerID,
                     selectedOfficers
                 );
@@ -986,7 +986,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     search.marketCentre,
                     search.nameOutlet,
                     search.productsDueForDestruction,
-                    search.productsDueForRelease,
                     search.officerID,
 
                 );

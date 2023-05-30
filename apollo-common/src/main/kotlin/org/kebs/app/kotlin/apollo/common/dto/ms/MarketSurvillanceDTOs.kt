@@ -1271,7 +1271,6 @@ data class SeizeViewSearchValues(
         var marketCentre: String? = null,
         var nameOutlet: String? = null,
         var productsDueForDestruction: String? = null,
-        var productsDueForRelease: String? = null,
         var officerID: String? = null,
         var selectedOfficers: Array<String>? = null,
 )
