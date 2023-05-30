@@ -1100,11 +1100,27 @@ class IntStandardService(
             } ?: throw Exception("DRAFT NOT FOUND")
 
 
-        } else if (decision == "No") {
+        } else if (decision == "Defer") {
             comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                 with(comStdDraft) {
                     status = 1
+                }
+                comStdDraftRepository.save(comStdDraft)
+                companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                slFormResponse = "Justification Was Deferred"
+                responseStatus = "error"
+                responseButton = "btn btn-danger form-wizard-next-btn"
+                response = "Defered"
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+
+        }else if (decision == "No") {
+            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+
+                with(comStdDraft) {
+                    status = 30
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
