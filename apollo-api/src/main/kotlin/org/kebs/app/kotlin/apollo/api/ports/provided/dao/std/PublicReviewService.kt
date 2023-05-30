@@ -6,14 +6,17 @@ import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.sql.Timestamp
@@ -31,10 +34,13 @@ class PublicReviewService(
     private val sdDocumentsRepository: StandardsDocumentsRepository,
     private val publicReviewStakeHoldersRepo: PublicReviewStakeHoldersRepository,
     private val usersRepo: IUserRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val notifications: Notifications,
 
     ) {
     val PROCESS_DEFINITION_KEY = "publicreview"
     val variable: MutableMap<String, Any> = HashMap()
+
 
 
     fun deployProcessDefinition() {
@@ -146,6 +152,7 @@ class PublicReviewService(
     fun sendPublicReview(publicReviewDto: PublicReviewDto): PublicReviewDraft {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
+        var tcName = loggedInUser.firstName + loggedInUser.lastName
         val reviewDraft=PublicReviewDraft()
         val stakeholdersOne = publicReviewDto.stakeholdersList
         stakeholdersOne?.forEach { s ->
@@ -186,6 +193,29 @@ class PublicReviewService(
             st.status = 0
             val sid = publicReviewStakeHoldersRepo.save(st)
             val pid = sid.id
+            val encryptedId = BCryptPasswordEncoder().encode(pid.toString())
+
+            publicReviewStakeHoldersRepo.findByIdOrNull(pid)?.let { prs ->
+
+                with(prs) {
+                    encrypted=encryptedId
+
+                }
+                publicReviewStakeHoldersRepo.save(prs)
+            } ?: throw Exception("STAKEHOLDERS INFORMATION NOT FOUND")
+            val link =
+                "${applicationMapProperties.baseUrlQRValue}commentOnPublicReview?reviewID=${encryptedId}"
+
+
+            val messageBody =
+                "Dear $userN,\nThe Kenya Bureau of Standards has prepared a Public Review draft.\n" +
+                        "To provide your feedback, please use the following link: [$link]. You will be prompted to provide your comments on the Review Draft.\n" +
+                        "Thank you in advance for your participation and contributions.\nBest regards,\n " +
+                        "$tcName "
+
+            if (rec != null) {
+                notifications.sendEmail(rec, sub, messageBody)
+            }
         }
 
 
