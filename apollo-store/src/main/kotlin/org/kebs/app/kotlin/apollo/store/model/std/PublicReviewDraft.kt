@@ -106,5 +106,9 @@ class PublicReviewDraft {
     @Basic
     var draftReviewStatus: Long? = 0
 
+    @Column(name="ENCRYPTED_ID")
+    @Basic
+    var encrypted: String?=null
+
 
 }

@@ -46,6 +46,10 @@ class PublicReviewStakeHolders {
     @Basic
     var commentId: Long?=null
 
+    @Column(name="ENCRYPTED_ID")
+    @Basic
+    var encrypted: String?=null
+
 
 
 }
