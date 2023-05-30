@@ -45,7 +45,7 @@ export class MembersCreatedCredentialsComponent implements OnInit {
   public getApplicationsForReview(): void {
     this.loadingText = "Retrieving  Applicants Please Wait ...."
     this.SpinnerService.show();
-    this.membershipToTcService.getMembersCreatedCredentials().subscribe(
+    this.membershipToTcService.getAllUsersApprovedForInduction().subscribe(
         (response: ReviewApplicationTask[]) => {
           console.log(response);
           this.tcTasks = response;

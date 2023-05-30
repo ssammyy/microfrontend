@@ -39,7 +39,7 @@ class BallotController(
     @PostMapping("/upload/ballotMinutes")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadBallotMinutes(
-        @RequestParam("prdId") prdId: Long,
+        @RequestParam("ballotId") ballotId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -48,7 +48,7 @@ class BallotController(
 
         var docDescription: String
 
-        val application = publicReviewDraftRepository.findByIdOrNull(prdId)
+        val application = ballotingRepository.findByIdOrNull(ballotId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()
@@ -79,7 +79,7 @@ class BallotController(
     @PostMapping("/upload/ballotDraftDocuments")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadBallotDraftDocuments(
-        @RequestParam("prdId") prdId: Long,
+        @RequestParam("ballotId") ballotId: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
 
@@ -88,7 +88,7 @@ class BallotController(
 
         var docDescription: String
 
-        val application = publicReviewDraftRepository.findByIdOrNull(prdId)
+        val application = ballotingRepository.findByIdOrNull(ballotId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
 
         docFile.forEach { u ->
@@ -151,7 +151,7 @@ class BallotController(
             }
             docDescription = "Ballot Document"
 
-            committeeService.uploadSDFileCommittee(
+            ballotService.uploadBallotfiles(
                 upload,
                 u,
                 "BALLOT DOCUMENT",
