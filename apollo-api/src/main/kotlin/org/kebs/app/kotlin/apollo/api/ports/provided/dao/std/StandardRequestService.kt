@@ -921,7 +921,7 @@ class StandardRequestService(
                 j.status = "Justification Declined"
                 standardJustificationRepository.save(j)
             }
-            if (decisionJustification.decision.equals("Rejected With Amendments")) {
+            if (decisionJustification.decision.equals("Deffered With Amendments")) {
                 j.status = "Justification Deferred With Amendments"
                 standardJustificationRepository.save(j)
             }

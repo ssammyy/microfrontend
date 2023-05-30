@@ -10,7 +10,7 @@ import {
     SectionsEntityDto,
     SubSectionsL1EntityDto,
     SubSectionsL2EntityDto, TitlesEntityDto, TownsDto,
-    UserSearchValues, UserTypeEntityDto, AddMssingStandardDto, tieFmarkToSmarkDto, updateStandardDto
+    UserSearchValues, UserTypeEntityDto, AddMssingStandardDto, tieFmarkToSmarkDto, updateStandardDto, CompanyDto
 } from './master.model';
 import {UserEntityDto} from "../users";
 import {TivetEntity} from "../companies";
@@ -553,6 +553,20 @@ export class MasterService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.TIVETS_REJECT);
         return this.http.post<TivetEntity>(url, data).pipe(
             map(function (response: TivetEntity) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    loadDAllCompanies(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_COMPANIES);
+        const urlAndPathVariables = `${url}`;
+        return this.http.get<CompanyDto[]>(urlAndPathVariables).pipe(
+            map(function (response: CompanyDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

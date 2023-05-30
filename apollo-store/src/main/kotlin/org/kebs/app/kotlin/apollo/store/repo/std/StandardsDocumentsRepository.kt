@@ -95,4 +95,5 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     )
     fun findStandardDocumentPrdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
 
+
 }

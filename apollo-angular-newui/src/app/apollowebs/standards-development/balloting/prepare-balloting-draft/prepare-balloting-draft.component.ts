@@ -123,74 +123,6 @@ export class PrepareBallotingDraftComponent implements OnInit {
             }
         );
     }
-
-    public uploadMinutesForBallot(prdId: number) {
-        if (this.uploadedFiles.length > 0) {
-            const file = this.uploadedFiles;
-            const formData = new FormData();
-            for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
-                formData.append('docFile', file[i], file[i].name);
-            }
-            this.SpinnerService.show();
-            this.ballotService.uploadMinutesForBallot(String(prdId), formData, "Minutes BALLOT", "Minutes BALLOT").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFiles = null;
-                    console.log(data);
-                    swal.fire({
-                        title: 'Minutes Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.hideModelE()
-                    this.getAllPrdS();
-
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
-            );
-        }
-    }
-
-    public uploadDraftsAndOtherDocsBallot(prdId: number) {
-        if (this.uploadedFilesB.length > 0) {
-            const file = this.uploadedFilesB;
-            const formData = new FormData();
-            for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
-                formData.append('docFile', file[i], file[i].name);
-            }
-            this.SpinnerService.show();
-            this.ballotService.uploadBallotDraftDocuments(String(prdId), formData, "Drafts And Other Relevant Documents BALLOT", "Drafts And Other Relevant Documents BALLOT").subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    this.uploadedFilesB = null;
-                    console.log(data);
-                    this.hideModelD()
-                    swal.fire({
-                        title: 'Draft Documents Uploaded Successfully.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    this.getAllPrdS();
-
-                    // this.router.navigate(['/draftStandard']);
-                    // this.getSACTasks();
-
-                },
-            );
-        }
-    }
-
-
     uploadBallotDraft(): void {
         if (this.uploadedFilesC != null) {
             this.SpinnerService.show();
@@ -211,8 +143,31 @@ export class PrepareBallotingDraftComponent implements OnInit {
             this.showToasterError("Error", `Please Upload all the documents.`);
         }
     }
-
     public uploadBallotDoc(ballotId: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.ballotService.uploadMinutesForBallot(String(ballotId), formData, "Minutes BALLOT", "Minutes BALLOT").subscribe()
+
+        }
+        if (this.uploadedFilesB.length > 0) {
+            const file = this.uploadedFilesB;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.ballotService.uploadBallotDraftDocuments(String(ballotId),
+                formData, "Drafts And Other Relevant Documents BALLOT", "Drafts And Other Relevant Documents BALLOT").subscribe()
+        }
+
+
+
+
         if (this.uploadedFilesC.length > 0) {
             const file = this.uploadedFilesC;
             const formData = new FormData();
@@ -240,21 +195,6 @@ export class PrepareBallotingDraftComponent implements OnInit {
                 },
             );
         }
-    }
-
-
-    public getAllBallotDocs(pdID: number) {
-        this.ballotService.getAllDocumentsOnPrd(pdID).subscribe(
-            (response: StandardDocuments[]) => {
-
-                this.standardDocuments = response;
-                this.rerender()
-
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
     }
 
     public getAllComments(prdID: number) {

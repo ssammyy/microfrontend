@@ -27,12 +27,12 @@ export class BallotService {
     }
 
     //upload  Minutes For Ballot Draft
-    public uploadMinutesForBallot(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadMinutesForBallot(ballotId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/ballotMinutes`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
+            }, params: {'ballotId': ballotId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -44,12 +44,12 @@ export class BallotService {
     }
 
     //upload Draft Documents For Ballot Draft
-    public uploadBallotDraftDocuments(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+    public uploadBallotDraftDocuments(ballotId: string, data: FormData, doctype: string, docName: string): Observable<any> {
         const url = `${this.apiServerUrl}upload/ballotDraftDocuments`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
+            }, params: {'prdId': ballotId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;

@@ -23,6 +23,10 @@ class Ballot {
     @Basic
     var ballotDraftBy: String? = null
 
+    @Column(name = "FDKS_NUMBER")
+    @Basic
+    var fdksNumber: String? = null
+
 
     @Column(name = "CREATED_ON")
     @Basic

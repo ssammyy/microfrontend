@@ -9,7 +9,9 @@ import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
+import java.util.*
 
 
 @Service
@@ -27,6 +29,7 @@ class BallotService(
     private val userListRepository: UserListRepository,
     private val comStdDraftRepository: ComStdDraftRepository,
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
+    private val sdDocumentsRepository: StandardsDocumentsRepository,
 
 
     ) {
@@ -52,10 +55,13 @@ class BallotService(
         ballot.createdBy = loggedInUser.id.toString()
         ballot.status = "Created & Submitted For Voting"
 
+
+        val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
+        val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
+        ballot.fdksNumber = "D" + { committeeDraft.ksNumber }
         ballotRepository.save(ballot)
 
         //get prd Draft and update
-        val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
         publicReviewDraft.status = "Ballot Draft Uploaded";
         publicReviewDraftRepository.save(publicReviewDraft)
 
@@ -126,24 +132,23 @@ class BallotService(
     }
 
 
-
     fun makeDecisionOnBallotDraft(ballot: Ballot) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val approveBallotDraft =
             ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
 
         if (ballot.approvalStatus.equals("Approved")) {
-            println(approveBallotDraft.prdID)
-            val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(approveBallotDraft.prdID).orElse(null);
+            val publicReviewDraft: PublicReviewDraft =
+                publicReviewDraftRepository.findById(approveBallotDraft.prdID).orElse(null);
             val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
             val preliminaryDraft: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
             val nwiItem: StandardNWI =
                 standardNWIRepository.findById(preliminaryDraft.nwiID?.toLong() ?: -1).orElse(null)
             val standardRequest: StandardRequest =
                 standardRequestRepository.findById(nwiItem.standardId ?: -1).orElse(null)
-            val uploadedDate= Timestamp(System.currentTimeMillis())
+            val uploadedDate = Timestamp(System.currentTimeMillis())
             val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
-            val tcSecId= standardRequest.tcSecAssigned?.toLong()
+            val tcSecId = standardRequest.tcSecAssigned?.toLong()
 
 
             approveBallotDraft.status = "Standard Approved"
@@ -161,8 +166,8 @@ class BallotService(
 
             comStdDraftRepository.findByIdOrNull(publicReviewDraft.stdDraftId)?.let { comStdDraft ->
                 with(comStdDraft) {
-                    standardType="FD KS"
-                    status=4
+                    standardType = "FD KS"
+                    status = 4
 
 
                 }
@@ -225,6 +230,37 @@ class BallotService(
         }
         ballotRepository.save(approveBallotDraft)
 
+    }
+
+    fun uploadBallotfiles(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        ballotID: Long,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            sdDocumentId = ballotID
+            createdBy = commonDaoServices.concatenateName(commonDaoServices.loggedInUserDetails())
+            createdOn = commonDaoServices.getTimestamp()
+        }
+        //update documents with PRDId
+        val b: Ballot = ballotRepository.findById(ballotID).orElse(null)
+        val u: PublicReviewDraft = publicReviewDraftRepository.findById(b.prdID).orElse(null)
+        u.status = "Draft Documents For Ballot Uploaded"
+        publicReviewDraftRepository.save(u)
+
+        return sdDocumentsRepository.save(uploads)
     }
 
 
