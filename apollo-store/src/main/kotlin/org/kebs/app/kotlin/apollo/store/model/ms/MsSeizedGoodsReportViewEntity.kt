@@ -14,8 +14,16 @@ class MsSeizedGoodsReportViewEntity : Serializable {
     var id: Long? = null
 
     @Basic
-    @Column(name = "DATE_OF_SEIZURE")
-    var dateofSeizure: String? = null
+    @Column(name = "SEIZURE_DECLARATION_ID")
+    var seizureDeclarationId: Long? = null
+
+    @Basic
+    @Column(name = "SEIZED_GOODS_ID")
+    var seizedGoodsId: Long? = null
+
+    @Basic
+    @Column(name = "WORKPLAN_PRODUCT_ID")
+    var workplanProductId: Long? = null
 
     @Basic
     @Column(name = "OFFICER")
@@ -26,13 +34,16 @@ class MsSeizedGoodsReportViewEntity : Serializable {
     var dateofSeizureAsDate: Date? = null
 
     @Basic
+    @Column(name = "DATE_OF_SEIZURE")
+    var dateofSeizure: String? = null
+
+    @Basic
     @Column(name = "MARKET_CENTRE")
     var marketCentre: String? = null
 
     @Basic
     @Column(name = "PRODUCT_FIELD")
     var product: String? = null
-
 
     @Basic
     @Column(name = "NAME_OUTLET")
@@ -71,27 +82,15 @@ class MsSeizedGoodsReportViewEntity : Serializable {
     var productsDueForDestruction: String? = null
 
     @Basic
-    @Column(name = "PRODUCTS_DUE_FOR_RELEASE")
-    var productsDueForRelease: String? = null
+    @Column(name = "DATE_OF_DESTRUCTION_NOTIFICATION")
+    var dateOfDestructionNotification: String? = null
 
     @Basic
-    @Column(name = "DATEOF_DESTRUCTED")
-    var dateofDestructed: String? = null
-
-    @Basic
-    @Column(name = "DATEOF_RELEASE")
-    var dateofRelease: String? = null
-
-    @Basic
-    @Column(name = "DATE_DESTRUCTED")
-    var dateDestructed: Date? = null
-
-    @Basic
-    @Column(name = "DATE_RELEASE")
-    var dateRelease: Date? = null
+    @Column(name = "ARE_PRODUCTS_DESTROYED")
+    var areProductsDestroyed: String? = null
 
     @Basic
     @Column(name = "MS_WORKPLAN_GENERATED_ID")
-    var msWorkplanGeneratedId: String? = null
-
+    var msWorkplanGeneratedId: Long? = null
 }
+

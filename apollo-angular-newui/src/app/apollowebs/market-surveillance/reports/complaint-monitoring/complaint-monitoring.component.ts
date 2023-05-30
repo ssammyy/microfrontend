@@ -110,7 +110,6 @@ export class ComplaintMonitoringComponent implements OnInit {
             marketCentre: ['', null],
             nameOutlet: ['', null],
             productsDueForDestruction: ['', null],
-            productsDueForRelease: ['', null],
             officerID: ['', null],
             selectedOfficers: [[], null],
         });
@@ -262,14 +261,14 @@ export class ComplaintMonitoringComponent implements OnInit {
             }
 
 
-            if(isNaN(Number(this.loadedData[i].currentLocationSeizedProducts))){
-                // this.loadedData[i].currentLocationSeizedProducts = '0';
-            }else{
-                arrayOfLocationAndSeizedGoods.push(Number(this.loadedData[i].currentLocationSeizedProducts));
-            }
-
             if(this.loadedData[i].productsDueForDestruction == "YES"){
                 arrayOfProductsDueForDestruction.push(1);
+            }
+
+            if(this.loadedData[i].areProductsDestroyed == '1'){
+                this.loadedData[i].areProductsDestroyed = 'YES';
+            }else{
+                this.loadedData[i].areProductsDestroyed = 'NO'
             }
 
         }

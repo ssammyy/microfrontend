@@ -188,11 +188,11 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
         value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
                 "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
-                "   ( a.ASSIGNED_IO IN (:selectedOfficers))" +
+                "    a.ASSIGNED_IO IN :selectedOfficers" +
                 "    and (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
                 "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
                 "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
-                "   ( a.DIVISION IN :selectedDivisions) and\n" +
+                "    a.DIVISION IN :selectedDivisions and\n" +
                 "   (:regionID is null or a.REGION =:regionID)",
 
         nativeQuery = true
@@ -213,7 +213,7 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
         value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
                 "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
-                "   ( a.ASSIGNED_IO IN (:selectedOfficers))" +
+                "    a.ASSIGNED_IO IN :selectedOfficers" +
                 "    and (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
                 "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
                 "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
@@ -239,7 +239,7 @@ interface IConsumerComplaintsReportViewRepository : HazelcastRepository<Consumer
                 "     (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
                 "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID)) and\n" +
                 "   (:departmentID is null or a.DIVISION =:departmentID) and\n" +
-                "   ( a.DIVISION IN :selectedDivisions) and\n" +
+                "    a.DIVISION IN :selectedDivisions and\n" +
                 "   (:regionID is null or a.REGION =:regionID)",
 
         nativeQuery = true
@@ -290,8 +290,8 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
         value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
-                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:officerID is null or a.OFFICER =:officerID) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
-                "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)",
+                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:officerID is null or a.OFFICER =:officerID) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)",
+
         nativeQuery = true
     )
     fun findFilteredSeizedGoodsReport(
@@ -302,7 +302,6 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
         @Param("marketCentre") marketCentre: String?,
         @Param("nameOutlet") nameOutlet: String?,
         @Param("productsDueForDestruction") productsDueForDestruction: String?,
-        @Param("productsDueForRelease") productsDueForRelease: String?,
         @Param("officerID") officerID: String?,
     ): List<MsSeizedGoodsReportViewEntity>?
 
@@ -311,7 +310,6 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
                 "    (:startDate is null or a.DATE_OF_SEIZURE_AS_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_OF_SEIZURE_AS_DATE <=TO_DATE(:endDate))\n" +
                 "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
                 "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:officerID is null or a.OFFICER =:officerID) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
-                "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)\n"+
                 "    AND ( a.OFFICER IN :selectedOfficers)",
         nativeQuery = true
     )
@@ -323,7 +321,6 @@ interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoods
         @Param("marketCentre") marketCentre: String?,
         @Param("nameOutlet") nameOutlet: String?,
         @Param("productsDueForDestruction") productsDueForDestruction: String?,
-        @Param("productsDueForRelease") productsDueForRelease: String?,
         @Param("officerID") officerID: String?,
         @Param("selectedOfficers") selectedOfficers: Array<String>?,
     ): List<MsSeizedGoodsReportViewEntity>?

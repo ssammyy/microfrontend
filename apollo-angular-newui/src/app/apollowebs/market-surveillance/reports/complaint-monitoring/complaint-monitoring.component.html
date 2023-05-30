@@ -132,13 +132,7 @@
                                                            name="productsDueForDestruction"  type="text">
                                                 </div>
                                             </div>
-                                            <div class="col-6 col-md-3">
-                                                <div class="form-group">
-                                                    <label><b>Products Due For Release</b></label>
-                                                    <input class="form-control two-column-input" formControlName="productsDueForRelease"
-                                                           name="productsDueForRelease"  type="text">
-                                                </div>
-                                            </div>
+
                                         </div>
                                         <div class="row">
                                             <div class="col-6 col-md-3">
@@ -232,9 +226,9 @@
                                             <th class="knw">ESTIMATED COST</th>
                                             <th class="knw">CURRENT LOCATION SEIZED PRODUCTS</th>
                                             <th class="knw">PRODUCTS DUE FOR DESTRUCTION</th>
-                                            <th class="knw">PRODUCTS DUE FOR RELEASE</th>
-                                            <th class="knw">DATE OF DESTRUCTION</th>
-                                            <th class="knw">DATE OF RELEASE</th>
+                                            <th class="knw">DATE OF DESTRUCTION NOTIFICATION</th>
+                                            <th class="knw">ARE PRODUCTS DESTROYED?</th>
+
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -252,9 +246,8 @@
                                             <td>{{companyModel?.estimatedCost}}</td>
                                             <td>{{companyModel?.currentLocationSeizedProducts}}</td>
                                             <td>{{companyModel?.productsDueForDestruction}}</td>
-                                            <td>{{companyModel?.productsDueForRelease}}</td>
-                                            <td>{{companyModel?.dateofDestructed}}</td>
-                                            <td>{{companyModel?.dateofRelease}}</td>
+                                            <td>{{companyModel?.dateOfDestructionNotification}}</td>
+                                            <td>{{companyModel?.areProductsDestroyed}}</td>
 
                                         </tr>
                                         </tbody>
