@@ -1225,7 +1225,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'business',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ','TC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ','TC_SD_READ','TC_SEC_SD_READ', 'KNW_SEC_SD_READ'],
         collapse: 'AoIS',
     },
 
