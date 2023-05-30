@@ -248,7 +248,7 @@ class MembershipToTCService(
     }
 
     fun getApplicationsForReview(): List<MembershipTCApplication> {
-        return membershipTCRepository.findByApprovedByOrganizationAndStatusIsNotNull("APPROVED")
+        return membershipTCRepository.findByApprovedByOrganizationAndStatusIsNull("APPROVED")
 
     }
 
@@ -599,7 +599,7 @@ class MembershipToTCService(
         val link =
             "${applicationMapProperties.baseUrlQRValue}getInduction?applicationID=${encryptedId}"
         val messageBody =
-            " Hello ${u.nomineeName} \n Welcome To KEBS KIMS. \n Your Login Credentials are as follows:TBD " +
+            " Hello ${u.nomineeName} \n Welcome To KEBS KIMS." +
                     "${u.technicalCommittee}. Please click on the following link to confirm induction \n " +
                     link +
                     "\n\n\n\n\n\n"

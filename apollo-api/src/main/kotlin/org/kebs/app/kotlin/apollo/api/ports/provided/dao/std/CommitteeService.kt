@@ -408,15 +408,7 @@ class CommitteeService(
         approveCommitteeDraft.status = "Approved. Prepare Public Review Draft."
         approveCommitteeDraft.modifiedOn = Timestamp(System.currentTimeMillis())
         approveCommitteeDraft.modifiedBy = loggedInUser.id.toString()
-
-        approveCommitteeDraft.ksNumber = "KS${approveCommitteeDraft.id}${
-            generateRandomText(
-                5,
-                "SHA1PRNG",
-                "SHA-512",
-                true
-            )
-        }".uppercase(Locale.getDefault())
+        approveCommitteeDraft.ksNumber = "DKS${approveCommitteeDraft.id}${Calendar.getInstance().get(Calendar.YEAR)}".uppercase(Locale.getDefault())
 
         //send email to hof sic
         val messageBody =
@@ -512,18 +504,6 @@ class CommitteeService(
             val u: CommitteeCD = committeeCDRepository.findById(nwi).orElse(null)
             u.status = "Draft Documents For PRD Uploaded"
             committeeCDRepository.save(u)
-        }
-        if (DocDescription == "Minutes For Ballot") {
-            //update documents with PRDId
-            val u: PublicReviewDraft = publicReviewDraftRepository.findById(nwi).orElse(null)
-            u.status = "Minutes For Ballot Uploaded"
-            publicReviewDraftRepository.save(u)
-        }
-        if (DocDescription == "Draft Documents For Ballot") {
-            //update documents with PRDId
-            val u: PublicReviewDraft = publicReviewDraftRepository.findById(nwi).orElse(null)
-            u.status = "Draft Documents For Ballot Uploaded"
-            publicReviewDraftRepository.save(u)
         }
         return sdDocumentsRepository.save(uploads)
     }

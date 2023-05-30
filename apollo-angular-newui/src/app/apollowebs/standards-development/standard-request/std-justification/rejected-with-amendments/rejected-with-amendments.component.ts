@@ -42,6 +42,7 @@ export class RejectedWithAmendmentsComponent implements OnInit {
     public rejected: StdJustification[] = [];
     public rejectedWithAmendments: StdJustification[] = [];
     public actionRequest: StdJustification | undefined;
+    public nwiRequest !: NwiItem[];
 
 
     @ViewChildren(DataTableDirective)
@@ -86,6 +87,9 @@ export class RejectedWithAmendmentsComponent implements OnInit {
     roles: string[];
     userLoggedInID: number;
     userProfile: LoggedInUser;
+    todayDate: Date = new Date();
+    otherSelected = false;
+
 
 
     constructor(
@@ -106,9 +110,6 @@ export class RejectedWithAmendmentsComponent implements OnInit {
             this.userProfile = u;
             return this.roles = u.roles;
         });
-        this.getTCSECTasksJustification();
-        this.getApprovedJustifications();
-        this.getRejectedJustifications();
         this.getRejectedAmendmentJustifications();
 
     }
@@ -131,36 +132,6 @@ export class RejectedWithAmendmentsComponent implements OnInit {
         )
     }
 
-    public getApprovedJustifications(): void {
-        this.standardDevelopmentService.getApprovedJustifications().subscribe(
-            (response: StdJustification[]) => {
-                // console.log(response);
-                this.approved = response;
-                this.dataSource = new MatTableDataSource(this.approved);
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
-
-
-    public getRejectedJustifications(): void {
-        this.standardDevelopmentService.getRejectedJustifications().subscribe(
-            (response: StdJustification[]) => {
-                // console.log(response);
-                this.rejected = response;
-                this.dataSourceB = new MatTableDataSource(this.rejected);
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
 
     public getRejectedAmendmentJustifications(): void {
         this.standardDevelopmentService.getRejectedAmendmentJustifications().subscribe(
@@ -250,6 +221,7 @@ export class RejectedWithAmendmentsComponent implements OnInit {
         console.log(task.taskId)
         if (mode === 'view') {
             this.actionRequest = task;
+           this.getDeferredNwi(String(task.nwiId))
             this.getDecisionOnJustification(String(task.id))
             this.getSelectedUser(task.tcSecretary)
             this.getAllDocs(String(task.id), "Justification Documents")
@@ -311,6 +283,18 @@ export class RejectedWithAmendmentsComponent implements OnInit {
             }
         )
     }
+    public getDeferredNwi(nwiId: string): void {
+        this.standardDevelopmentService.getNwiById(nwiId).subscribe(
+            (response: NwiItem[]) => {
+                this.nwiRequest = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
 
     public getDecisionOnJustification(justificationId: string): void {
         this.standardDevelopmentService.getJustificationDecisionById(justificationId).subscribe(
@@ -488,6 +472,10 @@ export class RejectedWithAmendmentsComponent implements OnInit {
             this.dataSourceC.paginator.firstPage();
         }
     }
+    onSelectOption(selectedOption: string) {
+        this.otherSelected = selectedOption === 'Other';
+    }
+
 
 
 }

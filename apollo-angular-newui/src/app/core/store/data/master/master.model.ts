@@ -99,6 +99,11 @@ export class DepartmentDto {
     status?: boolean;
 }
 
+export class CompanyDto {
+    id?: number;
+    name?: string;
+
+}
 
 export class DesignationEntityDto {
     id?: number;

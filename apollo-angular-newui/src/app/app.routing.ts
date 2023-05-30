@@ -373,6 +373,9 @@ import {ViewRiskProfilesComponent} from "./apollowebs/pvoc/risk/view-risk-profil
 import {
     ApproveMembersForTcCreationComponent
 } from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
+import {
+    CommentOnPublicReviewComponent
+} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
 
 export const routes: Routes = [
     {
@@ -1806,6 +1809,12 @@ export const routes: Routes = [
         // view Public Review Draft
         path: 'commentOnPrd', component: AdminLayoutComponent,
         children: [{path: '', component: CommentOnPublicReviewDraftComponent}],
+    },
+
+    {
+        // view Public Review Draft
+        path: 'commentOnPublicReview:reviewID', component: AdminLayoutComponent,
+        children: [{path: '', component: CommentOnPublicReviewComponent}],
     },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES

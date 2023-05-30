@@ -182,6 +182,8 @@ export class ApiEndpointService {
         LOAD_DESIGNATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/load`,
         LOAD_DESIGNATIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/loads`,
         LOAD_DEPARTMENTS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/load`,
+        LOAD_COMPANIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/companies/loads`,
+
         LOAD_DEPARTMENTS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/loads`,
         LOAD_DIVISIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/load`,
         LOAD_DIVISIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/loads`,

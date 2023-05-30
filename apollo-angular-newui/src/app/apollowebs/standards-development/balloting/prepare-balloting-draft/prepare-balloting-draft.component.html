@@ -67,15 +67,6 @@
 
 
                                         <td>
-                                            <a (click)="onOpenModal(publicReviewDraft,'uploadMinutes')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top" style="width: max-content"
-                                               data-original-title="Upload NWI">Upload Minutes</a>
-                                            <a (click)="onOpenModal(publicReviewDraft,'uploadDraftsAndOtherRelevantDocuments')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top" style="width: max-content"
-                                               data-original-title="Upload NWI">Upload Drafts and Documents </a>
-                                            <br>
                                             <a (click)="onOpenModal(publicReviewDraft,'prepareBallot')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
@@ -94,7 +85,7 @@
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">View Public Review
+                                            <h5 class="modal-title">View Public Review
                                                 Draft
                                                 Details</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -266,8 +257,7 @@
                                      style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title"
-                                                id="updateExampleModalLabel">
+                                            <h5 class="modal-title">
                                                 View Comment On Committee Draft</h5>
                                             <button type="button" class="close"
                                                     data-dismiss="modal" aria-label="Close">
@@ -499,98 +489,13 @@
                                 </div>
                             </div>
 
-                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Minutes</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form>
-                                            <div class="modal-body">
-                                                <div class="row col-12">
-                                                    <div class="form-group col-12">
-
-                                                        <label><b>Please Upload The Minutes For The Discussion</b> <a
-                                                                href="https://www.w3schools.com/"> (Download Minutes
-                                                            Template Here)</a></label>
-
-                                                        <form>
-                                                            <file-upload [(ngModel)]="uploadedFiles"
-                                                                         name="uploadedFiles" fileslimit="1"
-                                                                         required
-                                                                         accept=".pdf"></file-upload>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeModalE
-                                                        (click)="hideModel()" data-dismiss="modal">Close
-                                                </button>
-                                                <button class="btn btn-primary"
-                                                        (click)="uploadMinutesForBallot(publicReviewDraftsB.id)"
-                                                        type="submit">SUBMIT
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade " id="uploadDraftsAndOtherRelevantDocuments" tabindex="-1"
-                                 role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Drafts And Other
-                                                Relevant Documents</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form>
-                                            <div class="modal-body">
-                                                <div class="row col-12">
-                                                    <div class="form-group col-12">
-
-                                                        <label><b>Please Upload Drafts And Other Relevant Documents From
-                                                            The Discussion</b> </label>
-
-                                                        <form>
-                                                            <file-upload [(ngModel)]="uploadedFilesB"
-                                                                         name="uploadedFiles"
-                                                                         required
-                                                                         accept=".pdf"></file-upload>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeModalD
-                                                        (click)="hideModel()" data-dismiss="modal">Close
-                                                </button>
-                                                <button class="btn btn-primary"
-                                                        (click)="uploadDraftsAndOtherDocsBallot(publicReviewDraftsB.id)"
-                                                        type="submit">UPLOAD
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="modal fade " id="prepareBallot" tabindex="-1" role="dialog"
                                  aria-labelledby="updateExampleModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Prepare Ballot
+                                            <h5 class="modal-title">Prepare Ballot
                                                 Draft</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -604,7 +509,7 @@
                                                           [formGroup]="publicReview_draftFormGroup" class="form">
 
                                                         <div class="form-group">
-                                                            <label for="ksNumber">KS Number</label>
+                                                            <label for="ksNumber">DKS Number</label>
                                                             <input type="text" class="form-control" id="ksNumber"
                                                                    readonly
                                                                    formControlName="ksNumber" name="ksNumber"
@@ -618,10 +523,12 @@
                                                                    formControlName="ballotName" name="ballotName">
 
                                                         </div>
-                                                        <label><b>Please Upload The Ballot Draft</b> <a
-                                                                href="https://www.w3schools.com/"> (Download Public
-                                                            Review
-                                                            Draft Template Here)</a></label>
+                                                        <label><b>Please Upload The Ballot Draft</b>
+                                                            <a href="../../../../../assets/sdDocuments/Kenya%20Bureau%20of%20Standards%20Template.docx"
+                                                               target="_blank">(Download Ballot Draft
+                                                                Template)</a>
+
+                                                        </label>
                                                         <form>
                                                             <file-upload [(ngModel)]="uploadedFilesC"
                                                                          name="uploadedFiles" fileslimit="1"
@@ -631,6 +538,32 @@
                                                                    ngModel="EACGazette"
                                                                    name="DocDescription" type="hidden">
                                                         </form>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Please Upload The Minutes For The
+                                                                Discussion If any</b>
+                                                                <a href="../../../../../assets/sdDocuments/MinutesTemplate.docx"
+                                                                   target="_blank">(Download Minutes Template)</a>
+                                                            </label>
+                                                            <form>
+                                                                <file-upload [(ngModel)]="uploadedFiles"
+                                                                             name="uploadedFiles" fileslimit="1"
+                                                                             required
+                                                                             accept=".pdf, .docx"></file-upload>
+                                                            </form>
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Please Upload Reference Documents And Other
+                                                                Relevant
+                                                                Documents From
+                                                                The Discussion If any</b> </label>
+
+                                                            <form>
+                                                                <file-upload [(ngModel)]="uploadedFilesB"
+                                                                             name="uploadedFiles"
+                                                                             required
+                                                                             accept=".pdf, .docx"></file-upload>
+                                                            </form>
+                                                        </div>
                                                         <input type="hidden" class="form-control" id="prdID"
                                                                readonly
                                                                formControlName="prdID" name="prdID"

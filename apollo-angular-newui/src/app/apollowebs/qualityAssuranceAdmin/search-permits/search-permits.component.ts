@@ -3,13 +3,15 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {DataTableDirective} from 'angular-datatables';
 import {Subject} from 'rxjs';
-import {finalize, takeUntil} from 'rxjs/operators';
 import * as CryptoJS from 'crypto-js';
 import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
 import {MyTasksPermitEntityDto, PermitSearchValues} from '../../../core/store/data/qa/qa.model';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {HttpErrorResponse} from "@angular/common/http";
+import {MasterService} from "../../../core/store/data/master/master.service";
+import {CompanyDto} from "../../../core/store/data/master/master.model";
 
 @Component({
     selector: 'app-search-permits',
@@ -27,13 +29,15 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
     form: FormGroup;
     permitSearchValues: PermitSearchValues;
     private destroy$: Subject<void> = new Subject<void>();
+    public companies !: CompanyDto[];
 
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
         public internalService: QaInternalService,
         private qaService: QaService,
-        private spinnerService: NgxSpinnerService
+        private spinnerService: NgxSpinnerService,
+        private masterService: MasterService
     ) {
     }
 
@@ -115,5 +119,18 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
             padding: CryptoJS.pad.ZeroPadding
         });
         this.router.navigate(['/permit-details-admin', encrypted.ciphertext.toString(CryptoJS.enc.Hex)])
+    }
+
+
+    getAllCompanies() {
+        this.masterService.loadDAllCompanies().subscribe(
+            (response: CompanyDto[]) => {
+                this.companies = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
     }
 }

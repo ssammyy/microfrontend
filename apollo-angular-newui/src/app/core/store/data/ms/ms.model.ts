@@ -278,6 +278,10 @@ export class MsDashBoardHODDto {
     reportPendingReviewWP: number;
     overdueJuniorTaskWP: number;
     overdueJuniorTaskCPWP: number;
+    allHODWorkPlanTasks: number;
+    allHODComplaintTasks: number;
+    myHODWorkPlanTasks: number;
+    myHODComplaintTasks: number;
 }
 
 export class MsDashBoardHOFDto {
@@ -728,7 +732,6 @@ export class SeizeViewSearchValues {
     marketCentre: string;
     nameOutlet: string;
     productsDueForDestruction: string;
-    productsDueForRelease: string;
     officerID: string;
     selectedOfficers: string[];
 
@@ -736,9 +739,14 @@ export class SeizeViewSearchValues {
 
 export class MsSeizedGoodsReportViewEntity {
     id: number;
-    dateofSeizure: string;
+    seizureDeclarationId: number;
+    seizedGoodsId: number;
+    workplanProductId: number;
     officer: string;
+    dateOfSeizureAsDate: Date;
+    dateofSeizure: string;
     marketCentre: string;
+    productField: string;
     nameOutlet: string;
     descriptionProductsSeized: string;
     brand: string;
@@ -748,14 +756,16 @@ export class MsSeizedGoodsReportViewEntity {
     estimatedCost: string;
     currentLocationSeizedProducts: string;
     productsDueForDestruction: string;
-    productsDueForRelease: string;
-    dateofDestructed: string;
-    dateofRelease: string;
-    dateSeizure: Date;
-    dateDestructed: Date;
-    dateRelease: Date;
-
+    dateOfDestructionNotification: string;
+    areProductsDestroyed: string;
+    msWorkplanGeneratedId: string;
+    dateOfReleaseNotification: string;
+    areProductsReleased: string;
+    dateOfDestruction: Date;
+    dateOfRelease: Date;
+    dateOfDestructed: Date;
 }
+
 
 export class SubmittedSamplesSummaryReportViewEntity {
     id: number;
