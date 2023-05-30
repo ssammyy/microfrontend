@@ -1078,6 +1078,7 @@ export interface ISProposalJustification {
     meetingDate: string;
     slNumber: string;
     edition: string;
+    otherEdition: string;
     department: string;
     requestedBy: string;
     scope: string;

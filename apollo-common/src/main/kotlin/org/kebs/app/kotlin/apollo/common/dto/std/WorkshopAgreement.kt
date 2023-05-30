@@ -525,6 +525,7 @@ data class ISProposalJustification(
     var meetingDate: String?=null,
     var slNumber: String?=null,
     var edition: String?=null,
+    var otherEdition: String?=null,
     var standardNumber: String?=null,
     var department: String?=null,
     var requestedBy: String?=null,

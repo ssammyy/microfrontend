@@ -450,7 +450,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
+    fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntSpcDecision
     ) : ServerResponse
     {
         val comStdDraft= ComStdDraft().apply {

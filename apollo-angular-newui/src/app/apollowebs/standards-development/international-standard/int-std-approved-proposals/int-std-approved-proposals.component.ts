@@ -62,6 +62,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     isShowJustificationTabs= true;
     public uploadedFiles:  FileList;
     justificationStatus !: JustificationStatus;
+    selectedOption = '';
 
   constructor(
       private store$: Store<any>,
@@ -85,6 +86,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         standardNumber: [],
         title: ['', Validators.required],
         edition: ['', Validators.required],
+        otherEdition: [],
         requestedBy: [],
         scope: ['', Validators.required],
         purposeAndApplication: ['', Validators.required],
@@ -112,6 +114,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
           standardNumber: [],
           title: ['', Validators.required],
           edition: ['', Validators.required],
+          otherEdition: [],
           requestedBy: [],
           scope: ['', Validators.required],
           purposeAndApplication: ['', Validators.required],
@@ -152,13 +155,13 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         return this.editJustificationFormGroup.controls;
     }
     justificationEditions = [
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth",
-        "sixth",
-        "seventh"
+        "First",
+        "Second",
+        "Third",
+        "Fourth",
+        "Fifth",
+        "Sixth",
+        "Other"
       ]
 
 
@@ -457,6 +460,10 @@ export class IntStdApprovedProposalsComponent implements OnInit {
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
         });
+    }
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
     }
 
 
