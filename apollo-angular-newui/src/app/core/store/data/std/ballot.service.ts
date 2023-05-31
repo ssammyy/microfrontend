@@ -105,6 +105,20 @@ export class BallotService {
         );
 
     }
+    public editVoteBallot(vote: Vote): Observable<any> {
+        const url =`${this.apiServerUrl}` + 'editVoteBallot';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+    }
 
 
     //retrieve vote for logged in user
