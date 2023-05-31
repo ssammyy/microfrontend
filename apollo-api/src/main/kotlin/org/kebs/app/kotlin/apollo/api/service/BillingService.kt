@@ -228,6 +228,11 @@ class BillingService(
         }
     }
 
+    fun billStatement(customerId: Long, size: Int): List<BillPayments> {
+        val bills = this.billPaymentRepository.findByCorporateId(customerId, PageRequest.of(0, size))
+        return bills.toList()
+    }
+
     fun billTransactions(billId: Long, corporateId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val corporate = corporateCustomerRepository.findById(corporateId)

@@ -8,7 +8,11 @@ import javax.persistence.*
 @Table(name = "CFG_KEBS_PVOC_TIMELINE_PENALTIES")
 class PvocTimelinePenalties : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "CFG_KEBS_PVOC_TIMELINE_PENALTIES_SEQ_GEN", sequenceName = "CFG_KEBS_PVOC_TIMELINE_PENALTIES_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "CFG_KEBS_PVOC_TIMELINE_PENALTIES_SEQ_GEN",
+        sequenceName = "CFG_KEBS_PVOC_TIMELINE_PENALTIES_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "CFG_KEBS_PVOC_TIMELINE_PENALTIES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
@@ -32,6 +36,10 @@ class PvocTimelinePenalties : Serializable {
     @Column(name = "FIRST_PENALTY", precision = 15, scale = 4)
     @Basic
     var firstPenalty: BigDecimal? = null
+
+    @Column(name = "MONITORING_ID", nullable = false)
+    @Basic
+    var monitoringId: Long? = null
 
     @Column(name = "STATUS")
     @Basic

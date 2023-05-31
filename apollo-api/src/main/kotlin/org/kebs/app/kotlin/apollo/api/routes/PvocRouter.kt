@@ -62,7 +62,8 @@ class PvocRouter {
     @CrossOrigin
     fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
         "/api/v1/pvoc/monitoring".nest {
-            GET("/get/{applicationStatus}", handler::listMonitoringIssues)
+            GET("/issues", handler::listMonitoringIssues)
+            GET("/issue/{monitId}", handler::getMonitoringIssues)
             GET("/rfc/coc/{rfcId}", handler::getRfcForCoiOrCoc)
             GET("/rfc/coc", handler::listRfcsCoc)
             GET("/rfc/cor/{rfcId}", handler::getRfcForCor)

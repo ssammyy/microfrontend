@@ -21,6 +21,10 @@ enum class MonitoringStatus(val status: Int) {
 @Service
 class PvocMonitoringService(
     private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
+    private val timelinesRepository: IPvocTimelinesDataEntityRepository,
+    private val sealIssuesRepository: IPvocSealIssuesEntityRepository,
+    private val timelinePenaltiesRepository: IPvocTimelinePenaltiesRepository,
+    private val categorizationRepository: IPvocProductCategorizationIssuesRepository,
     private val rfcRepository: IRfcEntityRepo,
     private val rfcItemRepository: IRfcItemsRepository,
     private val rfcCorRepository: IRfcCorRepository,
@@ -48,27 +52,74 @@ class PvocMonitoringService(
                     yearMonth
                 ) + 1)
             monitoring.yearMonth = yearMonth
+            monitoring.name = agent.partnerName
             monitoring.description = "Agent Monitoring record for $yearMonth"
             monitoring.monitoringStatus = MonitoringStatus.OPEN.status
             monitoring.monitoringStatusDesc = MonitoringStatus.OPEN.name
             monitoring.status = 1
+            monitoring.modifiedOn = Timestamp.from(Instant.now())
+            monitoring.modifiedBy = "system"
             monitoring.createdOn = Timestamp.from(Instant.now())
             monitoring.createdBy = "system"
             return this.iPvocAgentMonitoringStatusEntityRepo.save(monitoring)
         }
     }
 
+    fun monitoringDetails(monitId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val monitoringOptional = iPvocAgentMonitoringStatusEntityRepo.findById(monitId)
+            if (monitoringOptional.isPresent) {
+                val data = mutableMapOf<String, Any>()
+                data["monitoring"] = PvocMonitoringDto.fromEntity(monitoringOptional.get())
+                monitoringOptional.get().partnerId?.let {
+                    data["partner"] = PvocPartnerDto.fromEntity(it)
+                }
+                data["timelines"] = this.timelinesRepository.findByMonitoringId(monitId, PageRequest.of(0, 100))
+//                data["seals"] = this.sealIssuesRepository.findByMonitoringId(monitId)
+//                data["categorization"] = this.categorizationRepository.findByMonitoringId(monitId)
+//                data["penalties"] = this.timelinePenaltiesRepository.findByMonitoringId(monitId)
+                response.data = data
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Response Message"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Record not found"
+            }
+        } catch (ex: Exception) {
+            response.message = "Failed to get record"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
     fun listAgentMonitoring(status: String, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
-        when (status) {
-            "OPEN" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.OPEN.status, page)
-            "NEW" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.NEW.status, page)
-            "REVIEW" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.REVIEW.status, page)
-            "APPROVE" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.APPROVE.status, page)
-            "REJECTED" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.REJECTED.status, page)
+        try {
+            val result = when (status) {
+                "OPEN" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.OPEN.status, page)
+                "NEW" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.NEW.status, page)
+                "REVIEW" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.REVIEW.status, page)
+                "APPROVE" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(MonitoringStatus.APPROVE.status, page)
+                "REJECTED" -> iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(
+                    MonitoringStatus.REJECTED.status,
+                    page
+                )
+                else -> null
+            }
+            if (result == null) {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Invalid record status"
+            } else {
+                response.setPage(result)
+                response.data = PvocMonitoringDto.fromList(result.toList())
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            }
+        } catch (ex: Exception) {
+            response.message = "Failed to get record"
+            response.responseCode = ResponseCodes.FAILED_CODE
         }
-        response.responseCode = ResponseCodes.SUCCESS_CODE
-        response.message = "Response Message"
         return response
     }
 

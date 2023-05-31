@@ -351,6 +351,22 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt',
     },
     {
+        path: '/monitoring',
+        title: 'PVOC Monitoring',
+        type: 'sub',
+        icontype: 'monitor',
+        collapse: 'monitoring',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ', 'DI_DIRECTOR_READ'],
+        children: [
+            {
+                path: 'issues',
+                title: 'Timeline Issue',
+                ab: 'TI',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN_READ', 'DI_DIRECTOR_READ'],
+            },
+        ]
+    },
+    {
         path: '/di',
         title: 'Import Inspection',
         type: 'sub',
@@ -470,7 +486,13 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'ncr',
-                title: 'NCR Certificates',
+                title: 'NCR for Goods',
+                ab: 'NR',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
+            },
+            {
+                path: 'ncr-cor',
+                title: 'NCR for Vehicles',
                 ab: 'NR',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
             },

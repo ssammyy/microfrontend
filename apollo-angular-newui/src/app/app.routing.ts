@@ -370,12 +370,10 @@ import {ListQueriesComponent} from "./apollowebs/pvoc/queries/list-queries/list-
 import {ViewQueryComponent} from "./apollowebs/pvoc/queries/view-query/view-query.component";
 import {ListRiskProfilesComponent} from "./apollowebs/pvoc/risk/list-risk-profiles/list-risk-profiles.component";
 import {ViewRiskProfilesComponent} from "./apollowebs/pvoc/risk/view-risk-profiles/view-risk-profiles.component";
-import {
-    ApproveMembersForTcCreationComponent
-} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
-import {
-    CommentOnPublicReviewComponent
-} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
+import {ApproveMembersForTcCreationComponent} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
+import {CommentOnPublicReviewComponent} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
+import {TimelineIssuesComponent} from "./apollowebs/pvoc/monitoring/timeline-issues/timeline-issues.component";
+import {ViewMonitoringIssuesComponent} from "./apollowebs/pvoc/monitoring/view-monitoring-issues/view-monitoring-issues.component";
 
 export const routes: Routes = [
     {
@@ -852,8 +850,23 @@ export const routes: Routes = [
     {
         path: 'permit-details', component: PermitDetailsComponent,
     },
-
-
+    // PVOC monitoring
+    {
+        path: 'monitoring',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'issues',
+                component: TimelineIssuesComponent,
+            },
+            {
+                path: 'issue/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+        ],
+    },
+    // PVOC
     {
         path: 'pvoc',
         component: AdminLayoutComponent,
