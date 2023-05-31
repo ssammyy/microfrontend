@@ -346,6 +346,7 @@ export class WorkPlanEntityDto {
     productString: string;
     productSubCategoryString: string;
     workPlanCountiesTowns: WorkPlanCountyTownDto[];
+    dateOfFinalReportGeneration: Date;
 }
 
 export class WorkPlanCountyTownDto {

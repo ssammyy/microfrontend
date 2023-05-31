@@ -149,6 +149,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var finalReportGenerated: Int? = null
 
+    @Column(name = "DATE_OF_FINAL_REPORT_CREATION")
+    @Basic
+    var dateOfFinalReportGeneration: Date? = null
+
     @Column(name = "MS_PROCESS_ENDED_STATUS")
     @Basic
     var msProcessEndedStatus: Int? = null
