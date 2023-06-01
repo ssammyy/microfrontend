@@ -377,6 +377,7 @@ data class WorkPlanEntityDto(
         var productString: String? = null,
         var productSubCategoryString: String? = null,
         var workPlanCountiesTowns: List<WorkPlanCountyTownDto>? = null,
+        var dateOfFinalReportGeneration: Date? = null,
 )
 
 data class WorkPlanCountyTownDto(

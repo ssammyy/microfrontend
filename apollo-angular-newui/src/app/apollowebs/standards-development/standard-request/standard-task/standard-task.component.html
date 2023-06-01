@@ -108,9 +108,20 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <a (click)="onOpenModal(task,'edit')" class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Review"> Review</a>
+                                                    <div *ngIf="roles?.includes('HOD_TWO_SD_READ')">
+                                                        <a (click)="onOpenModal(task,'edit')"
+                                                           class="btn btn-info tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Review"> View</a>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('HOF_SD_READ')">
+
+                                                        <a (click)="onOpenModal(task,'edit')"
+                                                           class="btn btn-info tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Review"> Review</a>
+                                                    </div>
+
                                                 </td>
 
                                             </tr>
@@ -237,156 +248,124 @@
                                     </div>
 
                                     <br>
-                                    <form (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview">
+                                    <div *ngIf="roles?.includes('HOF_SD_READ')">
+                                        <form (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview">
 
 
-                                        <div class="col-md-12">
-                                            <div class="card ">
-                                                <div class="card-header card-header-rose card-header-text">
-                                                    <div class="card-text">
-                                                        <h4 class="card-title">Review Standard Request</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body ">
-                                                    <div class="row" style="margin-bottom: 10px">
-                                                        <div class="col-sm-6 checkbox-radios">
-                                                            <label><b> Is A Technical Committee Secretary Available?</b></label>
-
-                                                            <mat-radio-group aria-label="Select an option"
-                                                                             (change)="onTcSecAvailability($event)"
-                                                                             formControlName="isTcSec">
-                                                                <mat-radio-button
-                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                        aria-label="Small"
-                                                                        class="example-margin mb-0" value="1"
-                                                                        id="isTcSec">
-                                                                    YES
-                                                                </mat-radio-button>
-
-                                                                <mat-radio-button
-                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                        aria-label="Small"
-                                                                        class="example-margin mb-0" value="0"
-                                                                        id="noTcSec">
-                                                                    NO
-                                                                </mat-radio-button>
-                                                            </mat-radio-group>
-
+                                            <div class="col-md-12">
+                                                <div class="card ">
+                                                    <div class="card-header card-header-rose card-header-text">
+                                                        <div class="card-text">
+                                                            <h4 class="card-title">Review Standard Request</h4>
                                                         </div>
                                                     </div>
-                                                    <div class="row" *ngIf="tcSecAvailabilty">
-                                                        <div class="col-sm-6 checkbox-radios">
-                                                            <label><b>Technical Committee (TC) Name : (Select one from
-                                                                the dropdown list)</b></label>
-                                                            <div class="default">
-                                                                <ng-select #tcSelect [(ngModel)]="selectedTc"
-                                                                           formControlName="tcId"
-                                                                           class="custom-ng-select"
-                                                                           (change)="onSelectTc($event)">
-                                                                    <ng-option *ngFor="let tc of tcs"
-                                                                               [value]="tc.id">{{ tc.tc_Title }}</ng-option>
-                                                                </ng-select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6 checkbox-radios">
-                                                            <label><b>Tc Sec Assignment</b></label>
-                                                            <ng-select [(ngModel)]="filteredTc" formControlName="isTc" class="custom-ng-select" name="isTc">
-                                                                <ng-option *ngFor="let tcSec of tcSecs" [value]="tcSec.v1">{{tcSec.v5}} {{tcSec.v6}}</ng-option>
-                                                            </ng-select>
-                                                        </div>
+                                                    <div class="card-body ">
+                                                        <div class="row" style="margin-bottom: 10px">
+                                                            <div class="col-sm-6 checkbox-radios">
+                                                                <label><b> Is A Technical Committee Secretary
+                                                                    Available?</b></label>
 
-                                                    </div>
-                                                    <br><br><br>
-                                                    <div class="row">
-                                                        <div class="col-sm-6 checkbox-radios">
-                                                            <h5><b>Desired Output</b></h5>
-                                                            <div class="col-sm-12 checkbox-radios">
-                                                                <mat-radio-group
-                                                                        aria-labelledby="example-radio-group-label"
-                                                                        class="example-radio-group"
-                                                                        name="sdOutput"
-                                                                        formControlName="sdOutput">
+                                                                <mat-radio-group aria-label="Select an option"
+                                                                                 (change)="onTcSecAvailability($event)"
+                                                                                 formControlName="isTcSec">
                                                                     <mat-radio-button
                                                                             aria-describedby="inputGroup-sizing-sm"
                                                                             aria-label="Small"
-                                                                            *ngFor="let season of seasons"
-                                                                            [value]="season">
-                                                                        {{season}}
+                                                                            class="example-margin mb-0" value="1"
+                                                                            id="isTcSec">
+                                                                        YES
+                                                                    </mat-radio-button>
 
+                                                                    <mat-radio-button
+                                                                            aria-describedby="inputGroup-sizing-sm"
+                                                                            aria-label="Small"
+                                                                            class="example-margin mb-0" value="0"
+                                                                            id="noTcSec">
+                                                                        NO
                                                                     </mat-radio-button>
                                                                 </mat-radio-group>
 
-
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" *ngIf="tcSecAvailabilty">
+                                                            <div class="col-sm-6 checkbox-radios">
+                                                                <label><b>Technical Committee (TC) Name : (Select one
+                                                                    from
+                                                                    the dropdown list)</b></label>
+                                                                <div class="default">
+                                                                    <ng-select #tcSelect [(ngModel)]="selectedTc"
+                                                                               formControlName="tcId"
+                                                                               class="custom-ng-select"
+                                                                               (change)="onSelectTc($event)">
+                                                                        <ng-option *ngFor="let tc of tcs"
+                                                                                   [value]="tc.id">{{ tc.tc_Title }}</ng-option>
+                                                                    </ng-select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6 checkbox-radios">
+                                                                <label><b>Tc Sec Assignment</b></label>
+                                                                <ng-select [(ngModel)]="filteredTc"
+                                                                           formControlName="isTc"
+                                                                           class="custom-ng-select" name="isTc">
+                                                                    <ng-option *ngFor="let tcSec of tcSecs"
+                                                                               [value]="tcSec.v1">{{tcSec.v5}} {{tcSec.v6}}</ng-option>
+                                                                </ng-select>
                                                             </div>
 
                                                         </div>
-                                                        <div class="col-sm-6 checkbox-radios">
-                                                            <h5><b>Desired Result</b></h5>
-                                                            <div class="col-md-4">
-                                                                <div class="col-sm-12 checkbox-radios">
-                                                                    <mat-radio-group
-                                                                            (change)="onRadiobuttonchange($event)"
-                                                                            aria-labelledby="example-radio-group-label"
-                                                                            class="example-radio-group"
-                                                                            name="sdResult"
-                                                                            formControlName="sdResult">
-                                                                        <mat-radio-button
-                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                aria-label="Small"
-                                                                                [value]="'Approve For Review'">
-                                                                            Approve For Review
-                                                                        </mat-radio-button>
-                                                                        <mat-radio-button
-                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                aria-label="Small"
-                                                                                [value]="'Reject For Review'">
-                                                                            Decline
-                                                                        </mat-radio-button>
-                                                                        <mat-radio-button
-                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                aria-label="Small"
-                                                                                [value]="'On Hold'">
-                                                                            On Hold
-                                                                        </mat-radio-button>
-                                                                    </mat-radio-group>
-                                                                    <br>
-                                                                    <br>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div *ngIf="onApproveApplication">
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput type="text"
-                                                                           placeholder="Reason For Decision"
-                                                                           formControlName="reason">
-                                                                </mat-form-field>
-
-                                                            </div>
-                                                            <div *ngIf="onDeclineApplication">
-                                                                <div class="col-md-6">
+                                                        <br><br><br>
+                                                        <div class="row">
+                                                            <div class="row" *ngIf="tcSecAvailabilty">
+                                                                <div class="col-sm-6 checkbox-radios">
+                                                                    <h5><b>Desired Output</b></h5>
                                                                     <div class="col-sm-12 checkbox-radios">
                                                                         <mat-radio-group
                                                                                 aria-labelledby="example-radio-group-label"
-                                                                                formControlName="rejectionReason"
-                                                                                class="example-radio-group">
+                                                                                class="example-radio-group"
+                                                                                name="sdOutput"
+                                                                                formControlName="sdOutput">
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    *ngFor="let season of seasons"
+                                                                                    [value]="season">
+                                                                                {{season}}
+
+                                                                            </mat-radio-button>
+                                                                        </mat-radio-group>
+
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6 checkbox-radios">
+                                                                <h5><b>Desired Result</b></h5>
+                                                                <div class="col-md-4">
+                                                                    <div class="col-sm-12 checkbox-radios">
+                                                                        <mat-radio-group
+                                                                                (change)="onRadiobuttonchange($event)"
+                                                                                aria-labelledby="example-radio-group-label"
+                                                                                class="example-radio-group"
+                                                                                name="sdResult"
+                                                                                formControlName="sdResult">
                                                                             <mat-radio-button
                                                                                     aria-describedby="inputGroup-sizing-sm"
                                                                                     aria-label="Small"
                                                                                     [value]="'Approve For Review'">
-                                                                                With Mandate
+                                                                                Approve For Review
                                                                             </mat-radio-button>
                                                                             <mat-radio-button
                                                                                     aria-describedby="inputGroup-sizing-sm"
                                                                                     aria-label="Small"
                                                                                     [value]="'Reject For Review'">
-                                                                                KEBS Department
+                                                                                Decline
                                                                             </mat-radio-button>
                                                                             <mat-radio-button
                                                                                     aria-describedby="inputGroup-sizing-sm"
                                                                                     aria-label="Small"
                                                                                     [value]="'On Hold'">
-                                                                                Other
+                                                                                On Hold
                                                                             </mat-radio-button>
                                                                         </mat-radio-group>
                                                                         <br>
@@ -394,37 +373,80 @@
 
                                                                     </div>
                                                                 </div>
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput type="text"
-                                                                           placeholder="Reason For Decision"
-                                                                           formControlName="reason">
-                                                                </mat-form-field>
-                                                                <mat-form-field class="example-full-width">
-                                                                    <input matInput type="url" placeholder="Link If Available" formControlName="link">
-                                                                    <mat-error *ngIf="stdHOFReview.get('link').hasError('invalidLink')">
-                                                                        Please enter a valid link.
-                                                                    </mat-error>
-                                                                </mat-form-field>
-                                                            </div>
 
+                                                                <div *ngIf="onApproveApplication">
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="text"
+                                                                               placeholder="Reason For Decision"
+                                                                               formControlName="reason">
+                                                                    </mat-form-field>
+
+                                                                </div>
+                                                                <div *ngIf="onDeclineApplication">
+                                                                    <div class="col-md-6">
+                                                                        <div class="col-sm-12 checkbox-radios">
+                                                                            <mat-radio-group
+                                                                                    aria-labelledby="example-radio-group-label"
+                                                                                    formControlName="rejectionReason"
+                                                                                    class="example-radio-group">
+                                                                                <mat-radio-button
+                                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                                        aria-label="Small"
+                                                                                        [value]="'Approve For Review'">
+                                                                                    With Mandate
+                                                                                </mat-radio-button>
+                                                                                <mat-radio-button
+                                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                                        aria-label="Small"
+                                                                                        [value]="'Reject For Review'">
+                                                                                    KEBS Department
+                                                                                </mat-radio-button>
+                                                                                <mat-radio-button
+                                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                                        aria-label="Small"
+                                                                                        [value]="'On Hold'">
+                                                                                    Other
+                                                                                </mat-radio-button>
+                                                                            </mat-radio-group>
+                                                                            <br>
+                                                                            <br>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="text"
+                                                                               placeholder="Reason For Decision"
+                                                                               formControlName="reason">
+                                                                    </mat-form-field>
+                                                                    <mat-form-field class="example-full-width">
+                                                                        <input matInput type="url"
+                                                                               placeholder="Link If Available"
+                                                                               formControlName="link">
+                                                                        <mat-error
+                                                                                *ngIf="stdHOFReview.get('link').hasError('invalidLink')">
+                                                                            Please enter a valid link.
+                                                                        </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+
+                                                            </div>
                                                         </div>
 
+
                                                     </div>
-
-
                                                 </div>
                                             </div>
-                                        </div>
-                                        <input hidden formControlName="id"
-                                               [ngModel]="selectedStandard" name="id">
-                                        <input hidden formControlName="sdRequestID"
-                                               [ngModel]="selectedStandard" name="sdRequestID">
-                                        <br><br>
-                                        <button class="btn btn-info" type="submit">
-                                            Submit Review
-                                        </button>
+                                            <input hidden formControlName="id"
+                                                   [ngModel]="selectedStandard" name="id">
+                                            <input hidden formControlName="sdRequestID"
+                                                   [ngModel]="selectedStandard" name="sdRequestID">
+                                            <br><br>
+                                            <button class="btn btn-info" type="submit">
+                                                Submit Review
+                                            </button>
 
-                                    </form>
+                                        </form>
+                                    </div>
 
                                 </div>
 

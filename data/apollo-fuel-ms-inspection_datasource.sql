@@ -1124,7 +1124,10 @@ alter table DAT_KEBS_MS_SAMPLE_SUBMISSION
 /
 
 create OR REPLACE view MS_SEIZED_GOODS_REPORT_VIEW as
-SELECT c.ID,
+SELECT a.ID,
+       b.ID AS SEIZURE_DECLARATION_ID,
+       c.ID AS SEIZED_GOODS_ID,
+       wkp.ID AS WORKPLAN_PRODUCT_ID,
        c.CREATED_BY AS OFFICER,
        c.DATE_OF_SEIZURE AS DATE_OF_SEIZURE_AS_DATE,
        nvl(TO_CHAR(TRUNC(c.DATE_OF_SEIZURE),'DD/MM/YYYY'),'N/A') AS DATE_OF_SEIZURE,
@@ -1139,16 +1142,16 @@ SELECT c.ID,
        nvl(c.ESTIMATED_COST,'N/A') AS ESTIMATED_COST ,
        nvl(c.CURRENT_LOCATION,'N/A') AS CURRENT_LOCATION_SEIZED_PRODUCTS ,
        nvl(c.PRODUCTS_DESTRUCTION,'N/A') AS PRODUCTS_DUE_FOR_DESTRUCTION ,
-       nvl(c.PRODUCTS_RELEASE,'N/A') AS PRODUCTS_DUE_FOR_RELEASE,
-       nvl(TO_CHAR(TRUNC(c.DATE_DESTRUCTED),'DD/MM/YYYY'),'N/A') AS DATEOF_DESTRUCTED,
-       nvl(TO_CHAR(TRUNC(c.DATE_RELEASE),'DD/MM/YYYY'),'N/A') AS DATEOF_RELEASE,
-       c.DATE_SEIZURE AS DATE_SEIZURE,
-       c.DATE_DESTRUCTED AS DATE_DESTRUCTED,
-       c.DATE_RELEASE AS DATE_RELEASE,
+       nvl(TO_CHAR(TRUNC(wkp.DESTRUCTION_NOTIFICATION_DATE),'DD/MM/YYYY'),'N/A') AS DATE_OF_DESTRUCTION_NOTIFICATION,
+       wkp.DESTRUCTED_STATUS AS ARE_PRODUCTS_DESTROYED,
        b.MS_WORKPLAN_GENERATED_ID
 FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
          JOIN  DAT_KEBS_MS_SEIZURE_DECLARATION b ON a.id= b.MS_WORKPLAN_GENERATED_ID
-         JOIN  DAT_MS_SEIZURE c ON a.id= c.WORKPLAN_GENERATED_ID AND c.MAIN_SEIZURE_ID = b.ID;
+         JOIN  DAT_MS_SEIZURE c ON a.id= c.WORKPLAN_GENERATED_ID AND c.MAIN_SEIZURE_ID = b.ID
+         JOIN DAT_KEBS_MS_WORKPLAN_PRODUCTS wkp ON a.ID = wkp.WORK_PLAN_ID
+--WHERE c.SECTOR = 'GKJNGJKBNGTJKBNRT'
+ORDER BY c.ID DESC
+;
 
 SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where
     (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))
@@ -1274,6 +1277,117 @@ SELECT DISTINCT a.OFFICER_ID,b.REGION_ID,a.COMPLAINT_DEPARTMENT,a.ID,a.REFERENCE
 FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
          JOIN  DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b ON a.id= b.WORK_PLAN_ID;
 /
+
+create OR REPLACE view WORK_PLAN_MONITORING_TOOL as
+SELECT DISTINCT a.OFFICER_ID,b.REGION_ID,a.COMPLAINT_DEPARTMENT,a.ID,a.REFERENCE_NUMBER,a.TIME_ACTIVITY_DATE,a.TIME_ACTIVITY_END_DATE,a.MS_PROCESS_ENDED_ON,
+                nvl(TO_CHAR(TRUNC(a.TIME_ACTIVITY_DATE),'DD/MM/YYYY')||' - '||TO_CHAR(TRUNC(a.TIME_ACTIVITY_END_DATE),'DD/MM/YYYY'),'N/A') AS TARGETED_MONTH,
+                a.PRODUCT_STRING,
+                (SELECT nvl(u.FIRST_NAME||' '||u.LAST_NAME,'N/A') AS OFFICER_NAME FROM DAT_KEBS_USERS u WHERE u.ID = a.OFFICER_ID) AS OFFICERS,
+                (SELECT nvl(u.REGION,'N/A') AS REGION_NAME FROM CFG_KEBS_REGIONS u WHERE u.ID = b.REGION_ID) AS REGION,
+                (SELECT nvl(u.COUNTY,'N/A') AS COUNTY_NAME FROM CFG_KEBS_COUNTIES u WHERE u.ID = b.COUNTY_ID) AS COUNTY,
+                (SELECT nvl(u.TOWN,'N/A') AS TOWN_NAME FROM CFG_KEBS_TOWNS u WHERE u.ID = b.TOWNS_ID) AS TOWN,
+                a.DATE_OF_FINAL_REPORT_CREATION AS DATE_OF_FINAL_REPORT_CREATION,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 7
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS JULY,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 8
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS AUGUST,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 9
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS SEPTEMBER,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 10
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS OCTOBER,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 11
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS NOVEMBER,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 12
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS DECEMBER,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 1
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS JANUARY,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 2
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS FEBRUARY,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 3
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS MARCH,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 4
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS APRIL,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 5
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS MAY,
+                CASE
+                    WHEN a.DATE_OF_FINAL_REPORT_CREATION IS NULL THEN '0'
+                    WHEN EXTRACT(MONTH FROM a.DATE_OF_FINAL_REPORT_CREATION) = 6
+                        AND a.DATE_OF_FINAL_REPORT_CREATION >= a.TIME_ACTIVITY_DATE
+                        AND a.DATE_OF_FINAL_REPORT_CREATION <= a.TIME_ACTIVITY_END_DATE
+                        THEN '1'
+                    ELSE '0'
+                    END AS JUNE
+
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+         JOIN  DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b ON a.id= b.WORK_PLAN_ID
+ORDER BY a.ID DESC
+;
 
 SELECT DISTINCT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE
     (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))

@@ -261,6 +261,7 @@ export interface VoteRetrieved {
     created_on: Date;
     ballot_name: string;
     comments: string;
+    ballot_STATUS:string;
 
 
 }

@@ -338,6 +338,11 @@ class MSJSONControllers(
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+//        println("Date of Final Report Before: "+ workPlanScheduled.dateOfFinalReportGeneration)
+        if (workPlanScheduled.dateOfFinalReportGeneration == null){
+            workPlanScheduled.dateOfFinalReportGeneration = commonDaoServices.getCurrentDate()
+//            println("Date of Final Report After: "+ workPlanScheduled.dateOfFinalReportGeneration)
+        }
 
         var versionNumber =1L
         val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(workPlanScheduled.id,1,1)

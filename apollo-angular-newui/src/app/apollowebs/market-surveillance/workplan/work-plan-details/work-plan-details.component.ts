@@ -79,7 +79,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
   nonComplianceList: NonComplianceDto[];
   selectedDataSheet: DataReportDto;
-  showDataReportProduct: boolean = false;
+  showDataReportProduct: boolean = true;
   showOther = false;
   active: Number = 0;
   selectedFile: File;
@@ -6213,9 +6213,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onSelectedDataReport(dataReportID) {
-    this.showDataReportProduct = false;
+    // this.showDataReportProduct = false;
     this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id == Number(dataReportID));
-    this.showDataReportProduct = true;
+    // this.showDataReportProduct = true;
   }
 
   calculateEndDate() {

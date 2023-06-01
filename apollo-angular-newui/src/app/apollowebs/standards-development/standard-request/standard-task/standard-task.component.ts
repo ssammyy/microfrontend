@@ -20,6 +20,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from '@angular/material/radio';
 import {Router} from "@angular/router";
+import {LoggedInUser, selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
 
 
 function validateLink(control: FormControl): { [key: string]: any } | null {
@@ -112,6 +114,10 @@ export class StandardTaskComponent implements OnInit {
 
     countries: DataHolder[] = this.tcs;
     filteredCountries: Record<string, string>[] = [];
+    roles: string[];
+    userLoggedInID: number;
+    userProfile: LoggedInUser;
+
 
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
@@ -119,6 +125,8 @@ export class StandardTaskComponent implements OnInit {
                 private formBuilder: FormBuilder,
                 private router: Router,
                 private committeeService: CommitteeService,
+                private store$: Store<any>,
+
     ) {
     }
 
@@ -138,7 +146,11 @@ export class StandardTaskComponent implements OnInit {
         this.getHOFTasks();
         this.getTechnicalCommittee();
         // this.getTcSecs()
-
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userLoggedInID = u.id;
+            this.userProfile = u;
+            return this.roles = u.roles;
+        });
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],

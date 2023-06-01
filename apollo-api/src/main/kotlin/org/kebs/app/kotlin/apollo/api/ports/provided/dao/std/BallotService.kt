@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
-import java.util.*
 
 
 @Service
@@ -108,6 +107,26 @@ class BallotService(
                 )
 
             }
+    }
+
+    fun editVoteForBallot(ballotVote: BallotVote): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        //Ballot Approval Status
+        //1 - Approved
+        //2 - Approved With Comments
+        //3 - Disapprove With Comments
+        //4 - Abstention
+        val editBallotDraft =
+            ballotvoteRepository.findById(ballotVote.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+
+        editBallotDraft.approvalStatus = ballotVote.approvalStatus
+        editBallotDraft.comment = ballotVote.comment
+        editBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+        ballotvoteRepository.save(editBallotDraft)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Vote Edited", "You Have Successfully Changed Your Vote"
+        )
     }
 
     fun getUserLoggedInBallots(): List<VotesWithBallotId>? {
