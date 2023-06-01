@@ -21,24 +21,25 @@
                                 <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
                                                appMatMultilineTab
                                                class="tab-wraps">
-                                    <mat-tab tabindex="0" label="Timeline Issue" [hidden]="!monitoringDetails.timeline">
-                                        <div class="table table-striped" *ngIf="monitoringDetails.timeline">
+                                    <mat-tab tabindex="0" label="Timeline Issue"
+                                             [hidden]="!monitoringDetails.timelines">
+                                        <div class="table-responsive table-striped" *ngIf="monitoringDetails.timelines">
                                             <ng2-smart-table class="table table-hover" [settings]="timelineSettings"
-                                                             [source]="monitoringDetails.timeline"
+                                                             [source]="monitoringDetails.timelines"
                                                              (userRowSelect)="viewTimelineItem($event.data)"
                                                              (custom)="auctionEvent('timeline',$event)"
                                             >
                                             </ng2-smart-table>
-                                            <ngb-pagination [(page)]="page" [pageSize]="pageSize"
-                                                            [collectionSize]="totalCount"
-                                                            (pageChange)=pageChange('timeline',$event)>
-                                                <ng-template ngbPaginationFirst>First</ng-template>
-                                                <ng-template ngbPaginationLast>Last</ng-template>
-                                                <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                                <ng-template ngbPaginationNext>Next</ng-template>
-                                                <ng-template ngbPaginationEllipsis>...</ng-template>
-                                                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
-                                            </ngb-pagination>
+                                            <!--                                            <ngb-pagination [(page)]="page" [pageSize]="pageSize"-->
+                                            <!--                                                            [collectionSize]="totalCount"-->
+                                            <!--                                                            (pageChange)=pageChange('timeline',$event)>-->
+                                            <!--                                                <ng-template ngbPaginationFirst>First</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationLast>Last</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationNext>Next</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationEllipsis>...</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>-->
+                                            <!--                                            </ngb-pagination>-->
                                         </div>
                                     </mat-tab>
                                     <mat-tab tabindex="1" label="Categorization Issues">
@@ -125,15 +126,15 @@
                                         </div>
                                     </mat-tab>
                                 </mat-tab-group>
-                                <div class="col-md-2 col-sm-12">
-                                    <b>Actions</b>
-                                    <br/>
-                                    <button class="btn btn-primary">
-                                        PENALIZE AGENT
-                                    </button>
-                                    <button class="btn btn-primary">View Consignment
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <b>Actions</b>
+                                <br/>
+                                <button class="btn btn-primary">
+                                    PENALIZE AGENT
+                                </button>
+                                <button class="btn btn-primary">View Consignment
+                                </button>
                             </div>
                         </div>
                     </div>
