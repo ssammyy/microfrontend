@@ -927,7 +927,16 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCORByCorNumber(corNumber: String, documentType: String? = null): CorsBakEntity? {
-        return corsBakRepository.findByCorNumberAndDocumentsType(corNumber, documentType ?: "COR")
+        return corsBakRepository.findByCorNumberAndDocumentsType(corNumber, documentType ?: "L")
+    }
+
+    fun findCORByCorNumberAndCompliance(corNumber: String, documentType: String? = null): CorsBakEntity? {
+        return corsBakRepository.findByCorNumberAndCompliant(
+            corNumber, when (documentType) {
+                "COR" -> "Y"
+                else -> "N"
+            }
+        )
     }
 
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {

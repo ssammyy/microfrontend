@@ -42,7 +42,7 @@ class PvocAgentService(
     private val timelinesRepository: IPvocTimelinesDataEntityRepository,
     private val partnerService: PvocPartnerService,
     private val apiClientService: ApiClientService,
-    private val partnerQuerriesRepository: IPvocQuerriesRepository,
+    private val partnerQueriesRepository: IPvocQuerriesRepository,
     private val partnerQueryResponseRepository: IPvocQueryResponseRepository,
     private val daoServices: DestinationInspectionDaoServices,
     private val pvocIntegrations: ForeignPvocIntegrations,
@@ -573,7 +573,7 @@ class PvocAgentService(
                 query.createdBy = auth.name
                 query.createdOn = Timestamp.from(Instant.now())
                 query.modifiedOn = Timestamp.from(Instant.now())
-                this.partnerQuerriesRepository.save(query)
+                this.partnerQueriesRepository.save(query)
                 // Response data
                 data["certNumber"] = form.certNumber ?: "UNKNOWN"
                 data["certType"] = form.documentType ?: "UNKNOWN"
@@ -598,7 +598,7 @@ class PvocAgentService(
     private fun queryReference(source: String): String {
         val date = LocalDateTime.now()
         val prefix = DATE_FORMAT.format(date)
-        val count = this.partnerQuerriesRepository.countAllBySerialNumberStartsWith(prefix)
+        val count = this.partnerQueriesRepository.countAllBySerialNumberStartsWith(prefix)
         return "$prefix$source${date.minute}%05x".format(count + 1)
     }
 
@@ -612,7 +612,7 @@ class PvocAgentService(
     fun receivePartnerQueryResponse(form: PvocQueryResponse): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            this.partnerQuerriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
+            this.partnerQueriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
                 val partner = commonDaoServices.loggedInPartnerDetails()
                 if (query.partnerId == partner.id) {
                     // Only receive responses for KEBS originated queries
@@ -632,7 +632,7 @@ class PvocAgentService(
                     this.partnerQueryResponseRepository.save(res)
                     query.modifiedOn = Timestamp.from(Instant.now())
                     query.modifiedBy = commonDaoServices.loggedInUserAuthentication().name
-                    this.partnerQuerriesRepository.save(query)
+                    this.partnerQueriesRepository.save(query)
                     response.data = mapOf(Pair("serialNumber", res.serialNumber))
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Response Received"
@@ -655,7 +655,7 @@ class PvocAgentService(
     fun receiveKebsQueryConclusion(form: KebsQueryResponseForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            this.partnerQuerriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
+            this.partnerQueriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
                 val partner = partnerService.getPartner(query.partnerId!!)
                 if (query.partnerId == partner?.id) {
                     val data = KebsQueryResponse()
@@ -667,7 +667,7 @@ class PvocAgentService(
                         query.responseAnalysis = form.queryAnalysis
                         query.modifiedOn = Timestamp.from(Instant.now())
                         query.modifiedBy = commonDaoServices.loggedInUserAuthentication().name
-                        this.partnerQuerriesRepository.save(query)
+                        this.partnerQueriesRepository.save(query)
                         data.responseSerialNumber = query.serialNumber
                         data.conclusion = form.queryAnalysis.orEmpty()
                     } else {
@@ -725,7 +725,7 @@ class PvocAgentService(
                 documentType.toUpperCase()
             ) != null
             ConsignmentCertificatesIssues.COI.name -> daoServices.findCoiByUcrNumber(ucrNumber) != null
-            ConsignmentCertificatesIssues.COR.name, ConsignmentCertificatesIssues.NCR_COR.name -> daoServices.findCORByCorNumber(
+            ConsignmentCertificatesIssues.COR.name, ConsignmentCertificatesIssues.NCR_COR.name -> daoServices.findCORByCorNumberAndCompliance(
                 certNumber,
                 documentType.toUpperCase()
             ) != null
@@ -765,7 +765,7 @@ class PvocAgentService(
                         query.createdBy = commonDaoServices.loggedInUserAuthentication().name
                         query.createdOn = Timestamp.from(Instant.now())
                         query.modifiedOn = Timestamp.from(Instant.now())
-                        this.partnerQuerriesRepository.save(query)
+                        this.partnerQueriesRepository.save(query)
                         response.data = form
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Query received"
@@ -817,7 +817,7 @@ class PvocAgentService(
     fun sendPartnerQueryResponse(form: KebsQueryResponseForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            this.partnerQuerriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
+            this.partnerQueriesRepository.findAllBySerialNumber(form.serialNumber!!)?.let { query ->
                 val partner = partnerService.getPartner(query.partnerId!!)
                 if (query.partnerId == partner?.id) {
                     val auth = commonDaoServices.loggedInUserAuthentication()
@@ -835,7 +835,7 @@ class PvocAgentService(
                     // Updated
                     query.modifiedOn = Timestamp.from(Instant.now())
                     query.modifiedBy = auth.name
-                    this.partnerQuerriesRepository.save(query)
+                    this.partnerQueriesRepository.save(query)
                     // Send QUERY event to PVOC partner
                     partnerService.getPartnerApiClient(query.partnerId!!)?.let { apiClient ->
                         val data = KebsQueryResponse()
@@ -874,7 +874,7 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val partner = this.commonDaoServices.loggedInPartnerDetails()
-            val data = partnerQuerriesRepository.findAllByPartnerIdAndConclusionStatus(partner.id, status, pg)
+            val data = partnerQueriesRepository.findAllByPartnerIdAndConclusionStatus(partner.id, status, pg)
             if (data.isEmpty) {
                 response.message = "No such record found"
                 response.responseCode = ResponseCodes.NOT_FOUND
@@ -934,8 +934,8 @@ class PvocAgentService(
     fun listQueryQueries(keywords: String?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         val result = when {
-            keywords.isNullOrEmpty() -> partnerQuerriesRepository.findAll(page)
-            else -> partnerQuerriesRepository.findByCertNumberContainsOrRfcNumberContainsOrUcrNumberContains(
+            keywords.isNullOrEmpty() -> partnerQueriesRepository.findAll(page)
+            else -> partnerQueriesRepository.findByCertNumberContainsOrRfcNumberContainsOrUcrNumberContains(
                 keywords,
                 keywords,
                 keywords,
@@ -951,7 +951,7 @@ class PvocAgentService(
 
     fun getQueryDetails(queryId: Long): ApiResponseModel {
         val response = ApiResponseModel()
-        val result = this.partnerQuerriesRepository.findById(queryId)
+        val result = this.partnerQueriesRepository.findById(queryId)
         if (result.isPresent) {
             val responseData = mutableMapOf<String, Any?>()
             responseData["query"] = UiPvocPartnerQueryDao.fromEntity(result.get())
