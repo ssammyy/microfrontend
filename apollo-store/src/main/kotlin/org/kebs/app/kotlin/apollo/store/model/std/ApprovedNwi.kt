@@ -274,6 +274,8 @@ interface VotesWithBallotId {
     fun getCOMMENTS(): String?
 
     fun getUSER_id(): Long?
+    fun getBALLOT_STATUS(): String?
+
 
 
 }

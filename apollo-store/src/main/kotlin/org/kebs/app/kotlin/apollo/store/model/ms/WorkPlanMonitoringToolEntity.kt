@@ -28,6 +28,9 @@ class WorkPlanMonitoringToolEntity : Serializable {
     @Column(name = "TIME_ACTIVITY_END_DATE")
     var timeActivityEndDate: Date? = null
 
+    @Basic
+    @Column(name = "DATE_OF_FINAL_REPORT_CREATION")
+    var dateOfFinalReportGeneration: Date? = null
 
     @Id
     @Column(name = "ID")

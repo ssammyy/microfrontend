@@ -13,8 +13,13 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
 
     fun listMonitoringIssues(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
-        val status = req.pathVariable("monitStatus")
+        val status = req.param("status").orElse("new")
         return ServerResponse.ok().body(pvocMonitoringService.listAgentMonitoring(status.toUpperCase(), page))
+    }
+
+    fun getMonitoringIssues(req: ServerRequest): ServerResponse {
+        val monitId = req.pathVariable("monitId").toLong()
+        return ServerResponse.ok().body(pvocMonitoringService.monitoringDetails(monitId))
     }
 
     fun listRfcsCoc(req: ServerRequest): ServerResponse {

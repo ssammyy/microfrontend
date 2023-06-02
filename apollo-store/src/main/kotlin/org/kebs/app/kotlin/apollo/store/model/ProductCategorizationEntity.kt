@@ -40,6 +40,10 @@ class ProductCategorizationEntity:Serializable {
     @Basic
     var hsCode: String? = null
 
+    @Column(name = "MONITORING_ID", nullable = true)
+    @Basic
+    var monitoringId: Long? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Long? = null

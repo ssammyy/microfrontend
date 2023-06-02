@@ -178,6 +178,16 @@ class BallotController(
         return ballotService.voteForBallot(ballotVote)
 
     }
+    @PostMapping("/editVoteBallot")
+    fun editVoteBallot(@RequestBody ballotVote: BallotVote): ServerResponse {
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Vote Submitted",
+//            ballotService.voteForBallot(ballotVote)
+//        )
+        return ballotService.editVoteForBallot(ballotVote)
+
+    }
 
     @GetMapping("/getBallots")
     fun getAllBallots(): MutableList<BallotWithUserName> {

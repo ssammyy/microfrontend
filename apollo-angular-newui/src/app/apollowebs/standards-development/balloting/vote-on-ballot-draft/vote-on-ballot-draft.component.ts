@@ -1,9 +1,5 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {
-    Ballot_Draft_With_Name,
-    CommentMadeRetrieved,
-    PublicReviewDraftWithName, VoteRetrieved
-} from "../../../../core/store/data/std/commitee-model";
+import {Ballot_Draft_With_Name, VoteRetrieved} from "../../../../core/store/data/std/commitee-model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
@@ -32,7 +28,7 @@ export class VoteOnBallotDraftComponent implements OnInit {
     ballotDraftB !: Ballot_Draft_With_Name | undefined;
 
     commentMadeRetrievedS !: VoteRetrieved[];
-    commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
+    commentMadeRetrievedB !: VoteRetrieved | undefined;
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -47,6 +43,8 @@ export class VoteOnBallotDraftComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
+    loading = false;
+    loadingText: string;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -67,7 +65,7 @@ export class VoteOnBallotDraftComponent implements OnInit {
         this.commentFormGroup = this.formBuilder.group({
             approvalStatus: ['', Validators.required],
             comment: [''],
-            ballotId:['',Validators.required]
+            ballotId: ['', Validators.required]
 
         });
 
@@ -110,12 +108,16 @@ export class VoteOnBallotDraftComponent implements OnInit {
 
 
     public getAllBallots(): void {
+        this.loading = true
+        this.loadingText = "Retrieving Ballots For Votes"
+        this.SpinnerService.show()
         this.ballotService.getAllBallotDrafts().subscribe(
             (response: Ballot_Draft_With_Name[]) => {
-                console.log(response);
 
                 this.ballotDrafts = response;
                 this.rerender()
+                this.loading = false
+                this.SpinnerService.hide()
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -141,12 +143,11 @@ export class VoteOnBallotDraftComponent implements OnInit {
             (response) => {
                 this.SpinnerService.hide();
 
-                if(response.body=="You Have Already Voted")
-                {
+                if (response.body == "You Have Already Voted") {
                     this.showToasterError("Error", response.body);
 
-                }
-                else {                    this.showToasterSuccess(response.httpStatus, response.body);
+                } else {
+                    this.showToasterSuccess(response.httpStatus, response.body);
                 }
 
                 this.commentFormGroup.reset()
@@ -161,6 +162,38 @@ export class VoteOnBallotDraftComponent implements OnInit {
             }
         );
     }
+
+    editVote(): void {
+        if (this.commentFormGroup.controls['approvalStatus'].value == "2" || this.commentFormGroup.controls['approvalStatus'].value == "3") {
+            if (this.commentFormGroup.controls['comment'].value == "") {
+                this.showToasterError("Reason", 'Please Provide A Reason');
+            } else {
+                this.submitEditedVote();
+            }
+        } else {
+            this.submitEditedVote();
+        }
+    }
+
+    submitEditedVote(): void {
+        this.SpinnerService.show();
+        this.ballotService.editVoteBallot(this.commentFormGroup.value).subscribe(
+            (response) => {
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, response.body);
+                this.commentFormGroup.reset()
+                this.hideModel()
+                this.getAllUserLoggedInCommentsMadeOnPd();
+                this.getAllBallots();
+
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+    }
+
 
     editComment(): void {
         this.SpinnerService.show();
@@ -180,49 +213,57 @@ export class VoteOnBallotDraftComponent implements OnInit {
     }
 
     deleteComment(comment): void {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        });
 
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure your want to delete this comment?',
-            text: 'You won\'t be able to reverse this!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes!',
-            cancelButtonText: 'No!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.SpinnerService.show();
-                this.committeeService.deleteComment(comment).subscribe(
-                    (response) => {
-                        this.SpinnerService.hide();
-                        swalWithBootstrapButtons.fire(
-                            'Deleted!',
-                            'Comment Successfully Deleted!',
-                            'success'
-                        );
-                        this.SpinnerService.hide();
-                        this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
-                        this.getAllUserLoggedInCommentsMadeOnPd();
-                    },
-                );
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'You have cancelled this operation',
-                    'error'
-                );
-            }
-        });
+        if (comment.ballot_STATUS == "Standard Approved") {
+            this.notifyService.showError("Voting Closed", "Voting Window Has Been Closed. You Cannot Delete Vote.");
+
+        } else {
+
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure your want to delete this comment?',
+                text: 'You won\'t be able to reverse this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.SpinnerService.show();
+                    this.committeeService.deleteComment(comment).subscribe(
+                        (response) => {
+                            this.SpinnerService.hide();
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'Comment Successfully Deleted!',
+                                'success'
+                            );
+                            this.SpinnerService.hide();
+                            this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
+                            this.getAllUserLoggedInCommentsMadeOnPd();
+                        },
+                    );
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'You have cancelled this operation',
+                        'error'
+                    );
+                }
+            });
+        }
     }
 
     public getAllUserLoggedInCommentsMadeOnPd(): void {
@@ -261,23 +302,28 @@ export class VoteOnBallotDraftComponent implements OnInit {
 
     }
 
-    public onOpenModalB(commentMadeRetrieved: CommentMadeRetrieved, mode: string): void {
+    public onOpenModalB(commentMadeRetrieved: VoteRetrieved, mode: string): void {
 
-        const container = document.getElementById('main-container');
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.style.display = 'none';
-        button.setAttribute('data-toggle', 'modal');
-        if (mode === 'editComment') {
-            this.commentMadeRetrievedB = commentMadeRetrieved;
-            button.setAttribute('data-target', '#editComment');
+        if (commentMadeRetrieved.ballot_STATUS == "Standard Approved") {
+            this.notifyService.showError("Voting Closed", "Voting Window Has Been Closed. You cannot change vote.");
 
+        } else {
+            const container = document.getElementById('main-container');
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.style.display = 'none';
+            button.setAttribute('data-toggle', 'modal');
+            if (mode === 'editComment') {
+                this.commentMadeRetrievedB = commentMadeRetrieved;
+                button.setAttribute('data-target', '#editComment');
+
+            }
+
+
+            // @ts-ignore
+            container.appendChild(button);
+            button.click();
         }
-
-
-        // @ts-ignore
-        container.appendChild(button);
-        button.click();
 
     }
 

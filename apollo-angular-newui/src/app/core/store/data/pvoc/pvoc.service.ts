@@ -386,4 +386,21 @@ export class PVOCService {
     sendPvocQueryResponse(data: any, queryId: any): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/" + data.responseType), data)
     }
+
+    loadMonitoringIssues(keywords: string, reviewStatus: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['status'] = reviewStatus
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/issues"), {
+            params: params
+        });
+    }
+
+    monitoringIssueDetails(monitId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/issue/" + monitId))
+    }
 }

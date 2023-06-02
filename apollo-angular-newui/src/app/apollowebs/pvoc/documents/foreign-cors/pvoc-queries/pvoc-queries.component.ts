@@ -33,17 +33,20 @@ export class PvocQueriesComponent implements OnInit {
     }
 
     saveRecord() {
+        this.loading = true
         this.pvocService.sendPvocQuery(this.form.value)
             .subscribe(
                 res => {
                     if (res.responseCode === '00') {
                         this.dialogRef.close(true)
                     } else {
+                        this.loading = false
                         this.message = res.message
                         this.errorMessages = res.errors
                     }
                 },
                 error => {
+                    this.loading = false
                     this.message = error.message
                 }
             )

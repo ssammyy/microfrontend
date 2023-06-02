@@ -64,7 +64,7 @@ export class BallotService {
     public prepareBallotDraft(ballotDraft: Ballot_Draft): Observable<any> {
         // const params = new HttpParams()
         //     .set('prdId', prdId)
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'prepareBallot', ballotDraft, {})
+        return this.http.post<Ballot_Draft>(`${this.apiServerUrl}` + 'prepareBallot', ballotDraft, {})
     }
 
     //upload  PRD Document
@@ -93,6 +93,20 @@ export class BallotService {
     //vote
     public vote(vote: Vote): Observable<any> {
         const url =`${this.apiServerUrl}` + 'voteBallot';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+    }
+    public editVoteBallot(vote: Vote): Observable<any> {
+        const url =`${this.apiServerUrl}` + 'editVoteBallot';
 
         return this.http.post<Vote>(url, vote).pipe(
             map(function (response: Vote) {

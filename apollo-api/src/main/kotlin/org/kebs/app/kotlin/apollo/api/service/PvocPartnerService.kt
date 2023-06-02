@@ -26,6 +26,7 @@ import java.time.Instant
 @Component
 class PvocPartnerService(
     private val corporateCustomerService: CorporateCustomerService,
+    private val billing: BillingService,
     private val partnersRepository: IPvocPartnersRepository,
     private val commonDaoServices: CommonDaoServices,
     private val notifications: NotificationService,
@@ -176,13 +177,16 @@ class PvocPartnerService(
             val partner = partnerOptional.get()
             // Fill with data
             val map = mutableMapOf<String, Any>()
-            map.put("partner_details", PvocPartnerDto.fromEntity(partner))
+            map["partner_details"] = PvocPartnerDto.fromEntity(partner)
             partner.apiClientId?.let { clientId ->
                 this.apiClientService.getClientDetails(clientId)?.let { clientDao ->
                     map["api_client"] = clientDao
                 }
             }
-
+            // Add last five billing records
+            partner.billingId?.let {
+                map["recent_bills"] = this.billing.billStatement(it, 5)
+            }
             response.data = map
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner updated successfully"

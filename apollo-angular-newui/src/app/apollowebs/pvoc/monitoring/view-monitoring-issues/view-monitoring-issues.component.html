@@ -1,0 +1,145 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons ">dangerous</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="monitoringDetails">
+                            PVOC Monitoring issues
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="monitoringDetails">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-12">
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab tabindex="0" label="Timeline Issue"
+                                             [hidden]="!monitoringDetails.timelines">
+                                        <div class="table-responsive table-striped" *ngIf="monitoringDetails.timelines">
+                                            <ng2-smart-table class="table table-hover" [settings]="timelineSettings"
+                                                             [source]="monitoringDetails.timelines"
+                                                             (userRowSelect)="viewTimelineItem($event.data)"
+                                                             (custom)="auctionEvent('timeline',$event)"
+                                            >
+                                            </ng2-smart-table>
+                                            <!--                                            <ngb-pagination [(page)]="page" [pageSize]="pageSize"-->
+                                            <!--                                                            [collectionSize]="totalCount"-->
+                                            <!--                                                            (pageChange)=pageChange('timeline',$event)>-->
+                                            <!--                                                <ng-template ngbPaginationFirst>First</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationLast>Last</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationNext>Next</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationEllipsis>...</ng-template>-->
+                                            <!--                                                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>-->
+                                            <!--                                            </ngb-pagination>-->
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="1" label="Categorization Issues">
+                                    </mat-tab>
+                                    <mat-tab tabindex="2" label="Seal Issues">
+                                    </mat-tab>
+                                    <mat-tab tabindex="3" label="Penalties applied">
+                                    </mat-tab>
+                                    <mat-tab tabindex="4" label="Monitoring Details"
+                                             [hidden]="!monitoringDetails.monitoring">
+                                        <div class="row no_margin" *ngIf="monitoringDetails.monitoring">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Entry No</label>
+                                                <p>{{monitoringDetails.monitoring.recordNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Year and Month</label>
+                                                <p>{{monitoringDetails.monitoring.yearMonth}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner Name</label>
+                                                <p>{{monitoringDetails.monitoring.partnerName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Status</label>
+                                                <p>{{monitoringDetails.monitoring.monitoringStatusDesc}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Description</label>
+                                                <p>{{monitoringDetails.monitoring.description}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Created On</label>
+                                                <p>{{monitoringDetails.monitoring.createdOn}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Last Modified On</label>
+                                                <p>{{monitoringDetails.monitoring.modifiedOn}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Opened By</label>
+                                                <p>{{monitoringDetails.monitoring.createdBy}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="5" label="PVOC Partner" [hidden]="!monitoringDetails.partner">
+                                        <div class="row no_margin" *ngIf="monitoringDetails.partner">
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner Name</label>
+                                                <p>{{monitoringDetails.partner.partnerName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Email Address</label>
+                                                <p>{{monitoringDetails.partner.partnerEmail}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">KRA PIN Number</label>
+                                                <p>{{monitoringDetails.partner.partnerPin}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Telephone Number</label>
+                                                <p>{{monitoringDetails.partner.partnerTelephoneNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Main Address</label>
+                                                <p>{{monitoringDetails.partner.partnerAddress1}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Alternative Address</label>
+                                                <p>{{monitoringDetails.partner.partnerAddress2 | money}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Fax Number</label>
+                                                <p>{{monitoringDetails.partner.partnerFaxNumber}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner Country</label>
+                                                <p>{{monitoringDetails.partner.partnerCountry}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Partner City</label>
+                                                <p>{{monitoringDetails.partner.partnerCity}}</p>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <b>Actions</b>
+                                <br/>
+                                <button class="btn btn-primary">
+                                    PENALIZE AGENT
+                                </button>
+                                <button class="btn btn-primary">View Consignment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
