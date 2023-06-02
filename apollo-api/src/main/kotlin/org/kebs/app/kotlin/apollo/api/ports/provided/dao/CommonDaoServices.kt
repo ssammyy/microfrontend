@@ -65,6 +65,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.qa.branchUpdateDTO
+import org.kebs.app.kotlin.apollo.common.dto.qa.companyDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.fmarkSmarkDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
@@ -344,6 +345,9 @@ class CommonDaoServices(
         sampleWithCreatedBy.standardTitle = sample.standardTitle
         val savedEntity = sampleStandardsRepository.save(sampleWithCreatedBy)
         return ResponseEntity.ok(savedEntity)
+    }
+    fun getAllCompanies():List<CompanyProfileEntity>{
+        return companyProfileRepo.findAllByStatus(1)
     }
 
     fun getUserBranches(dto: branchUpdateDTO): ResponseEntity<String> {

@@ -27,6 +27,7 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
     dtTrigger1: Subject<any> = new Subject<any>();
     displayUsers = false;
     form: FormGroup;
+    isFirmNameSelected: boolean = false;
     permitSearchValues: PermitSearchValues;
     private destroy$: Subject<void> = new Subject<void>();
     public companies !: CompanyDto[];
@@ -42,10 +43,19 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.getAllCompanies();
         this.form = this.formBuilder.group({
             searchType: ['', Validators.required],
             searchTerm: ['', Validators.required],
         });
+    }
+    onRadioChange(selectedOption: string){
+        if(selectedOption=="firmName"){
+            this.isFirmNameSelected = true;
+        }
+        else
+            this.isFirmNameSelected = false;
+
     }
 
     onSubmit(isValid: boolean): void {
@@ -126,7 +136,6 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
         this.masterService.loadDAllCompanies().subscribe(
             (response: CompanyDto[]) => {
                 this.companies = response;
-
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);

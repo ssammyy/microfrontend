@@ -18,12 +18,21 @@
                         <br><br><br>
 
                         <div class="wrap">
-                            <mat-radio-group formControlName="searchType" required>
+                            <mat-radio-group formControlName="searchType" required [(ngModel)]="selectedOption"
+                                             (change)="onRadioChange(selectedOption)">
                                 <div class="form-check form-check-inline">
                                     <mat-radio-button value="productName" checked="true"
                                     >Product Name
                                     </mat-radio-button>
                                 </div>
+
+                                <div class="form-check form-check-inline">
+                                    <mat-radio-button value="firmName" checked="true"
+                                    >Firm Name
+                                    </mat-radio-button>
+                                </div>
+
+
                                 <div class="form-check form-check-inline">
                                     <mat-radio-button value="refNumber">Permit
                                         Ref Number
@@ -37,7 +46,7 @@
 
                                 </div>
                             </mat-radio-group>
-                            <div class="search">
+                            <div *ngIf="!isFirmNameSelected" class="search">
                                 <input type="text" class="searchTerm" name="searchTerm" formControlName="searchTerm"
                                        placeholder="Search ......" required>
 
@@ -45,6 +54,18 @@
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
+                            <div class="search" *ngIf="isFirmNameSelected">
+                                <select formControlName="searchTerm" class="searchTerm" >
+                                    <option disabled selected value="">--Please choose a company--</option>
+                                    <option *ngFor="let company of companies" [value]="company.id">{{company.name}}</option>
+
+                                </select>
+                                <button type="submit" class="searchButton">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+
+
                         </div>
                     </form>
                 </div>

@@ -362,6 +362,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long?,
         @Param("firmName") firmName: String?
     ): List<PermitApplicationsEntity>?
+    fun findByFirmName(firmName: String?): List<PermitApplicationsEntity>
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
