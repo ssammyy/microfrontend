@@ -12,6 +12,11 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
     fun findAllByStatusAndNwiStatusIsNull(status: String): List<StandardRequest>
 
 
+
+    @Query("SELECT V.* FROM SD_STANDARD_REQUEST V Left Outer Join SD_DEPARTMENT C ON C.ID=V.DEPARTMENT_ID WHERE V.STATUS=:status AND V.NWI_STATUS IS NULL AND C.USER_ID=:loggedInUserId", nativeQuery = true)
+    fun findAllByStatusAndNwiStatusIsNullAndHof(status: String, loggedInUserId:Long): List<StandardRequest>
+
+
     fun findAllByProcess(processName: String):List<StandardRequest>
 
     fun findAllByStatusAndNwiStatusIsNullAndProcess(status: String, processName:String): List<StandardRequest>

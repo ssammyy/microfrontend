@@ -64,7 +64,7 @@ export class BallotService {
     public prepareBallotDraft(ballotDraft: Ballot_Draft): Observable<any> {
         // const params = new HttpParams()
         //     .set('prdId', prdId)
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'prepareBallot', ballotDraft, {})
+        return this.http.post<Ballot_Draft>(`${this.apiServerUrl}` + 'prepareBallot', ballotDraft, {})
     }
 
     //upload  PRD Document

@@ -57,7 +57,7 @@ class BallotService(
 
         val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
         val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
-        ballot.fdksNumber = "D" + { committeeDraft.ksNumber }
+        ballot.fdksNumber = "D" + committeeDraft.ksNumber
         ballotRepository.save(ballot)
 
         //get prd Draft and update

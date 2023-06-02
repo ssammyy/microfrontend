@@ -595,8 +595,9 @@ import {ViewRiskProfilesComponent} from './apollowebs/pvoc/risk/view-risk-profil
 import {ListQueriesComponent} from './apollowebs/pvoc/queries/list-queries/list-queries.component';
 import {ViewQueryComponent} from './apollowebs/pvoc/queries/view-query/view-query.component';
 
-import {ApproveMembersForTcCreationComponent} from './apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component';
-import {AllVotesByOtherTcMembersComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/all-votes-by-other-tc-members/all-votes-by-other-tc-members.component';
+import { ApproveMembersForTcCreationComponent } from './apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component';
+import { AllVotesByOtherTcMembersComponent } from './apollowebs/standards-development/standard-request/std-tc-tasks/all-votes-by-other-tc-members/all-votes-by-other-tc-members.component';
+import { CommentOnPublicReviewComponent } from './apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component';
 import {TimelineIssuesComponent} from './apollowebs/pvoc/monitoring/timeline-issues/timeline-issues.component';
 import {ViewMonitoringIssuesComponent} from './apollowebs/pvoc/monitoring/view-monitoring-issues/view-monitoring-issues.component';
 
@@ -1251,6 +1252,7 @@ import {ViewMonitoringIssuesComponent} from './apollowebs/pvoc/monitoring/view-m
         AllVotesByOtherTcMembersComponent,
         TimelineIssuesComponent,
         ViewMonitoringIssuesComponent,
+        CommentOnPublicReviewComponent,
 
     ],
     entryComponents: [LoaderComponent],
