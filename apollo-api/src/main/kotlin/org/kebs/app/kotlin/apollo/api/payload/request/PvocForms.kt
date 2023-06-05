@@ -643,6 +643,10 @@ class NcrEntityForm {
     @JsonAlias("ROUTE")
     var route: String? = null
 
+    @Size(max = 80, message = "should be upto 80 containers")
+    @JsonAlias("SHIPMENT_CONTAINERS")
+    var shipmentContainers: List<PvocContainerDetails>? = null
+
     @NotEmpty(message = "Required field")
     @JsonAlias("NCR_ITEMS")
     var ncrItems: List<CocItem>? = null

@@ -33,6 +33,7 @@ enum class ReviewStatus(var code: Int) {
 @Service
 class ForeignPvocIntegrations(
     private val cocRepo: ICocsRepository,
+    private val cocContainers: ICocContainersRepository,
     private val iCocItemRepository: ICocItemRepository,
     private val corsBakRepository: ICorsBakRepository,
     private val rfcRepository: IRfcEntityRepo,
@@ -151,9 +152,11 @@ class ForeignPvocIntegrations(
                 }
                 // Add invoice details
                 localCoc = cocRepo.save(localCoc)
+                this.foreignCocContainers(coc.shipmentContainers, localCoc, map)
                 KotlinLogging.logger { }.info { "FOREIGN = ${localCoc.id}, items=${coc.cocItems?.size}" }
-                this.checkCocCoiDocumentCompliance(localCoc, user, "COC")
+                this.checkCocCoiDocumentCompliance(localCoc, user, "COC", coc.cocItems)
                 foreignCocItems(coc.cocItems, localCoc, map)
+
                 return localCoc
             }
 
@@ -240,12 +243,31 @@ class ForeignPvocIntegrations(
                 }
                 // Add invoice details
                 foreignNcr = cocRepo.save(foreignNcr)
+                this.foreignCocContainers(ncr.shipmentContainers, foreignNcr, map)
                 KotlinLogging.logger { }.info { "Foreign NCR = ${foreignNcr.id}" }
-                this.checkCocCoiDocumentCompliance(foreignNcr, user, "NCR")
+                this.checkCocCoiDocumentCompliance(foreignNcr, user, "NCR", ncr.ncrItems)
                 foreignCocItems(ncr.ncrItems, foreignNcr, map)
                 return foreignNcr
             }
 
+    }
+
+    fun foreignCocContainers(containers: List<PvocContainerDetails>?, localCoc: CocsEntity, map: ServiceMapsEntity) {
+        containers?.forEach { container ->
+            val cocContainer = CocContainersEntity()
+            cocContainer.cocId = localCoc.id
+            cocContainer.shipmentContainerNumber = container.shipmentContainerNumber
+            cocContainer.shipmentGrossWeight = container.shipmentGrossWeight
+            cocContainer.shipmentPartialNumber = container.shipmentPartialNumber
+            cocContainer.shipmentSealNumbers = container.shipmentSealNumbers
+            cocContainer.apply {
+                createdBy = commonDaoServices.loggedInUserAuthentication().name
+                createdOn = commonDaoServices.getTimestamp()
+                modifiedOn = commonDaoServices.getTimestamp()
+                modifiedBy = commonDaoServices.loggedInUserAuthentication().name
+            }
+            this.cocContainers.save(cocContainer)
+        }
     }
 
     fun foreignCocItems(cocItems: List<CocItem>?, localCoc: CocsEntity, map: ServiceMapsEntity) {
@@ -367,7 +389,7 @@ class ForeignPvocIntegrations(
                 // Add invoice details
                 localCoi = cocRepo.save(localCoi)
                 KotlinLogging.logger { }.info { "Foreign COI = ${localCoi.id}" }
-                this.checkCocCoiDocumentCompliance(localCoi, user, "COI")
+                this.checkCocCoiDocumentCompliance(localCoi, user, "COI", null)
                 foreignCoiItems(coi.coiItems, localCoi, map)
             } catch (e: Exception) {
                 KotlinLogging.logger { }.debug("Threw error from forward express callback")
@@ -569,7 +591,12 @@ class ForeignPvocIntegrations(
         return timeAdded
     }
 
-    fun checkCocCoiDocumentCompliance(entity: CocsEntity, user: PvocPartnersEntity, documentType: String) {
+    fun checkCocCoiDocumentCompliance(
+        entity: CocsEntity,
+        user: PvocPartnersEntity,
+        documentType: String,
+        cocItems: List<CocItem>?
+    ) {
         val transaction = BillTransactionsEntity()
         transaction.fobAmount = BigDecimal.valueOf(entity.finalInvoiceFobValue)
         transaction.description = "$documentType PVOC charges"
@@ -610,34 +637,78 @@ class ForeignPvocIntegrations(
         if (checkTimelineIssue(timeline, transaction, user, entity.version)) {
             KotlinLogging.logger { }.info("Added $documentType timeline issue: ${timeline.id}")
         }
-        // 2. Check seal issues
-        if ("A".equals(
-                entity.route,
-                true
-            ) && (entity.shipmentContainerNumber == null || "NA".equals(
-                entity.shipmentContainerNumber,
-                true
-            ) || "UNKNOWN".equals(entity.shipmentContainerNumber, true))
-        ) {
-            val date = LocalDateTime.now()
-            val sealIssue = PvocSealIssuesEntity()
-            sealIssue.partnerId = user.id
-            sealIssue.recordId = entity.id
-            sealIssue.certType = documentType
-            sealIssue.certNumber = timeline.certNumber
-            sealIssue.route = entity.route
-            sealIssue.ucrNumber = entity.ucrNumber
-            sealIssue.recordYearMonth = YEAR_MONTH_FORMATTER.format(date)
-            sealIssue.riskStatus = 1
-            sealIssue.status = 1
-            sealIssue.monitoringId = this.monitoringService.findMonitoringRecord(sealIssue.recordYearMonth!!, user).id
-            sealIssue.createdBy = commonDaoServices.loggedInUserAuthentication().name
-            sealIssue.createdOn = Timestamp.valueOf(date)
-            sealIssue.modifiedOn = Timestamp.valueOf(date)
-            this.sealIssuesRepository.save(sealIssue)
-        }
+        // 2. Check seal issues: Route A without container seal numbers
+        this.checkForContainerSealNUmber(entity, user, documentType, cocItems)
         // 3. Check product categorization issues
-        // TODO: add when categorization date is received
+        this.checkForCategorizationAndStandardIssues(entity, user, documentType)
+    }
+
+    fun checkForCategorizationAndStandardIssues(entity: CocsEntity, user: PvocPartnersEntity, documentType: String) {
+        // TODO: add when categorization data is received
+
+    }
+
+    fun checkForContainerSealNUmber(
+        entity: CocsEntity,
+        user: PvocPartnersEntity,
+        documentType: String,
+        cocItems: List<CocItem>?
+    ) {
+        if ("A".equals(entity.route, true)) {
+            val containers = this.cocContainers.findByCocId(entity.id)
+            var containerId: String = ""
+            var violation = false
+            // At least one container with no seal number
+            containers.forEach { container ->
+                violation = when (container.shipmentSealNumbers) {
+                    null, "UNKNOWN", "N/A" -> {
+                        containerId = container.shipmentContainerNumber ?: ""
+                        true
+                    }
+                    else -> false
+                }
+            }
+            // When no container is available
+            if (containers.isEmpty()) {
+                violation = true
+                // When seal numbers are in items check all items have defined seal number
+                if (violation && cocItems != null) {
+                    var allItemHaveSerialNumbers = true
+                    for (item in cocItems) {
+                        when (item.shipmentSealNumbers) {
+                            null, "UNKNOWN", "N/A" -> {
+                                containerId = item.shipmentContainerNumber ?: ""
+                                allItemHaveSerialNumbers = false
+                                break
+                            }
+                        }
+                    }
+                    if (allItemHaveSerialNumbers) {
+                        violation = false
+                    }
+                }
+            }
+            if (violation) {
+                val date = LocalDateTime.now()
+                val sealIssue = PvocSealIssuesEntity()
+                sealIssue.partnerId = user.id
+                sealIssue.recordId = entity.id
+                sealIssue.certType = documentType
+                sealIssue.varField1 = containerId
+                sealIssue.certNumber = entity.cocNumber
+                sealIssue.route = entity.route
+                sealIssue.ucrNumber = entity.ucrNumber
+                sealIssue.recordYearMonth = YEAR_MONTH_FORMATTER.format(date)
+                sealIssue.riskStatus = 1
+                sealIssue.status = 1
+                sealIssue.monitoringId =
+                    this.monitoringService.findMonitoringRecord(sealIssue.recordYearMonth!!, user).id
+                sealIssue.createdBy = commonDaoServices.loggedInUserAuthentication().name
+                sealIssue.createdOn = Timestamp.valueOf(date)
+                sealIssue.modifiedOn = Timestamp.valueOf(date)
+                this.sealIssuesRepository.save(sealIssue)
+            }
+        }
     }
 
     fun checkCorDocumentCompliance(entity: CorsBakEntity, rfcDate: Timestamp?, user: PvocPartnersEntity) {

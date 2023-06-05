@@ -30,7 +30,7 @@ interface IPvocTimelinesDataEntityRepository : HazelcastRepository<PvocTimelines
 @Repository
 interface IPvocSealIssuesEntityRepository : HazelcastRepository<PvocSealIssuesEntity, Long> {
     fun findAllByCertNumberNotNull(pageable: Pageable): Page<PvocSealIssuesEntity>?
-    fun findByMonitoringId(monitoringId: Long): List<PvocSealIssuesEntity>
+    fun findByMonitoringId(monitoringId: Long, pageable: Pageable): Page<PvocSealIssuesEntity>
     fun findByCertNumberAndCertType(certNumber: String, certType: String): PvocSealIssuesEntity
     fun findByRecordYearMonthAndPartnerId(yearMonth: String, partnerId: Long): List<PvocSealIssuesEntity>
 }

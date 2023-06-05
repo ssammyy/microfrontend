@@ -20,7 +20,8 @@ export class ViewExemptionCertificatesComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'download', title: '<i class="btn btn-sm btn-primary download">Download</i>'}
+                {name: 'download', title: '<i class="btn btn-sm btn-primary download">Download</i>'},
+                {name: 'viewCertificate', title: '<i class="btn btn-sm btn-primary"><i class="fa fa-eye"></i>View</i>'}
             ],
             position: 'right' // left|right
         },
@@ -92,6 +93,10 @@ export class ViewExemptionCertificatesComponent implements OnInit {
             }
             this.loadData(0, this.defaultPageSize)
         })
+    }
+
+    applyExemption() {
+        this.router.navigate(["/manufacturer/exemptions/apply"])
     }
 
     goBack() {

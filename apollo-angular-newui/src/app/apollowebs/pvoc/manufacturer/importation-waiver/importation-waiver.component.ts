@@ -193,7 +193,7 @@ export class ImportationWaiverComponent implements OnInit {
     }
 
     goBackHome() {
-        this.router.navigate(["/company/applications"])
+        this.router.navigate(["/manufacturer/waivers"])
             .then(() => {
 
             })

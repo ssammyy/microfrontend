@@ -118,8 +118,8 @@ export class PvocNewComplaintComponent implements OnInit {
     }
 
     goToApplications() {
-        this.router.navigate(["/company/applications"])
-            .then(() => console.log("Back"))
+        this.router.navigate(["/manufacturer/complaints"])
+            .then(() => console.debug("Back"))
     }
 
     importFile(event: any) {

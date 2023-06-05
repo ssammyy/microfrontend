@@ -866,6 +866,49 @@ export const routes: Routes = [
             },
         ],
     },
+    {
+        path: 'manufacturer',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'waivers',
+                component: ViewWaiverCertificatesComponent,
+            },
+            {
+                path: 'waivers/apply',
+                component: ImportationWaiverComponent,
+            },
+            {
+                path: 'waiver/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+            {
+                path: 'exemptions',
+                component: ViewExemptionCertificatesComponent,
+            },
+            {
+                path: 'exemptions/apply',
+                component: ExceptionsApplicationComponent,
+            },
+            {
+                path: 'exemptions/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+            {
+                path: 'complaints',
+                component: ManufacturerComplaintListComponent,
+            },
+            {
+                path: 'complaints/apply',
+                component: PvocNewComplaintComponent,
+            },
+            {
+                path: 'complaint/:id',
+                component: ManufacturerComplaintDetailsComponent,
+            },
+        ],
+    },
     // PVOC
     {
         path: 'pvoc',
@@ -875,16 +918,6 @@ export const routes: Routes = [
             {
                 path: 'waiver',
                 children: [
-                    {
-                        path: 'apply',
-                        component: ImportationWaiverComponent,
-                        pathMatch: 'full',
-                    },
-                    {
-                        path: 'certificates',
-                        component: ViewWaiverCertificatesComponent,
-                        pathMatch: 'full',
-                    },
                     {
                         path: 'applications',
                         component: ViewWaiverApplicationsComponent,
@@ -899,14 +932,6 @@ export const routes: Routes = [
             {
                 path: 'exemption',
                 children: [
-                    {
-                        path: 'apply',
-                        component: ExceptionsApplicationComponent,
-                    },
-                    {
-                        path: 'certificates',
-                        component: ViewExemptionCertificatesComponent,
-                    },
                     {
                         path: 'applications',
                         component: ViewExemptionApplicationsComponent,
