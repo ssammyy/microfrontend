@@ -171,8 +171,10 @@ class StandardRequestService(
 
 
     fun getAllStandardRequests(): List<StandardsDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Review By HOD")
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndHof("Review By HOD",loggedInUser.id!!)
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
