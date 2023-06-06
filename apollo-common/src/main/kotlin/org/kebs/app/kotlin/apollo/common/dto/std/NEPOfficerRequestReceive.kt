@@ -79,6 +79,7 @@ data class NepNotificationDto(
     var productsCovered: String?=null,
     var descriptionOfNotifiedDoc: String?=null,
     var objectiveAndRationale: String?=null,
+    var otherObjectiveAndRationale: String?=null,
     var relevantDocuments: String?=null,
     var proposedDateOfAdoption: Timestamp?=null,
     var proposedDateOfEntryIntoForce: Timestamp,

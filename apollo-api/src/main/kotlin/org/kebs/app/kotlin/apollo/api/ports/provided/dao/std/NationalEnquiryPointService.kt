@@ -445,6 +445,13 @@ class NationalEnquiryPointService(
             publicReviewDraftRepository.save(prd)
         }?: throw Exception("No public review draft found")
 
+
+        val rationale=nep.objectiveAndRationale
+        if(rationale=="Other"){
+            sNep.objectiveAndRationale = nep.otherObjectiveAndRationale
+        }else{
+            sNep.objectiveAndRationale = nep.objectiveAndRationale
+        }
         sNep.datePrepared=currentTime
         val commentDeadline: Timestamp = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(60))
         sNep.notifyingMember=nep.notifyingMember
@@ -457,7 +464,6 @@ class NationalEnquiryPointService(
         sNep.notifiedUnderArticle=nep.notifiedUnderArticle
         sNep.productsCovered=nep.productsCovered
         sNep.descriptionOfNotifiedDoc=nep.descriptionOfNotifiedDoc
-        sNep.objectiveAndRationale=nep.objectiveAndRationale
         sNep.relevantDocuments=nep.relevantDocuments
         sNep.descriptionOfContent=nep.descriptionOfContent
         sNep.proposedDateOfAdoption=nep.proposedDateOfAdoption

@@ -568,6 +568,7 @@ export interface NepPrepareDraft {
     descriptionOfNotifiedDoc: string;
     descriptionOfContent: string;
     objectiveAndRationale: string;
+    otherObjectiveAndRationale: string;
     relevantDocuments: string;
     proposedDateOfAdoption: Timestamp<any>;
     proposedDateOfEntryIntoForce: Timestamp<any>;
