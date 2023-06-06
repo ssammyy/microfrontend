@@ -154,13 +154,13 @@
                                             <p>{{errors.categoryId}}</p>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-6">
+                                    <div class="col-sm-12 col-md-6" *ngIf="!generalCategory">
                                         <label for="subCategoryId" class="waiver-form-label">Sub Complaint
                                             Category</label>
                                         <select [ngClass]="{ 'is-invalid': errors && errors.subCategoryId }"
                                                 formControlName="subCategoryId" id="subCategoryId"
                                                 class="waiver-form-input"
-                                                name="subCategoryId" required="required">
+                                                name="subCategoryId">
                                             <option ngValue="null" selected>Please select sub category</option>
                                             <option *ngFor="let cat of subcategories"
                                                     [value]="cat.categoryId"
@@ -173,7 +173,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-6">
                                         <label for="complaintDescription" class="waiver-form-label">Complaint
-                                            Title</label>
+                                            Subject</label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
                                                class="waiver-form-input"
@@ -187,7 +187,7 @@
                                             <p class="mat-error">{{errors.complaintTitle}}</p>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-6">
+                                    <div class="col-sm-12 col-md-6" *ngIf="!generalCategory">
                                         <label for="cocNumber" class="waiver-form-label">COC Number</label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
@@ -195,14 +195,13 @@
                                                formControlName="cocNumber"
                                                id="cocNumber"
                                                name="cocNumber" placeholder="The Product COC Number"
-                                               required="required"
                                                type="text">
                                         <div *ngIf="errors && errors.cocNumber"
                                              class="invalid-feedback">
                                             <p class="mat-error">{{errors.cocNumber}}</p>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-6">
+                                    <div class="col-sm-12 col-md-6" *ngIf="!generalCategory">
                                         <label for="rfcNumber" class="waiver-form-label">RFC Number</label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
@@ -210,7 +209,6 @@
                                                formControlName="rfcNumber"
                                                id="rfcNumber"
                                                name="rfcNumber" placeholder="RFC number"
-                                               required="required"
                                                type="text">
                                         <div *ngIf="errors && errors.rfcNumber"
                                              class="invalid-feedback">
@@ -221,7 +219,7 @@
                                     <div class="col-sm-12 col-md-6">
 
                                         <label for="complaintDescription" class="waiver-form-label">Complaint
-                                            Description</label>
+                                            Description <small>(minimum length 20 leters)</small></label>
                                         <textarea aria-describedby="inputGroup-sizing-sm"
                                                   aria-label="Small"
                                                   class="waiver-form-input"
@@ -241,7 +239,8 @@
                                     <button class="btn btn-primary"
                                             mat-button matStepperPrevious>PREVIOUS
                                     </button>
-                                    <button [disabled]="stepTwoForm.invalid" class="btn btn-primary float-riight"
+
+                                    <button [disabled]="stepTwoForm.invalid" class="btn btn-primary float-right"
                                             mat-button matStepperNext>NEXT
                                     </button>
                                 </div>
@@ -268,10 +267,12 @@
                                             </button>
                                         </div>
                                         <div class="col">
+
                                             <button class="btn btn-primary"
-                                                    [disabled]="stepOneForm.invalid || stepTwoForm.invalid"
+                                                    [disabled]="stepOneForm.invalid || stepTwoForm.invalid || loading"
                                                     (click)="openComplaintRequest()">
                                                 SUBMIT COMPLAINT
+                                                <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
                                             </button>
                                         </div>
 

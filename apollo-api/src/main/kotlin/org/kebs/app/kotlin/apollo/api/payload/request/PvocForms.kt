@@ -2377,7 +2377,7 @@ class PvocComplaintForm {
     @NotNull(message = "Please select nature of complaint")
     var categoryId: Long? = null
 
-    @NotNull(message = "Please select nature type of complaint")
+    //@NotNull(message = "Please select nature type of complaint")
     var subCategoryId: Long? = null
 
     fun fillDetails(complaint: PvocComplaintEntity) {

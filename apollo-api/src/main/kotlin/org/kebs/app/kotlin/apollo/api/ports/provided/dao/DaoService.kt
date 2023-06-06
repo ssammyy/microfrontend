@@ -30,6 +30,10 @@ import io.ktor.content.*
 import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
@@ -54,6 +58,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.remoteAddressOrNull
+import java.io.ByteArrayInputStream
 import java.io.Reader
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -68,13 +73,14 @@ import javax.net.ssl.X509TrustManager
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLOutputFactory
 
+
 @Service
 class DaoService(
-        private val sslContextFactory: SslContextFactory,
-        private val jasyptStringEncryptor: StringEncryptor,
-        private val cocItemsRepository: ICocItemsRepository,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val sftpService: SftpServiceImpl
+    private val sslContextFactory: SslContextFactory,
+    private val jasyptStringEncryptor: StringEncryptor,
+    private val cocItemsRepository: ICocItemsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val sftpService: SftpServiceImpl
 ) {
 
 
@@ -85,9 +91,9 @@ class DaoService(
     }
 
     fun generateTransactionReference(
-            length: Int = 12,
-            secureRandomAlgorithm: String = "SHA1PRNG",
-            messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
+        length: Int = 12,
+        secureRandomAlgorithm: String = "SHA1PRNG",
+        messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
     ): String {
         return generateRandomText(length, secureRandomAlgorithm, messageDigestAlgorithm, false)
     }
@@ -97,8 +103,8 @@ class DaoService(
 
     fun mapper(excludeNull: Boolean = false): ObjectMapper {
         val mapper = ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
 //            .configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
         when (excludeNull) {
             true -> mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
@@ -112,7 +118,7 @@ class DaoService(
 
 
     suspend fun invalidGetOnPostUrl(req: ServerRequest): ServerResponse =
-            ServerResponse.badRequest().body("Operation not supported")
+        ServerResponse.badRequest().body("Operation not supported")
 
 
     fun extractHostnameFromRequest(req: ServerRequest): String {
@@ -120,23 +126,23 @@ class DaoService(
     }
 
     fun extractTimestampString(now: Instant): String? =
-            DateTimeFormatter.ofPattern("yyyyMMddHHmmss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault())
-                    .format(now)
+        DateTimeFormatter.ofPattern("yyyyMMddHHmmss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault())
+            .format(now)
 
     final suspend inline fun <reified T : Any> processResponses(
-            response: HttpResponse?,
-            log: WorkflowTransactionsEntity,
-            url: String,
-            config: IntegrationConfigurationEntity,
+        response: HttpResponse?,
+        log: WorkflowTransactionsEntity,
+        url: String,
+        config: IntegrationConfigurationEntity,
     ): Triple<WorkflowTransactionsEntity, T?, HttpResponse?> {
         var res: T? = null
         try {
 
 
             response
-                    ?.let { r ->
-                        when {
-                            r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
+                ?.let { r ->
+                    when {
+                        r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
 
                             val responseText = r.readText()
 
@@ -155,24 +161,24 @@ class DaoService(
                             log.transactionCompletedDate = Timestamp.from(Instant.now())
 
                         }
-                            else -> {
-                                log.integrationResponse = r.readText()
-                                val message =
-                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                                KotlinLogging.logger { }.info(message)
-                                log.responseMessage = log.responseMessage?.let { "${it}||${message}" } ?: message
-                                log.responseStatus = config.failureCode
+                        else -> {
+                            log.integrationResponse = r.readText()
+                            val message =
+                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                            KotlinLogging.logger { }.info(message)
+                            log.responseMessage = log.responseMessage?.let { "${it}||${message}" } ?: message
+                            log.responseStatus = config.failureCode
 
 
-                                log.transactionCompletedDate = Timestamp.from(Instant.now())
-
-                            }
+                            log.transactionCompletedDate = Timestamp.from(Instant.now())
 
                         }
 
-
                     }
-                    ?: throw InvalidValueException("Null Response received")
+
+
+                }
+                ?: throw InvalidValueException("Null Response received")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("Received [Exception = ${e.message}, URL = $url]!")
             KotlinLogging.logger { }.debug("Received [Exception = ${e.message}, URL = $url]!", e)
@@ -190,38 +196,38 @@ class DaoService(
     }
 
     final suspend inline fun <reified T : Any> processResponses(
-            response: HttpResponse?,
-            url: String,
-            config: IntegrationConfigurationEntity,
+        response: HttpResponse?,
+        url: String,
+        config: IntegrationConfigurationEntity,
     ): Pair<T?, HttpResponse?> {
         var res: T? = null
         try {
 
 
             response
-                    ?.let { r ->
-                        when {
-                            r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
+                ?.let { r ->
+                    when {
+                        r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
 
-                                val responseText = r.readText()
+                            val responseText = r.readText()
 
-                                KotlinLogging.logger { }.error(responseText)
-                                val message =
-                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                                KotlinLogging.logger { }.info(message)
-                                res = mapper().readValue<T>(responseText)
+                            KotlinLogging.logger { }.error(responseText)
+                            val message =
+                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                            KotlinLogging.logger { }.info(message)
+                            res = mapper().readValue<T>(responseText)
 
-                            }
-                            else -> {
-                                val message =
-                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                                KotlinLogging.logger { }.info(message)
-
-                            }
                         }
+                        else -> {
+                            val message =
+                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                            KotlinLogging.logger { }.info(message)
 
+                        }
                     }
-                    ?: throw InvalidValueException("Null Response received")
+
+                }
+                ?: throw InvalidValueException("Null Response received")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("Received [Exception = ${e.message}, URL = $url]!")
             KotlinLogging.logger { }.debug("Received [Exception = ${e.message}, URL = $url]!", e)
@@ -233,27 +239,27 @@ class DaoService(
     }
 
     suspend fun getHttpResponseFromPostCall(
-            auth: Boolean,
-            finalUrl: String,
-            accessToken: String?,
-            payload: Any?,
-            config: IntegrationConfigurationEntity?,
-            bodyParams: Map<String, String>? = null,
-            headerParams: Map<String, String>? = null,
+        auth: Boolean,
+        finalUrl: String,
+        accessToken: String?,
+        payload: Any?,
+        config: IntegrationConfigurationEntity?,
+        bodyParams: Map<String, String>? = null,
+        headerParams: Map<String, String>? = null,
     ): HttpResponse? {
         return buildClient(auth, config)
-                ?.request<HttpResponse>(finalUrl) {
-                    method = HttpMethod.Post
-                    headerParams?.forEach { (p, v) -> header(p, v) }
-                    bodyParams?.forEach { (p, v) -> parameter(p, v) }
+            ?.request<HttpResponse>(finalUrl) {
+                method = HttpMethod.Post
+                headerParams?.forEach { (p, v) -> header(p, v) }
+                bodyParams?.forEach { (p, v) -> parameter(p, v) }
 //                header("Authorization", "Bearer $accessToken")
 //                header("Accept", "application/json")
 
-                    payload?.let {
-                        body = TextContent(mapper().writeValueAsString(it), ContentType.Application.Json)
-                    }
+                payload?.let {
+                    body = TextContent(mapper().writeValueAsString(it), ContentType.Application.Json)
+                }
 
-                }?.call?.response?.call?.response
+            }?.call?.response?.call?.response
     }
 
     suspend fun getHttpPostCallResponse(
@@ -279,7 +285,6 @@ class DaoService(
 
             }?.call?.response?.call?.response
     }
-
 
 
     suspend fun getHttpResponseFromGetCall(
@@ -315,8 +320,8 @@ class DaoService(
     }
 
     private fun buildClient(
-            auth: Boolean = false,
-            config: IntegrationConfigurationEntity?,
+        auth: Boolean = false,
+        config: IntegrationConfigurationEntity?,
     ): HttpClient? {
         return config?.let { cfg ->
             HttpClient(Apache) {
@@ -337,10 +342,10 @@ class DaoService(
                          */
 
                         setSSLContext(
-                                SSLContext.getInstance("TLS")
-                                        .apply {
-                                            init(null, arrayOf(TrustAllX509TrustManager()), SecureRandom())
-                                        }
+                            SSLContext.getInstance("TLS")
+                                .apply {
+                                    init(null, arrayOf(TrustAllX509TrustManager()), SecureRandom())
+                                }
                         )
                         setSSLHostnameVerifier(NoopHostnameVerifier())
                     }
@@ -413,9 +418,9 @@ class DaoService(
     }
 
     private fun evaluateFinalStatus(
-            log: WorkflowTransactionsEntity,
-            config: IntegrationConfigurationEntity,
-            jobDetails: BatchJobDetails
+        log: WorkflowTransactionsEntity,
+        config: IntegrationConfigurationEntity,
+        jobDetails: BatchJobDetails
     ): Int? {
         return when (log.responseStatus) {
             config.exceptionCode -> jobDetails.endExceptionStatus
@@ -434,31 +439,83 @@ class DaoService(
     }
 
     fun readExchangeRatesFromController(separator: Char, reader: Reader) =
-            readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
+        readCsvFile<CurrencyExchangeRatesEntityDto>(separator, reader)
 
     fun readAuditCsvFile(separator: Char, reader: Reader): List<AuditItemEntityDto> {
         return readCsvFile<AuditItemEntityDto>(separator, reader)
     }
 
+    /**
+     * Read Excel file into a map of record, only sheet 1 is used:
+     * Ref: https://howtodoinjava.com/java/library/readingwriting-excel-files-in-java-poi-tutorial/
+     */
+    fun readExcelFileIntoMap(separator: Char, reader: ByteArray): List<Map<String, Any?>> {
+        val result = mutableListOf<Map<String, Any?>>()
+        try {
+            val workbook = XSSFWorkbook(ByteArrayInputStream(reader))
+            //Get first/desired sheet from the workbook
+            val sheet: XSSFSheet = workbook.getSheetAt(0)
+            //Iterate through each header rows one by one
+            val headers = mutableListOf<String>()
+            val rowIterator: Iterator<Row> = sheet.iterator()
+            if (rowIterator.hasNext()) {
+                val haderRow: Row = rowIterator.next()
+                val cellIterator: Iterator<Cell> = haderRow.cellIterator()
+                while (cellIterator.hasNext()) {
+                    headers.add(cellIterator.next().stringCellValue)
+                }
+            }
+            //Iterate through each rows one by one
+            while (rowIterator.hasNext()) {
+                val row: Row = rowIterator.next()
+                //For each row, iterate through all the columns
+                val cellIterator: Iterator<Cell> = row.cellIterator()
+                val record = mutableMapOf<String, Any?>()
+                while (cellIterator.hasNext()) {
+                    val cell: Cell = cellIterator.next()
+
+                    when (cell.getCellType()) {
+                        Cell.CELL_TYPE_NUMERIC -> {
+                            record[headers[cell.columnIndex]] = cell.numericCellValue
+                        }
+                        Cell.CELL_TYPE_BOOLEAN -> {
+                            record[headers[cell.columnIndex]] = cell.booleanCellValue
+                        }
+                        else -> {
+                            record[headers[cell.columnIndex]] = cell.stringCellValue
+                        }
+                    }
+                }
+                result.add(record)
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.warn("Failed to process excel file", ex)
+        }
+        return result
+    }
+
+    fun readCsvFileIntoMap(separator: Char, reader: Reader) =
+        readCsvFile<Map<String, Any?>>(separator, reader)
+
     fun readCocFileFromController(separator: Char, reader: Reader) =
-            readCsvFile<CocsItemsEntityDto>(separator, reader)
+        readCsvFile<CocsItemsEntityDto>(separator, reader)
 
     fun readCorFileFromController(separator: Char, reader: Reader) = readCsvFile<CorItemsEntityDto>(separator, reader)
 
     private inline fun <reified T> readCsvFile(separator: Char, reader: Reader): List<T> {
 //        FileReader(fileName).use { reader ->
         return csvMapper
-                .readerFor(T::class.java)
-                .with(
-                        CsvSchema
-                                .emptySchema()
-                                .withColumnSeparator(separator)
-                                .withLineSeparator("\n")
-                                .withHeader()
-                )
-                .readValues<T>(reader)
-                .readAll()
-                .toList()
+            .readerFor(T::class.java)
+            .with(
+                CsvSchema
+                    .emptySchema()
+                    .withColumnSeparator(separator)
+                    .withLineSeparator("\n")
+                    .withHeader()
+            )
+            .readValues<T>(reader)
+            .readAll()
+            .toList()
     }
 
     val xmlMapper: ObjectMapper = run {
@@ -468,7 +525,7 @@ class DaoService(
         oFactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true)
         val xf = XmlFactory(iFactory, oFactory)
         val xmlMapper: ObjectMapper = XmlMapper(xf)
-                .registerModule(KotlinModule())
+            .registerModule(KotlinModule())
         xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
         xmlMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false)
         xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -491,11 +548,11 @@ class DaoService(
         val formatted = current.format(formatter)
 
         var finalFileName = filePrefix
-                .plus("-")
-                .plus(documentIdentifier)
-                .plus("-1-B-")
-                .plus(formatted)
-                .plus(".xml")
+            .plus("-")
+            .plus(documentIdentifier)
+            .plus("-1-B-")
+            .plus(formatted)
+            .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
         return finalFileName

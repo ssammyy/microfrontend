@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.handlers.UtilitiesHandler
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -10,13 +11,16 @@ import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocPartnerService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class PvocPartnersHandler(
-        private val partnerService: PvocPartnerService,
-        private val validatorService: DaoValidatorService
+    private val partnerService: PvocPartnerService,
+    private val validatorService: DaoValidatorService,
+    private val utils: UtilitiesHandler
 ) {
 
     fun listPartnerCountries(req: ServerRequest): ServerResponse {
@@ -78,25 +82,45 @@ class PvocPartnersHandler(
     fun listPartnerNames(req: ServerRequest): ServerResponse{
         var response=ApiResponseModel()
         try {
-            response=partnerService.listPartnerNames()
-        }catch (ex: Exception){
-            KotlinLogging.logger {  }.error("Failed to list partners",ex)
-            response.responseCode=ResponseCodes.EXCEPTION_STATUS
+            response = partnerService.listPartnerNames()
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to list partners", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
 
-            response.message="Request failed, please try again later"
+            response.message = "Request failed, please try again later"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun explodeFileToJson(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
+        if (multipartRequest != null) {
+            multipartRequest.getFile("file")?.let { multipartFile ->
+                val fileType = req.paramOrNull("type")
+                response.data = utils.processCsvOrExcelFile(multipartFile, fileType)
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Please select file to upload"
+                response
+            }
+        } else {
+            response.responseCode = ResponseCodes.INVALID_CODE
+            response.message = "Request is not a multipart request"
         }
         return ServerResponse.ok().body(response)
     }
 
     fun listPartners(req: ServerRequest): ServerResponse {
-        var response=ApiResponseModel()
+        var response = ApiResponseModel()
         try {
             val keywords = req.param("keywords")
             val page = extractPage(req)
-           response=partnerService.listPartners(keywords.orElse(null), page)
-        }catch (ex: Exception){
-            KotlinLogging.logger {  }.error("Failed to list partners",ex)
-            response.responseCode=ResponseCodes.EXCEPTION_STATUS
+            response = partnerService.listPartners(keywords.orElse(null), page)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to list partners", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
 
             response.message="Request failed, please try again later"
         }

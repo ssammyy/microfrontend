@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class PvocHandler(
@@ -26,6 +27,17 @@ class PvocHandler(
         private val validator: DaoValidatorService
 
 ) {
+    fun listMyProducts(req: ServerRequest): ServerResponse {
+        val keywords = req.paramOrNull("keywords")
+        val response = keywords?.let { kw ->
+            pvocService.searchManufacturerProduct(kw)
+        } ?: ApiResponseModel().apply {
+            responseCode = ResponseCodes.INVALID_CODE
+            message = "Invalid request received"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun checkExemptionEligibility(req: ServerRequest): ServerResponse {
         val response = this.pvocService.checkExemptionApplicable()
         return ServerResponse.ok().body(response)

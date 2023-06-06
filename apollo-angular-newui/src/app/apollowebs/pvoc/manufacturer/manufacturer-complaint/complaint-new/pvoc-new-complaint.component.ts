@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, PartialObserver, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PVOCService} from "../../../../../core/store/data/pvoc/pvoc.service";
 import {Router} from "@angular/router";
@@ -10,11 +10,8 @@ import {Router} from "@angular/router";
     styleUrls: ['./pvoc-new-complaint.component.css'],
 })
 export class PvocNewComplaintComponent implements OnInit {
-
-    ispause = new Subject();
     time = 59;
     timer!: Observable<number>;
-    timerObserver!: PartialObserver<number>;
     step = 1;
 
     public clicked = false;
@@ -26,22 +23,16 @@ export class PvocNewComplaintComponent implements OnInit {
     countries: any[] = []
     towns: any[] = []
     selectedBusinessLine = 0;
-    selectedBusinessNature = 0;
     selectedRegion = 0;
     selectedCounty = 0;
     selectedTown = 0;
-    validationCellphone = '';
     otpSent = false;
-    phoneValidated = false;
-    // @ts-ignore
-    company: Company;
-    // @ts-ignore
-    user: User;
     partners: any[]
     complaintCategories: any[]
     subcategories: any[] = [];
     submitted = false;
     loading = false
+    generalCategory = false
 
 
     constructor(
@@ -61,18 +52,41 @@ export class PvocNewComplaintComponent implements OnInit {
             phoneNo: new FormControl('', [Validators.required]),
             address: new FormControl('', [Validators.required]),
         });
-
+        this.stepOneForm.valueChanges.subscribe(res => {
+            console.log(this.stepOneForm.errors)
+            console.log(this.stepOneForm.invalid)
+        })
+        // Step two
         this.stepTwoForm = this.formBuilder.group({
-            pvocAgent: new FormControl('', [Validators.required]),
-            complaintTitle: new FormControl('', [Validators.required]),
-            cocNumber: new FormControl('', []),
-            categoryId: new FormControl('', [Validators.required]),
-            subCategoryId: new FormControl('0', []),
-            rfcNumber: new FormControl('', []),
-            complaintDescription: new FormControl('', [Validators.required]),
+            pvocAgent: [null, [Validators.required]],
+            complaintTitle: [null, [Validators.required]],
+            cocNumber: [null],
+            categoryId: [null, [Validators.required]],
+            subCategoryId: [null],
+            rfcNumber: [null],
+            complaintDescription: [null, [Validators.required, Validators.minLength(20)]],
         });
+        this.stepTwoForm.valueChanges.subscribe(res => {
+            console.log(this.stepTwoForm.errors)
+            console.log(this.stepTwoForm.invalid)
+        })
 
 
+    }
+
+    isGeneralCategory(eventData: any) {
+        let catId = parseInt(eventData.target.value)
+        console.log(catId)
+        this.generalCategory = false
+        if (catId > 0) {
+            for (const v of this.complaintCategories) {
+                console.log(v)
+                if (v.name.toLowerCase().includes('general')) {
+                    this.generalCategory = (v.categoryId == catId) // Selected category
+                    return
+                }
+            }
+        }
     }
 
     selectedComplaintCategories(event: any) {
@@ -83,7 +97,10 @@ export class PvocNewComplaintComponent implements OnInit {
                     this.subcategories = cat.subCategories
                 }
             })
+            // Mark general category
+            this.isGeneralCategory(event)
         }
+
         console.log(this.subcategories)
     }
 
@@ -145,8 +162,10 @@ export class PvocNewComplaintComponent implements OnInit {
         data.subCategoryId = parseInt(d2.subCategoryId)
         this.loading = true;
         let fileList: File[] = []
-        for (let v = 0; v < this.uploadedFiles.length; v++) {
-            fileList.push(this.uploadedFiles[v])
+        if (this.uploadedFiles) {
+            for (let v = 0; v < this.uploadedFiles.length; v++) {
+                fileList.push(this.uploadedFiles[v])
+            }
         }
         this.pvoc.fileComplaint(data, fileList)
             .subscribe(
@@ -156,6 +175,7 @@ export class PvocNewComplaintComponent implements OnInit {
                     } else {
                         this.pvoc.showError(res.message, null)
                         this.errors = res.errors
+                        console.debug(res)
                         this.loading = false;
                     }
                 },
