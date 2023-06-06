@@ -82,6 +82,8 @@
                                                                                                         data-placement="top" style="width: 250px"
                                                                                                         data-original-title="Upload NWI">Post To Website</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Edited'"></td>
+                                        <td *ngIf="publicReviewDraft.status==='Ballot draft uploaded'"></td>
+                                        <td *ngIf="publicReviewDraft.status==='Draft documents for ballot uploaded'"></td>
                                         <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"><a
                                                 (click)="approveDraftD(publicReviewDraft)"
                                                 class="btn btn-success tooltips"

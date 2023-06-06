@@ -1799,9 +1799,13 @@ class IntStandardService(
 
     fun approveProofReadStandard(
         iSDraftDecisions: ISHopDecision
-    ): String {
+    ): NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks = CompanyStandardRemarks()
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
+        var response = ""
         //val decision=iSDraftDecisions.accentTo
         val timeOfRemark = Timestamp(System.currentTimeMillis())
         val decision = iSDraftDecisions.accentTo
@@ -1913,6 +1917,11 @@ class IntStandardService(
                  } ?: throw Exception("DRAFT NOT FOUND")
              }
 
+             slFormResponse = "Draft Was Approved"
+             responseStatus = "success"
+             responseButton = "btn btn-success form-wizard-next-btn"
+             response = "Approved"
+
 
         } else if (decision == "No") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
@@ -1944,11 +1953,14 @@ class IntStandardService(
                  // response = "Justification Was Approved"
              } ?: throw Exception("PROPOSAL NOT FOUND")
 
-
+             slFormResponse = "Draft Was Not Approved"
+             responseStatus = "error"
+             responseButton = "btn btn-danger form-wizard-next-btn"
+             response = "Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getApprovedEditedDraft(): MutableList<ISUploadedDraft> {
