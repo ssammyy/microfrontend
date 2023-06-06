@@ -45,6 +45,14 @@
                                     <mat-tab tabindex="1" label="Categorization Issues">
                                     </mat-tab>
                                     <mat-tab tabindex="2" label="Seal Issues">
+                                        <div class="table-responsive table-striped" *ngIf="monitoringDetails.seals">
+                                            <ng2-smart-table class="table table-hover" [settings]="sealSettings"
+                                                             [source]="monitoringDetails.seals"
+                                                             (userRowSelect)="viewTimelineItem($event.data)"
+                                                             (custom)="auctionEvent('seal',$event)"
+                                            >
+                                            </ng2-smart-table>
+                                        </div>
                                     </mat-tab>
                                     <mat-tab tabindex="3" label="Penalties applied">
                                     </mat-tab>

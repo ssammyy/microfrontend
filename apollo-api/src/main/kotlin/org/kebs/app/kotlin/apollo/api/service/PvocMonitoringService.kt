@@ -76,7 +76,7 @@ class PvocMonitoringService(
                     data["partner"] = PvocPartnerDto.fromEntity(it)
                 }
                 data["timelines"] = this.timelinesRepository.findByMonitoringId(monitId, PageRequest.of(0, 100))
-//                data["seals"] = this.sealIssuesRepository.findByMonitoringId(monitId)
+                data["seals"] = this.sealIssuesRepository.findByMonitoringId(monitId, PageRequest.of(0, 100)).toList()
 //                data["categorization"] = this.categorizationRepository.findByMonitoringId(monitId)
 //                data["penalties"] = this.timelinePenaltiesRepository.findByMonitoringId(monitId)
                 response.data = data

@@ -16,6 +16,101 @@ export class ViewMonitoringIssuesComponent implements OnInit {
     pageSize = 20
     page = 0
     totalCount = 0
+    // Seal issues
+    public sealSettings = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                // {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'},
+                {name: 'viewRecord', title: '<i class="fa fa-eye">View</i>'}
+            ],
+            position: 'right' // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true
+        },
+        columns: {
+            ucrNumber: {
+                title: 'UCR Number',
+                type: 'string',
+                filter: false
+            },
+            certNumber: {
+                title: 'Cert No.',
+                type: 'string',
+                filter: false
+            },
+            certType: {
+                title: 'Cert Type',
+                type: 'string',
+                filter: false
+            },
+            recordYearMonth: {
+                title: 'Record Year and Month',
+                type: 'string'
+            },
+            route: {
+                title: 'Route',
+                type: 'string'
+            },
+            riskStatus: {
+                title: 'Risk Status',
+                type: 'string',
+                valuePrepareFunction: (status) => {
+                    if (status === 1) {
+                        return "YES"
+                    }
+                    return "NO"
+                }
+            },
+            applicablePenalty: {
+                title: 'Applicable Penalty',
+                type: 'number'
+            },
+            createdOn: {
+                title: 'Record Date',
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
+                    }
+
+                    return ""
+                },
+            },
+            modifiedOn: {
+                title: 'Last Update',
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
+                    }
+
+                    return ""
+                }
+            }
+        },
+        pager: {
+            display: true,
+            perPage: 20
+        }
+    };
+    // Timeline Issues
     public timelineSettings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,

@@ -89,19 +89,19 @@ export class ViewWaiverCertificatesComponent implements OnInit {
                     this.activeStatus = res.get("tab")
                 }
             }
-            this.loadData(0,this.defaultPageSize)
+            this.loadData(0, this.defaultPageSize)
         })
     }
 
-    goBack() {
-        this.router.navigate(["/company/applications"])
+    applyWaiver() {
+        this.router.navigate(["/manufacturer/waivers/apply"])
     }
 
     loadData(page: number, size: number) {
-        this.pvocService.manufacturerWaiver(this.activeStatus,page,size)
+        this.pvocService.manufacturerWaiver(this.activeStatus, page, size)
             .subscribe(
                 res => {
-                    if(res.responseCode==="00"){
+                    if (res.responseCode === "00") {
                         this.dataSource.load(res.data)
                     } else {
                         this.pvocService.showError(res.message, null)

@@ -5,16 +5,18 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">assignment</i>
+                            <i class="material-icons">hail</i>
                         </div>
-                        <h4 class="card-title">EXEMPTION CERTIFICATES
-                            <button class="btn btn-sm btn-default float-right mr-7"
-                                    (click)="goBack()"><i class="fa fa-arrow-left"></i>BACK
-
-                            </button>
-                        </h4>
+                        <h4 class="card-title">EXEMPTION CERTIFICATES</h4>
                     </div>
                     <div class="card-body">
+                        <div class="toolbar">
+                            <div class="search-bar">
+                                <button class="btn btn-primary btn-sm float-right mr-7"
+                                        (click)="applyExemption()"><i class="fa fa-money-bill-wave"></i>Apply Exemption
+                                </button>
+                            </div>
+                        </div>
                         <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                             <button type="button" (click)="toggleStatus('new')"
                                     [className]="activeStatus === 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
