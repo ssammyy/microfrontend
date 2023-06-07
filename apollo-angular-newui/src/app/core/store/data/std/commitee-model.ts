@@ -129,6 +129,7 @@ export interface PublicReviewDraftWithName {
     proposal_TITLE: string;
     circulation_DATE: string;
     closing_DATE: string;
+    commentStatus: number;
 
 
 }

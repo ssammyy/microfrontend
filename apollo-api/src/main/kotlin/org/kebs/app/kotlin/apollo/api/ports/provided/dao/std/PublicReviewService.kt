@@ -230,16 +230,16 @@ class PublicReviewService(
 
     }
 
-    fun getPublicReviewForComment(encryptedId: Long): MutableIterable<PublicReviewDraft>? {
+    fun getPublicReviewForComment(encryptedId: Long): MutableIterable<PrdWithUserName>? {
         return publicReviewDraftRepository.getPublicReviewForComment(encryptedId)
     }
 
-    fun getPublicReviewComments(): MutableIterable<PublicReviewDraft>? {
+    fun getPublicReviewComments(): MutableIterable<PrdWithUserName>? {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         return publicReviewDraftRepository.getPublicReviewComments(loggedInUser.id)
     }
 
-    fun getPublicReviewComment(): MutableIterable<PublicReviewDraft>? {
+    fun getPublicReviewComment(): MutableIterable<PrdWithUserName>? {
         return publicReviewDraftRepository.getPublicReviewComment()
     }
 

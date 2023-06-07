@@ -248,7 +248,7 @@ class PublicReviewController(
 
 
     @GetMapping("/getPublicReviewComments")
-    fun getPublicReviewComments():MutableIterable<PublicReviewDraft>?
+    fun getPublicReviewComments():MutableIterable<PrdWithUserName>?
     {
         return publicReviewService.getPublicReviewComments()
     }

@@ -30,6 +30,7 @@ import {catchError, map} from "rxjs/operators";
 import {DefaulterDetails, DocumentDTO, ManufacturingStatus, SiteVisitRemarks} from "../levy/levy.model";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
+import {PublicReviewDraftWithName} from "./commitee-model";
 
 @Injectable({
   providedIn: 'root'
@@ -209,7 +210,7 @@ export class StdIntStandardService {
     public getPublicReviewDraft(encryptedId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS);
         const urlAndPathVariables = `${url}/${encryptedId}`;
-        return this.http.get<PublicReviewDrafts>(urlAndPathVariables).pipe(
+        return this.http.get<PublicReviewDraftWithName>(urlAndPathVariables).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -224,7 +225,7 @@ export class StdIntStandardService {
     public getPublicReviewDraftSite(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS_SITE);
         //const urlAndPathVariables = `${url}/${encryptedId}`;
-        return this.http.get<PublicReviewDrafts>(url).pipe(
+        return this.http.get<PublicReviewDraftWithName>(url).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -239,7 +240,7 @@ export class StdIntStandardService {
     public getPublicReviewDraftSites(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS_SITES);
         //const urlAndPathVariables = `${url}/${encryptedId}`;
-        return this.http.get<PublicReviewDrafts>(url).pipe(
+        return this.http.get<PublicReviewDraftWithName>(url).pipe(
             map(function (response: any) {
                 return response;
             }),
