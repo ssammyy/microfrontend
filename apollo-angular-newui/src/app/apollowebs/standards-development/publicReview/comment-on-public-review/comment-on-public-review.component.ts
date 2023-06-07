@@ -163,7 +163,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
           this.showToasterSuccess(response.httpStatus, 'Successfully Submitted Comment');
           this.commentFormGroup.reset()
           this.hideModel()
-          this.getAllUserLoggedInCommentsMadeOnPd();
+          //this.getAllUserLoggedInCommentsMadeOnPd();
           this.getPublicReviewDraft(this.encryptedId);
 
         },
@@ -214,7 +214,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
       this.SpinnerService.show();
 
       //(this.sta10Details.id.toString());
-      this.committeeService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
+      this.stdIntStandardService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
           (data) => {
 
             this.SpinnerService.hide();
@@ -222,7 +222,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
             this.commentsMadeFormGroup.reset()
             this.hideModel()
             this.commentsDtos = []
-            this.getAllUserLoggedInCommentsMadeOnPd();
+            //this.getAllUserLoggedInCommentsMadeOnPd();
 
             swal.fire({
               title: 'Comments Saved!',
@@ -250,12 +250,12 @@ export class CommentOnPublicReviewComponent implements OnInit {
 
   editComment(): void {
     this.SpinnerService.show();
-    this.committeeService.editComment(this.editCommentFormGroup.value).subscribe(
+    this.stdIntStandardService.editComment(this.editCommentFormGroup.value).subscribe(
         (response) => {
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, 'Successfully Edited Comment');
           this.hideModelB()
-          this.getAllUserLoggedInCommentsMadeOnPd();
+          //this.getAllUserLoggedInCommentsMadeOnPd();
 
         },
         (error: HttpErrorResponse) => {
@@ -285,7 +285,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.SpinnerService.show();
-        this.committeeService.deleteComment(comment).subscribe(
+        this.stdIntStandardService.deleteComment(comment).subscribe(
             (response) => {
               this.SpinnerService.hide();
               swalWithBootstrapButtons.fire(
@@ -295,7 +295,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
               );
               this.SpinnerService.hide();
               this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
-              this.getAllUserLoggedInCommentsMadeOnPd();
+              //this.getAllUserLoggedInCommentsMadeOnPd();
             },
         );
       } else if (
@@ -428,7 +428,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
     this.loading= true
     this.loadingText="Downloading Document"
     this.SpinnerService.show();
-    this.committeeService.viewDocsById(pdfId).subscribe(
+    this.stdIntStandardService.viewAllDocsById(pdfId).subscribe(
         (dataPdf: any) => {
           this.loading=false
           this.SpinnerService.hide();

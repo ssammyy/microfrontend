@@ -434,6 +434,11 @@ export class ApiEndpointService {
         PR_UPLOAD_STAKE_HOLDERS: `${ApiEndpointService.SD_PR_CONTEXT}/sendPublicReview`,
         PR_GET_PUBLIC_REVIEWS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getAllPublicReviews`,
         PR_GET_PUBLIC_REVIEWS_SITE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getPublicReviewComment`,
+        PR_GET_ALL_DOCS_ON_PRD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getAllDocsOnPrd`,
+        PR_GET_ALL_DOCS_BY_ID: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/viewDocById`,
+        PR_MAKE_COMMENTS_ON_PUBLIC_REVIEW: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/makeCommentOnDraft`,
+        PR_EDIT_COMMENTS_ON_PUBLIC_REVIEW: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/editCommentDraft`,
+        PR_DELETE_COMMENTS_ON_PUBLIC_REVIEW: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/deleteCommentDraft`,
         PR_GET_PUBLIC_REVIEWS_SITES: `${ApiEndpointService.SD_PR_CONTEXT}/getPublicReviewComments`,
 
         // SD INTERNATIONAL STANDARDS

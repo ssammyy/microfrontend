@@ -420,7 +420,7 @@ export class ComOnSiteDraftComponent implements OnInit {
     this.loading= true
     this.loadingText="Downloading Document"
     this.SpinnerService.show();
-    this.committeeService.viewDocsById(pdfId).subscribe(
+    this.stdIntStandardService.viewAllDocsById(pdfId).subscribe(
         (dataPdf: any) => {
           this.loading=false
           this.SpinnerService.hide();
@@ -463,7 +463,7 @@ export class ComOnSiteDraftComponent implements OnInit {
     this.SpinnerService.show("loader2");
 
 
-    this.publicReviewService.getAllDocumentsOnPrd(cdID).subscribe(
+    this.stdIntStandardService.getAllDocsOnPrd(cdID).subscribe(
         (response: StandardDocuments[]) => {
           console.log(response)
           this.standardDocuments = response;

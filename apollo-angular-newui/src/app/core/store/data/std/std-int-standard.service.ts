@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
     AuthoritiesEntityDtos,
     ComDraftComment,
-    ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks, EditProposalComment,
+    ComJcJustificationDec, CommentOnProposalStakeHolder, CommentsDto, ComStdRemarks, EditProposalComment,
     GazetteNotice,
     InternationalStandardsComments, InterNationalStdDecision,
     ISAdoptionComments,
@@ -25,12 +25,12 @@ import {
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {DefaulterDetails, DocumentDTO, ManufacturingStatus, SiteVisitRemarks} from "../levy/levy.model";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
-import {PublicReviewDraftWithName} from "./commitee-model";
+import {CommentMade, CommentMadeRetrieved, PublicReviewDraftWithName, StandardDocuments} from "./commitee-model";
 
 @Injectable({
   providedIn: 'root'
@@ -220,6 +220,65 @@ export class StdIntStandardService {
             })
         );
         //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+
+
+
+    public makeCommentB(comment: CommentsDto[], preliminary_draft_id, doctype: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_MAKE_COMMENTS_ON_PUBLIC_REVIEW);
+        const params = new HttpParams()
+            .set('docType', doctype)
+            .set('preliminary_draft_id', preliminary_draft_id)
+        return this.http.post<CommentsDto[]>(url, comment, {params})
+
+    }
+
+    public editComment(comment: CommentMadeRetrieved): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_EDIT_COMMENTS_ON_PUBLIC_REVIEW);
+        return this.http.post<CommentMade>(url, comment)
+
+    }
+
+    public deleteComment(comment: CommentMadeRetrieved): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_DELETE_COMMENTS_ON_PUBLIC_REVIEW);
+        return this.http.request('POST', url, {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+            }),
+            body: {id: comment.commentsId}
+        });
+
+
+    }
+
+    public viewAllDocsById(docId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_ALL_DOCS_BY_ID);
+        const params = new HttpParams()
+            .set('docId', docId)
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAllDocsOnPrd(PrdId: any): Observable<any> {
+
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_ALL_DOCS_ON_PRD);
+        const params = new HttpParams()
+            .set('publicReviewDraftId', PrdId)
+        return this.http.get<StandardDocuments>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
     }
 
     public getPublicReviewDraftSite(): Observable<any> {
