@@ -729,6 +729,7 @@ class IntStandardService(
     }
 
 
+
     fun getProposalComments(proposalId: Long): MutableIterable<ISProposalComments>? {
         return isAdoptionCommentsRepository.getProposalComments(proposalId)
     }

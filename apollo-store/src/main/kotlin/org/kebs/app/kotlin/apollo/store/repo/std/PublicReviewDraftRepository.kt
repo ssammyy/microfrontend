@@ -23,4 +23,24 @@ interface PublicReviewDraftRepository : JpaRepository<PublicReviewDraft, Long> {
     )
     fun findApprovedPublicReviewDraft(@Param("tcSecId") tcSecId: String): MutableList<PrdWithUserName>
 
+    @Query(
+        value = "SELECT p.* FROM SD_PUBLIC_REVIEW_DRAFTS p Join SD_PUBLIC_REVIEW_STAKE_HOLDERS t on p.ID = t.PR_ID  WHERE t.ID=:encryptedId AND t.STATUS=0",
+        nativeQuery = true
+    )
+    fun getPublicReviewForComment(@Param("encryptedId") encryptedId: Long): MutableList<PublicReviewDraft>
+
+    @Query(
+        value = "SELECT p.* FROM SD_PUBLIC_REVIEW_DRAFTS p Join SD_PUBLIC_REVIEW_STAKE_HOLDERS t on p.ID = t.PR_ID  WHERE t.USER_ID=:userId AND t.STATUS=0",
+        nativeQuery = true
+    )
+    fun getPublicReviewComments(@Param("userId") userId: Long?): MutableList<PublicReviewDraft>
+
+    @Query(
+        value = "SELECT p.* FROM SD_PUBLIC_REVIEW_DRAFTS p Join SD_PUBLIC_REVIEW_STAKE_HOLDERS t on p.ID = t.PR_ID  WHERE  t.STATUS=0",
+        nativeQuery = true
+    )
+    fun getPublicReviewComment(): MutableList<PublicReviewDraft>
+
+
+
 }

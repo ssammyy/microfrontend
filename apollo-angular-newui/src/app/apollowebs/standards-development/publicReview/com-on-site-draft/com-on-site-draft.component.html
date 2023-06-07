@@ -1,0 +1,223 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-title float-left"><button type="button" class="btn btn-sm btn-info" style="color: white; font-weight: bold; width: auto;">
+                                Public Review Draft
+                            </button></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables table-responsive">
+                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Name</th>
+                                        <th class="knw">KS Number</th>
+                                        <th class="knw">Version</th>
+                                        <th class="knw">Date Created</th>
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr  *ngFor="let draft of drafts let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{draft.prdName}}</td>
+                                        <td>{{draft.ksNumber}}</td>
+                                        <td>{{draft.versionNumber}}</td>
+                                        <td>{{draft.createdOn | date: 'yyyy-MM-dd'}}</td>
+                                        <td *ngIf="draft.status==0"><a  (click)="onOpenModal(draft,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 200px" data-original-title="Approve"> Make Comment</a></td>
+                                        <td *ngIf="draft.status==1"><a  (click)="onOpenModal(draft,'comments')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 200px" data-original-title="Approve">You have commented</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!--                                <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentExampleModalLabel" aria-hidden="true">a-->
+                                <!--                                    <div class="modal-dialog modal-xl " role="document">-->
+                                <!--                                        <div class="modal-content">-->
+                                <!--                                            <div class="modal-header">-->
+                                <!--                                                <div class="logo"><a class="simple-text logo-mini">-->
+                                <!--                                                    <div class="logo-img"><img src="/assets/img/white_logo.png" alt="kebs_logo" style="width: 90px;"></div>-->
+                                <!--                                                </a></div>-->
+                                <!--                                                <h2 class="modal-title" >KENYA BUREAU OF STANDARDS </h2>-->
+                                <!--                                                <button type="button" #closeModalComment class="close" data-dismiss="modal" aria-label="Close">-->
+                                <!--                                                    <span aria-hidden="true">&times;</span>-->
+                                <!--                                                </button>-->
+                                <!--                                            </div>-->
+                                <!--                                            <div class="modal-header"><h3 class="modal-title">ADOPTION PROPOSAL</h3></div>-->
+                                <!--                                            <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">-->
+                                <!--                                                <div class="modal-body">-->
+
+                                <!--                                                    <div class="form-group col-12">-->
+                                <!--                                                        <label><b>Document Type</b></label>-->
+                                <!--                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                  class="form-control one-column-input" value="{{actionRequest?.docName}}" name="commentDocumentType" formControlName="commentDocumentType"-->
+                                <!--                                                                  placeholder="Document Type" type="text" disabled></textarea>-->
+                                <!--                                                    </div>-->
+                                <!--                                                    <div class="row">-->
+                                <!--                                                        <div class="form-group col-6">-->
+                                <!--                                                            <label><b>Circulation Date</b></label>-->
+                                <!--                                                            <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                   class="form-control one-column-input" value="{{actionRequest?.circulationDate | date: 'yyyy-MM-dd'}}" name="circulationDate" formControlName="circulationDate"-->
+                                <!--                                                                   placeholder="Document Type" type="text" disabled>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-6">-->
+                                <!--                                                            <label><b>Closing Date</b></label>-->
+                                <!--                                                            <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                   class="form-control one-column-input" value="{{actionRequest?.closingDate | date: 'yyyy-MM-dd'}}" name="closingDate" formControlName="closingDate"-->
+                                <!--                                                                   placeholder="Document Type" type="text" disabled>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                    </div>-->
+                                <!--                                                    <div class="form-group col-12">-->
+                                <!--                                                        <label><b>TC Secretary</b></label>-->
+                                <!--                                                        <h4>This form shall be filled, signed and returned to Kenya Bureau of Standards for the attention of <b>{{actionRequest?.tcSecName}}</b></h4><br>-->
+                                <!--                                                        <p style="font-weight: bold">{{actionRequest?.tcSecEmail}}</p>-->
+
+                                <!--                                                    </div>-->
+
+                                <!--                                                    <h4 style="font-weight: bold">-->
+                                <!--                                                        The Kenya Bureau of Standards intends to adopt the International Standard as detailed here below-->
+                                <!--                                                    </h4>-->
+                                <!--                                                    <div class="row col-12">-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                      class="form-control one-column-input" value="{{actionRequest?.standardNumber}}" name="standardNumber" formControlName="standardNumber"-->
+                                <!--                                                                      placeholder="Standard Number" type="text" disabled></textarea>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Title</b></label>-->
+                                <!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                      class="form-control one-column-input" value="{{actionRequest?.title}}" name="commentTitle" formControlName="commentTitle"-->
+                                <!--                                                                      placeholder="Title" type="text" disabled></textarea>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                      class="form-control one-column-input" value="{{actionRequest?.scope}}"  name="scope" formControlName="scope"-->
+                                <!--                                                                      placeholder="Scope" type="text" ></textarea>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                        <h4 style="font-weight: bold">-->
+                                <!--                                                            We are therefore seeking views from potential users in respect of the same.  The Standard is available at the  Kenya Bureau of Standards Information Center .  Please tick and fill your preference of the listed option.  (If the spaces provided are not enough, please attach a separate sheet of paper).-->
+                                <!--                                                        </h4>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Please Select whether it is acceptable or not</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"-->
+                                <!--                                                                    class="form-control" required-->
+                                <!--                                                                    formControlName="adoptionAcceptableAsPresented"-->
+                                <!--                                                                    name="adoptionAcceptableAsPresented" #teams (change)="onSelected(teams.value)"-->
+                                <!--                                                            >-->
+                                <!--                                                                <option disabled>&#45;&#45;Select Option&#45;&#45;</option>-->
+                                <!--                                                                <option  value="Yes">Adoption acceptable as presented</option>-->
+                                <!--                                                                <option value="No">Adoption proposal not acceptable because of the reason(s) below </option>-->
+                                <!--                                                            </select>-->
+
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12" *ngIf="selectedOption=='No'">-->
+                                <!--                                                            <label><b>Reasons</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                      class="form-control one-column-input"  name="reasons" formControlName="reasons"-->
+                                <!--                                                                      placeholder="Reasons for not accepting" type="text" ></textarea>-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12" >-->
+                                <!--                                                            <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                      class="form-control one-column-input"  name="recommendations" formControlName="recommendations"-->
+                                <!--                                                                      placeholder="Recommendations" type="text" ></textarea>-->
+                                <!--                                                        </div>-->
+
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Name of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <input-->
+                                <!--                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                    class="form-control one-column-input" value="{{actionRequest?.stName}}" formControlName="nameOfRespondent" name="nameOfRespondent"-->
+                                <!--                                                                    placeholder="" type="text" >-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Email of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <input-->
+                                <!--                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                    class="form-control one-column-input" value="{{actionRequest?.stEmail}}"  formControlName="emailOfRespondent" name="emailOfRespondent"-->
+                                <!--                                                                    placeholder="" type="text" >-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Phone Number of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <input-->
+                                <!--                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                    class="form-control one-column-input" value="{{actionRequest?.stTelephone}}" formControlName="phoneOfRespondent" name="phoneOfRespondent"-->
+                                <!--                                                                    placeholder="" type="text" >-->
+                                <!--                                                        </div>-->
+
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <input-->
+                                <!--                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                    class="form-control one-column-input"  formControlName="positionOfRespondent" name="positionOfRespondent"-->
+                                <!--                                                                    placeholder="" type="text" >-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="form-group col-12">-->
+                                <!--                                                            <label><b>On Behalf of (Name of Organization)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                <!--                                                            <input-->
+                                <!--                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                                <!--                                                                    class="form-control one-column-input"   formControlName="nameOfOrganization" name="nameOfOrganization"-->
+                                <!--                                                                    placeholder="" type="text" >-->
+
+
+                                <!--                                                        </div>-->
+                                <!--                                                    </div>-->
+                                <!--                                                </div>-->
+
+                                <!--                                                <input type="hidden" formControlName="requestId" value="{{actionRequest?.id}}" name="requestId" >-->
+                                <!--                                                <input type="hidden" formControlName="draftId" value="{{actionRequest?.draftId}}" name="draftId" >-->
+                                <!--                                                <input type="hidden" formControlName="stakeHolderId" value="{{actionRequest?.stId}}" name="stakeHolderId" >-->
+                                <!--                                                <div >-->
+
+                                <!--                                                </div>-->
+                                <!--                                                <div class="modal-footer">-->
+                                <!--                                                    <button  mat-raised-button  class="btn btn-sm btn-danger" type="button" data-dismiss="modal" >CLOSE</button>-->
+                                <!--                                                    <button  mat-raised-button-->
+                                <!--                                                             class="btn btn-sm btn-success"  type="submit" >SUBMIT-->
+                                <!--                                                    </button>-->
+                                <!--                                                    <div>-->
+                                <!--                                                        <h3 style="font-weight: bold">Disclaimer: Comments Once submitted can not be changed.</h3>-->
+                                <!--                                                        <h4 style="font-weight: bold">NOTE: Absence of any reply or comments shall be deemed to be an acceptance of the proposal for adoption and shall constitute an approval vote.</h4>-->
+                                <!--                                                    </div>-->
+
+                                <!--                                                </div>-->
+                                <!--                                                -->
+                                <!--                                            </form>-->
+                                <!--                                          -->
+
+
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

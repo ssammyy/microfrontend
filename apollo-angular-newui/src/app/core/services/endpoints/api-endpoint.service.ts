@@ -432,6 +432,9 @@ export class ApiEndpointService {
 
         //SD PUBLIC REVIEW
         PR_UPLOAD_STAKE_HOLDERS: `${ApiEndpointService.SD_PR_CONTEXT}/sendPublicReview`,
+        PR_GET_PUBLIC_REVIEWS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getAllPublicReviews`,
+        PR_GET_PUBLIC_REVIEWS_SITE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getPublicReviewComment`,
+        PR_GET_PUBLIC_REVIEWS_SITES: `${ApiEndpointService.SD_PR_CONTEXT}/getPublicReviewComments`,
 
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,

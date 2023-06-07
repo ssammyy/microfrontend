@@ -20,7 +20,7 @@ import {
     ListJustification, MultipleApprovalFields, MultipleSpcApprovals, NwaRequestList,
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
-    ProposalComments, RolesEntityDtos, SacDecision, SpcDecision,
+    ProposalComments, PublicReviewDrafts, RolesEntityDtos, SacDecision, SpcDecision,
     StakeholderProposalComments, StakeHoldersFields, StandardBody, ThisProposalComment, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
@@ -203,6 +203,52 @@ export class StdIntStandardService {
                 return throwError(fault);
             })
         );
+    }
+
+
+    public getPublicReviewDraft(encryptedId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS);
+        const urlAndPathVariables = `${url}/${encryptedId}`;
+        return this.http.get<PublicReviewDrafts>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+        //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getPublicReviewDraftSite(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS_SITE);
+        //const urlAndPathVariables = `${url}/${encryptedId}`;
+        return this.http.get<PublicReviewDrafts>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+        //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getPublicReviewDraftSites(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_GET_PUBLIC_REVIEWS_SITES);
+        //const urlAndPathVariables = `${url}/${encryptedId}`;
+        return this.http.get<PublicReviewDrafts>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+        //return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
     public getProposals(proposalId: any,commentId:any): Observable<any> {

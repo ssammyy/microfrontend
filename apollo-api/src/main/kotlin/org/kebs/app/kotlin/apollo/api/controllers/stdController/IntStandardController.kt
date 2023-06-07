@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.PublicReviewService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -31,6 +32,7 @@ class IntStandardController(
     private val isGazetteNoticeRepository: ISGazetteNoticeRepository,
     private val commonDaoServices: CommonDaoServices,
     private val comStdDraftRepository: ComStdDraftRepository,
+    private val publicReviewService: PublicReviewService,
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/international_standard/deploy")
@@ -197,6 +199,18 @@ class IntStandardController(
 //    fun getBook(@PathVariable id: Int, @PathVariable name: String?): Book? {
 //        // code here
 //    }
+
+    @GetMapping("/anonymous/international_standard/getPublicReviewComment")
+    fun getPublicReviewComment():MutableIterable<PublicReviewDraft>?
+    {
+        return publicReviewService.getPublicReviewComment()
+    }
+
+    @GetMapping("/anonymous/international_standard/getAllPublicReviews/{encryptedId}")
+    fun getPublicReviewForComment(@PathVariable encryptedId: Long):MutableIterable<PublicReviewDraft>?
+    {
+        return publicReviewService.getPublicReviewForComment(encryptedId)
+    }
 
     @GetMapping("/anonymous/international_standard/getProposal/{proposalId}/{commentId}")
     @ResponseBody

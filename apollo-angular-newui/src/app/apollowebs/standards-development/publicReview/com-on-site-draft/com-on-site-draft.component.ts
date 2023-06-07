@@ -1,22 +1,22 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ISAdoptionProposal, PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
 import {Store} from "@ngrx/store";
 import {FormBuilder} from "@angular/forms";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ActivatedRoute} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-comment-on-public-review',
-  templateUrl: './comment-on-public-review.component.html',
-  styleUrls: ['./comment-on-public-review.component.css']
+  selector: 'app-com-on-site-draft',
+  templateUrl: './com-on-site-draft.component.html',
+  styleUrls: ['./com-on-site-draft.component.css']
 })
-export class CommentOnPublicReviewComponent implements OnInit {
+export class ComOnSiteDraftComponent implements OnInit {
   submitted = false;
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
@@ -25,7 +25,6 @@ export class CommentOnPublicReviewComponent implements OnInit {
   dtTrigger1: Subject<any> = new Subject<any>();
   drafts: PublicReviewDrafts[]=[];
   public actionRequest: PublicReviewDrafts | undefined;
-  encryptedId: string;
   loadingText: string;
 
   constructor(
@@ -39,13 +38,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.encryptedId = rs.get('encryptedId');
-
-        },
-    );
-    this.getPublicReviewDraft(this.encryptedId);
+    this.getPublicReviewDraftSites()
   }
 
   ngOnDestroy(): void {
@@ -74,10 +67,10 @@ export class CommentOnPublicReviewComponent implements OnInit {
     });
   }
 
-  public getPublicReviewDraft(encryptedId: string): void{
+  public getPublicReviewDraftSites(): void{
     this.loadingText = "Retrieving Public Review Drafts ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getPublicReviewDraft(encryptedId).subscribe(
+    this.stdIntStandardService.getPublicReviewDraftSites().subscribe(
         (response: PublicReviewDrafts[]) => {
           this.drafts = response;
           this.SpinnerService.hide();

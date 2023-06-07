@@ -374,6 +374,8 @@ import {ApproveMembersForTcCreationComponent} from "./apollowebs/admin/approve-m
 import {CommentOnPublicReviewComponent} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
 import {TimelineIssuesComponent} from "./apollowebs/pvoc/monitoring/timeline-issues/timeline-issues.component";
 import {ViewMonitoringIssuesComponent} from "./apollowebs/pvoc/monitoring/view-monitoring-issues/view-monitoring-issues.component";
+import {ComOnPublicReviewComponent} from "./apollowebs/standards-development/publicReview/com-on-public-review/com-on-public-review.component";
+import {ComOnSiteDraftComponent} from "./apollowebs/standards-development/publicReview/com-on-site-draft/com-on-site-draft.component";
 
 export const routes: Routes = [
     {
@@ -1848,12 +1850,22 @@ export const routes: Routes = [
         path: 'commentOnPrd', component: AdminLayoutComponent,
         children: [{path: '', component: CommentOnPublicReviewDraftComponent}],
     },
+    {
+        path: 'commentOnPublicReview/:encryptedId',
+        component: CommentOnPublicReviewComponent,
+    },
 
     {
-        // view Public Review Draft
-        path: 'commentOnPublicReview:reviewID', component: AdminLayoutComponent,
-        children: [{path: '', component: CommentOnPublicReviewComponent}],
+        path: 'commentOnPublicReviewSite',
+        component: ComOnPublicReviewComponent,
     },
+    {
+        // view Public Review Draft
+        path: 'commentOnPublicReviewSites', component: AdminLayoutComponent,
+        children: [{path: '', component: ComOnSiteDraftComponent}],
+    },
+
+
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES
      ***************************************************************/
