@@ -59,9 +59,9 @@ class QaFaultMitigation(
         return commonDaoServices.getAllCompanies()
     }
 
-    @PostMapping("/get-user-branches")
-    fun getUserBranches(@RequestBody entity: branchUpdateDTO): ResponseEntity<String>{
-        return commonDaoServices.getUserBranches(entity)
-    }
+//    @PostMapping("/get-user-branches")
+//    fun getUserBranches(@RequestBody entity: branchUpdateDTO): ResponseEntity<String>{
+//        return commonDaoServices.getUserBranches(entity)
+//    }
 
 }

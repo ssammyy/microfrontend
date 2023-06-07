@@ -208,25 +208,25 @@ export class QaAdminFixesComponent implements OnInit {
     });
   }
 
-  handleGetBranches(email: string){
-    const regex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-    if(regex.test(email) ) {
-      console.log("fetching branches  " + email)
-
-      if (this.emailDTO === undefined){
-        console.log("Wololo")
-      }
-      else {
-        this.emailDTO.userEmail=email
-        this.masterService.getUserBranches(this.formUpdateBranch.value).subscribe(branches => {
-          console.log("Branches array "+ branches.data)
-          this.plants = branches.data;
-        });
-      }
-
-
-    }
-  }
+  // handleGetBranches(email: string){
+  //   const regex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+  //   if(regex.test(email) ) {
+  //     console.log("fetching branches  " + email)
+  //
+  //     if (this.emailDTO === undefined){
+  //       console.log("Wololo")
+  //     }
+  //     else {
+  //       this.emailDTO.userEmail=email
+  //       this.masterService.getUserBranches(this.formUpdateBranch.value).subscribe(branches => {
+  //         console.log("Branches array "+ branches.data)
+  //         this.plants = branches.data;
+  //       });
+  //     }
+  //
+  //
+  //   }
+  // }
 
   ngOnInit(): void {
     this.formAddStandard = this.formBuilder.group({

@@ -350,27 +350,27 @@ class CommonDaoServices(
         return companyProfileRepo.findAllByStatus(1)
     }
 
-    fun getUserBranches(dto: branchUpdateDTO): ResponseEntity<String> {
-// we have email
-//        we can get the user company id using the email
-        var entity = UsersEntity()
-        entity = dto.userEmail?.let { usersRepo.findByEmail(it) }!!
-        val responseObject = JsonObject()
-        val user = loggedInUserDetails()
-        val branchNameArg = com.google.gson.JsonArray()
-        val branches = entity.companyId?.let { branchesRepo.findByManufacturerId(it) }
-//        val branches = branchesRepo.findByManufacturerId(entity.companyId)
-        if (branches != null) {
-            for (branch in branches) {
-                println("branch name "+ branch.branchName)
-                branchNameArg.add(branch.branchName)
-            }
-        }
-        responseObject.addProperty("message", "User Branch updated successfully")
-        responseObject.add("data", branchNameArg)
-        responseObject.addProperty("status", 200)
-        return ResponseEntity.ok(responseObject.toString())
-    }
+//    fun getUserBranches(dto: branchUpdateDTO): ResponseEntity<String> {
+//// we have email
+////        we can get the user company id using the email
+//        var entity = UsersEntity()
+//        entity = dto.userEmail?.let { usersRepo.findByEmail(it) }!!
+//        val responseObject = JsonObject()
+//        val user = loggedInUserDetails()
+//        val branchNameArg = com.google.gson.JsonArray()
+//        val branches = entity.companyId?.let { branchesRepo.findByManufacturerId(it) }
+////        val branches = branchesRepo.findByManufacturerId(entity.companyId)
+//        if (branches != null) {
+//            for (branch in branches) {
+//                println("branch name "+ branch.branchName)
+//                branchNameArg.add(branch.branchName)
+//            }
+//        }
+//        responseObject.addProperty("message", "User Branch updated successfully")
+//        responseObject.add("data", branchNameArg)
+//        responseObject.addProperty("status", 200)
+//        return ResponseEntity.ok(responseObject.toString())
+//    }
 
     fun updateUserBranch(dto: branchUpdateDTO): ResponseEntity<String> {
 
