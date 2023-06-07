@@ -231,11 +231,11 @@ export interface NwiItem {
     tcSec: string;
     processStatus: string;
     pdStatus: String;
-    minutesPdStatus: null,
-    draftDocsPdStatus: null,
-    prPdStatus: null,
-
-    deferredDate: null
+    minutesPdStatus: string;
+    draftDocsPdStatus: string;
+    prPdStatus: string;
+    deferredDate: string;
+    nameOfDepartment:string;
 
 
 }

@@ -52,7 +52,7 @@ import org.kebs.app.kotlin.apollo.store.model.NotificationsBufferEntity
 @Actor
 class ProcessorSelectionActor(
     private val extension: ActorSpringExtension,
-    private val actorSystem: ActorSystem
+//    private val actorSystem: ActorSystem
 ) : AbstractActor() {
 
 //    private final val supervisorStrategyMaxRetries = akkaProperties.supervisorStrategyMaxRetries ?: 10

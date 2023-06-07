@@ -316,6 +316,8 @@
                                                     aria-label="Small"
                                                     class="form-control one-column-input"
                                                     ngModel="{{formActionRequest?.scope}}"
+                                                    value="{{tscsecRequest?.scope}}"
+
                                                     name="scope"
                                                     type="text">
                                         </div>
@@ -328,6 +330,7 @@
                                                     aria-label="Small"
                                                     class="form-control one-column-input"
                                                     ngModel="{{formActionRequest?.purpose}}"
+                                                    value="{{tscsecRequest?.purpose}}"
                                                     name="purpose"
                                                     type="text">
                                         </div>
@@ -617,7 +620,9 @@
                                                 <!--                                            <li style="background: lightgray"-->
                                                 <!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
                                                 <li style="background: lightgray"
-                                                    class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
+                                                    class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfDepartment}}</li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">{{"Technical Committee: " + nwiActionRequest?.nameOfTC}}</li>
                                                 <li style="background: lightgray"
                                                     class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
                                             </div>

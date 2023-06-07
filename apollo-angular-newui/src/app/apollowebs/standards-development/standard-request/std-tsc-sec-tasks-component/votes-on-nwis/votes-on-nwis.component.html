@@ -128,6 +128,7 @@ aria-hidden="true">
                 <ul class="list-group">
                     <li class="list-group-item active">New Work Item Details</li>
 
+
                     <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
 
 
@@ -137,20 +138,20 @@ aria-hidden="true">
                             class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
                         <li style="background: lightgray"
                             class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
                         <li style="background: lightgray"
                             class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
+                        <!--                                            <li style="background: lightgray"-->
+                        <!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
+                        <!--                                            <li style="background: lightgray"-->
+                        <!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
+                        <!--                                            <li style="background: lightgray"-->
+                        <!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
                         <li style="background: lightgray"
                             class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
+                        <!--                                            <li style="background: lightgray"-->
+                        <!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
                         <li style="background: lightgray"
                             class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
                         <li style="background: lightgray"
@@ -159,10 +160,12 @@ aria-hidden="true">
                             class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
                         <li style="background: lightgray"
                             class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
-<!--                                            <li style="background: lightgray"-->
-<!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
+                        <!--                                            <li style="background: lightgray"-->
+                        <!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
                         <li style="background: lightgray"
-                            class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
+                            class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfDepartment}}</li>
+                        <li style="background: lightgray"
+                            class="list-group-item">{{"Technical Committee: " + nwiActionRequest?.nameOfTC}}</li>
                         <li style="background: lightgray"
                             class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
                     </div>

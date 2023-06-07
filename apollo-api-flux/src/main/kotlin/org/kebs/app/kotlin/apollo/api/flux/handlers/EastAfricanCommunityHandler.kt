@@ -33,17 +33,17 @@ class EastAfricanCommunityHandler(
      * @link org.springframework.http.HttpStatus.OK confirming job submission
      * @param req  Request received on the API
      */
-    suspend fun postProduct(req: ServerRequest): ServerResponse {
-        return try {
-            val jobId = req.pathVariable("job")
-
-            ServerResponse.ok().bodyValueAndAwait(service.startProductPostJob(jobId))
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.debug(e.message, e)
-            KotlinLogging.logger { }.error(e.message)
-            onErrors(e.message)
-
-        }
-    }
+//    suspend fun postProduct(req: ServerRequest): ServerResponse {
+//        return try {
+//            val jobId = req.pathVariable("job")
+//
+//            ServerResponse.ok().bodyValueAndAwait(service.startProductPostJob(jobId))
+//
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            KotlinLogging.logger { }.error(e.message)
+//            onErrors(e.message)
+//
+//        }
+//    }
 }
