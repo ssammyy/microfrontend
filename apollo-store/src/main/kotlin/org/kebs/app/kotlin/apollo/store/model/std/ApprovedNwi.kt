@@ -202,6 +202,8 @@ interface PrdWithUserName {
 
     fun getORGANIZATION(): String?
 
+    fun getCommentStatus(): Long?
+
 }
 
 interface CommentsWithPrdId {

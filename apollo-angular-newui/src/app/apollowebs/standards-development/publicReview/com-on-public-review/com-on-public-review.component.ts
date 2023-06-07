@@ -1,33 +1,34 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {CommentsDto, ISAdoptionProposal, PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {CommentsDto, PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
 import {Store} from "@ngrx/store";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ActivatedRoute} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 import {
   CommentMadeRetrieved,
   PublicReviewDraftWithName,
   StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
+import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
+import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
-import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
-import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 
 declare const $: any;
+
 @Component({
-  selector: 'app-comment-on-public-review',
-  templateUrl: './comment-on-public-review.component.html',
-  styleUrls: ['./comment-on-public-review.component.css']
+  selector: 'app-com-on-public-review',
+  templateUrl: './com-on-public-review.component.html',
+  styleUrls: ['./com-on-public-review.component.css']
 })
-export class CommentOnPublicReviewComponent implements OnInit {
+export class ComOnPublicReviewComponent implements OnInit {
   public publicReviewDrafts !: PublicReviewDraftWithName[];
   publicReviewDraftsB !: PublicReviewDraftWithName | undefined;
 
@@ -66,7 +67,6 @@ export class CommentOnPublicReviewComponent implements OnInit {
   displayUsers: boolean = false;
 
   loadingDocsTable= false;
-  encryptedId: string;
 
   constructor(
       private store$: Store<any>,
@@ -81,13 +81,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.encryptedId = rs.get('encryptedId');
-
-        },
-    );
-    this.getPublicReviewDraft(this.encryptedId);
+    this.getPublicReviewDraftSite();
     this.commentsMadeFormGroup = this.formBuilder.group({
       clause: ['', Validators.required],
       paragraph: ['', Validators.required],
@@ -120,7 +114,6 @@ export class CommentOnPublicReviewComponent implements OnInit {
       searching: true,
       order: [[1, "desc"]],
     };
-
   }
 
   get formMakeComment(): any {
@@ -135,17 +128,15 @@ export class CommentOnPublicReviewComponent implements OnInit {
     return formatDate(date, this.dateFormat, this.language);
   }
 
-
-
-
-  public getPublicReviewDraft(encryptedId: string): void{
+  public getPublicReviewDraftSite(): void{
     this.loadingText = "Retrieving Public Review Drafts ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getPublicReviewDraft(encryptedId).subscribe(
+    this.stdIntStandardService.getPublicReviewDraftSite().subscribe(
         (response: PublicReviewDraftWithName[]) => {
           this.publicReviewDrafts = response;
           this.SpinnerService.hide();
           this.rerender();
+
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -164,7 +155,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
           this.commentFormGroup.reset()
           this.hideModel()
           //this.getAllUserLoggedInCommentsMadeOnPd();
-          this.getPublicReviewDraft(this.encryptedId);
+          this.getPublicReviewDraftSite();
 
         },
         (error: HttpErrorResponse) => {
@@ -471,7 +462,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
     this.SpinnerService.show("loader2");
 
 
-    this.publicReviewService.getAllDocumentsOnPrd(cdID).subscribe(
+    this.stdIntStandardService.getAllDocsOnPrd(cdID).subscribe(
         (response: StandardDocuments[]) => {
           console.log(response)
           this.standardDocuments = response;

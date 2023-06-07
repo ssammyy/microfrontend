@@ -23,4 +23,28 @@ interface PublicReviewDraftRepository : JpaRepository<PublicReviewDraft, Long> {
     )
     fun findApprovedPublicReviewDraft(@Param("tcSecId") tcSecId: String): MutableList<PrdWithUserName>
 
+    @Query(
+        value = "SELECT p.ID, cast(p.CREATED_ON as varchar(200)) AS CreatedOn, p.PRD_NAME, p.KS_NUMBER,p.VAR_FIELD_1, p.CD_ID, v.PROPOSAL_TITLE, v.CIRCULATION_DATE,v.CLOSING_DATE, v.ORGANIZATION , (t.FIRST_NAME || ' ' || t.LAST_NAME) AS PRD_BY, p.STATUS,NVL(c2.Count_P_ID,0) AS NUMBER_OF_COMMENTS,h.STATUS as commentStatus FROM SD_PUBLIC_REVIEW_DRAFTS p Join DAT_KEBS_USERS t on p.PRD_BY = t.ID Join SD_PUBLIC_REVIEW_STAKE_HOLDERS h on p.ID = h.PR_ID  join SD_COMMITTEE_CD z on p.CD_ID=z.ID " +
+                " join COMMITTEEPD a on z.PD_ID=a.ID join SD_NWI v on a.NWI_ID=v.ID    left outer join (select COUNT(c.PRD_ID) Count_P_ID, PRD_ID from SD_COMMENTS c where c.STATUS=1 group by PRD_ID) c2 on p.id = c2.PRD_ID WHERE h.ID=:encryptedId  ORDER BY p.ID DESC ",
+        nativeQuery = true
+    )
+    fun getPublicReviewForComment(@Param("encryptedId") encryptedId: Long): MutableList<PrdWithUserName>
+
+    @Query(
+        value = "SELECT p.ID, cast(p.CREATED_ON as varchar(200)) AS CreatedOn, p.PRD_NAME, p.KS_NUMBER,p.VAR_FIELD_1, p.CD_ID, v.PROPOSAL_TITLE, v.CIRCULATION_DATE,v.CLOSING_DATE, v.ORGANIZATION , (t.FIRST_NAME || ' ' || t.LAST_NAME) AS PRD_BY, p.STATUS,NVL(c2.Count_P_ID,0) AS NUMBER_OF_COMMENTS,h.STATUS as commentStatus FROM SD_PUBLIC_REVIEW_DRAFTS p Join DAT_KEBS_USERS t on p.PRD_BY = t.ID Join SD_PUBLIC_REVIEW_STAKE_HOLDERS h on p.ID = h.PR_ID  join SD_COMMITTEE_CD z on p.CD_ID=z.ID " +
+                " join COMMITTEEPD a on z.PD_ID=a.ID join SD_NWI v on a.NWI_ID=v.ID    left outer join (select COUNT(c.PRD_ID) Count_P_ID, PRD_ID from SD_COMMENTS c where c.STATUS=1 group by PRD_ID) c2 on p.id = c2.PRD_ID WHERE h.USER_ID=:userId  ORDER BY p.ID DESC ",
+        nativeQuery = true
+    )
+    fun getPublicReviewComments(@Param("userId") userId: Long?): MutableList<PrdWithUserName>
+
+    @Query(
+        value = "SELECT p.ID, cast(p.CREATED_ON as varchar(200)) AS CreatedOn, p.PRD_NAME, p.KS_NUMBER,p.VAR_FIELD_1, p.CD_ID, v.PROPOSAL_TITLE, v.CIRCULATION_DATE,v.CLOSING_DATE, v.ORGANIZATION , (t.FIRST_NAME || ' ' || t.LAST_NAME) AS PRD_BY, p.STATUS,NVL(c2.Count_P_ID,0) AS NUMBER_OF_COMMENTS,h.STATUS as commentStatus FROM SD_PUBLIC_REVIEW_DRAFTS p Join DAT_KEBS_USERS t on p.PRD_BY = t.ID Join SD_PUBLIC_REVIEW_STAKE_HOLDERS h on p.ID = h.PR_ID  join SD_COMMITTEE_CD z on p.CD_ID=z.ID " +
+                " join COMMITTEEPD a on z.PD_ID=a.ID join SD_NWI v on a.NWI_ID=v.ID    left outer join (select COUNT(c.PRD_ID) Count_P_ID, PRD_ID from SD_COMMENTS c where c.STATUS=1 group by PRD_ID) c2 on p.id = c2.PRD_ID  ORDER BY p.ID DESC ",
+        nativeQuery = true
+    )
+
+    fun getPublicReviewComment(): MutableList<PrdWithUserName>
+
+
+
 }

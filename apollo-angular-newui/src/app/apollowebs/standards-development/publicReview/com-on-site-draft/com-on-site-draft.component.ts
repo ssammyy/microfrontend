@@ -1,33 +1,34 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {CommentsDto, ISAdoptionProposal, PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {CommentsDto, PublicReviewDrafts} from "../../../../core/store/data/std/std.model";
 import {Store} from "@ngrx/store";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ActivatedRoute} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 import {
   CommentMadeRetrieved,
   PublicReviewDraftWithName,
   StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
+import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
+import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
-import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
-import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 
 declare const $: any;
+
 @Component({
-  selector: 'app-comment-on-public-review',
-  templateUrl: './comment-on-public-review.component.html',
-  styleUrls: ['./comment-on-public-review.component.css']
+  selector: 'app-com-on-site-draft',
+  templateUrl: './com-on-site-draft.component.html',
+  styleUrls: ['./com-on-site-draft.component.css']
 })
-export class CommentOnPublicReviewComponent implements OnInit {
+export class ComOnSiteDraftComponent implements OnInit {
   public publicReviewDrafts !: PublicReviewDraftWithName[];
   publicReviewDraftsB !: PublicReviewDraftWithName | undefined;
 
@@ -66,8 +67,6 @@ export class CommentOnPublicReviewComponent implements OnInit {
   displayUsers: boolean = false;
 
   loadingDocsTable= false;
-  encryptedId: string;
-
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
@@ -81,13 +80,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.encryptedId = rs.get('encryptedId');
-
-        },
-    );
-    this.getPublicReviewDraft(this.encryptedId);
+    this.getPublicReviewDraftSites()
     this.commentsMadeFormGroup = this.formBuilder.group({
       clause: ['', Validators.required],
       paragraph: ['', Validators.required],
@@ -120,7 +113,6 @@ export class CommentOnPublicReviewComponent implements OnInit {
       searching: true,
       order: [[1, "desc"]],
     };
-
   }
 
   get formMakeComment(): any {
@@ -138,10 +130,10 @@ export class CommentOnPublicReviewComponent implements OnInit {
 
 
 
-  public getPublicReviewDraft(encryptedId: string): void{
+  public getPublicReviewDraftSites(): void{
     this.loadingText = "Retrieving Public Review Drafts ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getPublicReviewDraft(encryptedId).subscribe(
+    this.stdIntStandardService.getPublicReviewDraftSites().subscribe(
         (response: PublicReviewDraftWithName[]) => {
           this.publicReviewDrafts = response;
           this.SpinnerService.hide();
@@ -163,8 +155,8 @@ export class CommentOnPublicReviewComponent implements OnInit {
           this.showToasterSuccess(response.httpStatus, 'Successfully Submitted Comment');
           this.commentFormGroup.reset()
           this.hideModel()
-          //this.getAllUserLoggedInCommentsMadeOnPd();
-          this.getPublicReviewDraft(this.encryptedId);
+          this.getAllUserLoggedInCommentsMadeOnPd();
+          this.getPublicReviewDraftSites();
 
         },
         (error: HttpErrorResponse) => {
@@ -214,7 +206,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
       this.SpinnerService.show();
 
       //(this.sta10Details.id.toString());
-      this.stdIntStandardService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
+      this.committeeService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
           (data) => {
 
             this.SpinnerService.hide();
@@ -222,7 +214,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
             this.commentsMadeFormGroup.reset()
             this.hideModel()
             this.commentsDtos = []
-            //this.getAllUserLoggedInCommentsMadeOnPd();
+            this.getAllUserLoggedInCommentsMadeOnPd();
 
             swal.fire({
               title: 'Comments Saved!',
@@ -250,12 +242,12 @@ export class CommentOnPublicReviewComponent implements OnInit {
 
   editComment(): void {
     this.SpinnerService.show();
-    this.stdIntStandardService.editComment(this.editCommentFormGroup.value).subscribe(
+    this.committeeService.editComment(this.editCommentFormGroup.value).subscribe(
         (response) => {
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, 'Successfully Edited Comment');
           this.hideModelB()
-          //this.getAllUserLoggedInCommentsMadeOnPd();
+          this.getAllUserLoggedInCommentsMadeOnPd();
 
         },
         (error: HttpErrorResponse) => {
@@ -285,7 +277,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.SpinnerService.show();
-        this.stdIntStandardService.deleteComment(comment).subscribe(
+        this.committeeService.deleteComment(comment).subscribe(
             (response) => {
               this.SpinnerService.hide();
               swalWithBootstrapButtons.fire(
@@ -295,7 +287,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
               );
               this.SpinnerService.hide();
               this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
-              //this.getAllUserLoggedInCommentsMadeOnPd();
+              this.getAllUserLoggedInCommentsMadeOnPd();
             },
         );
       } else if (
@@ -471,7 +463,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
     this.SpinnerService.show("loader2");
 
 
-    this.publicReviewService.getAllDocumentsOnPrd(cdID).subscribe(
+    this.stdIntStandardService.getAllDocsOnPrd(cdID).subscribe(
         (response: StandardDocuments[]) => {
           console.log(response)
           this.standardDocuments = response;

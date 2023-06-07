@@ -2931,3 +2931,25 @@ export interface UploadedDataId {
     httpStatus: string;
 }
 
+export interface PublicReviewDrafts{
+    id: number;
+    prdBy: number;
+    prdName: string;
+    createdOn: Timestamp<any>;
+    modifiedOn: Timestamp<any>;
+    deletedOn: Timestamp<any>;
+    cdID: number;
+    status: string;
+    createdBy: string;
+    modifiedBy: string;
+    deleteBy: string;
+    previousVersion: string;
+    versionNumber: string;
+    originalVersion: string;
+    ksNumber: string;
+    stdDraftId: number;
+    stdId: number;
+    draftReviewStatus: number;
+    encrypted: string;
+}
+

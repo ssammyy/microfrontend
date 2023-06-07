@@ -601,6 +601,8 @@ import {CommentOnPublicReviewComponent} from './apollowebs/standards-development
 import {TimelineIssuesComponent} from './apollowebs/pvoc/monitoring/timeline-issues/timeline-issues.component';
 import {ViewMonitoringIssuesComponent} from './apollowebs/pvoc/monitoring/view-monitoring-issues/view-monitoring-issues.component';
 import {WaiverCertificateDetailsComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/waiver-certificate-details/waiver-certificate-details.component';
+import { ComOnPublicReviewComponent } from './apollowebs/standards-development/publicReview/com-on-public-review/com-on-public-review.component';
+import { ComOnSiteDraftComponent } from './apollowebs/standards-development/publicReview/com-on-site-draft/com-on-site-draft.component';
 
 @NgModule({
     imports: [
@@ -1255,6 +1257,8 @@ import {WaiverCertificateDetailsComponent} from './apollowebs/pvoc/manufacturer/
         ViewMonitoringIssuesComponent,
         CommentOnPublicReviewComponent,
         WaiverCertificateDetailsComponent,
+        ComOnPublicReviewComponent,
+        ComOnSiteDraftComponent,
 
     ],
     entryComponents: [LoaderComponent],
