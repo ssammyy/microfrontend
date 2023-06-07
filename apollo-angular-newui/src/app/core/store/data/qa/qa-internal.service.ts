@@ -52,7 +52,10 @@ export class QaInternalService {
 
 
     public loadMySearchPermit(permitSearchValues: PermitSearchValues): Observable<ApiResponseModel> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_SEARCH_LIST);
+        // permitSearchValues.firmName="MONIO SPRINGS LIMITED"
+        console.log("value parsed :: "+ permitSearchValues.firmName);
+
+        const url    = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_SEARCH_LIST);
         return this.http.put<ApiResponseModel>(url, permitSearchValues).pipe(
             map(function (response: ApiResponseModel) {
                 return response;

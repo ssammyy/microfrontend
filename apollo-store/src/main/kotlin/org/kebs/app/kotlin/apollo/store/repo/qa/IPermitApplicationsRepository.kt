@@ -145,7 +145,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): String
 
     @Query(
-        value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS_FMARK(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS_FMARKS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
         nativeQuery = true
     )
     fun migratePermitsToNewUserFmark(
@@ -362,6 +362,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("permitType") permitType: Long?,
         @Param("firmName") firmName: String?
     ): List<PermitApplicationsEntity>?
+    fun findByFirmName(firmName: String?): List<PermitApplicationsEntity>
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
@@ -1591,7 +1592,5 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
         nativeQuery = true
     )
     fun getallCompanies(): List<PermitMigrationApplicationsEntityDmark>?
-
-
 }
 
