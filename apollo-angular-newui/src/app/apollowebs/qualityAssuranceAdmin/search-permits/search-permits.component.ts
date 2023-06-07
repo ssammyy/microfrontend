@@ -57,7 +57,7 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
             this.isFirmNameSelected = false;
 
     }
-
+branches
     onSubmit(isValid: boolean): void {
         if (isValid && this.form) {
             this.displayUsers = false;
@@ -67,7 +67,7 @@ export class SearchPermitsComponent implements OnInit, OnDestroy {
             const searchType = this.form.get('searchType').value;
             const searchTerm = this.form.get('searchTerm').value;
 
-            this.permitSearchValues = {
+            this.permitSearchValues = { 
                 productName: searchType === 'productName' ? searchTerm : undefined,
                 firmName: searchType === 'firmName' ? searchTerm : undefined,
                 refNumber: searchType === 'refNumber' ? searchTerm : undefined,
