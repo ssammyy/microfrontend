@@ -176,7 +176,7 @@ export class RejectedJustificationComponent implements OnInit {
 
   uploadJustification(stdJustification: StdJustification): void {
 
-      if (stdJustification.spcMeetingDate == '' ||
+      if (
           stdJustification.departmentId == '' ||
           stdJustification.tcId == '' ||
           stdJustification.tcSecretary == '' ||

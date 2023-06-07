@@ -24,7 +24,7 @@ package org.kebs.app.kotlin.apollo.common.ports.required
 import org.kebs.app.kotlin.apollo.common.dto.BaseRequest
 import org.kebs.app.kotlin.apollo.common.dto.BaseResponse
 
-interface IRequestSender<Q : BaseRequest, A : BaseResponse, C, M> {
+interface IRequestSender<Q : BaseRequest, A, C, M> {
     suspend fun send(request: Q, methods: M): A
 
 }
