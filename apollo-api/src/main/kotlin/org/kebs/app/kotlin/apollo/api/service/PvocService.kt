@@ -439,6 +439,7 @@ class PvocService(
         return "%s%05x".format(prefix, count + 1)
     }
 
+    @Transactional
     fun pvocFileComplaint(form: PvocComplaintForm, uploads: List<MultipartFile>): ApiResponseModel {
         val response = ApiResponseModel()
         try {
@@ -509,6 +510,20 @@ class PvocService(
             KotlinLogging.logger { }.error("Failed to add complaint: ", ex)
             response.message = "Invalid request"
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
+    }
+
+    fun searchManufacturerProduct(keywords: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Error searching for products", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed"
         }
         return response
     }

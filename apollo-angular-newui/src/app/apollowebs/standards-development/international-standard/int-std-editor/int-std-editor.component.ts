@@ -119,7 +119,7 @@ export class IntStdEditorComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
-                console.log(this.isAdoptionProposals);
+               // console.log(this.isAdoptionProposals);
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
@@ -168,7 +168,7 @@ export class IntStdEditorComponent implements OnInit {
             (response: InternationalStandardsComments[]) => {
                 this.internationalStandardsComments = response;
                 this.SpinnerService.hide();
-                console.log(this.internationalStandardsComments)
+               // console.log(this.internationalStandardsComments)
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -276,7 +276,7 @@ export class IntStdEditorComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
-                console.log(this.isAdoptionProposals);
+                //console.log(this.isAdoptionProposals);
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
@@ -355,15 +355,16 @@ export class IntStdEditorComponent implements OnInit {
 
     }
 
-    submitDraftForEditing(draftId: string): void {
+    submitDraftForEditing(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        //console.log(this.uploadDraftStandardFormGroup.value)
+        const valueString=this.uploadDraftStandardFormGroup.get("draftId").value
+        const draftId=String(valueString)
         this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();
-                this.onClickSaveUploads(draftId)
+                this.onClickSaveUploads(String(draftId))
                 this.uploadDraftStandardFormGroup.reset();
                 this.getApprovedJustification();
                 this.showToasterSuccess(response.httpStatus, `Draft Prepared`);

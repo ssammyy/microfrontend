@@ -14,15 +14,18 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">CMP</i>
+                            <i class="material-icons">folder-open</i>
                         </div>
-                        <h4 class="card-title">Complaint List Details
-                            <button class="btn btn-sm btn-default float-right mr-7"
-                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
-                            </button>
-                        </h4>
+                        <h4 class="card-title">My Complaints</h4>
                     </div>
                     <div class="card-body">
+                        <div class="toolbar">
+                            <div class="search-bar">
+                                <button class="btn btn-primary btn-sm float-right mr-7"
+                                        (click)="openComplaint()"><i class="fa fa-folder-open"></i> File Complaint
+                                </button>
+                            </div>
+                        </div>
                         <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                             <button type="button" (click)="toggleStatus('new')"
                                     [className]="activeStatus == 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">

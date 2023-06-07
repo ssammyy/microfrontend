@@ -34,7 +34,7 @@ class PvocSealIssuesEntity : Serializable {
     @Basic
     var recordYearMonth: String? = null
 
-    @Column(name = "UCR_NUMBER", nullable = false, length = 80)
+    @Column(name = "UCR_NUMBER", nullable = true, length = 80)
     @Basic
     var ucrNumber: String? = null
 

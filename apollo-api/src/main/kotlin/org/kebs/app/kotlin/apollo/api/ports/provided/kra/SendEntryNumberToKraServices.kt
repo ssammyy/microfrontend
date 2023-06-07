@@ -5,8 +5,6 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
@@ -20,7 +18,6 @@ import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.KraPenaltyDetailsRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.PenaltyDetails
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.stereotype.Service
@@ -69,11 +66,13 @@ class SendEntryNumberToKraServices(
                 val join = numberRecords + globalVar
                 hash = kraDataEncryption(join)
             }
+
 //            var comKraPin=companyProfile.kraPin
-//            var kraPin= comKraPin?.uppercase()
+            var uppercasePin= companyProfile.kraPin?.uppercase()
+            var comKraPin = uppercasePin?.replace("\\s".toRegex(), "")
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber
-                kraPin = companyProfile.kraPin?.uppercase()
+                kraPin = comKraPin
                 manufacturerName = companyProfile.name
                 registrationDate =
                     companyProfile.createdOn?.let { commonDaoServices.convertTimestampToKraValidDate(it) }

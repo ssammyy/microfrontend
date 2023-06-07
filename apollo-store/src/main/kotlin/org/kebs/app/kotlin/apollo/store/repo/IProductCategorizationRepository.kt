@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface IProductCategorizationRepository:HazelcastRepository<ProductCategorizationEntity, Long> {
+    fun findByMonitoringId(monitId: Long): List<ProductCategorizationEntity>
 }

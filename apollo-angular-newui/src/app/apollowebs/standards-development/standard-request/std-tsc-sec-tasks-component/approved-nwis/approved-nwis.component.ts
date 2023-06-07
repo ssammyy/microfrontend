@@ -200,7 +200,7 @@ export class ApprovedNwisComponent implements OnInit {
         this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                // this.rerender()
 
 
             },
@@ -238,6 +238,8 @@ export class ApprovedNwisComponent implements OnInit {
     }
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading=true
+        this.loadingText="Loading Document"
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
@@ -247,6 +249,9 @@ export class ApprovedNwisComponent implements OnInit {
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 window.open(downloadURL, '_blank');
+                this.loading=false;
+                this.SpinnerService.hide()
+
 
                 // this.pdfUploadsView = dataPdf;
             },

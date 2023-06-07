@@ -17,6 +17,7 @@ import {StdComStandardService} from "../../../../core/store/data/std/std-com-sta
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-approve-changes',
@@ -268,7 +269,20 @@ export class IntStdApproveChangesComponent implements OnInit {
           //console.log(response);
           this.getStdForApproval();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Approved`);
+            if(response.body.responseStatus=="success"){
+                this.showToasterSuccess('Approved', response.body.responseMessage);
+            }else if(response.body.responseStatus=="error"){
+                this.showToasterError('Not Approved', response.body.responseMessage);
+            }
+            swal.fire({
+                title: response.body.responseMsg,
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: response.body.responseButton,
+                },
+                icon: response.body.responseStatus
+            });
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

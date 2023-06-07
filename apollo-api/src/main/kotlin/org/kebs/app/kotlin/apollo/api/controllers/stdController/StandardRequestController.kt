@@ -340,6 +340,17 @@ class StandardRequestController(
         )
     }
 
+    @PostMapping("standard/resubmitJustification")
+    @ResponseBody
+    fun resubmitJustification(@RequestBody standardJustification: StandardJustification): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully resubmit Justification",
+            standardRequestService.resubmitJustification(standardJustification)
+        )
+    }
+
+
 
     @PostMapping("standard/assignTcSec")
     @ResponseBody

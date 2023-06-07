@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
     CommentMadeRetrieved,
     PublicReviewDraftWithName,
@@ -57,12 +57,12 @@ export class PrepareBallotingDraftComponent implements OnInit {
     public dropdownSettings: IDropdownSettings = {};
 
     blob: Blob;
-    public uploadedFiles: FileList;
-    public uploadedFilesB: FileList;
-    public uploadedFilesC: FileList;
-    public uploadedFilesD: FileList;
+    public uploadedFiles: Array<File> = [];
+    public uploadedFilesB: Array<File> = [];
+    public uploadedFilesC: Array<File> = [];
     loading = false;
     loadingText: string;
+    validTextType: boolean = false;
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
@@ -74,7 +74,19 @@ export class PrepareBallotingDraftComponent implements OnInit {
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService) {
     }
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
 
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+    textValidationType(e) {
+        this.validTextType = !!e;
+    }
     ngOnInit(): void {
         this.getAllPrdS();
         this.getAllDepartments()
@@ -93,6 +105,17 @@ export class PrepareBallotingDraftComponent implements OnInit {
             allowSearchFilter: true
         };
 
+    }
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
     }
 
     public getAllPrdS(): void {
@@ -123,24 +146,34 @@ export class PrepareBallotingDraftComponent implements OnInit {
             }
         );
     }
-    uploadBallotDraft(): void {
-        if (this.uploadedFilesC != null) {
-            this.SpinnerService.show();
-            this.ballotService.prepareBallotDraft(this.publicReview_draftFormGroup.value).subscribe(
-                (response) => {
-                    console.log(response)
-                    this.SpinnerService.hide();
-                    this.showToasterSuccess(response.httpStatus, `Successfully Submitted Ballot Draft`);
-                    this.uploadBallotDoc(response.body.savedRowID)
-                    this.publicReview_draftFormGroup.reset();
-                },
-                (error: HttpErrorResponse) => {
-                    this.SpinnerService.hide();
-                    console.log(error.message);
-                }
-            );
-        } else {
-            this.showToasterError("Error", `Please Upload all the documents.`);
+    uploadBallotDraft(formDirective): void {
+        if (this.publicReview_draftFormGroup.valid) {
+            if (this.uploadedFilesC != null && this.uploadedFilesC.length > 0) {
+                this.loading = true
+                this.loadingText = "Submitting  ...."
+                this.SpinnerService.show();
+                this.ballotService.prepareBallotDraft(this.publicReview_draftFormGroup.value).subscribe(
+                    (response) => {
+                        console.log(response)
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, `Successfully Submitted Ballot Draft`);
+                        this.uploadBallotDoc(response.savedRowID)
+                        this.publicReview_draftFormGroup.reset();
+
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.SpinnerService.hide();
+                        console.log(error.message);
+                    }
+                );
+            } else {
+                this.showToasterError("Error", `Please Upload all the documents.`);
+            }
+        }
+        else
+        {
+            this.validateAllFormFields(this.publicReview_draftFormGroup);
+
         }
     }
     public uploadBallotDoc(ballotId: string) {
@@ -178,8 +211,12 @@ export class PrepareBallotingDraftComponent implements OnInit {
             this.SpinnerService.show();
             this.ballotService.uploadBallotDocument(ballotId, formData, "BALLOT Document", "BALLOT Document").subscribe(
                 (data: any) => {
+                    this.loading = false
                     this.SpinnerService.hide();
-                    this.uploadedFilesC = null;
+                    this.uploadedFiles = [];
+                    this.uploadedFilesB = [];
+                    this.uploadedFilesC = [];
+                    this.publicReview_draftFormGroup.reset()
                     console.log(data);
                     this.hideModelC()
                     swal.fire({

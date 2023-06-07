@@ -227,14 +227,16 @@ class IntStandardService(
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo = iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "${callUrl}/isPropComments";
-        val stakeholdersOne = isAdoptionProposalDto.stakeholdersList
-        stakeholdersOne?.forEach { s ->
+        val tcMembers=userListRepository.getTcMembers(isAdoptionProposalDto.requestId)
+
+        val targetUrl = "${callUrl}";
+        //val stakeholdersOne = isAdoptionProposalDto.stakeholdersList
+        tcMembers?.forEach { s ->
             val subject = "Invitation to Provide Feedback on Proposed Adoption of International Standard"
-            val recipient = s.email
-            val user = s.name
-            val userId = usersRepo.getUserId(s.email)
-            val userPhone = usersRepo.getUserPhone(s.email)
+            val recipient = s.getEmail()
+            val user = s.getName()
+            val userId = s.getId()
+            val userPhone = s.getTelephone()
 
             val shs = IStandardStakeHolders()
             shs.name = user
@@ -248,13 +250,10 @@ class IntStandardService(
 
             val messageBody =
                 "Dear $user,\nThe Kenya Bureau of Standards is considering the adoption of the International Standard [$standardString, $standardTitle].\n" +
-                        "To provide your feedback, please use the following link: [$targetUrl]. You will be prompted to provide your comments on the Adoption Proposal.\n" +
-                        "We highly encourage you to share your thoughts with us. If you have any questions or concerns, please do not hesitate to reach out to us at [tcsec@email.org].\n" +
-                        "Please note that the absence of any reply or comments will be considered as acceptance of the proposal for adoption and will constitute an approval vote.\n" +
-                        "Thank you in advance for your participation and contributions.\nBest regards,\n " +
+                        "To provide your feedback, please Log in to KIEMS using the following link : [$targetUrl]. \nBest regards,\n " +
                         "$tcName "
             if (recipient != null) {
-                // notifications.sendEmail(recipient, subject, messageBody)
+                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
@@ -730,6 +729,7 @@ class IntStandardService(
     }
 
 
+
     fun getProposalComments(proposalId: Long): MutableIterable<ISProposalComments>? {
         return isAdoptionCommentsRepository.getProposalComments(proposalId)
     }
@@ -867,7 +867,8 @@ class IntStandardService(
 
 
     fun getApprovedProposals(): MutableList<ProposalDetails> {
-        return isAdoptionProposalRepository.getApprovedProposals();
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return isAdoptionProposalRepository.getApprovedProposals(loggedInUser.email);
     }
 
 
@@ -880,10 +881,15 @@ class IntStandardService(
 
         val justification = ISAdoptionJustification();
         val variables: MutableMap<String, Any> = HashMap()
+        val proposalEdition=isProposalJustification.edition
         justification.standardNumber = isProposalJustification.standardNumber
         justification.meetingDate = isProposalJustification.meetingDate
         justification.slNumber = isProposalJustification.slNumber
-        justification.edition = isProposalJustification.edition
+        if(proposalEdition=="Other"){
+            justification.edition = isProposalJustification.otherEdition
+        }else{
+            justification.edition = isProposalJustification.edition
+        }
         justification.requestedBy = isProposalJustification.requestedBy
         justification.issuesAddressed = isProposalJustification.issuesAddressed
         justification.tcAcceptanceDate = isProposalJustification.tcAcceptanceDate
@@ -1095,11 +1101,27 @@ class IntStandardService(
             } ?: throw Exception("DRAFT NOT FOUND")
 
 
-        } else if (decision == "No") {
+        } else if (decision == "Defer") {
             comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
                 with(comStdDraft) {
                     status = 1
+                }
+                comStdDraftRepository.save(comStdDraft)
+                companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                slFormResponse = "Justification Was Deferred"
+                responseStatus = "error"
+                responseButton = "btn btn-danger form-wizard-next-btn"
+                response = "Defered"
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+
+        }else if (decision == "No") {
+            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+
+                with(comStdDraft) {
+                    status = 30
                 }
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
@@ -1778,9 +1800,13 @@ class IntStandardService(
 
     fun approveProofReadStandard(
         iSDraftDecisions: ISHopDecision
-    ): String {
+    ): NotificationForm {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val comRemarks = CompanyStandardRemarks()
+        var slFormResponse = ""
+        var responseStatus = ""
+        var responseButton = ""
+        var response = ""
         //val decision=iSDraftDecisions.accentTo
         val timeOfRemark = Timestamp(System.currentTimeMillis())
         val decision = iSDraftDecisions.accentTo
@@ -1892,6 +1918,11 @@ class IntStandardService(
                  } ?: throw Exception("DRAFT NOT FOUND")
              }
 
+             slFormResponse = "Draft Was Approved"
+             responseStatus = "success"
+             responseButton = "btn btn-success form-wizard-next-btn"
+             response = "Approved"
+
 
         } else if (decision == "No") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
@@ -1923,11 +1954,14 @@ class IntStandardService(
                  // response = "Justification Was Approved"
              } ?: throw Exception("PROPOSAL NOT FOUND")
 
-
+             slFormResponse = "Draft Was Not Approved"
+             responseStatus = "error"
+             responseButton = "btn btn-danger form-wizard-next-btn"
+             response = "Not Approved"
 
         }
 
-        return "Actioned"
+        return NotificationForm(slFormResponse, responseStatus, responseButton, response)
     }
 
     fun getApprovedEditedDraft(): MutableList<ISUploadedDraft> {

@@ -33,7 +33,7 @@
                                         <th class="knw">Title</th>
                                         <th class="knw">Date of Circulation</th>
                                         <th class="knw">Closing Date</th>
-                                        <th class="knw">Deadline</th>
+<!--                                        <th class="knw">Deadline</th>-->
                                         <th class="knw">URL</th>
                                         <th class="action">Action</th>
                                     </tr>
@@ -46,7 +46,7 @@
                                         <td>{{isAdoptionProposal.title}}</td>
                                         <td>{{isAdoptionProposal.circulationDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{isAdoptionProposal.closingDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td>{{isAdoptionProposal.deadlineDate | date: 'yyyy-MM-dd'}}</td>
+<!--                                        <td>{{isAdoptionProposal.deadlineDate | date: 'yyyy-MM-dd'}}</td>-->
                                         <td><a href="{{isAdoptionProposal.adoptionLink }}" target="_blank">{{isAdoptionProposal.adoptionLink }}</a></td>
                                         <td *ngIf="isAdoptionProposal.stStatus==0"><a  (click)="onOpenModal(isAdoptionProposal,'comment',isAdoptionProposal.commentId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 200px" data-original-title="Approve"> Make Comment</a></td>
                                         <td *ngIf="isAdoptionProposal.stStatus==1"><a  (click)="onOpenModal(isAdoptionProposal,'comments',isAdoptionProposal.commentId)" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 200px" data-original-title="Approve"> You have commented Click to Edit</a></td>

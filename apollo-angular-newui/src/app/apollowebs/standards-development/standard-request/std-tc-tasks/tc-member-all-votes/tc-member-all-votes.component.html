@@ -42,7 +42,17 @@
                             <tr *ngFor="let tcTask of tcTasks let i= index; ">
                                 <td>{{tcTask.requestNumber}}</td>
                                 <td>{{tcTask.proposalTitle}}</td>
-                                <td>{{tcTask.decision}}</td>
+                                <td>
+                                    <ng-template
+                                            [ngIf]=" tcTask.decision=='true'">
+                                        Proposal Acceptable
+                                    </ng-template>
+                                    <ng-template
+                                            [ngIf]=" tcTask.decision=='false'">
+                                        Proposal Not Acceptable
+                                    </ng-template>
+
+                                </td>
                                 <td>{{tcTask.reason}}</td>
                                 <td>{{formatFormDate(tcTask.dateVoteWasCast)}}</td>
                                 <td>{{tcTask.closingDate}}</td>
@@ -157,13 +167,23 @@
                                 <ul class="list-group">
                                     <li class="list-group-item active">Vote Details
                                     </li>
+                                    <ng-template
+                                            [ngIf]=" actionRequest?.decision=='true'">
 
-                                    <li style="background: lightgray"
-                                        class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item">Decision: Proposal Acceptable
+                                        </li>
+                                    </ng-template>
+                                    <ng-template
+                                            [ngIf]=" actionRequest?.decision=='false'">
+                                        <li style="background: lightgray"
+                                            class="list-group-item">Decision: Proposal Not Acceptable
+                                        </li>
+                                    </ng-template>
                                     <li style="background: lightgray"
                                         class="list-group-item">{{"Comment: " + actionRequest?.reason}}</li>
                                     <li style="background: lightgray"
-                                        class="list-group-item">{{"Date Vote Was Cast: " + actionRequest?.dateVoteWasCast}}</li>
+                                        class="list-group-item">{{"Date Vote Was Cast: " + formatVoteDate(actionRequest?.dateVoteWasCast)}}</li>
                                     <li *ngIf="actionRequest?.voteOnBehalfByStatus==1" style="background: lightgray"
                                         class="list-group-item">{{"Voted On Behalf By: " + actionRequest?.voteOnBehalfByName}}</li>
                                     <br><br>

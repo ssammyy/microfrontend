@@ -111,6 +111,13 @@ export class ManufacturerComplaintListComponent implements OnInit {
         }
     }
 
+    openComplaint() {
+        this.router.navigate(["/manufacturer/complaints/apply"])
+            .then(() => {
+
+            })
+    }
+
     goBack() {
         this.router.navigate(["/company/applications"])
             .then(() => {

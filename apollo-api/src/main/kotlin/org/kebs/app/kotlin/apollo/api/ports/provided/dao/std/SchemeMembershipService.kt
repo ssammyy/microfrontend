@@ -60,8 +60,8 @@ class SchemeMembershipService(
                 schemeMembershipRequestRepository.save(schemeMembershipRequest)
                 notifications.sendEmail(
                     schemeMembershipRequest.email!!,
-                    "Standard Request Submission",
-                    "Hello " + schemeMembershipRequest.name!! + ",\n We have received your online scheme membership registration.: "
+                    "Scheme Membership Application Acknowledgement",
+                    "Hello " + schemeMembershipRequest.name!! + ",\nWe have received your online scheme membership registration. We will review it and advise you according to the KEBS Guidelines.\n "
                 )
                 return ServerResponse(
                     HttpStatus.OK,

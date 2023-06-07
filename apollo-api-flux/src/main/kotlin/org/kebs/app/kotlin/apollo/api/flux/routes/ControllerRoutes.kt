@@ -79,25 +79,25 @@ class ControllerRoutes(private val daoService: DaoService) {
      * This therefore means each Agency within EAC will interface through this API and post
      * certified products, banned products and suspended products
      */
-    @Bean
-    fun eastAfricanCommunityRoutes(handler: EastAfricanCommunityHandler) = coRouter {
-
-        "/api/eac/".nest {
-            /**
-             * Post products
-             */
-            "/products".nest {
-                "/post".nest {
-                    /**
-                     * Posting a New Certified and Approved product
-                     */
-                    POST("/{job}/start", handler::postProduct)
-
-                }
-            }
-        }
-
-    }
+//    @Bean
+//    fun eastAfricanCommunityRoutes(handler: EastAfricanCommunityHandler) = coRouter {
+//
+//        "/api/eac/".nest {
+//            /**
+//             * Post products
+//             */
+//            "/products".nest {
+//                "/post".nest {
+//                    /**
+//                     * Posting a New Certified and Approved product
+//                     */
+//                    POST("/{job}/start", handler::postProduct)
+//
+//                }
+//            }
+//        }
+//
+//    }
 
 //    @Bean
 //    fun pvocPartnerRoutes(handler: PvocHandler) = coRouter {

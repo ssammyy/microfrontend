@@ -6,7 +6,7 @@ import {
     StdJustification,
     StdJustificationDecision
 } from "src/app/core/store/data/std/request_std.model";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, NgForm} from "@angular/forms";
 import {StandardDevelopmentService} from "src/app/core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
@@ -24,6 +24,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {LoggedInUser, selectUserInfo} from "../../../../../core/store";
 import {Store} from "@ngrx/store";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-rejected-with-amendments',
@@ -101,6 +102,7 @@ export class RejectedWithAmendmentsComponent implements OnInit {
         private route: ActivatedRoute,
         private store$: Store<any>,
         private masterService: MasterService,
+        private toastrService: ToastrService,
     ) {
     }
 
@@ -115,22 +117,8 @@ export class RejectedWithAmendmentsComponent implements OnInit {
     }
 
 
-    get formStdTSec(): any {
-        return this.stdTSecFormGroup.controls;
-    }
 
-    public getTCSECTasksJustification(): void {
-        this.standardDevelopmentService.getAllNwiSApprovedForJustification().subscribe(
-            (response: NwiItem[]) => {
-                console.log(response);
-                this.secTasks = response;
-                this.rerender()
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        )
-    }
+
 
 
     public getRejectedAmendmentJustifications(): void {
@@ -156,7 +144,7 @@ export class RejectedWithAmendmentsComponent implements OnInit {
 
     uploadJustification(stdJustification: StdJustification): void {
 
-        if (stdJustification.spcMeetingDate == '' ||
+        if (
             stdJustification.departmentId == '' ||
             stdJustification.tcId == '' ||
             stdJustification.tcSecretary == '' ||
@@ -171,14 +159,14 @@ export class RejectedWithAmendmentsComponent implements OnInit {
 
         } else {
             this.SpinnerService.show();
-            this.standardDevelopmentService.uploadJustification(stdJustification).subscribe(
+            this.standardDevelopmentService.resubmitJustification(stdJustification).subscribe(
                 (response) => {
                     this.showToasterSuccess(response.httpStatus, `Your Justification Has Been Uploaded`);
                     if (this.uploadedFiles.length > 0) {
                         this.uploadDocuments(response.body.savedRowID, "Relevant Documents")
                     } else {
                         this.SpinnerService.hide();
-                        this.getTCSECTasksJustification();
+                        this.getRejectedAmendmentJustifications();
                         this.hideModel();
                     }
                 },
@@ -190,6 +178,8 @@ export class RejectedWithAmendmentsComponent implements OnInit {
             )
         }
     }
+
+
 
     public onOpenModal(secTask: NwiItem, mode: string): void {
 
@@ -442,7 +432,7 @@ export class RejectedWithAmendmentsComponent implements OnInit {
                         icon: 'success'
                     });
                     this.hideModel();
-                    this.getTCSECTasksJustification();
+                    this.getRejectedAmendmentJustifications();
                     this.SpinnerService.hide();
 
 

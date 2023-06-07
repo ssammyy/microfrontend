@@ -319,9 +319,11 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
         this.closeModalB?.nativeElement.click();
     }
 
-    viewPdfFile(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
-        this.loading = true;
-        this.loadingText="Retrieving File"
+ 
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading=true
+        this.loadingText="Loading Document"
+        this.SpinnerService.show();
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
@@ -330,10 +332,10 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
 
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.download = fileName;
-                link.click();
+                window.open(downloadURL, '_blank');
+                this.loading=false;
+                this.SpinnerService.hide()
+
                 // this.pdfUploadsView = dataPdf;
             },
         );

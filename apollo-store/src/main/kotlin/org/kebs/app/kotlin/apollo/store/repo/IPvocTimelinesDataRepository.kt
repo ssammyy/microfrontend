@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository
 interface IPvocTimelinePenaltiesRepository : HazelcastRepository<PvocTimelinePenalties, Long> {
     fun findByPartnerTypeAndRoute(partnerType: PvocPartnerTypeEntity?, route: String): PvocTimelinePenalties?
     fun findByStatus(status: Int): List<PvocTimelinePenalties>
+    fun findByMonitoringId(monitoringId: Long): List<PvocTimelinePenalties>
 }
 
 @Repository
@@ -23,11 +24,19 @@ interface IPvocTimelinesDataEntityRepository : HazelcastRepository<PvocTimelines
     fun findAllByCertNumberNotNull(pageable: Pageable): Page<PvocTimelinesDataEntity>?
     fun findByCertNumberAndCertType(certNumber: String, certType: String): PvocTimelinesDataEntity
     fun findByRecordYearMonthAndPartnerId(yearMonth: String, partnerId: Long): List<PvocTimelinesDataEntity>
+    fun findByMonitoringId(monitoringId: Long, pageable: Pageable): List<PvocTimelinesDataEntity>
 }
 
 @Repository
 interface IPvocSealIssuesEntityRepository : HazelcastRepository<PvocSealIssuesEntity, Long> {
     fun findAllByCertNumberNotNull(pageable: Pageable): Page<PvocSealIssuesEntity>?
+    fun findByMonitoringId(monitoringId: Long, pageable: Pageable): Page<PvocSealIssuesEntity>
     fun findByCertNumberAndCertType(certNumber: String, certType: String): PvocSealIssuesEntity
     fun findByRecordYearMonthAndPartnerId(yearMonth: String, partnerId: Long): List<PvocSealIssuesEntity>
+}
+
+@Repository
+interface IPvocProductCategorizationIssuesRepository :
+    HazelcastRepository<PvocProductCategorizationIssuessEntity, Long> {
+    fun findByMonitoringId(monitoringId: Long): List<PvocProductCategorizationIssuessEntity>
 }

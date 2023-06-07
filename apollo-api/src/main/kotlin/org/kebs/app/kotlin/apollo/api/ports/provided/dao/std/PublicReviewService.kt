@@ -75,12 +75,12 @@ class PublicReviewService(
         publicReviewDraftRepository.save(publicReviewDraft)
 
         //update documents with PRDId
-        try {
-            val updateDocuments = sdDocumentsRepository.updateDocsWithPRDid(cdId, publicReviewDraft.id)
-            KotlinLogging.logger { }.info("The response is $updateDocuments")
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-        }
+//        try {
+//            val updateDocuments = sdDocumentsRepository.updateDocsWithPRDid(cdId, publicReviewDraft.id)
+//            KotlinLogging.logger { }.info("The response is $updateDocuments")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//        }
 
         //get Committee Draft and update
         val committeeDraft: CommitteeCD = committeeCDRepository.findById(cdId).orElse(null);
@@ -173,8 +173,6 @@ class PublicReviewService(
             publicReviewStakeHoldersRepo.save(shs)
 
 
-
-
         }
 
         val stakeholdersTwo = publicReviewDto.addStakeholdersList
@@ -204,7 +202,7 @@ class PublicReviewService(
                 publicReviewStakeHoldersRepo.save(prs)
             } ?: throw Exception("STAKEHOLDERS INFORMATION NOT FOUND")
             val link =
-                "${applicationMapProperties.baseUrlQRValue}commentOnPublicReview?reviewID=${encryptedId}"
+                "${applicationMapProperties.baseUrlQRValue}commentOnPublicReview/${encryptedId}"
 
 
             val messageBody =
@@ -231,6 +229,20 @@ class PublicReviewService(
         return reviewDraft
 
     }
+
+    fun getPublicReviewForComment(encryptedId: Long): MutableIterable<PrdWithUserName>? {
+        return publicReviewDraftRepository.getPublicReviewForComment(encryptedId)
+    }
+
+    fun getPublicReviewComments(): MutableIterable<PrdWithUserName>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return publicReviewDraftRepository.getPublicReviewComments(loggedInUser.id)
+    }
+
+    fun getPublicReviewComment(): MutableIterable<PrdWithUserName>? {
+        return publicReviewDraftRepository.getPublicReviewComment()
+    }
+
 
     fun sendToDepartments(department: Department, publicReviewId: Long) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()

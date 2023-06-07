@@ -22,13 +22,13 @@ class EastAfricanCommunityDao(
     private val integRepo: IIntegrationConfigurationRepository,
     private val jobsRepo: IBatchJobDetailsRepository,
     private val extension: ActorSpringExtension,
-    private val actorSystem: ActorSystem,
+//    private val actorSystem: ActorSystem,
     private val daoService: DaoService,
     private val jasyptStringEncryptor: StringEncryptor,
 ) {
-    suspend fun startProductPostJob(jobId: String): String {
-        return submitJobToActor(jobId)
-    }
+//    suspend fun startProductPostJob(jobId: String): String {
+//        return submitJobToActor(jobId)
+//    }
 
     /**
      * Submit a single product for onward processing on eac api end-point
@@ -78,32 +78,32 @@ class EastAfricanCommunityDao(
      * Pick up correct akka worker and submit job for processing
      * The worker is set up using {@link org.kebs.app.kotlin.apollo.store.model.BatchJobDetails#processingActorBean}
      */
-    private fun submitJobToActor(jobId: String): String {
-        var result = ""
-        try {
-            jobId.toLongOrNull()
-                ?.let { id ->
-                    jobsRepo.findByIdOrNull(id)
-                        ?.let { job ->
-                            job.processingActorBean
-                                ?.let { actorBean ->
-                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
-                                    actorRef.tell(job, actorRef)
-                                    result = "Job successfully submitted for processing"
-
-                                }
-                                ?: throw NullValueNotAllowedException("Processing Actor not found for job {id=${job.id}")
-
-
-                        }
-
-                        ?: throw InvalidInputException("Invalid jobId=$jobId no BatchJob found, aborting")
-                }
-                ?: throw InvalidInputException("Invalid jobId=$jobId, aborting")
-        } catch (e: Exception) {
-            throw InvalidInputException(e.message)
-        }
-        return result
-    }
+//    private fun submitJobToActor(jobId: String): String {
+//        var result = ""
+//        try {
+//            jobId.toLongOrNull()
+//                ?.let { id ->
+//                    jobsRepo.findByIdOrNull(id)
+//                        ?.let { job ->
+//                            job.processingActorBean
+//                                ?.let { actorBean ->
+//                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
+//                                    actorRef.tell(job, actorRef)
+//                                    result = "Job successfully submitted for processing"
+//
+//                                }
+//                                ?: throw NullValueNotAllowedException("Processing Actor not found for job {id=${job.id}")
+//
+//
+//                        }
+//
+//                        ?: throw InvalidInputException("Invalid jobId=$jobId no BatchJob found, aborting")
+//                }
+//                ?: throw InvalidInputException("Invalid jobId=$jobId, aborting")
+//        } catch (e: Exception) {
+//            throw InvalidInputException(e.message)
+//        }
+//        return result
+//    }
 
 }

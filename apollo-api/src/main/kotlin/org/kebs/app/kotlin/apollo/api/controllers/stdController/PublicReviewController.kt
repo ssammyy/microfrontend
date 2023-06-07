@@ -244,6 +244,15 @@ class PublicReviewController(
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",publicReviewService.sendPublicReview(publicReviewDto))
     }
 
+
+
+
+    @GetMapping("/getPublicReviewComments")
+    fun getPublicReviewComments():MutableIterable<PrdWithUserName>?
+    {
+        return publicReviewService.getPublicReviewComments()
+    }
+
     @PostMapping("/sendToDepartments")
     fun sendToDepartments(
         @RequestBody department: Department,

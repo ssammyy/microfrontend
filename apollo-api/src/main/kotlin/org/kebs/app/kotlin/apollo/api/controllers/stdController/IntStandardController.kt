@@ -2,7 +2,10 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.CommitteeService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.DraftDocumentService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.IntStandardService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.PublicReviewService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -31,6 +34,9 @@ class IntStandardController(
     private val isGazetteNoticeRepository: ISGazetteNoticeRepository,
     private val commonDaoServices: CommonDaoServices,
     private val comStdDraftRepository: ComStdDraftRepository,
+    private val publicReviewService: PublicReviewService,
+    private val draftDocumentService: DraftDocumentService,
+    private val committeeService: CommitteeService,
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/international_standard/deploy")
@@ -197,6 +203,78 @@ class IntStandardController(
 //    fun getBook(@PathVariable id: Int, @PathVariable name: String?): Book? {
 //        // code here
 //    }
+
+    @PostMapping("/anonymous/international_standard/editCommentDraft")
+    fun editComment(@RequestBody comments: Comments): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Comment Edited",
+            committeeService.editComment(comments)
+        )
+    }
+
+    @PostMapping("/anonymous/international_standard/deleteCommentDraft")
+    fun deleteComment(@RequestBody comments: Comments): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Comment Deleted",
+            committeeService.deleteComment(comments)
+        )
+    }
+
+    @PostMapping("/anonymous/international_standard/makeCommentOnDraft")
+    fun makeComment(
+        @RequestParam("preliminary_draft_id") preliminaryDraftId: String,
+        @RequestBody body: List<CommentsDto>,
+        @RequestParam("docType") docType: String,
+    ): ServerResponse {
+
+
+        return ServerResponse(
+            HttpStatus.OK,
+            "Success",
+            committeeService.makeComment(preliminaryDraftId.toLong(), docType, body)
+        )
+
+    }
+
+    @GetMapping("/anonymous/international_standard/viewDocById")
+    fun viewFileById(
+        response: HttpServletResponse,
+        @RequestParam("docId") docId: Long,
+    ) {
+        val fileUploaded = draftDocumentService.findFile(docId)
+        println(fileUploaded)
+        val fileDoc = fileUploaded.let { commonDaoServices.mapClass(it) }
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @GetMapping("/anonymous/international_standard/getAllDocsOnPrd")
+    fun getAllDocsOnPrd(@RequestParam("publicReviewDraftId") publicReviewDraftId: Long): Collection<DatKebsSdStandardsEntity?>? {
+        return publicReviewService.getAllPrdDocuments(publicReviewDraftId)
+    }
+
+    @GetMapping("/anonymous/international_standard/getPublicReviewComment")
+    fun getPublicReviewComment():MutableIterable<PrdWithUserName>?
+    {
+        return publicReviewService.getPublicReviewComment()
+    }
+
+    @GetMapping("/anonymous/international_standard/getAllPublicReviews/{encryptedId}")
+    fun getPublicReviewForComment(@PathVariable encryptedId: Long):MutableIterable<PrdWithUserName>?
+    {
+        return publicReviewService.getPublicReviewForComment(encryptedId)
+    }
 
     @GetMapping("/anonymous/international_standard/getProposal/{proposalId}/{commentId}")
     @ResponseBody
@@ -450,7 +528,7 @@ class IntStandardController(
     //decision on Adoption Proposal
     //@PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
+    fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntSpcDecision
     ) : ServerResponse
     {
         val comStdDraft= ComStdDraft().apply {

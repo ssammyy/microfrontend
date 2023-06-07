@@ -70,6 +70,7 @@ export class PublicReviewDraftComponent implements OnInit {
     loadingText: string;
     public preparePreliminaryDraftFormGroup!: FormGroup;
     addressOfAgency: string;
+    languageOfProposal: string;
     telephoneOfAgency: string;
     faxOfAgency: string;
     emailOfAgency: string;
@@ -82,6 +83,10 @@ export class PublicReviewDraftComponent implements OnInit {
     dataSaveResourcesRequired : StakeHoldersFields;
     dataSaveResourcesRequiredList: StakeHoldersFields[]=[];
     predefinedSDCommentsDataAdded: boolean = false;
+    selectedOption = '';
+    newString:string;
+    joinedStringAsString:string;
+    rvAsString:string;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -137,6 +142,7 @@ export class PublicReviewDraftComponent implements OnInit {
             descriptionOfNotifiedDoc : ['', Validators.required],
             descriptionOfContent : ['', Validators.required],
             objectiveAndRationale : ['', Validators.required],
+            otherObjectiveAndRationale : [],
             relevantDocuments : ['', Validators.required],
             proposedDateOfAdoption : ['', Validators.required],
             proposedDateOfEntryIntoForce : [],
@@ -153,6 +159,7 @@ export class PublicReviewDraftComponent implements OnInit {
             var_FIELD_1: null
 
         });
+        this.languageOfProposal="English"
         this.notifyingMember="Republic of Kenya"
         this.agencyResponsible="Kenya Bureau of Standards - KEBS"
         this.addressOfAgency="P.O. Box: 54974-00200, Nairobi, Kenya"
@@ -494,6 +501,19 @@ export class PublicReviewDraftComponent implements OnInit {
         });
 
     }
+    objectiveRationales = [
+        "Consumer information",
+        "Labelling",
+        "Prevention of deceptive practices and consumer protection",
+        "Quality requirements",
+        "Reducing trade barriers and facilitating trade",
+        "Test Methods",
+        "Other"
+    ]
+
+    onSelected(value:string): void {
+        this.selectedOption = value;
+    }
 
     public onOpenModal(publicReviewDrafts: PublicReviewDraftWithName, mode: string): void {
 
@@ -505,6 +525,16 @@ export class PublicReviewDraftComponent implements OnInit {
         if (mode === 'prepareNotification') {
             this.publicReviewDraftsB = publicReviewDrafts
             button.setAttribute('data-target', '#prepareNotification');
+            const ks=this.publicReviewDraftsB.ks_NUMBER;
+            const newStrings: string = ks.substring(1);
+            this.newString = ks.substring(1);
+            const prTitle=this.publicReviewDraftsB.proposal_TITLE;
+            const prLang=this.languageOfProposal;
+            const joinedString: string[]=[newStrings,prTitle,prLang];
+            const rv: string[]=[newStrings,prTitle]
+            this.joinedStringAsString = joinedString.toString();
+            this.rvAsString = rv.toString();
+
             this.preparePreliminaryDraftFormGroup.patchValue(
                 {
                     addressOfAgency: this.addressOfAgency,
@@ -518,13 +548,15 @@ export class PublicReviewDraftComponent implements OnInit {
                     pid:this.publicReviewDraftsB.id,
                     cd_Id:this.publicReviewDraftsB.cd_Id,
                     prd_name:this.publicReviewDraftsB.prd_name,
-                    ks_NUMBER:this.publicReviewDraftsB.ks_NUMBER,
+                    ks_NUMBER:this.newString,
                     organization:this.publicReviewDraftsB.organization,
                     prd_by:this.publicReviewDraftsB.prd_by,
                     status:this.publicReviewDraftsB.status,
                     created_on:this.publicReviewDraftsB.created_on,
                     number_OF_COMMENTS:this.publicReviewDraftsB.number_OF_COMMENTS,
-                    var_FIELD_1:this.publicReviewDraftsB.var_FIELD_1
+                    var_FIELD_1:this.publicReviewDraftsB.var_FIELD_1,
+                    descriptionOfNotifiedDoc:this.joinedStringAsString,
+                    relevantDocuments:this.rvAsString,
                 }
             );
         }
@@ -695,7 +727,7 @@ export class PublicReviewDraftComponent implements OnInit {
                 //console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Notification Uploaded`);
-                this.onClickSaveUploads(response.body.savedRowID)
+                //this.onClickSaveUploads(response.body.savedRowID)
                 this.preparePreliminaryDraftFormGroup.reset();
 
             },

@@ -129,6 +129,7 @@ export interface PublicReviewDraftWithName {
     proposal_TITLE: string;
     circulation_DATE: string;
     closing_DATE: string;
+    commentStatus: number;
 
 
 }
@@ -212,6 +213,7 @@ export interface StandardDocuments {
     description: string,
     sdDocumentId: number,
     name: string,
+    fileType:string,
     documentTypeDef: string
 }
 
@@ -261,6 +263,7 @@ export interface VoteRetrieved {
     created_on: Date;
     ballot_name: string;
     comments: string;
+    ballot_STATUS:string;
 
 
 }

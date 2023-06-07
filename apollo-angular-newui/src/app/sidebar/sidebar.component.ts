@@ -163,8 +163,22 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
     },
     {
-        path: '/company/applications',
-        title: 'Company application',
+        path: '/manufacturer/waivers',
+        title: 'Waiver Applications',
+        type: 'link',
+        icontype: 'apply',
+        privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
+    },
+    {
+        path: '/manufacturer/exemptions',
+        title: 'Exemption Applications',
+        type: 'link',
+        icontype: 'apply',
+        privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
+    },
+    {
+        path: '/manufacturer/complaints',
+        title: 'Complaint Applications',
         type: 'link',
         icontype: 'apply',
         privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
@@ -351,6 +365,22 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt',
     },
     {
+        path: '/monitoring',
+        title: 'PVOC Monitoring',
+        type: 'sub',
+        icontype: 'monitor',
+        collapse: 'monitoring',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ', 'DI_DIRECTOR_READ'],
+        children: [
+            {
+                path: 'issues',
+                title: 'Timeline Issue',
+                ab: 'TI',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN_READ', 'DI_DIRECTOR_READ'],
+            },
+        ]
+    },
+    {
         path: '/di',
         title: 'Import Inspection',
         type: 'sub',
@@ -470,7 +500,13 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'ncr',
-                title: 'NCR Certificates',
+                title: 'NCR for Goods',
+                ab: 'NR',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
+            },
+            {
+                path: 'ncr-cor',
+                title: 'NCR for Vehicles',
                 ab: 'NR',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
             },
@@ -915,7 +951,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ','TC_SEC_SD_READ'],
         collapse: 'publish',
     },
     {
@@ -1195,7 +1231,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isPropComments',
                 title: 'Comment on Proposal ',
                 ab: 'VP',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SD_READ','TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SD_READ']
             },
             {
                 path: 'isProposals',

@@ -39,17 +39,20 @@ export class PvocQueryViewComponent implements OnInit {
     }
 
     sendResponse() {
+        this.loading = true
         this.pvocService.sendPvocQueryResponse(this.form.value, this.data.queryId)
             .subscribe(
                 res => {
                     if (res.responseCode === '00') {
                         this.dialogRef.close(true)
                     } else {
+                        this.loading = false
                         this.message = res.message
                         this.errorMessages = res.errors
                     }
                 },
                 error => {
+                    this.loading = false
                     this.message = error.message
                 }
             )

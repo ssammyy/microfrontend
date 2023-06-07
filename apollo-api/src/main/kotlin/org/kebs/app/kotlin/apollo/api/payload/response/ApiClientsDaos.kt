@@ -1,10 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
 import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnerTypeEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersCountriesEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersRegionEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
+import java.sql.Timestamp
 
 class ApiClientDao {
     var recordId: Long? = null
@@ -78,7 +76,7 @@ class PvocPartnerTypeDto {
             dto.apply {
                 categoryId = partenerType.id
                 partnerType = partenerType.partnerType
-                partnerCategory=partenerType.partnerCategory
+                partnerCategory = partenerType.partnerCategory
                 description = partenerType.typeDescription
             }
             return dto
@@ -166,6 +164,53 @@ class PvocPartnerDto {
         fun fromList(partners: List<PvocPartnersEntity>): List<PvocPartnerDto> {
             val dtos = mutableListOf<PvocPartnerDto>()
             partners.forEach { dtos.add(fromEntity(it)) }
+            return dtos
+        }
+    }
+}
+
+
+class PvocMonitoringDto {
+    var monitoringId: Long? = 0
+    var partnerId: Long? = null
+    var partnerName: String? = null
+    var yearMonth: String? = null
+    var recordNumber: String? = null
+    var name: String? = null
+    var description: String? = null
+    var monitoringStatus: Int? = null
+    var monitoringStatusDesc: String? = null
+    var status: Int? = null
+    var createdBy: String? = null
+    var createdOn: Timestamp? = null
+    var modifiedOn: Timestamp? = null
+
+    companion object {
+        fun fromEntity(monitoring: PvocAgentMonitoringStatusEntity): PvocMonitoringDto {
+            val dto = PvocMonitoringDto()
+            dto.apply {
+                monitoringId = monitoring.id
+                partnerId = monitoring.partnerId?.id
+                recordNumber = monitoring.recordNumber
+                name = monitoring.name
+                yearMonth = monitoring.yearMonth
+                monitoringStatus = monitoring.monitoringStatus
+                monitoringStatusDesc = monitoring.monitoringStatusDesc
+                description = monitoring.description
+                status = monitoring.status
+                createdBy = monitoring.createdBy
+                createdOn = monitoring.createdOn
+                modifiedOn = monitoring.modifiedOn
+            }
+            monitoring.partnerId?.let {
+                dto.partnerName = it.partnerName
+            }
+            return dto
+        }
+
+        fun fromList(monits: List<PvocAgentMonitoringStatusEntity>): List<PvocMonitoringDto> {
+            val dtos = mutableListOf<PvocMonitoringDto>()
+            monits.forEach { dtos.add(fromEntity(it)) }
             return dtos
         }
     }

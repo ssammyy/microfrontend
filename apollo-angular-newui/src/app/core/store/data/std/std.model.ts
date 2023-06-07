@@ -568,6 +568,7 @@ export interface NepPrepareDraft {
     descriptionOfNotifiedDoc: string;
     descriptionOfContent: string;
     objectiveAndRationale: string;
+    otherObjectiveAndRationale: string;
     relevantDocuments: string;
     proposedDateOfAdoption: Timestamp<any>;
     proposedDateOfEntryIntoForce: Timestamp<any>;
@@ -1078,6 +1079,7 @@ export interface ISProposalJustification {
     meetingDate: string;
     slNumber: string;
     edition: string;
+    otherEdition: string;
     department: string;
     requestedBy: string;
     scope: string;
@@ -2927,5 +2929,27 @@ export interface ISJustification {
 export interface UploadedDataId {
     uploadedId: string;
     httpStatus: string;
+}
+
+export interface PublicReviewDrafts{
+    id: number;
+    prdBy: number;
+    prdName: string;
+    createdOn: Timestamp<any>;
+    modifiedOn: Timestamp<any>;
+    deletedOn: Timestamp<any>;
+    cdID: number;
+    status: string;
+    createdBy: string;
+    modifiedBy: string;
+    deleteBy: string;
+    previousVersion: string;
+    versionNumber: string;
+    originalVersion: string;
+    ksNumber: string;
+    stdDraftId: number;
+    stdId: number;
+    draftReviewStatus: number;
+    encrypted: string;
 }
 

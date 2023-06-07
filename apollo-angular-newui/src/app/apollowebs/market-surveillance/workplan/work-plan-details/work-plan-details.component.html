@@ -6518,7 +6518,7 @@
                                             <div class="form-group">
                                                 <label><b>Select the Data Report  <span class="mandatorySSFFields">*</span></b></label>
                                                 <select class="form-control two-column-input" formControlName="dataReportSelected" name="dataReportSelected" (change)="onSelectedDataReport($event.target.value)">
-                                                    <option selected disabled>Please Select Data Report</option>
+                                                    <option selected disabled>--Please Select A Data Report--</option>
                                                     <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
                                                 </select>
                                             </div>
@@ -6529,7 +6529,7 @@
                                             <div *ngIf="showDataReportProduct" class="form-group">
                                                 <label><b>Select the Product in the Data Report  <span class="mandatorySSFFields">*</span></b></label>
                                                 <select class="form-control two-column-input" formControlName="productSelected" name="productSelected" (change)="onSelectProductInDataReport()">
-                                                    <option selected disabled>Please Select A product</option>
+                                                    <option selected disabled>--Please Select A product--</option>
                                                     <option *ngFor="let productSheet of selectedDataSheet?.productsList" [value]="productSheet.id">{{productSheet.typeBrandName}}</option>
                                                 </select>
                                             </div>

@@ -231,11 +231,11 @@ export interface NwiItem {
     tcSec: string;
     processStatus: string;
     pdStatus: String;
-    minutesPdStatus: null,
-    draftDocsPdStatus: null,
-    prPdStatus: null,
-
-    deferredDate: null
+    minutesPdStatus: string;
+    draftDocsPdStatus: string;
+    prPdStatus: string;
+    deferredDate: string;
+    nameOfDepartment:string;
 
 
 }
@@ -268,7 +268,7 @@ export interface NWIsForVoting {
 export interface StdJustification {
     id: string
     taskId: string;
-    spcMeetingDate: string;
+    spcMeetingDate: Date;
     departmentId: string;
     tcId: string;
     tcSecretary: string;

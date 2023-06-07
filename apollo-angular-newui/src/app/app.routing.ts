@@ -370,12 +370,12 @@ import {ListQueriesComponent} from "./apollowebs/pvoc/queries/list-queries/list-
 import {ViewQueryComponent} from "./apollowebs/pvoc/queries/view-query/view-query.component";
 import {ListRiskProfilesComponent} from "./apollowebs/pvoc/risk/list-risk-profiles/list-risk-profiles.component";
 import {ViewRiskProfilesComponent} from "./apollowebs/pvoc/risk/view-risk-profiles/view-risk-profiles.component";
-import {
-    ApproveMembersForTcCreationComponent
-} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
-import {
-    CommentOnPublicReviewComponent
-} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
+import {ApproveMembersForTcCreationComponent} from "./apollowebs/admin/approve-members-for-tc-creation/approve-members-for-tc-creation.component";
+import {CommentOnPublicReviewComponent} from "./apollowebs/standards-development/publicReview/comment-on-public-review/comment-on-public-review.component";
+import {TimelineIssuesComponent} from "./apollowebs/pvoc/monitoring/timeline-issues/timeline-issues.component";
+import {ViewMonitoringIssuesComponent} from "./apollowebs/pvoc/monitoring/view-monitoring-issues/view-monitoring-issues.component";
+import {ComOnPublicReviewComponent} from "./apollowebs/standards-development/publicReview/com-on-public-review/com-on-public-review.component";
+import {ComOnSiteDraftComponent} from "./apollowebs/standards-development/publicReview/com-on-site-draft/com-on-site-draft.component";
 
 export const routes: Routes = [
     {
@@ -852,8 +852,66 @@ export const routes: Routes = [
     {
         path: 'permit-details', component: PermitDetailsComponent,
     },
-
-
+    // PVOC monitoring
+    {
+        path: 'monitoring',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'issues',
+                component: TimelineIssuesComponent,
+            },
+            {
+                path: 'issue/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+        ],
+    },
+    {
+        path: 'manufacturer',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'waivers',
+                component: ViewWaiverCertificatesComponent,
+            },
+            {
+                path: 'waivers/apply',
+                component: ImportationWaiverComponent,
+            },
+            {
+                path: 'waiver/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+            {
+                path: 'exemptions',
+                component: ViewExemptionCertificatesComponent,
+            },
+            {
+                path: 'exemptions/apply',
+                component: ExceptionsApplicationComponent,
+            },
+            {
+                path: 'exemptions/:id',
+                component: ViewMonitoringIssuesComponent,
+            },
+            {
+                path: 'complaints',
+                component: ManufacturerComplaintListComponent,
+            },
+            {
+                path: 'complaints/apply',
+                component: PvocNewComplaintComponent,
+            },
+            {
+                path: 'complaint/:id',
+                component: ManufacturerComplaintDetailsComponent,
+            },
+        ],
+    },
+    // PVOC
     {
         path: 'pvoc',
         component: AdminLayoutComponent,
@@ -862,16 +920,6 @@ export const routes: Routes = [
             {
                 path: 'waiver',
                 children: [
-                    {
-                        path: 'apply',
-                        component: ImportationWaiverComponent,
-                        pathMatch: 'full',
-                    },
-                    {
-                        path: 'certificates',
-                        component: ViewWaiverCertificatesComponent,
-                        pathMatch: 'full',
-                    },
                     {
                         path: 'applications',
                         component: ViewWaiverApplicationsComponent,
@@ -886,14 +934,6 @@ export const routes: Routes = [
             {
                 path: 'exemption',
                 children: [
-                    {
-                        path: 'apply',
-                        component: ExceptionsApplicationComponent,
-                    },
-                    {
-                        path: 'certificates',
-                        component: ViewExemptionCertificatesComponent,
-                    },
                     {
                         path: 'applications',
                         component: ViewExemptionApplicationsComponent,
@@ -1810,12 +1850,22 @@ export const routes: Routes = [
         path: 'commentOnPrd', component: AdminLayoutComponent,
         children: [{path: '', component: CommentOnPublicReviewDraftComponent}],
     },
+    {
+        path: 'commentOnPublicReview/:encryptedId',
+        component: CommentOnPublicReviewComponent,
+    },
 
     {
-        // view Public Review Draft
-        path: 'commentOnPublicReview:reviewID', component: AdminLayoutComponent,
-        children: [{path: '', component: CommentOnPublicReviewComponent}],
+        path: 'commentOnPublicReviewSite',
+        component: ComOnPublicReviewComponent,
     },
+    {
+        // view Public Review Draft
+        path: 'commentOnPublicReviewSites', component: AdminLayoutComponent,
+        children: [{path: '', component: ComOnSiteDraftComponent}],
+    },
+
+
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES
      ***************************************************************/

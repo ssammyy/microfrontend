@@ -13,6 +13,7 @@ interface ICorsBakRepository : HazelcastRepository<CorsBakEntity, Long> {
     fun findByChasisNumber(chasisNumber: String): CorsBakEntity?
     fun findByCorNumber(corNumber: String): CorsBakEntity?
     fun findByCorNumberAndDocumentsType(corNumber: String, documentsType: String): CorsBakEntity?
+    fun findByCorNumberAndCompliant(corNumber: String, compliant: String): CorsBakEntity?
     fun findByDocumentsTypeAndReviewStatusAndCompliant(
         documentsType: String,
         status: Int,

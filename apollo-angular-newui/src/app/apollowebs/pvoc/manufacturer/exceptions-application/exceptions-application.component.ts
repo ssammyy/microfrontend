@@ -112,7 +112,7 @@ export class ExceptionsApplicationComponent implements OnInit {
     }
 
     goToHome() {
-        this.router.navigate(["/company/applications"])
+        this.router.navigate(["/manufacturer/exemptions"])
             .then(() => {
             })
     }

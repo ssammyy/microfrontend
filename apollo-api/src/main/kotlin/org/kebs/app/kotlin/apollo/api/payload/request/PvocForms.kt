@@ -643,6 +643,10 @@ class NcrEntityForm {
     @JsonAlias("ROUTE")
     var route: String? = null
 
+    @Size(max = 80, message = "should be upto 80 containers")
+    @JsonAlias("SHIPMENT_CONTAINERS")
+    var shipmentContainers: List<PvocContainerDetails>? = null
+
     @NotEmpty(message = "Required field")
     @JsonAlias("NCR_ITEMS")
     var ncrItems: List<CocItem>? = null
@@ -2373,7 +2377,7 @@ class PvocComplaintForm {
     @NotNull(message = "Please select nature of complaint")
     var categoryId: Long? = null
 
-    @NotNull(message = "Please select nature type of complaint")
+    //@NotNull(message = "Please select nature type of complaint")
     var subCategoryId: Long? = null
 
     fun fillDetails(complaint: PvocComplaintEntity) {

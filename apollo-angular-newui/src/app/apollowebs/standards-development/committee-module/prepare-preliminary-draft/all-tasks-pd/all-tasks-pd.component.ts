@@ -284,6 +284,9 @@ export class AllTasksPdComponent implements OnInit {
   }
 
   viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.loading=true
+    this.loadingText="Loading Document"
+    this.SpinnerService.show();
     this.SpinnerService.show();
     this.committeeService.viewDocsById(pdfId).subscribe(
         (dataPdf: any) => {
@@ -293,6 +296,8 @@ export class AllTasksPdComponent implements OnInit {
           // tslint:disable-next-line:prefer-const
           let downloadURL = window.URL.createObjectURL(this.blob);
           window.open(downloadURL, '_blank');
+          this.loading=false;
+          this.SpinnerService.hide()
 
           // this.pdfUploadsView = dataPdf;
         },
