@@ -5,108 +5,105 @@ import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name="SD_JUSTIFICATION")
+@Table(name = "SD_JUSTIFICATION")
 class StandardJustification {
     @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    val id:Long=0
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 
-    @Column(name="SPC_MEETING_DATE")
+    @Column(name = "SPC_MEETING_DATE")
     @Basic
-    val spcMeetingDate:String?=null
+    var spcMeetingDate: String? = null
 
     @Transient
     @JsonProperty("taskId")
-    var taskId:String?=null
+    var taskId: String? = null
 
-    @Column(name="DEPARTMENT_ID")
+    @Column(name = "DEPARTMENT_ID")
     @Basic
-    val departmentId:String?=null
+    var departmentId: String? = null
 
-    @Column(name="TC_SECRETARY")
+    @Column(name = "TC_SECRETARY")
     @Basic
-    val tcSecretary:String?=null
+    var tcSecretary: String? = null
 
-    @Column(name="SL")
+    @Column(name = "SL")
     @Basic
-    val sl:String?=null
+    var sl: String? = null
 
-    @Column(name="TITLE")
+    @Column(name = "TITLE")
     @Basic
-    val title:String?=null
+    var title: String? = null
 
-    @Column(name="EDITION")
+    @Column(name = "EDITION")
     @Basic
-    val edition:String?=null
+    var edition: String? = null
 
-    @Column(name="REQUESTED_BY")
+    @Column(name = "REQUESTED_BY")
     @Basic
-    val requestedBy:String?=null
+    var requestedBy: String? = null
 
-    @Column(name="ISSUES_ADDRESSED_BY")
+    @Column(name = "ISSUES_ADDRESSED_BY")
     @Basic
-    val issuesAddressedBy:String?=null
+    var issuesAddressedBy: String? = null
 
-    @Column(name="TC_ACCEPTANCE_DATE")
+    @Column(name = "TC_ACCEPTANCE_DATE")
     @Basic
-    val tcAcceptanceDate:String?=null
+    var tcAcceptanceDate: String? = null
 
-    @Column(name="REQUEST_NO")
+    @Column(name = "REQUEST_NO")
     @Basic
-    val requestNo:String?=null
+    var requestNo: String? = null
 
-    @Column(name="KS_ISO_NUMBER")
+    @Column(name = "KS_ISO_NUMBER")
     @Basic
-    val ksIsoNumber:String?=null
+    var ksIsoNumber: String? = null
 
-    @Column(name="PURPOSE")
+    @Column(name = "PURPOSE")
     @Basic
-    val purpose:String?=null
+    var purpose: String? = null
 
-    @Column(name="SCOPE")
+    @Column(name = "SCOPE")
     @Basic
-    val scope:String?=null
+    var scope: String? = null
 
-    @Column(name="INTENDED_USERS")
+    @Column(name = "INTENDED_USERS")
     @Basic
-    val intendedUsers:String?=null
+    var intendedUsers: String? = null
 
-    @Column(name="TC_ID")
+    @Column(name = "TC_ID")
     @Basic
-    val tcId:String?=null
+    var tcId: String? = null
 
-    @Column(name="CD_NUMBER")
+    @Column(name = "CD_NUMBER")
     @Basic
-    var cdNumber:String?=null
+    var cdNumber: String? = null
 
-    @Column(name="CREATED_ON")
+    @Column(name = "CREATED_ON")
     @Basic
-    var createdOn: Timestamp? =null
+    var createdOn: Timestamp? = null
 
-    @Column(name="MODIFIED_ON")
+    @Column(name = "MODIFIED_ON")
     @Basic
-    var modifiedOn: Timestamp? =null
+    var modifiedOn: Timestamp? = null
 
-    @Column(name="DELETED_ON")
+    @Column(name = "DELETED_ON")
     @Basic
-    var deletedOn: Timestamp? =null
+    var deletedOn: Timestamp? = null
 
     @Column(name = "NWI_ID")
     @Basic
-    var nwiId: String?=null
+    var nwiId: String? = null
 
 
     @Column(name = "CREATED_BY")
     @Basic
-    var createdBy: String?=null
+    var createdBy: String? = null
 
     @Column(name = "STATUS")
     @Basic
-    var status: String?=null
-
-
-
+    var status: String? = null
 
 
 }

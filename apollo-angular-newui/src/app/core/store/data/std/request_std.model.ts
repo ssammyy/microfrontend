@@ -268,7 +268,7 @@ export interface NWIsForVoting {
 export interface StdJustification {
     id: string
     taskId: string;
-    spcMeetingDate: string;
+    spcMeetingDate: Date;
     departmentId: string;
     tcId: string;
     tcSecretary: string;

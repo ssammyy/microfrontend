@@ -96,286 +96,288 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form #editForm="ngForm">
-                <div class="modal-body">
+            <div class="modal-body">
 
 
-                    <div class="row">
-                        <div class=" col-12">
-                            <ul class="list-group">
-                                <li class="list-group-item active">Justification
-                                    Details
-                                </li>
-                            </ul>
-                            <form #editForm="ngForm">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label><b>Technical Committee</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.departmentId}}" readonly
-                                                    value="{{actionRequest?.departmentId}}"
-                                                    name="tcId"
-                                                    type="text">
-                                        </div>
-
-                                        <div class="form-group col-6">
-                                            <label><b>Department</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.tcId}}"
-                                                    name="departmentId" aria-label="Small"
-                                                    readonly
-                                                    type="text">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label><b>SL</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.sl}}"
-                                                    readonly
-
-                                                    name="sl"
-                                                    type="text">
-
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label><b>Request No.</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.requestNo}}"
-                                                    readonly
-                                                    value="{{actionRequest?.requestNo}}"
-                                                    name="requestNo"
-                                                    placeholder=" " type="text">
-
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label><b>Title</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.title}}"
-                                                    readonly
-                                                    value="{{actionRequest?.title}}"
-                                                    name="title"
-                                                    type="text">
-                                        </div>
-
-                                        <div class="form-group col-6">
-                                            <label><b>TC Secretary</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{userDetails?.firstName+ ' '+ userDetails?.lastName}}"
-                                                    name="tcSecName"
-                                                    readonly
-                                                    type="text">
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label><b>Requested By</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.requestedBy}}"
-                                                    readonly
-                                                    value="{{actionRequest?.requestedBy}}"
-                                                    name="requestedBy"
-                                                    type="text">
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label><b>TC Acceptance Date</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.tcAcceptanceDate}}"
-                                                    readonly
-                                                    value="{{actionRequest?.tcAcceptanceDate}}"
-                                                    name="tcAcceptanceDate"
-                                                    type="text">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label><b>SPC Preparation Date</b></label>
-                                            <mat-form-field>
-                                                <input matInput [matDatepicker]="picker" [min]="todayDate"
-                                                       placeholder="Spc Meeting Date" name="spcMeetingDate" required>
-                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker></mat-datepicker>
-                                            </mat-form-field>
-                                        </div>
-
-                                        <div class="form-group col-6">
-                                            <label><b>Edition</b></label>
-                                            <mat-form-field>
-                                                <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                            required
-                                                            ngModel="{{actionRequest?.edition}}" name="edition"
-                                                            (selectionChange)="onSelectOption($event.value)">
-
-                                                    <mat-option value="First" class="dropdown-item"> First</mat-option>
-                                                    <mat-option value="Second" class="dropdown-item"> Second
-                                                    </mat-option>
-                                                    <mat-option value="Third" class="dropdown-item"> Third</mat-option>
-                                                    <mat-option value="Fourth" class="dropdown-item">Fourth</mat-option>
-                                                    <mat-option value="Fifth" class="dropdown-item">Fifth</mat-option>
-                                                    <mat-option value="Sixth" class="dropdown-item">Sixth</mat-option>
-                                                    <mat-option value="Other" class="dropdown-item">Other</mat-option>
-
-
-                                                </mat-select>
-                                            </mat-form-field>
-                                            <mat-form-field *ngIf="otherSelected">
-                                                <input placeholder="Enter Other Option" matInput name="otherOption">
-                                            </mat-form-field>
-                                        </div>
-
-                                    </div>
-
-                                    <h3 class="modal-title"><b>ISSUES ADDRESSED</b></h3>
-                                    <div class="row">
-                                        <div class="form-group col-10">
-                                            <label><b>Scope</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.scope}}"
-                                                    name="scope"
-                                                    type="text">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-10">
-                                            <label><b>Purpose And Application</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.purpose}}"
-                                                    name="purpose"
-                                                    type="text">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-10">
-                                            <label><b>Intended Users</b></label>
-                                            <input
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    class="form-control one-column-input"
-                                                    ngModel="{{actionRequest?.intendedUsers}}"
-                                                    name="intendedUsers"
-                                                    type="text">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-
+                <div class="row">
+                    <div class=" col-12">
+                        <ul class="list-group">
+                            <li class="list-group-item active">Justification
+                                Details
+                            </li>
+                        </ul>
+                        <form #editForm="ngForm">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>Technical Committee</b></label>
                                         <input
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input" hidden
-                                                ngModel="{{actionRequest?.taskId}}" name="taskId"
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.departmentId}}" readonly
+                                                value="{{actionRequest?.departmentId}}"
+                                                name="tcId"
                                                 type="text">
-                                        <input hidden ngModel="{{actionRequest?.id}}"
-                                               value="{{actionRequest?.id}}" name="nwiId" id="id">
-                                        <input hidden ngModel="{{userDetails?.id}}"
-                                               value="{{userDetails?.id}}" name="tcSecretary" id="tcSecretary">
                                     </div>
 
+                                    <div class="form-group col-6">
+                                        <label><b>Department</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.tcId}}"
+                                                name="departmentId" aria-label="Small"
+                                                readonly
+                                                type="text">
+                                    </div>
                                 </div>
-                                <div class="material-datatables">
-                                    <table class="table table-striped table-bordered table-hover"
-                                           datatable
-                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
-                                        <thead>
-                                        <tr>
-                                            <th class="task">Document Name</th>
-                                            <th class="task">Descritpion</th>
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>SL</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.sl}}"
+                                                readonly
 
-                                            <th class="task">Action</th>
+                                                name="sl"
+                                                type="text">
 
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr *ngFor="let doc of docs let i= index; ">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>Request No.</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.requestNo}}"
+                                                readonly
+                                                value="{{actionRequest?.requestNo}}"
+                                                name="requestNo"
+                                                placeholder=" " type="text">
 
-                                            <td>{{doc.name}}</td>
-                                            <td>{{doc.description}}</td>
-
-                                            <td>
-                                                <button class="btn btn-info tooltips"
-                                                        style="width: inherit"
-                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                        data-placement="top"
-                                                ><i
-                                                        class="fa fa-eye"></i> View
-                                                </button>
-                                            </td>
-
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
-                                    <div class="row">
-                                        <div class=" col-12">
-                                            <ul class="list-group">
-                                                <li class="list-group-item active">Decision
-                                                    Details
-                                                </li>
-
-                                                <li style="background: lightgray"
-                                                    class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
-
-                                                <li style="background: lightgray"
-                                                    class="list-group-item">{{"Reason: " + actionRequest?.reason}}</li>
-
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>Title</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.title}}"
+                                                readonly
+                                                value="{{actionRequest?.title}}"
+                                                name="title"
+                                                type="text">
+                                    </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" #closeModal
-                                            (click)="hideModel()" data-dismiss="modal">Close
+                                    <div class="form-group col-6">
+                                        <label><b>TC Secretary</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{userDetails?.firstName+ ' '+ userDetails?.lastName}}"
+                                                name="tcSecName"
+                                                readonly
+                                                type="text">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>Requested By</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.requestedBy}}"
+                                                readonly
+                                                value="{{actionRequest?.requestedBy}}"
+                                                name="requestedBy"
+                                                type="text">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label><b>TC Acceptance Date</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.tcAcceptanceDate}}"
+                                                readonly
+                                                value="{{actionRequest?.tcAcceptanceDate}}"
+                                                name="tcAcceptanceDate"
+                                                type="text">
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label><b>SPC Preparation Date</b></label>
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="picker" [min]="todayDate"
+                                                   placeholder="Spc Meeting Date" name="spcMeetingDate" ngModel
+                                                   required>
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="form-group col-6">
+                                        <label><b>Edition</b></label>
+                                        <mat-form-field>
+                                            <mat-select aria-label="Small"
+                                                        required
+                                                        ngModel="{{actionRequest?.edition}}" name="edition"
+                                                        (selectionChange)="onSelectOption($event.value)">
+
+                                                <mat-option value="First" class="dropdown-item"> First</mat-option>
+                                                <mat-option value="Second" class="dropdown-item"> Second
+                                                </mat-option>
+                                                <mat-option value="Third" class="dropdown-item"> Third</mat-option>
+                                                <mat-option value="Fourth" class="dropdown-item">Fourth</mat-option>
+                                                <mat-option value="Fifth" class="dropdown-item">Fifth</mat-option>
+                                                <mat-option value="Sixth" class="dropdown-item">Sixth</mat-option>
+                                                <mat-option value="Other" class="dropdown-item">Other</mat-option>
+
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field *ngIf="otherSelected">
+                                            <input placeholder="Enter Other Option" matInput name="otherOption">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+
+                                <h3 class="modal-title"><b>ISSUES ADDRESSED</b></h3>
+                                <div class="row">
+                                    <div class="form-group col-10">
+                                        <label><b>Scope</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.scope}}"
+                                                name="scope"
+                                                type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-10">
+                                        <label><b>Purpose And Application</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.purpose}}"
+                                                name="purpose"
+                                                type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-10">
+                                        <label><b>Intended Users</b></label>
+                                        <input
+                                                aria-describedby="inputGroup-sizing-sm"
+                                                aria-label="Small"
+                                                class="form-control one-column-input"
+                                                ngModel="{{actionRequest?.intendedUsers}}"
+                                                name="intendedUsers"
+                                                type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
+                                    <input
+                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                            class="form-control one-column-input" hidden
+                                            ngModel="{{actionRequest?.taskId}}" name="taskId"
+                                            type="text">
+                                    <input hidden ngModel="{{actionRequest?.nwiId}}"
+                                           value="{{actionRequest?.nwiId}}" name="nwiId" id="nwiId">
+                                    <input hidden ngModel="{{actionRequest?.id}}"
+                                           value="{{actionRequest?.id}}" name="id" id="id">
+                                    <input hidden ngModel="{{userDetails?.id}}"
+                                           value="{{userDetails?.id}}" name="tcSecretary" id="tcSecretary">
+                                </div>
+
+                            </div>
+                            <div class="material-datatables">
+                                <table class="table table-striped table-bordered table-hover"
+                                       datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
+                                    <thead>
+                                    <tr>
+                                        <th class="task">Document Name</th>
+                                        <th class="task">Descritpion</th>
+
+                                        <th class="task">Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let doc of docs let i= index; ">
+
+                                        <td>{{doc.name}}</td>
+                                        <td>{{doc.description}}</td>
+
+                                        <td>
+                                            <button class="btn btn-info tooltips"
+                                                    style="width: inherit"
+                                                    (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                    data-placement="top"
+                                            ><i
+                                                    class="fa fa-eye"></i> View
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">Decision
+                                                Details
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Decision: " + actionRequest?.decision}}</li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">{{"Reason: " + actionRequest?.reason}}</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" #closeModal
+                                        (click)="hideModel()" data-dismiss="modal">Close
+                                </button>
+                                <div *ngIf="roles?.includes('TC_SEC_SD_READ') || roles?.includes( 'STANDARDS_DEVELOPMENT_FULL_ADMIN')">
+
+                                    <button class="btn btn-info" (click)="uploadJustification(editForm.value)">
+                                        Resubmit
                                     </button>
-                                    <div *ngIf="roles?.includes('TC_SEC_SD_READ') || roles?.includes( 'STANDARDS_DEVELOPMENT_FULL_ADMIN')">
-
-                                        <button class="btn btn-info"
-                                                (click)="uploadJustification(editForm.value)">Resubmit
-                                        </button>
-                                    </div>
 
                                 </div>
-                            </form>
-                        </div>
+
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

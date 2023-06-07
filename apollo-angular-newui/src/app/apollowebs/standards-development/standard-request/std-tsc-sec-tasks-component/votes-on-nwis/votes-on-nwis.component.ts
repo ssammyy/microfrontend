@@ -175,32 +175,6 @@ export class VotesOnNwisComponent implements OnInit {
         console.log(items);
     }
 
-    // get formStdTSec(): any {
-    //return this.stdTSecFormGroup.controls;
-    // }
-
-    public getTCSECTasks(): void {
-        this.loading = true;
-        this.SpinnerService.show()
-        this.standardDevelopmentService.getTCSECTasks().subscribe(
-            (response: StandardRequestB[]) => {
-                this.secTasks = response;
-                this.rerender()
-                this.SpinnerService.hide()
-                this.loading = false;
-
-
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide()
-                this.loading = false;
-
-
-            }
-        )
-    }
-
 
     public getAllNwisUnderVote(): void {
         this.standardDevelopmentService.getAllVotesTally().subscribe(
@@ -355,7 +329,7 @@ export class VotesOnNwisComponent implements OnInit {
         this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                // this.rerender()
 
 
             },
@@ -377,6 +351,9 @@ export class VotesOnNwisComponent implements OnInit {
         )
     }
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loading=true
+        this.loadingText="Loading Document"
+        this.SpinnerService.show();
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
@@ -386,6 +363,9 @@ export class VotesOnNwisComponent implements OnInit {
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 window.open(downloadURL, '_blank');
+                this.loading=false;
+                this.SpinnerService.hide()
+
 
                 // this.pdfUploadsView = dataPdf;
             },
@@ -397,7 +377,7 @@ export class VotesOnNwisComponent implements OnInit {
             (response: VoteNwiRetrieved[]) => {
 
                 this.voteRetrieved = response;
-                this.rerender()
+                // this.rerender()
 
             },
             (error: HttpErrorResponse) => {

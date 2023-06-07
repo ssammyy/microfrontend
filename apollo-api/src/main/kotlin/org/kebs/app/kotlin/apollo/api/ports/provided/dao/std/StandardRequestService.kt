@@ -174,7 +174,7 @@ class StandardRequestService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndHof("Review By HOD",loggedInUser.id!!)
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndHof("Review By HOD", loggedInUser.id!!)
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -508,8 +508,6 @@ class StandardRequestService(
         standardNWI.tcId = standardRequestToUpdate.tcAssigned
         standardNWI.nameOfTC = technicalCommittee.title
         standardNWI.nameOfDepartment = department.name
-        standardNWI.organization = department.name
-
         standardNWI.departmentId = department.id
 
         standardNWIRepository.save(standardNWI)
@@ -731,7 +729,7 @@ class StandardRequestService(
 
     fun getVotingStatus(): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return if(tcUserAssignmentRepository.findByTcIdAndPrincipal(loggedInUser.id!!, "1") !=null) {
+        return if (tcUserAssignmentRepository.findByTcIdAndPrincipal(loggedInUser.id!!, "1") != null) {
             ServerResponse(
                 HttpStatus.OK,
                 "Approved", "Can Vote"
@@ -849,6 +847,34 @@ class StandardRequestService(
 
     }
 
+    fun resubmitJustification(standardJustification: StandardJustification): ProcessInstanceResponseValue {
+
+        val j: StandardJustification = standardJustificationRepository.findById(standardJustification.id).orElse(null)
+        j.modifiedOn = Timestamp(System.currentTimeMillis())
+        j.status = "Justification Amended. Awaiting Decision"
+        j.spcMeetingDate = standardJustification.spcMeetingDate
+        j.scope = standardJustification.scope
+        j.edition = standardJustification.edition
+        j.purpose = standardJustification.purpose
+        j.intendedUsers = standardJustification.intendedUsers
+        standardJustificationRepository.save(j)
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null)
+        u.processStatus = "Approve/Reject Justification"
+        standardNWIRepository.save(u)
+        val standardRequestToUpdate = u.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.ongoingStatus = "Justification Amended. Awaiting Decision"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
+        return ProcessInstanceResponseValue(standardJustification.id, "Complete", true, "justification")
+
+
+    }
+
     fun assignTcSec(technicalCommittee: TechnicalCommittee): ProcessInstanceResponseValue {
         val u: TechnicalCommittee = technicalCommitteeRepository.findById(technicalCommittee.id).orElse(null)
         u.userId = technicalCommittee.userId
@@ -921,6 +947,21 @@ class StandardRequestService(
             }
             if (decisionJustification.decision.equals("Rejected")) {
                 j.status = "Justification Declined"
+                val u: StandardNWI = standardNWIRepository.findById(j.nwiId!!.toLong()).orElse(null)
+                val standardRequestToUpdate = u.standardId?.let {
+                    standardRequestRepository.findById(it.toLong())
+                        .orElseThrow { RuntimeException("No Standard Request found") }
+                }
+
+                val subject = "Request Declination"
+                val body = buildString {
+                    append("Dear ${standardRequestToUpdate?.name},\n\n")
+                    append("Your request has been declined because of ${decisionJustification.reason}.\n")
+                    append("Best regards,\n\n")
+                    append("Director Standards Development and Trade")
+                }
+                notifications.sendEmail(standardRequestToUpdate?.email!!, subject, body)
+
                 standardJustificationRepository.save(j)
             }
             if (decisionJustification.decision.equals("Deffered With Amendments")) {
@@ -936,6 +977,10 @@ class StandardRequestService(
     fun getJustificationsPendingDecision(): List<StandardJustification> {
         return standardJustificationRepository.findByStatusOrderByIdAsc(
             "Justification Created. Awaiting Decision",
+
+            )+
+                standardJustificationRepository.findByStatusOrderByIdAsc(
+            "Justification Amended. Awaiting Decision",
 
             )
     }
