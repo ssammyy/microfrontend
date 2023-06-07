@@ -75,12 +75,12 @@ class PublicReviewService(
         publicReviewDraftRepository.save(publicReviewDraft)
 
         //update documents with PRDId
-        try {
-            val updateDocuments = sdDocumentsRepository.updateDocsWithPRDid(cdId, publicReviewDraft.id)
-            KotlinLogging.logger { }.info("The response is $updateDocuments")
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-        }
+//        try {
+//            val updateDocuments = sdDocumentsRepository.updateDocsWithPRDid(cdId, publicReviewDraft.id)
+//            KotlinLogging.logger { }.info("The response is $updateDocuments")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//        }
 
         //get Committee Draft and update
         val committeeDraft: CommitteeCD = committeeCDRepository.findById(cdId).orElse(null);

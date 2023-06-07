@@ -480,8 +480,7 @@
                                                             [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
 
                                                 <input matInput formControlName="targetDate" [matDatepicker]="picker"
-                                                       [min]="todayDate" placeholder="Target Date"
-                                                       name="targetDate" required>
+                                                       [min]="todayDate" placeholder="Target Date" required>
                                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker></mat-datepicker>
                                                 <app-field-error-display

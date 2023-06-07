@@ -34,6 +34,7 @@ export class TcMemberAllVotesComponent implements OnInit {
 
 
     dateFormat = "yyyy-MM-dd";
+    dateFormatVote="EEEE, MMMM d, y, h:mm:ss a"
     language = "en";
 
     public tcTasks: VotesDto[] = [];
@@ -244,6 +245,10 @@ export class TcMemberAllVotesComponent implements OnInit {
         return formatDate(date, this.dateFormat, this.language);
     }
 
+    formatVoteDate(date: Date) {
+        return formatDate(date, this.dateFormatVote, this.language);
+    }
+
     showToasterError(title: string, message: string) {
         this.notifyService.showError(message, title)
 
@@ -253,7 +258,7 @@ export class TcMemberAllVotesComponent implements OnInit {
         this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                // this.rerender()
 
 
             },

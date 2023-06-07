@@ -53,7 +53,7 @@
                                         <td>{{tcTask.sl}}</td>
                                         <td>{{tcTask.edition}}</td>
                                         <td>{{tcTask.title}}</td>
-                                        <td>{{tcTask.spcMeetingDate}}</td>
+                                        <td>{{formatFormDate(tcTask.spcMeetingDate)}}</td>
                                         <td>{{tcTask.departmentId}}</td>
 
                                         <td><a (click)="onOpenModal(tcTask,'edit')" type="button"
@@ -104,7 +104,7 @@
                                                                 Details
                                                             </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
+                                                                class="list-group-item">{{"SPC Meeting Date: " + formatFormDate(actionRequest?.spcMeetingDate)}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
                                                             <li style="background: lightgray"
@@ -214,7 +214,8 @@
                                                         (click)="hideModelB()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-danger"
-                                                        (click)="decisionOnJustification(editFormRejected.value)">Decline
+                                                        (click)="decisionOnJustification(editFormRejected.value)">
+                                                    Decline
                                                 </button>
                                             </div>
                                         </form>

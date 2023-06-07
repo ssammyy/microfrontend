@@ -493,6 +493,10 @@ export class StandardDevelopmentService {
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
     }
 
+    public resubmitJustification(stdJustification: StdJustification): Observable<any> {
+        return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'resubmitJustification', stdJustification)
+    }
+
     public assignTcSec(technicalCommittee: TechnicalCommittee): Observable<any> {
         return this.http.post<TechnicalCommittee>(`${this.apiServerUrl}` + 'assignTcSec', technicalCommittee)
     }

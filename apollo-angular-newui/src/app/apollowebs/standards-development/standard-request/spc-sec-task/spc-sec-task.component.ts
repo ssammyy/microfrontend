@@ -10,6 +10,7 @@ import {CommitteeService} from "../../../../core/store/data/std/committee.servic
 import {UserRegister} from "../../../../shared/models/user";
 import {ActivatedRoute} from "@angular/router";
 import {MasterService} from "../../../../core/store/data/master/master.service";
+import {formatDate} from "@angular/common";
 
 @Component({
     selector: 'app-spc-sec-task',
@@ -22,7 +23,8 @@ export class SpcSecTaskComponent implements OnInit {
     p2 = 1;
     public tcTasks: StdJustification[] = [];
     public actionRequest: StdJustification | undefined;
-
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
     docs !: Document[];
     blob: Blob;
@@ -114,6 +116,9 @@ export class SpcSecTaskComponent implements OnInit {
     }
 
     public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): void {
+        this.loading = true
+        this.loadingText = "Submitting Please Wait ...."
+
         this.SpinnerService.show();
 
 
@@ -121,6 +126,7 @@ export class SpcSecTaskComponent implements OnInit {
             (response) => {
                 console.log(response);
                 this.showToasterSuccess(response.httpStatus, `Your Decision Has Been Submitted.`);
+                this.loading = false
                 this.SpinnerService.hide();
                 this.hideModel();
                 this.hideModelB();
@@ -160,10 +166,16 @@ export class SpcSecTaskComponent implements OnInit {
     }
 
     public getAllDocs(nwiId: string, processName: string): void {
+        this.loading = true
+        this.loadingText = "Retrieving Document ...."
+
+        this.SpinnerService.show();
+
         this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, processName).subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                this.loading = false
+                this.SpinnerService.hide();
 
 
             },
@@ -222,6 +234,10 @@ export class SpcSecTaskComponent implements OnInit {
             );
 
         });
+    }
+
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 }

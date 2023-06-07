@@ -335,7 +335,7 @@ export class StdJustificationComponent implements OnInit {
         this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, processName).subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                // this.rerender()
 
 
             },
@@ -395,7 +395,7 @@ export class StdJustificationComponent implements OnInit {
         this.standardDevelopmentService.getAdditionalDocuments(standardId).subscribe(
             (response: Document[]) => {
                 this.docs = response;
-                this.rerender()
+                // this.rerender()
 
 
             },

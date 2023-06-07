@@ -212,6 +212,7 @@ export interface StandardDocuments {
     description: string,
     sdDocumentId: number,
     name: string,
+    fileType:string,
     documentTypeDef: string
 }
 
