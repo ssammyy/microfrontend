@@ -3,6 +3,8 @@ import {LocalDataSource} from "ng2-smart-table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {DatePipe} from "@angular/common";
+import {MatDialog} from "@angular/material/dialog";
+import {WaiverCertificateDetailsComponent} from "./waiver-certificate-details/waiver-certificate-details.component";
 
 @Component({
     selector: 'app-view-waiver-certificates',
@@ -21,7 +23,8 @@ export class ViewWaiverCertificatesComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'download', title: '<i class="btn btn-sm btn-primary download">Download</i>'}
+                {name: 'download', title: '<i class="btn btn-sm btn-primary download">Download</i>'},
+                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary"><span class="fa fa-eye">View</span></i>'}
             ],
             position: 'right' // left|right
         },
@@ -77,7 +80,7 @@ export class ViewWaiverCertificatesComponent implements OnInit {
     defaultPageSize = 20
     allowedStatuses = ['new', 'approved', 'rejected', 'others']
 
-    constructor(private  router: Router, private pvocService: PVOCService, private  activeRoute: ActivatedRoute) {
+    constructor(private dialog: MatDialog, private  router: Router, private pvocService: PVOCService, private  activeRoute: ActivatedRoute) {
     }
 
     ngOnInit(): void {
@@ -123,6 +126,24 @@ export class ViewWaiverCertificatesComponent implements OnInit {
                 }
             })
             this.loadData(0, this.defaultPageSize)
+        }
+    }
+
+    viewRecord(data: any) {
+        this.dialog.open(WaiverCertificateDetailsComponent, {
+            data: data
+        }).afterClosed()
+            .subscribe(() => {
+                console.log("closed")
+            })
+
+    }
+
+    public onCustomAction(event: any): void {
+        switch (event.action) {
+            case 'viewRecord':
+                this.viewRecord(event.data);
+                break;
         }
     }
 }

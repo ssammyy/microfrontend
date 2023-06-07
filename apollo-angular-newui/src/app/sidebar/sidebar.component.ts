@@ -951,7 +951,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ','TC_SEC_SD_READ'],
         collapse: 'publish',
     },
     {

@@ -9,6 +9,14 @@ import org.springframework.web.servlet.function.router
 
 @Configuration
 class PvocRouter {
+    @Bean
+    @CrossOrigin
+    fun pvocHelper(handler: PvocPartnersHandler) = router {
+        "/api/v1/common".nest {
+            POST("/to/json", handler::explodeFileToJson)
+            GET("/my/products", handler::explodeFileToJson)
+        }
+    }
 
     @Bean
     @CrossOrigin
@@ -19,6 +27,7 @@ class PvocRouter {
             GET("/list", handler::listPartners)
             GET("/names", handler::listPartnerNames)
             POST("/add", handler::createPartner)
+
             GET("/details/{partnerId}", handler::getPartnerDetails)
             PUT("/update/{partnerId}", handler::updatePartnerDetails)
             POST("/create/api-client/{partnerId}", handler::createPartnerApiClient)
@@ -31,10 +40,11 @@ class PvocRouter {
      */
     @Bean
     @CrossOrigin
-    fun apiPvocApplications(handler: PvocHandler) = router {
+    fun apiPvocManufacturerApplications(handler: PvocHandler) = router {
         "/api/v1/pvoc".nest {
             GET("/waiver/categories", handler::waiverCategories)
             GET("/waiver/history", handler::waiverHistory)
+            GET("/my/products", handler::listMyProducts)
             GET("/waiver/{waiverId}", handler::viewWaiver)
             POST("/waiver/apply", handler::waiversApplication)
             POST("/exemption/apply", handler::exemptionApplication)

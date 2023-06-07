@@ -128,9 +128,10 @@
                                     </div>
                                 </div>
                                 <div class="pull-right pr-1">
-                                    <button [disabled]="ApplicationDetailsForm.invalid"
+                                    <button [disabled]="ApplicationDetailsForm.invalid || loading"
                                             (click)="submitDataFunction()" class="btn btn-primary" mat-button
                                             matStepperNext>Submit
+                                        <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
                                     </button>
                                 </div>
                             </mat-step>

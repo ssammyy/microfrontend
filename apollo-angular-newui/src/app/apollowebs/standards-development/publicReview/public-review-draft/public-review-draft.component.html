@@ -82,6 +82,8 @@
                                                                                                         data-placement="top" style="width: 250px"
                                                                                                         data-original-title="Upload NWI">Post To Website</a></td>
                                         <td *ngIf="publicReviewDraft.status==='Edited'"></td>
+                                        <td *ngIf="publicReviewDraft.status==='Ballot draft uploaded'"></td>
+                                        <td *ngIf="publicReviewDraft.status==='Draft documents for ballot uploaded'"></td>
                                         <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"><a
                                                 (click)="approveDraftD(publicReviewDraft)"
                                                 class="btn btn-success tooltips"
@@ -222,7 +224,7 @@
                                                             class="form-control"
                                                             placeholder="i.e Title , 8 page(s), in English"
                                                             formControlName="descriptionOfNotifiedDoc"
-                                                            name="descriptionOfNotifiedDoc" type="text"></textarea>
+                                                            name="descriptionOfNotifiedDoc" type="text">{{joinedStringAsString}}</textarea>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>Description of content: <span
@@ -237,11 +239,20 @@
                                                     <label>Objective and rationale, including the nature of urgent
                                                         problems where applicable: <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <select class="form-control" formControlName="objectiveAndRationale" name="objectiveAndRationale" #teams (change)="onSelected(teams.value)"    >
+
+                                                        <option *ngFor="let objectiveRationale of objectiveRationales" value="{{objectiveRationale}}" >{{objectiveRationale}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-12" *ngIf="selectedOption=='Other'">
+                                                    <label>Objective and rationale, including the nature of urgent
+                                                        problems where applicable: <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                     <textarea
-                                                            [class.is-invalid]="formPreparePD.objectiveAndRationale.invalid && formPreparePD.objectiveAndRationale.touched"
+
                                                             class="form-control" placeholder=""
-                                                            formControlName="objectiveAndRationale"
-                                                            name="objectiveAndRationale" type="text"></textarea>
+                                                            formControlName="otherObjectiveAndRationale"
+                                                            name="otherObjectiveAndRationale" type="text"></textarea>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>Relevant documents: <span
@@ -250,7 +261,7 @@
                                                             [class.is-invalid]="formPreparePD.relevantDocuments.invalid && formPreparePD.relevantDocuments.touched"
                                                             class="form-control" placeholder=""
                                                             formControlName="relevantDocuments" name="relevantDocuments"
-                                                            type="text"></textarea>
+                                                            type="text">{{rvAsString}}</textarea>
                                                 </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-6">
@@ -277,7 +288,7 @@
                                                 <input type="hidden" formControlName="prd_name" name="prd_name"
                                                        value="{{publicReviewDraftsB?.prd_name}}">
                                                 <input type="hidden" formControlName="ks_NUMBER" name="ks_NUMBER"
-                                                       value="{{publicReviewDraftsB?.ks_NUMBER}}">
+                                                       value="{{newString}}">
                                                 <input type="hidden" formControlName="organization" name="organization"
                                                        value="{{publicReviewDraftsB?.organization}}">
                                                 <input type="hidden" formControlName="prd_by" name="prd_by"
@@ -303,19 +314,19 @@
                                                             formControlName="textAvailableFrom" name="textAvailableFrom"
                                                             rows="5" type="text"></textarea>
                                                 </div>
-                                                <div class="row col-12">
-                                                    <div class="form-group col-12">
-                                                        <div class="form-group col-12">
-                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                            <form #demoForm="ngForm">
-                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>
-                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
-                                                            </form>
-                                                        </div>
-                                                    </div>
+<!--                                                <div class="row col-12">-->
+<!--                                                    <div class="form-group col-12">-->
+<!--                                                        <div class="form-group col-12">-->
+<!--                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                                            <form #demoForm="ngForm">-->
+<!--                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>-->
+<!--                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">-->
+<!--                                                            </form>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
 
 
-                                                </div>
+<!--                                                </div>-->
                                             </div>
                                             <div class="modal-footer">
                                                 <button *ngIf="preparePreliminaryDraftFormGroup.valid"
