@@ -139,6 +139,7 @@ export class StdJustificationComponent implements OnInit {
     }
 
     uploadJustification(stdJustification: StdJustification): void {
+        console.log(stdJustification)
 
         if (
             stdJustification.departmentId == '' ||

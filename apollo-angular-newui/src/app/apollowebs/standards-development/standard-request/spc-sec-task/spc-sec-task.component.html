@@ -124,7 +124,7 @@
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
+                                                                class="list-group-item">{{"Intended Users: " + actionRequest?.intendedUsers}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
                                                         </ul>
@@ -206,7 +206,7 @@
 
                                             </div>
                                             <input hidden ngModel="{{actionRequest?.id}}" name="justificationId">
-                                            <input hidden ngModel="Declined" name="decision">
+                                            <input hidden ngModel="Rejected" name="decision">
 
 
                                             <div class="modal-footer">

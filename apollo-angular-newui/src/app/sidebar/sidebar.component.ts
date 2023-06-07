@@ -865,7 +865,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'voteOnBallot',
                 title: 'Vote On Ballot Draft',
                 ab: 'V',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SD_READ']
             },
             {
                 path: 'reviewBallotDraft',

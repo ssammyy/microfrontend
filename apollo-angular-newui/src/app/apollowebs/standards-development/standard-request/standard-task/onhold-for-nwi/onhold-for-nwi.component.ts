@@ -19,6 +19,8 @@ import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {formatDate} from "@angular/common";
 import {MatRadioChange} from "@angular/material/radio";
+import {LoggedInUser, selectUserInfo} from "../../../../../core/store";
+import {Store} from "@ngrx/store";
 
 @Component({
     selector: 'app-onhold-for-nwi',
@@ -52,7 +54,7 @@ export class OnholdForNwiComponent implements OnInit {
     // from the calling component add:
     @Input() selectSeason: string;
     public departments !: Department[];
-    public tcSecs !: UsersEntity[];
+    public tcSecs !: DataHolder[];
     @Input() selectDesiredResult: string;
 
     p = 1;
@@ -86,9 +88,17 @@ export class OnholdForNwiComponent implements OnInit {
     outputs: string[] = ['Approve For Review', 'Reject For Review'];
     @ViewChild('singleSelect', {static: true}) singleSelect: MatSelect;
     public technicalCommitteeFilterCtrl: FormControl = new FormControl();
-    public filteredTcs: ReplaySubject<any> = new ReplaySubject(1);
 
     public tcs: DataHolder[] = [];
+    roles: string[];
+    userLoggedInID: number;
+    userProfile: LoggedInUser;
+    selectedTc: number;
+    @ViewChild('tcSelect') tcSelect: any;
+    filteredTcs: any[] = [];
+    filteredTc: any;
+    onDeclineApplication: boolean = false;
+
 
 
     constructor(private standardDevelopmentService: StandardDevelopmentService,
@@ -96,6 +106,8 @@ export class OnholdForNwiComponent implements OnInit {
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
+                private store$: Store<any>,
+
     ) {
     }
 
@@ -114,7 +126,11 @@ export class OnholdForNwiComponent implements OnInit {
     ngOnInit(): void {
         this.getOnHoldTasks();
         this.getTechnicalCommittee();
-
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userLoggedInID = u.id;
+            this.userProfile = u;
+            return this.roles = u.roles;
+        });
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -305,7 +321,6 @@ export class OnholdForNwiComponent implements OnInit {
             this.actionRequest = task;
             button.setAttribute('data-target', '#updateRequestModal');
             this.getAllDocs(String(this.actionRequest.id))
-            this.getTcSecs()
             this.selectedStandard = this.actionRequest.id
 
 
@@ -323,7 +338,6 @@ export class OnholdForNwiComponent implements OnInit {
             this.actionRequest = task;
             button.setAttribute('data-target', '#viewRequestModal');
             this.getAllDocs(String(this.actionRequest.id))
-            this.getTcSecs()
             this.selectedStandard = this.actionRequest.id
 
 
@@ -396,20 +410,7 @@ export class OnholdForNwiComponent implements OnInit {
         );
     }
 
-
-    getTcSecs(): void {
-        this.standardDevelopmentService.getTcSec().subscribe(
-            (response: UsersEntity[]) => {
-                this.tcSecs = response;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
-
     @ViewChild('matRef') matRef: MatSelect;
-
     clear() {
         this.matRef.options.forEach((data: MatOption) => data.deselect());
     }
@@ -450,20 +451,46 @@ export class OnholdForNwiComponent implements OnInit {
     }
 
     onRadiobuttonchange($event: MatRadioChange) {
-        this.onApproveApplication = $event.value === 'Reject For Review' || $event.value === 'On Hold';
-    }
+        if ($event.value === 'Reject For Review') {
+            this.onDeclineApplication = true;
+            this.onApproveApplication = false;
 
-    public getTechnicalCommittee(): void {
+        } else if ($event.value === 'On Hold') {
+            this.onApproveApplication = true;
+            this.onDeclineApplication = false;
+
+        } else {
+            this.onApproveApplication = false;
+            this.onDeclineApplication = false;
+
+        }
+
+    }
+    getTechnicalCommittee(): void {
         this.standardDevelopmentService.getAllTcsForApplication().subscribe(
             (response: DataHolder[]) => {
-                this.tcs = response;
-                this.filteredTcs.next(this.tcs);
-
+                this.tcs = response
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
             }
-        )
+        );
+    }
+
+    onSelectTc(selectedValue: any): void {
+        if (typeof selectedValue !== 'undefined' && selectedValue !== "") {
+            this.standardDevelopmentService.getTechnicalCommitteeSec(selectedValue).subscribe(
+                (response: DataHolder[]) => {
+                    console.log(response);
+                    this.tcSecs = response
+                    this.filteredTc = undefined; // Reset the filteredTc value when no option is selected
+
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            );
+        }
     }
 
 }

@@ -262,6 +262,8 @@ export interface NWIsForVoting {
     dateOfPresentation: string;
     nameOfTC: string;
     id: string;
+    nameOfDepartment:string;
+
 }
 
 
