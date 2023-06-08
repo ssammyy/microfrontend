@@ -9,7 +9,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
 
-//import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
+import {CountryISO, PhoneNumberFormat, SearchCountryField} from "ngx-intl-tel-input";
 
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -65,10 +65,10 @@ export class RequestStandardFormComponent implements OnInit {
 
     isFormSubmitted = false;
 
-    // SearchCountryField = SearchCountryField;
-    // CountryISO = CountryISO;
-    // PhoneNumberFormat = PhoneNumberFormat;
-    // preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
+    SearchCountryField = SearchCountryField;
+    CountryISO = CountryISO;
+    PhoneNumberFormat = PhoneNumberFormat;
+    preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Kenya];
 
     constructor(
         private formBuilder: FormBuilder,

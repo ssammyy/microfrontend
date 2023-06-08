@@ -74,7 +74,7 @@ export class ImportationWaiverComponent implements OnInit {
     public finishedFillingFirstForm: boolean = false;
     public firstFormButtonClicked: boolean = false;
     private selectedFiles: File[] = []
-    private loading = false
+     loading = false
     public applicantFormErrors = {
         contactPersonPhone: '',
         contactPersonEmail: '',

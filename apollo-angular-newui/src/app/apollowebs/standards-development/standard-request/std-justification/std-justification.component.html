@@ -180,7 +180,7 @@
                                             <input
                                                     aria-describedby="inputGroup-sizing-sm"
                                                     class="form-control one-column-input"
-                                                    ngModel="{{tscsecRequest?.organization}}"
+                                                    ngModel="{{tscsecRequest?.nameOfDepartment}}"
                                                     name="departmentId" aria-label="Small"
                                                     readonly
                                                     type="text">
@@ -315,7 +315,9 @@
                                                     aria-describedby="inputGroup-sizing-sm"
                                                     aria-label="Small"
                                                     class="form-control one-column-input"
-                                                    ngModel="{{formActionRequest?.scope}}"
+                                                    ngModel="{{tscsecRequest?.scope}}"
+                                                    value="{{tscsecRequest?.scope}}"
+
                                                     name="scope"
                                                     type="text">
                                         </div>
@@ -327,7 +329,8 @@
                                                     aria-describedby="inputGroup-sizing-sm"
                                                     aria-label="Small"
                                                     class="form-control one-column-input"
-                                                    ngModel="{{formActionRequest?.purpose}}"
+                                                    ngModel="{{tscsecRequest?.purpose}}"
+                                                    value="{{tscsecRequest?.purpose}}"
                                                     name="purpose"
                                                     type="text">
                                         </div>
@@ -617,7 +620,9 @@
                                                 <!--                                            <li style="background: lightgray"-->
                                                 <!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
                                                 <li style="background: lightgray"
-                                                    class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
+                                                    class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfDepartment}}</li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">{{"Technical Committee: " + nwiActionRequest?.nameOfTC}}</li>
                                                 <li style="background: lightgray"
                                                     class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
                                             </div>

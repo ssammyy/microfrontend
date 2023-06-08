@@ -102,7 +102,8 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     ngOnInit(): void {
         this.getAllPds();
         this.committee_draftFormGroup = this.formBuilder.group({
-            cdName: ['', Validators.required]
+            cdName: ['', Validators.required],
+            requestNo:['', Validators.required],
         });
 
     }
@@ -237,7 +238,6 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
                 this.committeeService.prepareCommitteeDraft(this.committee_draftFormGroup.value,  String(this.preliminary_draftsB.id)).subscribe(
                     (response) => {
-                        console.log(response)
                         this.showToasterSuccess(response.httpStatus, `Successfully submitted Committee Draft`);
                         this.uploadCDDoc(response.body.savedRowID)
                         formDirective.reset();
@@ -277,6 +277,8 @@ export class PrepareCommitteeDraftComponent implements OnInit {
         }
         if (mode === 'uploadMinutes') {
             this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftFormGroup.controls.requestNo.setValue(preliminaryDraft.reference_NUMBER);
+
             button.setAttribute('data-target', '#uploadMinutes');
         }
         if (mode === 'moreDetails') {

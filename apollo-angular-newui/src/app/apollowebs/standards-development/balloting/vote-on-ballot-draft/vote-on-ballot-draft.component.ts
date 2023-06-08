@@ -70,19 +70,11 @@ export class VoteOnBallotDraftComponent implements OnInit {
         });
 
         this.editCommentFormGroup = this.formBuilder.group({
-            recipientId: ['', Validators.required],
-            title: ['', Validators.required],
-            documentType: ['', Validators.required],
-            circulationDate: ['', Validators.required],
-            closingDate: ['', Validators.required],
-            organization: ['', Validators.required],
-            clause: ['', Validators.required],
-            paragraph: ['', Validators.required],
-            commentType: ['', Validators.required],
-            proposedChange: ['', Validators.required],
-            observation: ['', Validators.required],
-            commentsMade: ['', Validators.required],
+            approvalStatus: ['', Validators.required],
+            comment: [''],
             id: ['', Validators.required],
+
+
         });
         this.dtOptions = {
             processing: true,
@@ -164,8 +156,8 @@ export class VoteOnBallotDraftComponent implements OnInit {
     }
 
     editVote(): void {
-        if (this.commentFormGroup.controls['approvalStatus'].value == "2" || this.commentFormGroup.controls['approvalStatus'].value == "3") {
-            if (this.commentFormGroup.controls['comment'].value == "") {
+        if (this.editCommentFormGroup.controls['approvalStatus'].value == "2" || this.editCommentFormGroup.controls['approvalStatus'].value == "3") {
+            if (this.editCommentFormGroup.controls['comment'].value == "") {
                 this.showToasterError("Reason", 'Please Provide A Reason');
             } else {
                 this.submitEditedVote();
@@ -177,12 +169,12 @@ export class VoteOnBallotDraftComponent implements OnInit {
 
     submitEditedVote(): void {
         this.SpinnerService.show();
-        this.ballotService.editVoteBallot(this.commentFormGroup.value).subscribe(
+        this.ballotService.editVoteBallot(this.editCommentFormGroup.value).subscribe(
             (response) => {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, response.body);
-                this.commentFormGroup.reset()
-                this.hideModel()
+                this.editCommentFormGroup.reset()
+                this.hideModelB()
                 this.getAllUserLoggedInCommentsMadeOnPd();
                 this.getAllBallots();
 
@@ -316,6 +308,9 @@ export class VoteOnBallotDraftComponent implements OnInit {
             if (mode === 'editComment') {
                 this.commentMadeRetrievedB = commentMadeRetrieved;
                 button.setAttribute('data-target', '#editComment');
+                this.editCommentFormGroup.patchValue({
+                    id: commentMadeRetrieved?.ballotId
+                });
 
             }
 

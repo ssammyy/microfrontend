@@ -118,13 +118,9 @@ export class SpcSecTaskComponent implements OnInit {
     public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): void {
         this.loading = true
         this.loadingText = "Submitting Please Wait ...."
-
         this.SpinnerService.show();
-
-
         this.standardDevelopmentService.decisionOnJustification(stdJustificationDecision).subscribe(
             (response) => {
-                console.log(response);
                 this.showToasterSuccess(response.httpStatus, `Your Decision Has Been Submitted.`);
                 this.loading = false
                 this.SpinnerService.hide();
@@ -136,6 +132,7 @@ export class SpcSecTaskComponent implements OnInit {
                 this.getSPCSECTasks();
             },
             (error: HttpErrorResponse) => {
+                this.loading = false
                 this.SpinnerService.hide();
 
                 alert(error.message);

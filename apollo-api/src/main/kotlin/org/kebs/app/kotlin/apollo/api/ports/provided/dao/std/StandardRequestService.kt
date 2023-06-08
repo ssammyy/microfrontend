@@ -953,11 +953,11 @@ class StandardRequestService(
                         .orElseThrow { RuntimeException("No Standard Request found") }
                 }
 
-                val subject = "Request Declination"
+                val subject = "Feedback on Standardization request ${standardRequestToUpdate?.requestNumber} "
                 val body = buildString {
                     append("Dear ${standardRequestToUpdate?.name},\n\n")
-                    append("Your request has been declined because of ${decisionJustification.reason}.\n")
-                    append("Best regards,\n\n")
+                    append("Reference is made to your request number ${standardRequestToUpdate?.requestNumber}. Your request has been reviewed and has however been declined for the following reason:  ${decisionJustification.reason}.\n")
+                    append("Regards,\n\n")
                     append("Director Standards Development and Trade")
                 }
                 notifications.sendEmail(standardRequestToUpdate?.email!!, subject, body)

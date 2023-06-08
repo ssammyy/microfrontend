@@ -38,6 +38,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
+import com.beust.klaxon.JsonArray
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.api.WstxOutputProperties
 import com.ctc.wstx.stax.WstxInputFactory
@@ -64,6 +65,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.qa.branchUpdateDTO
+import org.kebs.app.kotlin.apollo.common.dto.qa.companyDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.fmarkSmarkDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
@@ -89,6 +91,7 @@ import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
 import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkplanYearsCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInspectionReportRecommendationRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSmarkFmarkRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.UserRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ResourceLoader
@@ -188,7 +191,8 @@ class CommonDaoServices(
     private val authenticationProperties: AuthenticationProperties,
     private val usersEntityRepository: UsersEntityRepository,
     private val inspectionReportRepository: IQaInspectionReportRecommendationRepository,
-    private val iQaSmarkFmarkRepository: IQaSmarkFmarkRepository
+    private val iQaSmarkFmarkRepository: IQaSmarkFmarkRepository,
+    private val branchesRepo: BranchDetailsRepository, private val userRepository: UserRepository,
 ) {
 
     @Value("\${common.page.view.name}")
@@ -328,23 +332,50 @@ class CommonDaoServices(
         }
 
     }
+
     fun addStandard(sample: SampleStandardsEntity): ResponseEntity<SampleStandardsEntity> {
         val sampleWithCreatedBy = SampleStandardsEntity()
-        sampleWithCreatedBy.createdBy="admin"
-        sampleWithCreatedBy.status=1
-        sampleWithCreatedBy.createdOn= Timestamp(System.currentTimeMillis())
-        sampleWithCreatedBy.modifiedOn= Timestamp(System.currentTimeMillis())
-        sampleWithCreatedBy.modifiedBy= "admin"
-        sampleWithCreatedBy.standardNumber=sample.standardNumber
-        sampleWithCreatedBy.noOfPages=4
-        sampleWithCreatedBy.standardTitle=sample.standardTitle
+        sampleWithCreatedBy.createdBy = "admin"
+        sampleWithCreatedBy.status = 1
+        sampleWithCreatedBy.createdOn = Timestamp(System.currentTimeMillis())
+        sampleWithCreatedBy.modifiedOn = Timestamp(System.currentTimeMillis())
+        sampleWithCreatedBy.modifiedBy = "admin"
+        sampleWithCreatedBy.standardNumber = sample.standardNumber
+        sampleWithCreatedBy.noOfPages = 4
+        sampleWithCreatedBy.standardTitle = sample.standardTitle
         val savedEntity = sampleStandardsRepository.save(sampleWithCreatedBy)
         return ResponseEntity.ok(savedEntity)
     }
+    fun getAllCompanies():List<CompanyProfileEntity>{
+        return companyProfileRepo.findAllByStatus(1)
+    }
+
+//    fun getUserBranches(dto: branchUpdateDTO): ResponseEntity<String> {
+//// we have email
+////        we can get the user company id using the email
+//        var entity = UsersEntity()
+//        entity = dto.userEmail?.let { usersRepo.findByEmail(it) }!!
+//        val responseObject = JsonObject()
+//        val user = loggedInUserDetails()
+//        val branchNameArg = com.google.gson.JsonArray()
+//        val branches = entity.companyId?.let { branchesRepo.findByManufacturerId(it) }
+////        val branches = branchesRepo.findByManufacturerId(entity.companyId)
+//        if (branches != null) {
+//            for (branch in branches) {
+//                println("branch name "+ branch.branchName)
+//                branchNameArg.add(branch.branchName)
+//            }
+//        }
+//        responseObject.addProperty("message", "User Branch updated successfully")
+//        responseObject.add("data", branchNameArg)
+//        responseObject.addProperty("status", 200)
+//        return ResponseEntity.ok(responseObject.toString())
+//    }
 
     fun updateUserBranch(dto: branchUpdateDTO): ResponseEntity<String> {
+
         val responseObject = JsonObject()
-        if (dto.userEmail===null || dto.branchId ===null) {
+        if (dto.userEmail === null || dto.branchId === null) {
             responseObject.addProperty("message", "please input mandatory fields")
             responseObject.addProperty("status", 400)
             return ResponseEntity.ok(responseObject.toString())
@@ -809,6 +840,9 @@ class CommonDaoServices(
     fun getUserName(user: UsersEntity): String {
         return "${user.userName}"
     }
+    fun getUserCellPhone(user: UsersEntity): String {
+        return "${user.cellphone}"
+    }
 
     fun getTimestamp(): Timestamp {
         return Timestamp.from(Instant.now())
@@ -968,7 +1002,6 @@ class CommonDaoServices(
         val month = Calendar.getInstance()[Calendar.MONTH]
         return month.toString()
     }
-
 
 
     fun convertStringToTimestamp(strDate: String?): Timestamp? {

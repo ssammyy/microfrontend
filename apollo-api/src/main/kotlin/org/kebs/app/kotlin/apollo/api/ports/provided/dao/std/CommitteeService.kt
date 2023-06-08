@@ -520,11 +520,19 @@ class CommitteeService(
         val approveCommitteeDraft =
             committeeCDRepository.findById(committeeCD.id).orElseThrow { RuntimeException("No Committee Draft found") }
 
+        val b: CommitteePD = committeePDRepository.findById(approveCommitteeDraft.pdID).orElse(null)
+        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+
         approveCommitteeDraft.approved = "Approved"
         approveCommitteeDraft.status = "Approved. Prepare Public Review Draft."
         approveCommitteeDraft.modifiedOn = Timestamp(System.currentTimeMillis())
         approveCommitteeDraft.modifiedBy = loggedInUser.id.toString()
-        approveCommitteeDraft.ksNumber = "DKS${approveCommitteeDraft.id}${Calendar.getInstance().get(Calendar.YEAR)}".uppercase(Locale.getDefault())
+
+        //remove text after
+        val text = c.referenceNumber
+        val splitText = text?.split("/".toRegex())
+        val partB = splitText?.get(1)
+        approveCommitteeDraft.ksNumber = "DKS $partB"
 
         //send email to hof sic
         val messageBody =
@@ -536,9 +544,7 @@ class CommitteeService(
 
         committeeCDRepository.save(approveCommitteeDraft)
 
-        //update PD with CD Status
-        val b: CommitteePD = committeePDRepository.findById(approveCommitteeDraft.pdID).orElse(null)
-        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+
         val standardRequestToUpdate = c.standardId?.let {
             standardRequestRepository.findById(it)
                 .orElseThrow { RuntimeException("No Standard Request found") }

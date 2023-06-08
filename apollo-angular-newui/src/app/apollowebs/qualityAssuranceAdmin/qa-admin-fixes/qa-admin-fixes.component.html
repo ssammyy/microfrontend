@@ -507,18 +507,30 @@
                                                                         <label><b>User Email </b></label>
                                                                         <input [class.is-invalid]="formUpdateBranches.userEmail.invalid && formUpdateBranches.userEmail.touched"
                                                                                class="form-control two-column-input"
-                                                                               formControlName="userEmail"
+                                                                               formControlName="userEmail">
+<!--                                                                               (input)="handleGetBranches($event.target.value)"-->
                                                                                name="smark Id" required
                                                                                type="text">
                                                                     </div>
 
                                                                     <div class="form-group">
                                                                         <label><b>new Branch Id </b></label>
-                                                                        <input [class.is-invalid]="formUpdateBranches.branchId.invalid && formUpdateBranches.branchId.touched"
-                                                                               class="form-control two-column-input"
-                                                                               formControlName="branchId"
-                                                                               name="branchId" required
-                                                                               type="number">
+                                                                        <label for="attachedPlant">Indicate Branch </label>
+                                                                        <select id="attachedPlant" class="form-control"
+                                                                                formControlName="branchId"
+                                                                                name="branchId"
+                                                                                [class.is-invalid]="formUpdateBranches.branchId.invalid && formUpdateBranches.branchId.touched">
+                                                                            <option selected>Select Branch</option>
+                                                                            <option *ngFor="let branch of plants" [value]="branch">{{ branch }}</option>
+
+<!--                                                                            <option *ngFor="let plant of plants"-->
+<!--                                                                                    [ngValue]="plant.id"-->
+<!--                                                                                    class="dropdown-item">{{plant.branchName}}</option>-->
+
+                                                                        </select>
+
+
+
 
                                                                     </div>
                                                                 </div>

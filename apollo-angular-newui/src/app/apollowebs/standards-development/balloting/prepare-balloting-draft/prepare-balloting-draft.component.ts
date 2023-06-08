@@ -92,7 +92,7 @@ export class PrepareBallotingDraftComponent implements OnInit {
         this.getAllDepartments()
         this.publicReview_draftFormGroup = this.formBuilder.group({
             ballotName: ['', Validators.required],
-            ksNumber: ['', Validators.required],
+            fdksNumber: ['', Validators.required],
             prdID: ['', Validators.required]
 
         });

@@ -155,6 +155,17 @@ export class MasterService {
             })
         )
     }
+    public getUserBranches(data : updateStandardDto): Observable<any>{
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.GET_USER_BRANCHES);
+        return this.http.post<updateStandardDto>(url, data).pipe(
+            map(function (response: updateStandardDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        )
+    }
     public removeInspectionReportsDuplicates(){
 
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REMOVE_DUPLICATE_INSPECTION_REPORT);

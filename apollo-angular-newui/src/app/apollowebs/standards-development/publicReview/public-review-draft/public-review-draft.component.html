@@ -41,62 +41,74 @@
                                         <th class="action">Status</th>
                                         <th class="action">Comments</th>
                                         <th class="action">Action</th>
-
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr *ngFor="let publicReviewDraft of publicReviewDrafts let i= index; ">
-                                        <td>{{i + 1}}</td>
-                                        <td>{{publicReviewDraft.ks_NUMBER}}</td>
-                                        <td>{{publicReviewDraft.prd_name}}</td>
-                                        <td>
-                                            <a (click)="onOpenModal(publicReviewDraft,'moreDetails')"
-                                               class="btn btn-info tooltips"
-                                               data-placement="top"
-                                               data-original-title="More Details">More Details</a>
-                                        </td>
-                                        <td><span class="badge badge-rose">{{publicReviewDraft.status}}</span></td>
-                                        <td><span class="badge badge-orange"><a
-                                                (click)="onOpenModal(publicReviewDraft,'comments')"
-                                                class="btn btn-rose tooltips"
-                                                data-placement="top"
-                                                data-original-title="View Comments"> {{publicReviewDraft.number_OF_COMMENTS}}
-                                            Comment(s)</a></span></td>
-                                        <td *ngIf="publicReviewDraft.status==='Send Draft To Head Of Trade Affairs'">
-                                            <a (click)="onOpenModal(publicReviewDraft,'prepareNotification')"
-                                               style="width: 250px" class="btn btn-info tooltips" data-placement="top"
-                                               data-original-title="Upload NWI">Prepare WTO Notification</a></td>
-                                        <td *ngIf="publicReviewDraft.status==='Sent To Head Of Trade Affairs'"><a
-                                                class="btn btn-success tooltips" style="width: 250px"
-                                                data-placement="top" data-original-title="Upload NWI">In Publishing and
-                                            NEP</a></td>
-                                        <td *ngIf="publicReviewDraft.status==='Approved by HOP'">
-                                            <a (click)="onOpenModal(publicReviewDraft,'sendToOrganisations')"
-                                               class="btn btn-warning tooltips"
-                                               data-placement="top" style="width: 250px"
-                                               data-original-title="Upload NWI">Send To
-                                                Organizations/Departments </a>
-                                        </td>
-                                        <td *ngIf="publicReviewDraft.status==='Sent To Departments'"><a (click)="postToWebsite(publicReviewDraft)"
-                                                                                                        class="btn btn-info tooltips"
-                                                                                                        data-placement="top" style="width: 250px"
-                                                                                                        data-original-title="Upload NWI">Post To Website</a></td>
-                                        <td *ngIf="publicReviewDraft.status==='Edited'"></td>
-                                        <td *ngIf="publicReviewDraft.status==='Ballot draft uploaded'"></td>
-                                        <td *ngIf="publicReviewDraft.status==='Draft documents for ballot uploaded'"></td>
-                                        <td *ngIf="publicReviewDraft.status==='Posted On Website For Comments'"><a
-                                                (click)="approveDraftD(publicReviewDraft)"
-                                                class="btn btn-success tooltips"
-                                                data-placement="top"
-                                                data-original-title="Upload NWI">Approve Public Review Draft</a></td>
-                                        <td *ngIf="publicReviewDraft.status==='Ballot Draft Uploaded'"></td>
-                                        <td *ngIf="publicReviewDraft.status==='Approved For Balloting'">
-                                            <a (click)="onOpenModal(publicReviewDraft,'moreDetails')"
-                                               class="btn btn-info tooltips" style="width: 250px"
-                                               data-placement="top"
-                                               data-original-title="More Details">View Draft</a>
-                                        </td>
-                                    </tr>
+                                    <ng-container *ngFor="let publicReviewDraft of publicReviewDrafts; let i = index;">
+                                        <tr>
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{ publicReviewDraft.ks_NUMBER }}</td>
+                                            <td>{{ publicReviewDraft.prd_name }}</td>
+                                            <td>
+                                                <a (click)="onOpenModal(publicReviewDraft, 'moreDetails')"
+                                                   class="btn btn-info tooltips"
+                                                   data-placement="top" data-original-title="More Details">More
+                                                    Details</a>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-rose">{{ publicReviewDraft.status }}</span>
+                                            </td>
+                                            <td>
+                        <span class="badge badge-orange">
+                            <a (click)="onOpenModal(publicReviewDraft, 'comments')" class="btn btn-rose tooltips"
+                               data-placement="top" data-original-title="View Comments">
+                                {{ publicReviewDraft.number_OF_COMMENTS }} Comment(s)
+                            </a>
+                        </span>
+                                            </td>
+                                            <td>
+                                                <ng-container [ngSwitch]="publicReviewDraft.status">
+                                                    <ng-container *ngSwitchCase="'Send Draft To Head Of Trade Affairs'">
+                                                        <a (click)="onOpenModal(publicReviewDraft, 'prepareNotification')"
+                                                           style="width: 250px" class="btn btn-info tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">Prepare WTO Notification</a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Sent To Head Of Trade Affairs'">
+                                                        <a class="btn btn-success tooltips" style="width: 250px"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">In Publishing and NEP</a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Approved by HOP'">
+                                                        <a (click)="onOpenModal(publicReviewDraft, 'sendToOrganisations')"
+                                                           class="btn btn-warning tooltips" data-placement="top"
+                                                           style="width: 250px"
+                                                           data-original-title="Upload NWI">Send To
+                                                            Organizations/Departments</a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Sent To Departments'">
+                                                        <a (click)="postToWebsite(publicReviewDraft)"
+                                                           class="btn btn-info tooltips"
+                                                           data-placement="top" style="width: 250px"
+                                                           data-original-title="Upload NWI">Post To
+                                                            Website</a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Posted On Website For Comments'">
+                                                        <a (click)="approveDraftD(publicReviewDraft)"
+                                                           class="btn btn-success tooltips"
+                                                           data-placement="top" data-original-title="Upload NWI">Approve
+                                                            Public Review Draft</a>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Approved For Balloting'">
+                                                        <a (click)="onOpenModal(publicReviewDraft, 'moreDetails')"
+                                                           class="btn btn-info tooltips" style="width: 250px"
+                                                           data-placement="top"
+                                                           data-original-title="More Details">View Draft</a>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
                                     </tbody>
                                 </table>
                             </div>
@@ -224,7 +236,8 @@
                                                             class="form-control"
                                                             placeholder="i.e Title , 8 page(s), in English"
                                                             formControlName="descriptionOfNotifiedDoc"
-                                                            name="descriptionOfNotifiedDoc" type="text">{{joinedStringAsString}}</textarea>
+                                                            name="descriptionOfNotifiedDoc"
+                                                            type="text">{{joinedStringAsString}}</textarea>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label>Description of content: <span
@@ -239,9 +252,12 @@
                                                     <label>Objective and rationale, including the nature of urgent
                                                         problems where applicable: <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <select class="form-control" formControlName="objectiveAndRationale" name="objectiveAndRationale" #teams (change)="onSelected(teams.value)"    >
+                                                    <select class="form-control" formControlName="objectiveAndRationale"
+                                                            name="objectiveAndRationale" #teams
+                                                            (change)="onSelected(teams.value)">
 
-                                                        <option *ngFor="let objectiveRationale of objectiveRationales" value="{{objectiveRationale}}" >{{objectiveRationale}}</option>
+                                                        <option *ngFor="let objectiveRationale of objectiveRationales"
+                                                                value="{{objectiveRationale}}">{{objectiveRationale}}</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-12" *ngIf="selectedOption=='Other'">
@@ -314,19 +330,19 @@
                                                             formControlName="textAvailableFrom" name="textAvailableFrom"
                                                             rows="5" type="text"></textarea>
                                                 </div>
-<!--                                                <div class="row col-12">-->
-<!--                                                    <div class="form-group col-12">-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                            <form #demoForm="ngForm">-->
-<!--                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>-->
-<!--                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">-->
-<!--                                                            </form>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
+                                                <!--                                                <div class="row col-12">-->
+                                                <!--                                                    <div class="form-group col-12">-->
+                                                <!--                                                        <div class="form-group col-12">-->
+                                                <!--                                                            <label><b>Attach Documents</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+                                                <!--                                                            <form #demoForm="ngForm">-->
+                                                <!--                                                                <file-upload [(ngModel)]="uploadedFile" name="uploadedFile" fileslimit="1"   accept=".docx,.pdf" ></file-upload>-->
+                                                <!--                                                                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">-->
+                                                <!--                                                            </form>-->
+                                                <!--                                                        </div>-->
+                                                <!--                                                    </div>-->
 
 
-<!--                                                </div>-->
+                                                <!--                                                </div>-->
                                             </div>
                                             <div class="modal-footer">
                                                 <button *ngIf="preparePreliminaryDraftFormGroup.valid"
@@ -771,19 +787,6 @@
                                             <div class="modal-body">
                                                 <input type="hidden" value="{{publicReviewDraftsB?.id}}"
                                                        formControlName="prId" name="prId">
-                                                <div class="form-group col-12">
-                                                    <label><b>Select Interested Stake Holders</b><span
-                                                            style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <ng-multiselect-dropdown
-                                                            [placeholder]="'Select Stakeholders to send Public Review'"
-                                                            [settings]="dropdownSettings"
-                                                            [data]="dropdownList"
-                                                            (onSelect)="onItemSelect($event)"
-                                                            (onSelectAll)="onSelectAll($event)"
-                                                            formControlName="stakeholdersList"
-                                                            name="stakeholdersList">
-                                                    </ng-multiselect-dropdown>
-                                                </div>
 
                                                 <div class="row col-12">
                                                     <br>

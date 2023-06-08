@@ -2,24 +2,22 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
-import mu.KotlinLogging
-import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
-import org.flowable.engine.RuntimeService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.std.PublicReviewDto
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.sql.Timestamp
+import java.util.*
+
 
 @Service
 class PublicReviewService(
@@ -36,11 +34,11 @@ class PublicReviewService(
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val notifications: Notifications,
+    private val tcUserAssignmentRepository: TcUserAssignmentRepository,
 
     ) {
     val PROCESS_DEFINITION_KEY = "publicreview"
     val variable: MutableMap<String, Any> = HashMap()
-
 
 
     fun deployProcessDefinition() {
@@ -149,18 +147,37 @@ class PublicReviewService(
         publicReviewDraftRepository.save(publicReviewDraftToBeUpdated)
 
     }
+
     fun sendPublicReview(publicReviewDto: PublicReviewDto): PublicReviewDraft {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        var tcName = loggedInUser.firstName + loggedInUser.lastName
-        val reviewDraft=PublicReviewDraft()
-        val stakeholdersOne = publicReviewDto.stakeholdersList
-        stakeholdersOne?.forEach { s ->
-            val subject = "Invitation to Provide Comments on Public Review Draft"
-            val recipient = s.email
-            val user = s.name
-            val userId = usersRepo.getUserId(s.email)
-            val userPhone = usersRepo.getUserPhone(s.email)
+        // Get TC members
+        val publicReviewDraft: PublicReviewDraft? =
+            publicReviewDto.prId?.let { publicReviewDraftRepository.findById(it).orElse(null) }
+        val committeeDraft: CommitteeCD =
+            publicReviewDto.prId?.let { committeeCDRepository.findById(publicReviewDraft?.cdID ?: -1).orElse(null) }!!
+        val b: CommitteePD = committeePDRepository.findById(committeeDraft.pdID).orElse(null)
+        val c: StandardNWI = standardNWIRepository.findById(b.nwiID?.toLong() ?: -1).orElse(null)
+        val standardRequest = c.standardId?.let {
+            standardRequestRepository.findById(it).orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        val tcID = standardRequest?.tcId
+        val tcMembers = tcID?.let { tcUserAssignmentRepository.findByTcId(it.toLong()) }
+        val tcName = loggedInUser.firstName + loggedInUser.lastName
+        val reviewDraft = PublicReviewDraft()
+
+        val stakeholdersList = mutableListOf<PublicReviewStakeHolders>()
+        val currentClosingDate = Timestamp(System.currentTimeMillis())
+        val calendar = Calendar.getInstance()
+        calendar.time = currentClosingDate
+        calendar.add(Calendar.DAY_OF_MONTH, 60)
+        val updatedClosingDate = Timestamp(calendar.timeInMillis)
+
+        tcMembers?.forEach { s ->
+            val recipient = usersRepo.getUserEmail(s.userId)
+            val user = commonDaoServices.concatenateName(commonDaoServices.findUserByID(s.userId))
+            val userId = s.userId
+            val userPhone = commonDaoServices.getUserCellPhone(commonDaoServices.findUserByID(s.userId))
 
             val shs = PublicReviewStakeHolders()
             shs.name = user
@@ -170,14 +187,17 @@ class PublicReviewService(
             shs.telephone = userPhone
             shs.userId = userId
             shs.status = 0
-            publicReviewStakeHoldersRepo.save(shs)
 
-
+            stakeholdersList.add(shs)
         }
 
+// Batch insert stakeholders
+        if (stakeholdersList.isNotEmpty()) {
+            publicReviewStakeHoldersRepo.saveAll(stakeholdersList)
+        }
         val stakeholdersTwo = publicReviewDto.addStakeholdersList
         stakeholdersTwo?.forEach { t ->
-            val sub = "Invitation to Provide Comments on Public Review Draft"
+            val sub = "Invitation to Provide Feedback on Public Review Document"
             val rec = t.stakeHolderEmail
             val userN = t.stakeHolderName
             val phoneNumber = t.stakeHolderPhone
@@ -196,20 +216,23 @@ class PublicReviewService(
             publicReviewStakeHoldersRepo.findByIdOrNull(pid)?.let { prs ->
 
                 with(prs) {
-                    encrypted=encryptedId
+                    encrypted = encryptedId
 
                 }
                 publicReviewStakeHoldersRepo.save(prs)
             } ?: throw Exception("STAKEHOLDERS INFORMATION NOT FOUND")
+
             val link =
                 "${applicationMapProperties.baseUrlQRValue}commentOnPublicReview/${encryptedId}"
 
 
             val messageBody =
-                "Dear $userN,\nThe Kenya Bureau of Standards has prepared a Public Review draft.\n" +
-                        "To provide your feedback, please use the following link: [$link]. You will be prompted to provide your comments on the Review Draft.\n" +
-                        "Thank you in advance for your participation and contributions.\nBest regards,\n " +
-                        "$tcName "
+                "Dear $userN,\nWe would like to extend our invitation to you as an esteemed stakeholder to provide your valuable feedback on the ${publicReviewDraft?.prdName}" +
+                        " that is currently open for public review. We highly value your input in shaping the outcome of the document.\n" +
+                        "To access the document and participate in the review process, please click on the link below : [$link]. " +
+                        "We kindly request that you submit your feedback by $updatedClosingDate to ensure sufficient time for review and consideration.\n" +
+                        "Regards,\n" +
+                        "Director Standard Development Department\n"
 
             if (rec != null) {
                 notifications.sendEmail(rec, sub, messageBody)
@@ -217,20 +240,24 @@ class PublicReviewService(
         }
 
 
-            publicReviewDraftRepository.findByIdOrNull(publicReviewDto.prId)?.let { pr ->
+        publicReviewDraftRepository.findByIdOrNull(publicReviewDto.prId)?.let { pr ->
 
-                with(pr) {
-                    status = "Posted On Website For Comments"
+            with(pr) {
+                status = "Posted On Website For Comments"
+                modifiedOn = Timestamp(System.currentTimeMillis())
+                modifiedBy = loggedInUser.id.toString()
+                circulationDate = Timestamp(System.currentTimeMillis())
+                closingDate = updatedClosingDate
+            }
+            publicReviewDraftRepository.save(pr)
+        } ?: throw Exception("REVIEW DRAFT NOT FOUND")
 
-                }
-                publicReviewDraftRepository.save(pr)
-            } ?: throw Exception("REVIEW DRAFT NOT FOUND")
 
         return reviewDraft
 
     }
 
-    fun getPublicReviewForComment(encryptedId: Long): MutableIterable<PrdWithUserName>? {
+    fun getPublicReviewForComment(encryptedId: String): MutableIterable<PrdWithUserName>? {
         return publicReviewDraftRepository.getPublicReviewForComment(encryptedId)
     }
 
@@ -334,7 +361,6 @@ class PublicReviewService(
     }
 
 
-
     fun uploadEditedDraft(
         publicReviewDraft: PublicReviewDraft,
         previousPublicReviewDraftId: Long
@@ -395,7 +421,6 @@ class PublicReviewService(
 
         return publicReviewDraftRepository.findApprovedPublicReviewDraft(loggedInUser.id.toString())
     }
-
 
 
 }

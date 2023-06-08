@@ -292,7 +292,7 @@
                                                                              class="form-group clearfix">
                                                                             <button class="btn btn-sm btn-primary float-right"
                                                                                     type="submit">
-                                                                                Save
+                                                                                Submit
                                                                             </button>
 
 
@@ -495,8 +495,7 @@
 
                                                                         <div class="row col-12">
                                                                             <div class="form-group col-6">
-                                                                                <label><b>Title</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                <label><b>Title</b></label>
                                                                                 <input
                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                         [class.is-invalid]="formEditComment.title.invalid && formEditComment.title.touched"
@@ -504,15 +503,14 @@
                                                                                         aria-label="Small"
                                                                                         class="form-control one-column-input"
                                                                                         formControlName="title"
+                                                                                        readonly
                                                                                         name="title"
                                                                                         ngModel="{{this.commentMadeRetrievedB?.title}}"
                                                                                         placeholder="Title"
                                                                                         type="text">
                                                                             </div>
                                                                             <div class="form-group col-6">
-                                                                                <label><b>Document
-                                                                                    Type</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                <label><b>Document Type</b></label>
                                                                                 <input
                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                         [class.is-invalid]="formEditComment.documentType.invalid && formEditComment.documentType.touched"
@@ -520,6 +518,7 @@
                                                                                         aria-label="Small"
                                                                                         class="form-control one-column-input"
                                                                                         formControlName="documentType"
+                                                                                        readonly
                                                                                         name="documentType"
                                                                                         ngModel="{{this.commentMadeRetrievedB?.document_type}}"
                                                                                         placeholder="Document Type"
@@ -531,13 +530,13 @@
                                                                         <div class="row col-12">
                                                                             <div class="form-group col-6">
                                                                                 <label><b>Circulation
-                                                                                    Date</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                    Date</b></label>
                                                                                 <input
                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                         [class.is-invalid]="formEditComment.circulationDate.invalid && formEditComment.circulationDate.touched"
                                                                                         aria-describedby="inputGroup-sizing-sm"
                                                                                         aria-label="Small"
+                                                                                        readonly
                                                                                         class="form-control one-column-input"
                                                                                         formControlName="circulationDate"
                                                                                         name="circulationDate"
@@ -547,13 +546,13 @@
                                                                             </div>
                                                                             <div class="form-group col-6">
                                                                                 <label><b>Closing
-                                                                                    Date</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                    Date</b></label>
                                                                                 <input
                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                         [class.is-invalid]="formEditComment.closingDate.invalid && formEditComment.closingDate.touched"
                                                                                         aria-describedby="inputGroup-sizing-sm"
                                                                                         aria-label="Small"
+                                                                                        readonly
                                                                                         class="form-control one-column-input"
                                                                                         formControlName="closingDate"
                                                                                         name="closingDate"
@@ -567,8 +566,7 @@
                                                                         <div class="row col-12">
                                                                             <div class="form-group col-6">
                                                                                 <label><b>Organization
-                                                                                </b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                                </b></label>
                                                                                 <input
                                                                                         oninput="this.value = this.value.toUpperCase()"
                                                                                         [class.is-invalid]="formEditComment.organization.invalid && formEditComment.organization.touched"
@@ -577,6 +575,7 @@
                                                                                         class="form-control one-column-input"
                                                                                         formControlName="organization"
                                                                                         name="organization"
+                                                                                        readonly
                                                                                         placeholder="Organization"
                                                                                         ngModel="{{this.commentMadeRetrievedB?.organization}}"
 
@@ -686,49 +685,6 @@
 
 
                                                                         </div>
-                                                                        <div class="row col-12">
-                                                                            <div class="form-group col-6">
-                                                                                <label><b>TC
-                                                                                    Observation</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                <input
-                                                                                        [class.is-invalid]="formEditComment.observation.invalid && formEditComment.observation.touched"
-                                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                                        aria-label="Small"
-                                                                                        class="form-control one-column-input"
-                                                                                        formControlName="observation"
-                                                                                        name="observation"
-                                                                                        placeholder="TC Observation"
-                                                                                        ngModel="{{this.commentMadeRetrievedB?.observation}}"
-
-                                                                                        type="text">
-                                                                            </div>
-                                                                            <div class="form-group col-6">
-                                                                                <label><b>Recipient</b><span
-                                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
-                                                                                <select aria-label="Small"
-                                                                                        aria-describedby="inputGroup-sizing-lg"
-                                                                                        class="form-control"
-                                                                                        required
-                                                                                        formControlName="recipientId"
-                                                                                        name="recipientId"
-                                                                                        ngModel="{{this.commentMadeRetrievedB?.recipient_id}}"
-                                                                                        [class.is-invalid]="formEditComment.recipientId.invalid && formEditComment.recipientId.touched">
-                                                                                    <option selected
-                                                                                            value="{{this.commentMadeRetrievedB?.recipient_id}}">
-                                                                                        {{this.commentMadeRetrievedB?.received_by}}
-                                                                                    </option>
-                                                                                    <option value="23">
-                                                                                        Mike Owiti
-                                                                                    </option>
-
-
-                                                                                </select>
-                                                                            </div>
-
-
-                                                                        </div>
-
                                                                         <input type="hidden"
                                                                                formControlName="id"
                                                                                name="id"

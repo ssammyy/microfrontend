@@ -146,6 +146,22 @@
                                                         <div class="row col-12">
 
                                                             <div class="form-group col-12">
+                                                                <label><b>CD Number:</b></label>
+                                                                <mat-form-field class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(preliminary_draftFormGroup, 'requestNo')">
+                                                                    <input type="text"
+                                                                           matInput
+                                                                           aria-describedby="inputGroup-sizing-sm"
+                                                                           aria-label="Small"
+                                                                           class="form-control one-column-input"
+                                                                           placeholder="CD Number"
+                                                                           formControlName ="requestNo"
+                                                                           readonly>
+                                                                    <app-field-error-display
+                                                                            [displayError]="isFieldValid(preliminary_draftFormGroup, 'requestNo')"
+                                                                            errorMsg="Please Enter CD Number">
+                                                                    </app-field-error-display>
+                                                                </mat-form-field>
                                                                 <label><b>Preliminary Draft Name:</b></label>
                                                                 <mat-form-field class="example-full-width has-label"
                                                                                 [ngClass]="displayFieldCss(preliminary_draftFormGroup, 'pdName')">
@@ -265,7 +281,7 @@
                                                                         <li style="background: lightgray"
                                                                             class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
                                                                         <li style="background: lightgray"
-                                                                            class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
+                                                                            class="list-group-item">{{"Intended Users: " + actionRequest?.intendedUsers}}</li>
                                                                         <li style="background: lightgray"
                                                                             class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
                                                                     </ul>
@@ -367,34 +383,16 @@
                                                                 </li>
 
                                                                 <div *ngFor="let nwiActionRequest of nwiItem let i= index; ">
-
-
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Proposal Title: " + nwiActionRequest?.proposalTitle}}</li>
                                                                     <li style="background: lightgray"
-                                                                        class="list-group-item">
-                                                                        <div>
-                                                                            {{"Scope: " + nwiActionRequest?.scope}}
-                                                                        </div>
-                                                                    </li>
+                                                                        class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
                                                                     <li style="background: lightgray"
-                                                                        class="list-group-item">
-                                                                        <div style="overflow-wrap: break-word; width: 100%">{{"Purpose: " + nwiActionRequest?.purpose}}</div>
-                                                                    </li>
+                                                                        class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-                                                                    <li style="background: lightgray"
-                                                                        class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>
-                                                                    <li style="background: lightgray"
-                                                                        class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>
-                                                                    <li style="background: lightgray"
-                                                                        class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>
-                                                                    <li style="background: lightgray"
-                                                                        class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-                                                                    <li style="background: lightgray"
-                                                                        class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
                                                                     <li style="background: lightgray"
@@ -404,9 +402,9 @@
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
                                                                     <li style="background: lightgray"
-                                                                        class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>
+                                                                        class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfDepartment}}</li>
                                                                     <li style="background: lightgray"
-                                                                        class="list-group-item">{{"Name of TC: " + nwiActionRequest?.nameOfTC}}</li>
+                                                                        class="list-group-item">{{"Technical Committee: " + nwiActionRequest?.nameOfTC}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
                                                                 </div>

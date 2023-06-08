@@ -827,21 +827,21 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {
                 path: 'preparePrd',
-                title: 'Prepare Public Review Draft',
+                title: 'Prepare PRD',
                 ab: 'PRD',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
             },
             {
-                path: 'commentOnPrd',
-                title: 'Review Public Review Draft',
-                ab: 'RPD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
-            },
-            {
                 path: 'viewPrd',
-                title: 'Review Public Review Draft',
+                title: 'Review PRD',
                 ab: 'V',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
+            {
+                path: 'commentOnPrd',
+                title: 'Comment On PRD',
+                ab: 'C',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
             },
 
 
@@ -865,7 +865,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'voteOnBallot',
                 title: 'Vote On Ballot Draft',
                 ab: 'V',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SD_READ']
             },
             {
                 path: 'reviewBallotDraft',
@@ -951,7 +951,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ','TC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ', 'TC_SEC_SD_READ'],
         collapse: 'publish',
     },
     {
@@ -1084,7 +1084,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'groups',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ','NSC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'DI_SDT_SD_MODIFY', 'SPC_SD_READ', 'SAC_SEC_SD_READ', 'HOD_TWO_SD_READ', 'SPC_SEC_SD_READ', 'NSC_SD_READ'],
         collapse: 'membership',
 
     },
@@ -1261,7 +1261,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'business',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ','TC_SD_READ','TC_SEC_SD_READ', 'KNW_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ', 'TC_SD_READ', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ'],
         collapse: 'AoIS',
     },
 
