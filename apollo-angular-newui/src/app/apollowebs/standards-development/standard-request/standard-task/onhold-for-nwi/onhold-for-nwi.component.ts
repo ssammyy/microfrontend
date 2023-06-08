@@ -7,8 +7,8 @@ import {
     TaskData
 } from "../../../../../core/store/data/std/request_std.model";
 import {DataTableDirective} from "angular-datatables";
-import {ReplaySubject, Subject} from "rxjs";
-import {Department, StandardRequest, UsersEntity} from "../../../../../core/store/data/std/std.model";
+import {Subject} from "rxjs";
+import {Department, StandardRequest} from "../../../../../core/store/data/std/std.model";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {StandardDevelopmentService} from "../../../../../core/store/data/std/standard-development.service";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
@@ -100,14 +100,12 @@ export class OnholdForNwiComponent implements OnInit {
     onDeclineApplication: boolean = false;
 
 
-
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
                 private store$: Store<any>,
-
     ) {
     }
 
@@ -411,6 +409,7 @@ export class OnholdForNwiComponent implements OnInit {
     }
 
     @ViewChild('matRef') matRef: MatSelect;
+
     clear() {
         this.matRef.options.forEach((data: MatOption) => data.deselect());
     }
@@ -466,6 +465,7 @@ export class OnholdForNwiComponent implements OnInit {
         }
 
     }
+
     getTechnicalCommittee(): void {
         this.standardDevelopmentService.getAllTcsForApplication().subscribe(
             (response: DataHolder[]) => {

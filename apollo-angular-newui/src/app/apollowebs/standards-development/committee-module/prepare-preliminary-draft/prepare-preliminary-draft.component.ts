@@ -137,6 +137,8 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         this.preliminary_draftFormGroup = this.formBuilder.group({
             pdName: ['', Validators.required],
             nwiId: ['', Validators.required],
+            requestNo: ['', Validators.required],
+
 
         });
 
@@ -201,6 +203,8 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         if (mode === 'uploadMinutes') {
             this.approvedNwiSForPdB = approvedNwiS;
             this.preliminary_draftFormGroup.controls.nwiId.setValue(approvedNwiS.id);
+            this.preliminary_draftFormGroup.controls.requestNo.setValue(approvedNwiS.referenceNumber);
+
 
             button.setAttribute('data-target', '#uploadMinutes');
         }
@@ -218,7 +222,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
                 this.loading = true
                 this.loadingText = "Submitting  ...."
                 this.SpinnerService.show();
-
 
 
                 this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSForPdB.id).subscribe(
@@ -269,8 +272,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
             this.committeeService.uploadDraftDocumentsForPd(pdID, formData, "Drafts And Other Relevant Documents PD", "Drafts And Other Relevant Documents PD").subscribe(
             );
         }
-
-
 
 
         if (this.uploadedFilesC.length > 0) {
@@ -469,8 +470,8 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     }
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-        this.loading=true
-        this.loadingText="Loading Document"
+        this.loading = true
+        this.loadingText = "Loading Document"
         this.SpinnerService.show();
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
@@ -481,7 +482,7 @@ export class PreparePreliminaryDraftComponent implements OnInit {
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 window.open(downloadURL, '_blank');
-                this.loading=false;
+                this.loading = false;
                 this.SpinnerService.hide()
 
                 // this.pdfUploadsView = dataPdf;

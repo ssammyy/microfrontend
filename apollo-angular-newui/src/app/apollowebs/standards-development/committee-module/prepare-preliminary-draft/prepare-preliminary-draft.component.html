@@ -146,6 +146,22 @@
                                                         <div class="row col-12">
 
                                                             <div class="form-group col-12">
+                                                                <label><b>CD Number:</b></label>
+                                                                <mat-form-field class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(preliminary_draftFormGroup, 'requestNo')">
+                                                                    <input type="text"
+                                                                           matInput
+                                                                           aria-describedby="inputGroup-sizing-sm"
+                                                                           aria-label="Small"
+                                                                           class="form-control one-column-input"
+                                                                           placeholder="CD Number"
+                                                                           formControlName ="requestNo"
+                                                                           readonly>
+                                                                    <app-field-error-display
+                                                                            [displayError]="isFieldValid(preliminary_draftFormGroup, 'requestNo')"
+                                                                            errorMsg="Please Enter CD Numbe">
+                                                                    </app-field-error-display>
+                                                                </mat-form-field>
                                                                 <label><b>Preliminary Draft Name:</b></label>
                                                                 <mat-form-field class="example-full-width has-label"
                                                                                 [ngClass]="displayFieldCss(preliminary_draftFormGroup, 'pdName')">
@@ -385,7 +401,7 @@
                                                                         class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
-                                                                     <li style="background: lightgray"
+                                                                    <li style="background: lightgray"
                                                                         class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfDepartment}}</li>
                                                                     <li style="background: lightgray"
                                                                         class="list-group-item">{{"Technical Committee: " + nwiActionRequest?.nameOfTC}}</li>

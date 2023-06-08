@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DHTML phone number validation script. Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
  */
 

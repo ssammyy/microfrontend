@@ -1,4 +1,4 @@
-﻿var thispage = "";
+var thispage = "";
 var addProviderRow = true;
 var sharingItem = "1";
 

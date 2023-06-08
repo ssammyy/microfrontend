@@ -603,6 +603,7 @@ import {ViewMonitoringIssuesComponent} from './apollowebs/pvoc/monitoring/view-m
 import {WaiverCertificateDetailsComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/waiver-certificate-details/waiver-certificate-details.component';
 import { ComOnPublicReviewComponent } from './apollowebs/standards-development/publicReview/com-on-public-review/com-on-public-review.component';
 import { ComOnSiteDraftComponent } from './apollowebs/standards-development/publicReview/com-on-site-draft/com-on-site-draft.component';
+import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 
 @NgModule({
     imports: [
@@ -678,7 +679,7 @@ import { ComOnSiteDraftComponent } from './apollowebs/standards-development/publ
         RecaptchaFormsModule,
         RecaptchaModule,
         RecaptchaFormsModule,
-        // NgxIntlTelInputModule
+        NgxIntlTelInputModule,
 
 
         // NgxDocViewerModule
