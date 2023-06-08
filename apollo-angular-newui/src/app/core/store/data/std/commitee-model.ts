@@ -131,6 +131,11 @@ export interface PublicReviewDraftWithName {
     closing_DATE: string;
     commentStatus: number;
 
+    commentId: number;
+    userEmail: string;
+    userName: string;
+    userTelephone: string;
+
 
 }
 

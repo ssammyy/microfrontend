@@ -203,6 +203,12 @@ interface PrdWithUserName {
     fun getORGANIZATION(): String?
 
     fun getCommentStatus(): Long?
+    fun getCommentId(): Long?
+    fun getUserEmail(): String?
+    fun getUserName(): String?
+    fun getUserTelephone(): String?
+
+
 
 }
 
@@ -361,6 +367,10 @@ data class CommentsDto(
     var typeOfComment: String? = null,
     var comment: String? = null,
     var proposedChange: String? = null,
+    var commentId: String,
+    var nameOfRespondent: String,
+    var emailOfRespondent : String,
+    var phoneOfRespondent : String
 
     )
 

@@ -94,6 +94,10 @@ export class CommentOnPublicReviewComponent implements OnInit {
       typeOfComment: ['', Validators.required],
       proposedChange: ['', Validators.required],
       comment: ['', Validators.required],
+      commentId: [],
+      nameOfRespondent: [],
+      emailOfRespondent: [],
+      phoneOfRespondent: []
     });
 
 
@@ -214,7 +218,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
       this.SpinnerService.show();
 
       //(this.sta10Details.id.toString());
-      this.stdIntStandardService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
+      this.stdIntStandardService.makeCommentB(this.commentsMadeFormGroup.value, public_review_draft_id, "PRD").subscribe(
           (data) => {
 
             this.SpinnerService.hide();
@@ -338,6 +342,15 @@ export class CommentOnPublicReviewComponent implements OnInit {
     if (mode === 'makeComment') {
       this.publicReviewDraftsB = publicReviewDraft;
       button.setAttribute('data-target', '#makeComment');
+      this.commentsMadeFormGroup.patchValue(
+          {
+            commentId: publicReviewDraft.commentId,
+            nameOfRespondent: publicReviewDraft.userName,
+            emailOfRespondent: publicReviewDraft.userEmail,
+            phoneOfRespondent: publicReviewDraft.userTelephone
+
+          }
+      );
     }
     if (mode === 'viewCd') {
       this.publicReviewDraftsB = publicReviewDraft;

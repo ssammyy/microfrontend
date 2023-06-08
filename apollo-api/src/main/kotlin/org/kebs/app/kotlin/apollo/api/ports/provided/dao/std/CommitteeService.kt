@@ -134,6 +134,70 @@ class CommitteeService(
     }
 
 
+    private fun makeCommentB(
+        bodyDetails: CommentsDto,
+        preliminaryDraftId: Long,
+        docType: String
+    ): Comments {
+        var comment = Comments()
+        var preliminaryDraft: CommitteePD? = null
+        var nwi: StandardNWI? = null
+
+        when (docType) {
+            "PD" -> {
+                preliminaryDraft = committeePDRepository.findByIdOrNull(preliminaryDraftId)
+                preliminaryDraft?.let {
+                    nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
+                }
+            }
+            "CD" -> {
+                val committeeDraft = committeeCDRepository.findByIdOrNull(preliminaryDraftId)
+                committeeDraft?.let {
+                    preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft.pdID)
+                    preliminaryDraft?.let {
+                        nwi = standardNWIRepository.findByIdOrNull(it.nwiID?.toLong() ?: -1L)
+                    }
+                }
+            }
+            "PRD" -> {
+                val publicReviewDraft = publicReviewDraftRepository.findByIdOrNull(preliminaryDraftId)
+                val committeeDraft = committeeCDRepository.findByIdOrNull(publicReviewDraft?.cdID ?: -1L)
+                preliminaryDraft = committeePDRepository.findByIdOrNull(committeeDraft?.pdID ?: -1L)
+                nwi = standardNWIRepository.findByIdOrNull(preliminaryDraft?.nwiID?.toLong() ?: -1L)
+
+
+            }
+        }
+
+        try {
+            val existingComment = commentsRepository.findByIdOrNull(bodyDetails.id ?: -1L)
+            if (existingComment != null) {
+                comment = saveComments(
+                    bodyDetails,
+                    preliminaryDraftId,
+                    docType,
+                    existingComment,
+                    true,
+                    nwi!!
+                )
+            } else {
+                comment = saveComments(
+                    bodyDetails,
+                    preliminaryDraftId,
+                    docType,
+                    comment,
+                    false,
+                    nwi!!
+                )
+            }
+
+            comment = commentsRepository.save(comment)
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+        return comment
+    }
+
     private fun addComment(
         bodyDetails: CommentsDto,
         preliminaryDraftId: Long,
@@ -199,6 +263,58 @@ class CommitteeService(
             KotlinLogging.logger { }.error(e.message, e)
         }
         return comment
+    }
+
+    fun saveComments(
+        details: CommentsDto,
+        preliminaryDraftIdAssigned: Long,
+        docType: String,
+        comments: Comments,
+        update: Boolean,
+        nwi: StandardNWI
+    ): Comments {
+
+        with(comments)
+        {
+            clause = details.clause
+            paragraph = details.paragraph
+            commentType = details.typeOfComment
+            commentsMade = details.comment
+            proposedChange = details.proposedChange
+            when (docType) {
+                "PD" -> {
+                    pdId = preliminaryDraftIdAssigned
+                }
+                "CD" -> {
+                    cdId = preliminaryDraftIdAssigned
+                }
+                "PRD" -> {
+                    prdId = preliminaryDraftIdAssigned.toString()
+                }
+            }
+            documentType = docType
+            status = 1.toString()
+            title = nwi.proposalTitle
+            circulationDate = nwi.circulationDate?.let { convertToTimestamp(it) }
+            closingDate = nwi.closingDate?.let { convertToTimestamp(it) }
+            organization = nwi.organization
+
+            when {
+                update -> {
+                    modifiedBy = details.nameOfRespondent
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                else -> {
+                    createdBy = details.nameOfRespondent
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+            return comments
+
+
+        }
+
     }
 
 

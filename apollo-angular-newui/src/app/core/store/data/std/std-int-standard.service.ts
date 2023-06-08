@@ -225,12 +225,12 @@ export class StdIntStandardService {
 
 
 
-    public makeCommentB(comment: CommentsDto[], preliminary_draft_id, doctype: string): Observable<any> {
+    public makeCommentB(comment: CommentsDto, preliminary_draft_id, doctype: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PR_MAKE_COMMENTS_ON_PUBLIC_REVIEW);
         const params = new HttpParams()
             .set('docType', doctype)
             .set('preliminary_draft_id', preliminary_draft_id)
-        return this.http.post<CommentsDto[]>(url, comment, {params})
+        return this.http.post<CommentsDto>(url, comment, {params})
 
     }
 

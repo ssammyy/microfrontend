@@ -225,7 +225,7 @@ class IntStandardController(
     @PostMapping("/anonymous/international_standard/makeCommentOnDraft")
     fun makeComment(
         @RequestParam("preliminary_draft_id") preliminaryDraftId: String,
-        @RequestBody body: List<CommentsDto>,
+        @RequestBody body: CommentsDto,
         @RequestParam("docType") docType: String,
     ): ServerResponse {
 

@@ -451,6 +451,7 @@ export class CommentsDto {
     typeOfComment: string;
     comment: string;
     proposedChange: string;
+    commentId: number;
 
 
 }
