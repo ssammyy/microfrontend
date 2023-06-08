@@ -271,7 +271,7 @@ class IntStandardController(
     }
 
     @GetMapping("/anonymous/international_standard/getAllPublicReviews/{encryptedId}")
-    fun getPublicReviewForComment(@PathVariable encryptedId: Long):MutableIterable<PrdWithUserName>?
+    fun getPublicReviewForComment(@PathVariable encryptedId: String):MutableIterable<PrdWithUserName>?
     {
         return publicReviewService.getPublicReviewForComment(encryptedId)
     }

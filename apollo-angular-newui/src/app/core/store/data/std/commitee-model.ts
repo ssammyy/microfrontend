@@ -48,11 +48,12 @@ export interface Preliminary_Draft_With_Name {
     pd_by: string;
     status: string;
     number_OF_COMMENTS: string;
-
     organization: string;
     proposal_TITLE: string;
     circulation_DATE: string;
     closing_DATE: string;
+    reference_NUMBER: string;
+
 }
 
 export interface TaskData {
@@ -128,7 +129,7 @@ export interface PublicReviewDraftWithName {
     organization: string;
     proposal_TITLE: string;
     circulation_DATE: string;
-    closing_DATE: string;
+    closing_DATE: Date;
     commentStatus: number;
 
 
@@ -188,7 +189,7 @@ export interface CommentMadeRetrieved {
     commentsId: number,
     document_type: string,
     circulation_date: string,
-    closing_date: string,
+    closing_date: Date,
     organization: string,
     paragraph: string,
     comment_type: string,

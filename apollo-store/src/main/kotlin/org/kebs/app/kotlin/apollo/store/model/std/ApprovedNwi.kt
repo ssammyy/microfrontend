@@ -121,6 +121,8 @@ interface PdWithUserName {
 
     fun getORGANIZATION(): String?
 
+    fun getREFERENCE_NUMBER(): String?
+
 
 }
 
@@ -237,6 +239,7 @@ interface CommentsWithPrdId {
 
 
 }
+
 data class CommentsCdDto(
     var id: Long? = null,
     var clause: String? = null,
@@ -277,7 +280,6 @@ interface VotesWithBallotId {
 
     fun getUSER_id(): Long?
     fun getBALLOT_STATUS(): String?
-
 
 
 }
@@ -326,8 +328,6 @@ interface NwiVotesTally {
 
     fun getNUMBER_OF_EXPECTED_VOTES(): Long?
     fun getTC_ID(): String?
-
-
 
 
 }

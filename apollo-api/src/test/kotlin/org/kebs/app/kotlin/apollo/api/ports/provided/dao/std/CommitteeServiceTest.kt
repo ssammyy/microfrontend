@@ -18,4 +18,19 @@ class CommitteeServiceTest {
         println(parsedDate)
 
     }
+
+
+    @Test
+    fun checkIfSplitTextWorks(): Unit {
+
+        val text ="CHEM/292:2023"
+        val splitText = text.split("/".toRegex())
+        val partB = splitText[1]
+
+        val textToDisplay=
+
+
+        println(partB)
+
+    }
 }

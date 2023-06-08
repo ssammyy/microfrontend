@@ -110,5 +110,16 @@ class PublicReviewDraft {
     @Basic
     var encrypted: String?=null
 
+    @Column(name = "CIRCULATION_DATE")
+    @Basic
+    var circulationDate: Timestamp? = null
+
+    @Column(name = "CLOSING_DATE")
+    @Basic
+    var closingDate: Timestamp? = null
+
+
+
+
 
 }

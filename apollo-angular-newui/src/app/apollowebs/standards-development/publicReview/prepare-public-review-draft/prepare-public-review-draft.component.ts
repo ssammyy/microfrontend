@@ -239,8 +239,6 @@ export class PreparePublicReviewDraftComponent implements OnInit {
 
                 this.publicReviewService.preparePublicReviewDraft(this.publicReview_draftFormGroup.value, String(this.committee_draftsB.cdid)).subscribe(
                     (response) => {
-                        console.log(response)
-                        this.SpinnerService.hide();
                         this.showToasterSuccess(response.httpStatus, `Successfully Submitted Public Review Draft`);
                         this.uploadPrDDoc(response.body.savedRowID)
                         this.publicReview_draftFormGroup.reset();
@@ -286,11 +284,8 @@ export class PreparePublicReviewDraftComponent implements OnInit {
             for (let i = 0; i < file.length; i++) {
                 formData.append('docFile', file[i], file[i].name);
             }
-            this.SpinnerService.show();
             this.publicReviewService.uploadPRDDocument(prdId, formData, "PRD Document", "PRD Document").subscribe(
                 (data: any) => {
-                    this.loading = false
-                    this.SpinnerService.hide();
                     this.uploadedFiles = [];
                     this.uploadedFilesB = [];
                     this.uploadedFilesC = [];
@@ -305,57 +300,13 @@ export class PreparePublicReviewDraftComponent implements OnInit {
                         icon: 'success'
                     });
                     this.getAllCds();
-
+                    this.loading = false
+                    this.SpinnerService.hide();
                 },
             );
         }
     }
 
-    approveCD(committeeDraft): void {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        });
-
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure your want to approve this committee draft?',
-            text: 'You won\'t be able to reverse this!',
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonText: 'Approve!',
-            cancelButtonText: 'Reject!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.SpinnerService.show();
-                this.committeeService.approveCommitteeDraft(committeeDraft).subscribe(
-                    (response) => {
-                        this.SpinnerService.hide();
-                        swalWithBootstrapButtons.fire(
-                            'Approved!',
-                            'Committee Draft Successfully Approved!',
-                            'success'
-                        );
-                        this.SpinnerService.hide();
-                        this.showToasterSuccess(response.httpStatus, 'Committee Draft Successfully Approved');
-                        this.getAllCds();
-                    },
-                );
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'You have cancelled this operation',
-                    'error'
-                );
-            }
-        });
-    }
 
 
     public onOpenModal(committeeDraft: Committee_Draft_With_Name, mode: string): void {

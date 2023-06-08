@@ -840,6 +840,9 @@ class CommonDaoServices(
     fun getUserName(user: UsersEntity): String {
         return "${user.userName}"
     }
+    fun getUserCellPhone(user: UsersEntity): String {
+        return "${user.cellphone}"
+    }
 
     fun getTimestamp(): Timestamp {
         return Timestamp.from(Instant.now())

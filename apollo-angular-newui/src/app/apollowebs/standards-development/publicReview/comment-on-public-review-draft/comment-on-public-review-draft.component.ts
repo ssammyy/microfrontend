@@ -1,7 +1,8 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     CommentMadeRetrieved,
-    PublicReviewDraftWithName, StandardDocuments,
+    PublicReviewDraftWithName,
+    StandardDocuments,
 } from "../../../../core/store/data/std/commitee-model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -64,7 +65,7 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
 
     displayUsers: boolean = false;
 
-    loadingDocsTable= false;
+    loadingDocsTable = false;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -90,7 +91,6 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
 
 
         this.editCommentFormGroup = this.formBuilder.group({
-            recipientId: ['', Validators.required],
             title: ['', Validators.required],
             documentType: ['', Validators.required],
             circulationDate: ['', Validators.required],
@@ -100,7 +100,6 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
             paragraph: ['', Validators.required],
             commentType: ['', Validators.required],
             proposedChange: ['', Validators.required],
-            observation: ['', Validators.required],
             commentsMade: ['', Validators.required],
             id: ['', Validators.required],
         });
@@ -322,15 +321,21 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'makeComment') {
-            this.publicReviewDraftsB = publicReviewDraft;
-            button.setAttribute('data-target', '#makeComment');
+            const today: Date = new Date();
+
+            if (publicReviewDraft.closing_DATE > today) {
+                this.notifyService.showError("Commenting Closed", "Commenting Window Has Been Closed. You cannot comment.");
+
+            } else {
+                this.publicReviewDraftsB = publicReviewDraft;
+                button.setAttribute('data-target', '#makeComment');
+            }
         }
         if (mode === 'viewCd') {
             this.publicReviewDraftsB = publicReviewDraft;
             this.getAllCdDocs(publicReviewDraft.id)
             button.setAttribute('data-target', '#viewCd');
         }
-
 
 
         // @ts-ignore
@@ -347,8 +352,14 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'editComment') {
-            this.commentMadeRetrievedB = commentMadeRetrieved;
-            button.setAttribute('data-target', '#editComment');
+            const today: Date = new Date();
+            if (commentMadeRetrieved.closing_date > today) {
+                this.notifyService.showError("Commenting Closed", "Commenting Window Has Been Closed. You cannot edit your comment.");
+
+            } else {
+                this.commentMadeRetrievedB = commentMadeRetrieved;
+                button.setAttribute('data-target', '#editComment');
+            }
 
         }
 
@@ -411,12 +422,12 @@ export class CommentOnPublicReviewDraftComponent implements OnInit {
 
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-        this.loading= true
-        this.loadingText="Downloading Document"
+        this.loading = true
+        this.loadingText = "Downloading Document"
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
-                this.loading=false
+                this.loading = false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const

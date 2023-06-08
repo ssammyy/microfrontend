@@ -1,7 +1,8 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     CommentMadeRetrieved,
-    Preliminary_Draft, PublicReviewDraftWithName, StandardDocuments
+    PublicReviewDraftWithName,
+    StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
@@ -17,17 +18,16 @@ import {formatDate} from "@angular/common";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {
-    DataHolderB,
-    Department
-} from "../../../../core/store/data/std/request_std.model";
+import {DataHolderB, Department} from "../../../../core/store/data/std/request_std.model";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {StakeHoldersFields, UploadedDataId, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+
 declare const $: any;
+
 @Component({
     selector: 'app-public-review-draft',
     templateUrl: './public-review-draft.component.html',
@@ -57,7 +57,7 @@ export class PublicReviewDraftComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
-    uploadedDataId !:UploadedDataId;
+    uploadedDataId !: UploadedDataId;
     public departments !: Department[];
     dropdownList: any[] = [];
     selectedItems?: Department;
@@ -80,13 +80,13 @@ export class PublicReviewDraftComponent implements OnInit {
     agencyResponsible: string;
     public isProposalFormGroup!: FormGroup;
 
-    dataSaveResourcesRequired : StakeHoldersFields;
-    dataSaveResourcesRequiredList: StakeHoldersFields[]=[];
+    dataSaveResourcesRequired: StakeHoldersFields;
+    dataSaveResourcesRequiredList: StakeHoldersFields[] = [];
     predefinedSDCommentsDataAdded: boolean = false;
     selectedOption = '';
-    newString:string;
-    joinedStringAsString:string;
-    rvAsString:string;
+    newString: string;
+    joinedStringAsString: string;
+    rvAsString: string;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -97,8 +97,8 @@ export class PublicReviewDraftComponent implements OnInit {
                 private publicReviewService: PublicReviewService,
                 private notificationService: NepPointService,
                 private notifyService: NotificationService,
-                private stdIntStandardService : StdIntStandardService,
-                private stdComStandardService:StdComStandardService,
+                private stdIntStandardService: StdIntStandardService,
+                private stdComStandardService: StdComStandardService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
@@ -108,7 +108,7 @@ export class PublicReviewDraftComponent implements OnInit {
         this.findStandardStakeholders()
         this.editedPublicReview_draftFormGroup = this.formBuilder.group({
             prdName: ['', Validators.required],
-            ksNumber:['', Validators.required]
+            ksNumber: ['', Validators.required]
         });
 
         this.dropdownSettings = {
@@ -121,37 +121,36 @@ export class PublicReviewDraftComponent implements OnInit {
         };
 
         this.isProposalFormGroup = this.formBuilder.group({
-            prId:null,
-            stakeholdersList:null,
-            stakeHolderName:null,
-            stakeHolderEmail:null,
-            stakeHolderPhone:null
+            prId: null,
+            stakeHolderName: null,
+            stakeHolderEmail: null,
+            stakeHolderPhone: null
 
         });
 
         this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
-            notifyingMember : ['', Validators.required],
-            agencyResponsible : ['', Validators.required],
-            addressOfAgency : ['', Validators.required],
-            telephoneOfAgency : ['', Validators.required],
-            faxOfAgency : ['', Validators.required],
-            emailOfAgency : ['', Validators.required],
-            websiteOfAgency : ['', Validators.required],
-            notifiedUnderArticle : ['', Validators.required],
-            productsCovered : ['', Validators.required],
-            descriptionOfNotifiedDoc : ['', Validators.required],
-            descriptionOfContent : ['', Validators.required],
-            objectiveAndRationale : ['', Validators.required],
-            otherObjectiveAndRationale : [],
-            relevantDocuments : ['', Validators.required],
-            proposedDateOfAdoption : ['', Validators.required],
-            proposedDateOfEntryIntoForce : [],
-            textAvailableFrom : ['', Validators.required],
-            pid:null,
-            cd_Id:null,
-            prd_name:null,
-            ks_NUMBER:null,
-            organization:null,
+            notifyingMember: ['', Validators.required],
+            agencyResponsible: ['', Validators.required],
+            addressOfAgency: ['', Validators.required],
+            telephoneOfAgency: ['', Validators.required],
+            faxOfAgency: ['', Validators.required],
+            emailOfAgency: ['', Validators.required],
+            websiteOfAgency: ['', Validators.required],
+            notifiedUnderArticle: ['', Validators.required],
+            productsCovered: ['', Validators.required],
+            descriptionOfNotifiedDoc: ['', Validators.required],
+            descriptionOfContent: ['', Validators.required],
+            objectiveAndRationale: ['', Validators.required],
+            otherObjectiveAndRationale: [],
+            relevantDocuments: ['', Validators.required],
+            proposedDateOfAdoption: ['', Validators.required],
+            proposedDateOfEntryIntoForce: [],
+            textAvailableFrom: ['', Validators.required],
+            pid: null,
+            cd_Id: null,
+            prd_name: null,
+            ks_NUMBER: null,
+            organization: null,
             prd_by: null,
             status: null,
             created_on: null,
@@ -159,15 +158,15 @@ export class PublicReviewDraftComponent implements OnInit {
             var_FIELD_1: null
 
         });
-        this.languageOfProposal="English"
-        this.notifyingMember="Republic of Kenya"
-        this.agencyResponsible="Kenya Bureau of Standards - KEBS"
-        this.addressOfAgency="P.O. Box: 54974-00200, Nairobi, Kenya"
-        this.telephoneOfAgency="+ (254) 020 605490, 605506/6948258"
-        this.faxOfAgency="+ (254) 020 609660/609665"
-        this.emailOfAgency="info@kebs.org"
-        this.websiteOfAgency="Website: http://www.kebs.org"
-        this.textAvailableFrom="Kenya Bureau of Standards\n WTO/TBT National Enquiry Point\n P.O. Box: 54974-00200, Nairobi, Kenya\n Telephone: + (254) 020 605490, 605506/6948258\n Fax: + (254) 020 609660/609665\n E-mail: info@kebs.org; Website: http://www.kebs.org\n"
+        this.languageOfProposal = "English"
+        this.notifyingMember = "Republic of Kenya"
+        this.agencyResponsible = "Kenya Bureau of Standards - KEBS"
+        this.addressOfAgency = "P.O. Box: 54974-00200, Nairobi, Kenya"
+        this.telephoneOfAgency = "+ (254) 020 605490, 605506/6948258"
+        this.faxOfAgency = "+ (254) 020 609660/609665"
+        this.emailOfAgency = "info@kebs.org"
+        this.websiteOfAgency = "Website: http://www.kebs.org"
+        this.textAvailableFrom = "Kenya Bureau of Standards\n WTO/TBT National Enquiry Point\n P.O. Box: 54974-00200, Nairobi, Kenya\n Telephone: + (254) 020 605490, 605506/6948258\n Fax: + (254) 020 609660/609665\n E-mail: info@kebs.org; Website: http://www.kebs.org\n"
         this.preparePreliminaryDraftFormGroup.patchValue(
             {
                 addressOfAgency: this.addressOfAgency,
@@ -176,8 +175,8 @@ export class PublicReviewDraftComponent implements OnInit {
                 emailOfAgency: this.emailOfAgency,
                 websiteOfAgency: this.websiteOfAgency,
                 textAvailableFrom: this.textAvailableFrom,
-                notifyingMember:this.notifyingMember,
-                agencyResponsible:this.agencyResponsible
+                notifyingMember: this.notifyingMember,
+                agencyResponsible: this.agencyResponsible
             }
         );
 
@@ -191,10 +190,11 @@ export class PublicReviewDraftComponent implements OnInit {
         console.log(items);
     }
 
-    showToasterWarning(title:string,message:string){
+    showToasterWarning(title: string, message: string) {
         this.notifyService.showWarning(message, title)
 
     }
+
     get formPreparePD(): any {
         return this.preparePreliminaryDraftFormGroup.controls;
     }
@@ -217,9 +217,7 @@ export class PublicReviewDraftComponent implements OnInit {
     public getAllPrddDocs(pdID: number) {
         this.publicReviewService.getAllDocumentsOnPrd(pdID).subscribe(
             (response: StandardDocuments[]) => {
-
                 this.standardDocuments = response;
-                this.rerender()
 
             },
             (error: HttpErrorResponse) => {
@@ -302,6 +300,7 @@ export class PublicReviewDraftComponent implements OnInit {
         });
 
     }
+
     public postToWebsite(publicReviewDrafts: PublicReviewDraftWithName) {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -501,6 +500,7 @@ export class PublicReviewDraftComponent implements OnInit {
         });
 
     }
+
     objectiveRationales = [
         "Consumer information",
         "Labelling",
@@ -511,7 +511,7 @@ export class PublicReviewDraftComponent implements OnInit {
         "Other"
     ]
 
-    onSelected(value:string): void {
+    onSelected(value: string): void {
         this.selectedOption = value;
     }
 
@@ -525,13 +525,13 @@ export class PublicReviewDraftComponent implements OnInit {
         if (mode === 'prepareNotification') {
             this.publicReviewDraftsB = publicReviewDrafts
             button.setAttribute('data-target', '#prepareNotification');
-            const ks=this.publicReviewDraftsB.ks_NUMBER;
+            const ks = this.publicReviewDraftsB.ks_NUMBER;
             const newStrings: string = ks.substring(1);
             this.newString = ks.substring(1);
-            const prTitle=this.publicReviewDraftsB.proposal_TITLE;
-            const prLang=this.languageOfProposal;
-            const joinedString: string[]=[newStrings,prTitle,prLang];
-            const rv: string[]=[newStrings,prTitle]
+            const prTitle = this.publicReviewDraftsB.proposal_TITLE;
+            const prLang = this.languageOfProposal;
+            const joinedString: string[] = [newStrings, prTitle, prLang];
+            const rv: string[] = [newStrings, prTitle]
             this.joinedStringAsString = joinedString.toString();
             this.rvAsString = rv.toString();
 
@@ -543,20 +543,20 @@ export class PublicReviewDraftComponent implements OnInit {
                     emailOfAgency: this.emailOfAgency,
                     websiteOfAgency: this.websiteOfAgency,
                     textAvailableFrom: this.textAvailableFrom,
-                    notifyingMember:this.notifyingMember,
-                    agencyResponsible:this.agencyResponsible,
-                    pid:this.publicReviewDraftsB.id,
-                    cd_Id:this.publicReviewDraftsB.cd_Id,
-                    prd_name:this.publicReviewDraftsB.prd_name,
-                    ks_NUMBER:this.newString,
-                    organization:this.publicReviewDraftsB.organization,
-                    prd_by:this.publicReviewDraftsB.prd_by,
-                    status:this.publicReviewDraftsB.status,
-                    created_on:this.publicReviewDraftsB.created_on,
-                    number_OF_COMMENTS:this.publicReviewDraftsB.number_OF_COMMENTS,
-                    var_FIELD_1:this.publicReviewDraftsB.var_FIELD_1,
-                    descriptionOfNotifiedDoc:this.joinedStringAsString,
-                    relevantDocuments:this.rvAsString,
+                    notifyingMember: this.notifyingMember,
+                    agencyResponsible: this.agencyResponsible,
+                    pid: this.publicReviewDraftsB.id,
+                    cd_Id: this.publicReviewDraftsB.cd_Id,
+                    prd_name: this.publicReviewDraftsB.prd_name,
+                    ks_NUMBER: this.newString,
+                    organization: this.publicReviewDraftsB.organization,
+                    prd_by: this.publicReviewDraftsB.prd_by,
+                    status: this.publicReviewDraftsB.status,
+                    created_on: this.publicReviewDraftsB.created_on,
+                    number_OF_COMMENTS: this.publicReviewDraftsB.number_OF_COMMENTS,
+                    var_FIELD_1: this.publicReviewDraftsB.var_FIELD_1,
+                    descriptionOfNotifiedDoc: this.joinedStringAsString,
+                    relevantDocuments: this.rvAsString,
                 }
             );
         }
@@ -723,7 +723,7 @@ export class PublicReviewDraftComponent implements OnInit {
         this.SpinnerService.show();
         //this.onClickSaveUploads("65")
         this.notificationService.notificationOfReview(this.preparePreliminaryDraftFormGroup.value).subscribe(
-            (response  ) => {
+            (response) => {
                 //console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Notification Uploaded`);
@@ -740,18 +740,18 @@ export class PublicReviewDraftComponent implements OnInit {
         this.hideModalChanges();
     }
 
-    onSubmit(draftId: string){
+    onSubmit(draftId: string) {
         this.SpinnerService.show();
         this.notificationService.updateNotificationStatus(draftId).subscribe(
             (data: any) => {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(data.httpStatus, `Status Updated`);
             },
-                (error: HttpErrorResponse) => {
-                    this.SpinnerService.hide();
-                    this.showToasterError('Error', `Error running update`);
-                    console.log(error.message);
-                }
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error running update`);
+                console.log(error.message);
+            }
         );
 
     }
@@ -772,7 +772,7 @@ export class PublicReviewDraftComponent implements OnInit {
                     this.getAllPrdS();
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Uploaded',
+                        html: 'Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -811,19 +811,20 @@ export class PublicReviewDraftComponent implements OnInit {
                 '</div>'
         });
     }
+
     @ViewChild('closeModalChanges') private closeModalChanges: ElementRef | undefined;
 
     public hideModalChanges() {
         this.closeModalChanges?.nativeElement.click();
     }
 
-    get formISProposal(): any{
+    get formISProposal(): any {
         return this.isProposalFormGroup.controls;
     }
 
     sendPublicReview(): void {
         this.SpinnerService.show();
-        this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
+        this.publicReviewService.sendPublicReview(this.isProposalFormGroup.value, this.dataSaveResourcesRequiredList).subscribe(
             (response) => {
                 //console.log(response);
                 this.SpinnerService.hide();
@@ -863,7 +864,7 @@ export class PublicReviewDraftComponent implements OnInit {
     onClickAddResource() {
         this.dataSaveResourcesRequired = this.isProposalFormGroup.value;
         this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
-        this.predefinedSDCommentsDataAdded= true;
+        this.predefinedSDCommentsDataAdded = true;
         this.isProposalFormGroup?.get('stakeHolderName')?.reset();
         this.isProposalFormGroup?.get('stakeHolderEmail')?.reset();
         this.isProposalFormGroup?.get('stakeHolderPhone')?.reset();

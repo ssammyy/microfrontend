@@ -26,12 +26,8 @@ declare const $: any;
     styleUrls: ['./approve-committee-draft.component.css']
 })
 export class ApproveCommitteeDraftComponent implements OnInit {
-
-    preliminary_draft: Preliminary_Draft_With_Name | undefined;
-    preliminary_drafts !: Preliminary_Draft_With_Name[];
     preliminary_draftsB !: Preliminary_Draft_With_Name | undefined;
     public committee_draftFormGroup!: FormGroup;
-    committee_draft: Committee_Draft_With_Name | undefined;
     committee_drafts !: Committee_Draft_With_Name[];
     committee_draftsB !: Committee_Draft_With_Name | undefined;
     standardDocuments !: StandardDocuments[];
@@ -63,7 +59,7 @@ export class ApproveCommitteeDraftComponent implements OnInit {
 
     displayUsers: boolean = false;
 
-    loadingDocsTable= false;
+    loadingDocsTable = false;
 
     loading = false;
     loadingText: string;
@@ -88,8 +84,6 @@ export class ApproveCommitteeDraftComponent implements OnInit {
     public getAllCds(): void {
         this.committeeService.getAllCommitteeDrafts().subscribe(
             (response: Committee_Draft_With_Name[]) => {
-                console.log(response);
-
                 this.committee_drafts = response;
                 this.rerender()
 
@@ -100,6 +94,7 @@ export class ApproveCommitteeDraftComponent implements OnInit {
         );
 
     }
+
     public getAllCdDocs(cdID: number) {
         this.loadingDocsTable = true
         this.displayUsers = false;
@@ -108,7 +103,6 @@ export class ApproveCommitteeDraftComponent implements OnInit {
 
         this.committeeService.getDocsOnCd(cdID).subscribe(
             (response: StandardDocuments[]) => {
-                console.log(response)
                 this.standardDocuments = response;
                 // this.rerender()
                 this.displayUsers = true;
@@ -161,6 +155,8 @@ export class ApproveCommitteeDraftComponent implements OnInit {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                this.loading = true;
+                this.loadingText = "Approving Committee Draft"
                 this.SpinnerService.show();
                 this.committeeService.approveCommitteeDraft(committeeDraft).subscribe(
                     (response) => {
@@ -171,6 +167,7 @@ export class ApproveCommitteeDraftComponent implements OnInit {
                             'success'
                         );
                         this.SpinnerService.hide();
+                        this.loading = false;
                         this.showToasterSuccess(response.httpStatus, 'Committee Draft Successfully Approved');
                         this.getAllCds();
                     },
@@ -289,12 +286,12 @@ export class ApproveCommitteeDraftComponent implements OnInit {
 
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-        this.loading= true
-        this.loadingText="Downloading Document"
+        this.loading = true
+        this.loadingText = "Downloading Document"
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(
             (dataPdf: any) => {
-                this.loading=false
+                this.loading = false
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const

@@ -226,7 +226,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
                 this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSForPdB.id).subscribe(
                     (response) => {
-                        console.log(response)
                         this.showToasterSuccess(response.httpStatus, `Successfully submitted Preliminary Draft`);
                         this.uploadPDDoc(response.body.savedRowID)
                         this.preliminary_draftFormGroup.reset();
@@ -510,7 +509,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
     private getSelectedUser(userId) {
         this.route.fragment.subscribe(params => {
-            console.log(userId);
             this.masterService.loadUserDetails(userId).subscribe(
                 (data: UserRegister) => {
                     this.userDetails = data;
