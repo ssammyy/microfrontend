@@ -47,22 +47,25 @@ class BallotService(
     ): ProcessInstanceResponseValue {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
         ballot.createdOn = Timestamp(System.currentTimeMillis())
-
         ballot.ballotDraftBy = loggedInUser.id.toString()
         ballot.createdBy = loggedInUser.id.toString()
         ballot.status = "Created & Submitted For Voting"
-
-
-        val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(ballot.prdID).orElse(null);
-        val committeeDraft: CommitteeCD = committeeCDRepository.findById(publicReviewDraft.cdID).orElse(null);
-        ballot.fdksNumber = "D" + committeeDraft.ksNumber
         ballotRepository.save(ballot)
 
+
         //get prd Draft and update
-        publicReviewDraft.status = "Ballot Draft Uploaded";
+        val publicReviewDraft =
+            publicReviewDraftRepository.findById(ballot.prdID)
+                .orElseThrow { RuntimeException("No Public Review Draft found") }
+
+        publicReviewDraft.status = "Ballot Draft Uploaded"
+        publicReviewDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+        publicReviewDraft.modifiedBy = loggedInUser.id.toString()
+        publicReviewDraft.varField3 = "Approved. Ballot Draft Uploaded"
         publicReviewDraftRepository.save(publicReviewDraft)
+
+
 
         return ProcessInstanceResponseValue(ballot.id, "Complete", true, "ballot.id")
 
@@ -276,7 +279,7 @@ class BallotService(
         //update documents with PRDId
         val b: Ballot = ballotRepository.findById(ballotID).orElse(null)
         val u: PublicReviewDraft = publicReviewDraftRepository.findById(b.prdID).orElse(null)
-        u.status = "Draft Documents For Ballot Uploaded"
+        u.status = "Ballot Draft Uploaded"
         publicReviewDraftRepository.save(u)
 
         return sdDocumentsRepository.save(uploads)

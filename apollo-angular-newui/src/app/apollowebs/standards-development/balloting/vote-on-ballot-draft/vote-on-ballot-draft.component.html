@@ -266,7 +266,9 @@
                                                 <tr *ngFor="let commentMadeRetrieved of commentMadeRetrievedS let i= index; ">
                                                     <td>{{i + 1}}</td>
                                                     <td>{{commentMadeRetrieved.ballot_name}}</td>
-                                                    <td><span class="badge badge-info">{{commentMadeRetrieved.ballot_STATUS}}</span></td>
+                                                    <td><span
+                                                            class="badge badge-info">{{commentMadeRetrieved.ballot_STATUS}}</span>
+                                                    </td>
 
                                                     <td>
                                                         <div class="timeline-body">
@@ -318,8 +320,8 @@
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">
                                                             Change Vote On Ballot Draft</h5>
-                                                        <button type="button" class="close"
-                                                                data-dismiss="modal" aria-label="Close">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close" #closeModalB>
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
@@ -327,7 +329,7 @@
                                                         <div class="row col-12">
                                                             <div class="form-group col-12">
                                                                 <form (ngSubmit)="editVote()"
-                                                                      [formGroup]="commentFormGroup"
+                                                                      [formGroup]="editCommentFormGroup"
                                                                       class="form">
                                                                     <div class="form-body">
 
@@ -416,9 +418,8 @@
 
 
                                                                         <input type="hidden"
-                                                                               formControlName="ballotId"
-                                                                               name="ballotId"
-                                                                               ngModel="{{ballotDraftB?.id}}">
+                                                                               formControlName="id"
+                                                                               name="id">
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -426,15 +427,14 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
-                                                                #closeModal
-                                                                (click)="hideModel()"
+                                                                #closeModalB
+                                                                (click)="hideModelB()"
                                                                 data-dismiss="modal">Close
                                                         </button>
                                                         <button class="btn btn-primary"
                                                                 mat-raised-button
-                                                                (click)="saveComment()"
-                                                                *ngIf="commentFormGroup.valid"
-                                                                type="button">VOTE
+                                                                (click)="editVote()"
+                                                                type="button">EDIT VOTE
                                                         </button>
                                                     </div>
 
