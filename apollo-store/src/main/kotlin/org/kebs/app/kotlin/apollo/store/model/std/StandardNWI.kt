@@ -149,5 +149,9 @@ class StandardNWI {
     @Basic
     var deferredDate: Timestamp? = null
 
+    @Column(name = "APPROVAL_DATE")
+    @Basic
+    var approvalDate: Timestamp? = null
+
 
 }

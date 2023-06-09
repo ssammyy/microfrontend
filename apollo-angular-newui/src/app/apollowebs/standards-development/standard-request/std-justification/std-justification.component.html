@@ -87,6 +87,8 @@
                                                 <th>Scope</th>
                                                 <th>Name Of Proposer</th>
                                                 <th>Reference No</th>
+                                                <th>NWI Approval Date</th>
+
                                                 <th>Circulation Date</th>
                                                 <th>View</th>
 
@@ -99,6 +101,7 @@
                                                 <td>{{secTask.scope}}</td>
                                                 <td>{{secTask.nameOfProposer}}</td>
                                                 <td>{{secTask.referenceNumber}}</td>
+                                                <td>{{formatFormDate(secTask.approvalDate)}}</td>
                                                 <td>{{secTask.circulationDate}}</td>
                                                 <td>
                                                     <a (click)="onOpenModalViewNwi(secTask.id,'edit')"
@@ -287,10 +290,12 @@
                                             <mat-form-field>
                                                 <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                                                             required
-                                                            ngModel="{{formActionRequest?.edition}}" name="edition" (selectionChange)="onSelectOption($event.value)">
+                                                            ngModel="{{formActionRequest?.edition}}" name="edition"
+                                                            (selectionChange)="onSelectOption($event.value)">
 
                                                     <mat-option value="First" class="dropdown-item"> First</mat-option>
-                                                    <mat-option value="Second" class="dropdown-item"> Second</mat-option>
+                                                    <mat-option value="Second" class="dropdown-item"> Second
+                                                    </mat-option>
                                                     <mat-option value="Third" class="dropdown-item"> Third</mat-option>
                                                     <mat-option value="Fourth" class="dropdown-item">Fourth</mat-option>
                                                     <mat-option value="Fifth" class="dropdown-item">Fifth</mat-option>
@@ -401,7 +406,8 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">DEFER</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalB>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                        #closeModalB>
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -412,11 +418,12 @@
                                             <label><b>Defer Date</b></label>
 
 
-
                                             <div class="form-group col-12">
                                                 <mat-form-field>
-                                                    <input ngModel matInput [matDatepicker]="picker1" [min]="todayDate" placeholder="Defer Date" name="deferredDate" required >
-                                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                                    <input ngModel matInput [matDatepicker]="picker1" [min]="todayDate"
+                                                           placeholder="Defer Date" name="deferredDate" required>
+                                                    <mat-datepicker-toggle matSuffix
+                                                                           [for]="picker1"></mat-datepicker-toggle>
                                                     <mat-datepicker #picker1></mat-datepicker>
                                                 </mat-form-field>
                                             </div>

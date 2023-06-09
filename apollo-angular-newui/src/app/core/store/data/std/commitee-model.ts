@@ -294,6 +294,7 @@ export interface VotesNwiTally {
     nwiname: string;
     status: string
     reference_NUMBER: string;
+    created_ON:string;
     number_OF_EXPECTED_VOTES: number;
 }
 

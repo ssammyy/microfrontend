@@ -23,6 +23,7 @@
                             <th class="task">Proposal Title</th>
                             <th class="task">Scope</th>
                             <th class="task">Name Of Proposer</th>
+                            <th class="task">NWI Preparation Date</th>
                             <th class="task">Reference No</th>
                             <th class="action">Request</th>
                             <th class="action">Nwi</th>
@@ -37,6 +38,7 @@
                             <td>{{secTask.proposalTitle}}</td>
                             <td>{{secTask.scope}}</td>
                             <td>{{secTask.nameOfProposer}}</td>
+                            <td>{{formatFormDate(secTask.createdOn)}}</td>
                             <td>{{secTask.referenceNumber}}</td>
                             <td>
                                 <a (click)="onOpenModalViewRequest(secTask.standardId,'edit')"

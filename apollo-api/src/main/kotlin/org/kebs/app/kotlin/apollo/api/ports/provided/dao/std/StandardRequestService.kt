@@ -357,6 +357,8 @@ class StandardRequestService(
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
                 p.createdOn,
+                p.modifiedOn,
+
                 //Feedback Segment From Review
 
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -401,6 +403,7 @@ class StandardRequestService(
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
                 p.createdOn,
+                p.modifiedOn,
 
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -447,6 +450,7 @@ class StandardRequestService(
                 p.status,
                 returnDepartmentName(p.departmentId!!.toLong()),
                 p.createdOn,
+                p.modifiedOn,
 
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -579,6 +583,7 @@ class StandardRequestService(
                 p.status,
                 departmentRepository.findNameById(p.departmentId?.toLong()),
                 p.createdOn,
+                p.modifiedOn,
 
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -747,6 +752,7 @@ class StandardRequestService(
     fun approveNWI(nwiId: Long): ServerResponse {
         val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
         u.status = "Upload Justification"
+        u.approvalDate = Timestamp(System.currentTimeMillis())
         standardNWIRepository.save(u)
         val standardRequestToUpdate = u.standardId?.let {
             standardRequestRepository.findById(it)
@@ -978,11 +984,11 @@ class StandardRequestService(
         return standardJustificationRepository.findByStatusOrderByIdAsc(
             "Justification Created. Awaiting Decision",
 
-            )+
+            ) +
                 standardJustificationRepository.findByStatusOrderByIdAsc(
-            "Justification Amended. Awaiting Decision",
+                    "Justification Amended. Awaiting Decision",
 
-            )
+                    )
     }
 
     fun getAllMyJustifications(): List<StandardJustification> {

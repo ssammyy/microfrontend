@@ -32,6 +32,7 @@ export interface StandardRequestB {
     desiredResult: string;
     createdOn: Date;
     standardCreationDate: Date;
+    standardApprovalDate: Date;
     ongoingStatus: string;
 
 
@@ -78,14 +79,14 @@ export interface Department {
     createdOn: string;
     status: string;
     userId: number;
-    varField3:string;
+    varField3: string;
 
 
 }
+
 export interface TcAssignment {
     tcId: number;
     userId: string;
-
 
 
 }
@@ -235,7 +236,9 @@ export interface NwiItem {
     draftDocsPdStatus: string;
     prPdStatus: string;
     deferredDate: string;
-    nameOfDepartment:string;
+    nameOfDepartment: string;
+    createdOn: Date;
+    approvalDate: Date;
 
 
 }
@@ -262,7 +265,8 @@ export interface NWIsForVoting {
     dateOfPresentation: string;
     nameOfTC: string;
     id: string;
-    nameOfDepartment:string;
+    nameOfDepartment: string;
+    createdOn: Date;
 
 }
 
@@ -738,7 +742,7 @@ export interface DataHolder {
     v4: string;
     v5: string;
     v6: string;
-    number_OF_MEMBERS:string;
+    number_OF_MEMBERS: string;
 
 }
 

@@ -71,6 +71,8 @@ data class StandardsDto(
     var status: String? = null,
     var departmentName: String? = null,
     var standardCreationDate: Timestamp? = null,
+    var standardApprovalDate: Timestamp? = null,
+
     //HOF Feedback
     var tcSecAssigned: String? = null,
     var reviewedBy: String? = null,

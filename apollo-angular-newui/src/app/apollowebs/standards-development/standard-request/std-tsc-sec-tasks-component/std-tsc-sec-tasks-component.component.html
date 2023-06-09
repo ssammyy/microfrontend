@@ -75,6 +75,7 @@
                                                 <th class="task">Section</th>
                                                 <th class="task">Subject</th>
                                                 <th class="task">Requester</th>
+                                                <th class="task">Request Approval Date</th>
                                                 <th class="action">Action</th>
                                             </tr>
                                             </thead>
@@ -85,6 +86,8 @@
                                                 <td>{{secTask.departmentName}}</td>
                                                 <td>{{secTask.subject}}</td>
                                                 <td>{{secTask.name}}</td>
+                                                <td>{{secTask.standardApprovalDate}}</td>
+
 
                                                 <td>
                                                     <a (click)="onOpenModalTask(secTask,'view')"

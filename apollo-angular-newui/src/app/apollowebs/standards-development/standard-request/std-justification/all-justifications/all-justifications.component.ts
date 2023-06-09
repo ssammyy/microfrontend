@@ -14,6 +14,7 @@ import {CommitteeService} from "../../../../../core/store/data/std/committee.ser
 import {ActivatedRoute} from "@angular/router";
 import {MasterService} from "../../../../../core/store/data/master/master.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {formatDate} from "@angular/common";
 
 @Component({
     selector: 'app-all-justifications',
@@ -37,7 +38,8 @@ export class AllJustificationsComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtOptions: DataTables.Settings = {};
     public userDetails!: UserRegister;
-
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
     constructor(
         private standardDevelopmentService: StandardDevelopmentService,
@@ -217,6 +219,9 @@ export class AllJustificationsComponent implements OnInit {
             );
 
         });
+    }
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 }

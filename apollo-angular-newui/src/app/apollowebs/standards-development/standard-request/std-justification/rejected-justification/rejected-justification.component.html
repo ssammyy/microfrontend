@@ -47,7 +47,12 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> SPC Meeting
                                 Date
                             </th>
-                            <td mat-cell *matCellDef="let row"> {{row.spcMeetingDate}} </td>
+                            <td mat-cell *matCellDef="let row"> {{formatFormDate(row.spcMeetingDate)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="preparationDate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Justification Preparation Date
+                            </th>
+                            <td mat-cell *matCellDef="let row"> {{formatFormDate(row.createdOn)}} </td>
                         </ng-container>
 
                         <ng-container matColumnDef="departmentId">

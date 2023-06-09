@@ -69,35 +69,38 @@
                                             </ngx-spinner>
                                         </ng-template>
                                         <div *ngIf="displayUsers; else loading">
-                                        <table class="table table-striped table-bordered table-hover" datatable
-                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
-                                            <thead>
-                                            <tr>
-                                                <th class="task">Title</th>
-                                                <th class="task">Technical Committee</th>
-                                                <th class="task">Request Number</th>
-                                                <th class="task">Closing Date</th>
+                                            <table class="table table-striped table-bordered table-hover" datatable
+                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                                <thead>
+                                                <tr>
+                                                    <th class="task">Title</th>
+                                                    <th class="task">Technical Committee</th>
+                                                    <th class="task">Request Number</th>
+                                                    <th class="task">NWI Preparation Date</th>
 
-                                                <th class="action">Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let tcTask of tcTasks let i= index; ">
+                                                    <th class="task">Closing Date</th>
 
-                                                <td>{{tcTask.proposalTitle}}</td>
-                                                <td>{{tcTask.nameOfTC}}</td>
-                                                <td>{{tcTask.referenceNumber}}</td>
-                                                <td>{{tcTask.closingDate}}</td>
+                                                    <th class="action">Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let tcTask of tcTasks let i= index; ">
+
+                                                    <td>{{tcTask.proposalTitle}}</td>
+                                                    <td>{{tcTask.nameOfTC}}</td>
+                                                    <td>{{tcTask.referenceNumber}}</td>
+                                                    <td>{{formatFormDate(tcTask.createdOn)}}</td>
+                                                    <td>{{tcTask.closingDate}}</td>
 
 
-                                                <td><a  *ngIf="canVote" (click)="onOpenModal(tcTask,'edit')"
-                                                       class="btn btn-info tooltips"
-                                                       data-placement="top"
-                                                       data-original-title="Upload NWI">Vote on NWI</a></td>
+                                                    <td><a *ngIf="canVote" (click)="onOpenModal(tcTask,'edit')"
+                                                           class="btn btn-info tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">Vote on NWI</a></td>
 
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 

@@ -225,7 +225,6 @@ export class ApprovedNwisComponent implements OnInit {
     public getApprovedNwis(): void {
         this.standardDevelopmentService.getApprovedNwiS().subscribe(
             (response: NwiItem[]) => {
-                console.log(response);
                 this.approvedNwiS = response;
                 this.rerender()
 

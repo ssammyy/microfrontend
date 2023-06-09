@@ -20,7 +20,7 @@ interface VoteOnNWIRepository : JpaRepository<VoteOnNWI, Long> {
 
 
     @Query(
-        "SELECT B.ID AS NWI_ID, B.PROPOSAL_TITLE AS NwiName, B.REFERENCE_NUMBER, B.STATUS, COUNT(CASE WHEN V.DECISION = 'true' THEN NWI_ID END) AS Approved, COUNT(CASE WHEN V.DECISION = 'false' THEN NWI_ID END) AS NotApproved, T.number_of_expected_votes, B.TC_ID FROM SD_NWI B LEFT JOIN SD_VOTE_ON_NWI V ON V.NWI_ID = B.ID LEFT JOIN (SELECT COUNT(USER_ID) AS number_of_expected_votes, TC_ID FROM SD_TC_USER_ASSIGNMENT WHERE PRINCIPAL = 1 GROUP BY TC_ID) T ON T.TC_ID = B.TC_ID WHERE B.TC_SEC = :tcSecId GROUP BY B.ID, B.PROPOSAL_TITLE, B.REFERENCE_NUMBER, B.STATUS, T.number_of_expected_votes, B.TC_ID",
+        "SELECT B.ID AS NWI_ID, B.PROPOSAL_TITLE AS NwiName, cast(B.CREATED_ON as varchar(200)) AS CREATED_ON, B.REFERENCE_NUMBER, B.STATUS, COUNT(CASE WHEN V.DECISION = 'true' THEN NWI_ID END) AS Approved, COUNT(CASE WHEN V.DECISION = 'false' THEN NWI_ID END) AS NotApproved, T.number_of_expected_votes, B.TC_ID FROM SD_NWI B LEFT JOIN SD_VOTE_ON_NWI V ON V.NWI_ID = B.ID LEFT JOIN (SELECT COUNT(USER_ID) AS number_of_expected_votes, TC_ID FROM SD_TC_USER_ASSIGNMENT WHERE PRINCIPAL = 1 GROUP BY TC_ID) T ON T.TC_ID = B.TC_ID WHERE B.TC_SEC = :tcSecId GROUP BY B.ID, B.PROPOSAL_TITLE, B.REFERENCE_NUMBER, B.STATUS, T.number_of_expected_votes, B.TC_ID,B.CREATED_ON",
         nativeQuery = true
     )
     fun getVotesTally(@Param("tcSecId") tcSecId: String): List<NwiVotesTally>

@@ -71,7 +71,7 @@ export class ApprovedJustificationComponent implements OnInit {
   public userDetails!: UserRegister;
   public uploadedFiles: Array<File> = [];
 
-  displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions'];
+  displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate','preparationDate', 'departmentId', 'actions'];
   dataSource!: MatTableDataSource<StdJustification>;
   dataSourceB!: MatTableDataSource<StdJustification>;
   dataSourceC!: MatTableDataSource<StdJustification>;

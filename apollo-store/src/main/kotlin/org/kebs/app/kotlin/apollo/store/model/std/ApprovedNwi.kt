@@ -211,7 +211,6 @@ interface PrdWithUserName {
     fun getUserTelephone(): String?
 
 
-
 }
 
 interface CommentsWithPrdId {
@@ -327,10 +326,12 @@ interface NwiVotesTally {
 
     fun getREFERENCE_NUMBER(): String?
 
-    fun getNWINAME(): String?
+    fun getCREATED_ON(): String?
     fun getAPPROVED(): Long?
     fun getNOTAPPROVED(): Long?
     fun getSTATUS(): String?
+    fun getNWINAME(): String?
+
 
     fun getNUMBER_OF_EXPECTED_VOTES(): Long?
     fun getTC_ID(): String?
@@ -369,8 +370,8 @@ data class CommentsDto(
     var proposedChange: String? = null,
     var commentId: String? = null,
     var nameOfRespondent: String? = null,
-    var emailOfRespondent : String? = null,
-    var phoneOfRespondent : String? = null
+    var emailOfRespondent: String? = null,
+    var phoneOfRespondent: String? = null
 
-    )
+)
 
