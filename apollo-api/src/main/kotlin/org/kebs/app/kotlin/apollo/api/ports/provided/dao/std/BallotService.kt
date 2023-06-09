@@ -29,6 +29,7 @@ class BallotService(
     private val comStdDraftRepository: ComStdDraftRepository,
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val companyStandardRepository: CompanyStandardRepository,
 
 
     ) {
@@ -195,6 +196,15 @@ class BallotService(
                 }
                 comStdDraftRepository.save(comStdDraft)
             } ?: throw Exception("DRAFT NOT FOUND")
+
+            companyStandardRepository.findByIdOrNull(publicReviewDraft.stdId)?.let { stdDraft ->
+                with(stdDraft) {
+                    status=8
+                    standardType ="FD KS"
+
+                }
+                companyStandardRepository.save(stdDraft)
+            } ?: throw Exception("STD DRAFT NOT FOUND")
 
 
         } else if (ballot.approvalStatus.equals("Not Approved")) {

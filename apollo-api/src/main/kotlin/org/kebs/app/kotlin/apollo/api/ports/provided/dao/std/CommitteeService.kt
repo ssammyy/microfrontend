@@ -134,7 +134,7 @@ class CommitteeService(
     }
 
 
-    private fun makeCommentB(
+     fun makeCommentB(
         bodyDetails: CommentsDto,
         preliminaryDraftId: Long,
         docType: String

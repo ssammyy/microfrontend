@@ -257,7 +257,7 @@ class PublicReviewService(
 
     }
 
-    fun getPublicReviewForComment(encryptedId: String): MutableIterable<PrdWithUserName>? {
+    fun getPublicReviewForComment(encryptedId: Long): MutableIterable<PrdWithUserName>? {
         return publicReviewDraftRepository.getPublicReviewForComment(encryptedId)
     }
 

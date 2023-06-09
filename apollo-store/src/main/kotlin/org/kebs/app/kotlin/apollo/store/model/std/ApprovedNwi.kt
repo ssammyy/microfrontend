@@ -367,10 +367,10 @@ data class CommentsDto(
     var typeOfComment: String? = null,
     var comment: String? = null,
     var proposedChange: String? = null,
-    var commentId: String,
-    var nameOfRespondent: String,
-    var emailOfRespondent : String,
-    var phoneOfRespondent : String
+    var commentId: String? = null,
+    var nameOfRespondent: String? = null,
+    var emailOfRespondent : String? = null,
+    var phoneOfRespondent : String? = null
 
     )
 

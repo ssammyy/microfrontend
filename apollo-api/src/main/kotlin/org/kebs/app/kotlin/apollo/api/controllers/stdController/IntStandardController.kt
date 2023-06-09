@@ -233,7 +233,7 @@ class IntStandardController(
         return ServerResponse(
             HttpStatus.OK,
             "Success",
-            committeeService.makeComment(preliminaryDraftId.toLong(), docType, body)
+            committeeService.makeCommentB(body,preliminaryDraftId.toLong(), docType)
         )
 
     }
@@ -271,7 +271,7 @@ class IntStandardController(
     }
 
     @GetMapping("/anonymous/international_standard/getAllPublicReviews/{encryptedId}")
-    fun getPublicReviewForComment(@PathVariable encryptedId: String):MutableIterable<PrdWithUserName>?
+    fun getPublicReviewForComment(@PathVariable encryptedId: Long):MutableIterable<PrdWithUserName>?
     {
         return publicReviewService.getPublicReviewForComment(encryptedId)
     }

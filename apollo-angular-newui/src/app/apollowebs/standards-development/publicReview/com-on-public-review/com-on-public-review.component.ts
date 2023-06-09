@@ -88,6 +88,10 @@ export class ComOnPublicReviewComponent implements OnInit {
       typeOfComment: ['', Validators.required],
       proposedChange: ['', Validators.required],
       comment: ['', Validators.required],
+      commentId: [],
+      nameOfRespondent: [],
+      emailOfRespondent: [],
+      phoneOfRespondent: []
     });
 
 
@@ -200,12 +204,12 @@ export class ComOnPublicReviewComponent implements OnInit {
 
   onClickSaveCommentsMade(public_review_draft_id: number) {
     this.loading = true
-    if (this.commentsDtos.length > 0) {
+    //if (this.commentsDtos.length > 0) {
       this.loadingText = "Saving Comment"
       this.SpinnerService.show();
 
       //(this.sta10Details.id.toString());
-      this.stdIntStandardService.makeCommentB(this.commentsDtos, public_review_draft_id, "PRD").subscribe(
+      this.stdIntStandardService.makeCommentB(this.commentsMadeFormGroup.value, public_review_draft_id, "PRD").subscribe(
           (data) => {
 
             this.SpinnerService.hide();
@@ -225,18 +229,18 @@ export class ComOnPublicReviewComponent implements OnInit {
             });
           },
       );
-    } else {
-      this.loading = false
-
-      swal.fire({
-        title: 'Comments missing!',
-        buttonsStyling: false,
-        customClass: {
-          confirmButton: 'btn btn-success form-wizard-next-btn ',
-        },
-        icon: 'error'
-      });
-    }
+    // } else {
+    //   this.loading = false
+    //
+    //   swal.fire({
+    //     title: 'Comments missing!',
+    //     buttonsStyling: false,
+    //     customClass: {
+    //       confirmButton: 'btn btn-success form-wizard-next-btn ',
+    //     },
+    //     icon: 'error'
+    //   });
+    // }
   }
 
   editComment(): void {

@@ -457,7 +457,9 @@
                                                                                     </a>
                                                                                     <hr>
                                                                                     <h2>Background Information</h2>
-                                                                                    <h3>Date of Circulation of Adoption Proposal Form</h3>
+                                                                                    <h3 *ngIf="actionRequests?.standardType==='International Standard'">Date of Circulation of Adoption Proposal Form</h3>
+                                                                                    <h3 *ngIf="actionRequests?.standardType==='Public Review Draft'">Date of Circulation of Public Review Draft</h3>
+                                                                                    <h3 *ngIf="actionRequests?.standardType==='FDKS'">Date of Circulation of Public Review Draft</h3>
                                                                                     <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                         <div class="d-flex w-100 justify-content-between">
                                                                                             <div>

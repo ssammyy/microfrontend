@@ -51,6 +51,9 @@ class NationalEnquiryPointService(
     private val committeeCDRepository: CommitteeCDRepository,
     private val committeePDRepository: CommitteePDRepository,
     private val standardNWIRepository: StandardNWIRepository,
+    private val standardJustificationRepository: StandardJustificationRepository,
+    private val departmentListRepository: DepartmentListRepository,
+    private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
 
     ) {
     val callUrl=applicationMapProperties.mapKebsLevyUrl
@@ -495,6 +498,7 @@ class NationalEnquiryPointService(
         val uploadedDate= Timestamp(System.currentTimeMillis())
         val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
         val tcSecId= standardRequest.tcSecAssigned?.toLong()
+        val publicReviewJustification: StandardJustification = standardJustificationRepository.findByNwiIdOrderById(preliminaryDraft.nwiID)
 
         val proposal=ISAdoptionProposal()
         val closingDate=commonDaoServices.convertStringToTimestamp(nwiItem.closingDate)
@@ -535,6 +539,35 @@ class NationalEnquiryPointService(
         comDraft.prId=nep.pid
 
         val draftId=comStdDraftRepository.save(comDraft)
+
+        val justification = ISAdoptionJustification();
+        justification.standardNumber = publicReviewDraft.ksNumber
+        justification.meetingDate = publicReviewJustification.spcMeetingDate
+        justification.slNumber = publicReviewJustification.sl
+        justification.edition = publicReviewJustification.edition
+        justification.requestedBy = publicReviewJustification.requestedBy
+        //justification.issuesAddressed = publicReviewJustification.issuesAddressedBy
+        justification.tcAcceptanceDate = publicReviewJustification.tcAcceptanceDate
+        justification.department = standardRequest.departmentId
+        justification.proposalId = prop.id
+        justification.draftId = draftId.id
+        justification.scope = publicReviewJustification.scope
+        justification.purposeAndApplication = publicReviewJustification.purpose
+        justification.intendedUsers = publicReviewJustification.intendedUsers
+        //justification.circulationDate = publicReviewJustification.circulationDate
+        //justification.closingDate = publicReviewJustification.closingDate
+        justification.tcSec_id = publicReviewJustification.tcSecretary
+        justification.title = publicReviewJustification.title
+        //justification.referenceMaterial = publicReviewJustification.referenceMaterial
+        justification.status = 0.toString()
+
+        justification.submissionDate = publicReviewJustification.createdOn
+
+        justification.requestNumber = publicReviewJustification.requestNo
+        justification.departmentName =publicReviewJustification.departmentId
+
+        isAdoptionJustificationRepository.save(justification)
+
         val uploadStatus="Success"
 
         return  UploadedDataId(notification.id,uploadStatus)

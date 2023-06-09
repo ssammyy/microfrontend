@@ -213,7 +213,7 @@ export class CommentOnPublicReviewComponent implements OnInit {
 
   onClickSaveCommentsMade(public_review_draft_id: number) {
     this.loading = true
-    if (this.commentsDtos.length > 0) {
+    //if (this.commentsDtos.length > 0) {
       this.loadingText = "Saving Comment"
       this.SpinnerService.show();
 
@@ -238,18 +238,18 @@ export class CommentOnPublicReviewComponent implements OnInit {
             });
           },
       );
-    } else {
-      this.loading = false
-
-      swal.fire({
-        title: 'Comments missing!',
-        buttonsStyling: false,
-        customClass: {
-          confirmButton: 'btn btn-success form-wizard-next-btn ',
-        },
-        icon: 'error'
-      });
-    }
+    // } else {
+    //   this.loading = false
+    //
+    //   swal.fire({
+    //     title: 'Comments missing!',
+    //     buttonsStyling: false,
+    //     customClass: {
+    //       confirmButton: 'btn btn-success form-wizard-next-btn ',
+    //     },
+    //     icon: 'error'
+    //   });
+    // }
   }
 
   editComment(): void {
