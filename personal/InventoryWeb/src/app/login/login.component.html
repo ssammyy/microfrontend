@@ -1,0 +1,29 @@
+<!-- login.component.html -->
+<div class=" overflow-hidden w-full h-full flex flex-row">
+  <div class=" w-2/5 flex items-center align-middle justify-center ">
+    <form  (ngSubmit)="onSubmit()">
+      <div class="flex flex-col ">
+        <label for="username">Username</label>
+        <input pInputText id="username" name="username" aria-describedby="username-help" [(ngModel)]="username" />
+      </div>
+      <div class="flex flex-col">
+        <label  for="password">Password</label>
+        <input pInputText type="password" id="password"  name="password" [(ngModel)]="password"  required>
+      </div>
+      <div class="flex flex-col">
+        <button type="submit" class="action-btn pt-4">login</button>
+        <small *ngIf="loginError" class="text-red-400"> Wrong password or user name</small>
+      </div>
+    </form>
+  </div>
+  <div class=" w-3/5 relative">
+    <img class="object-cover" src="https://images.pexels.com/photos/707344/pexels-photo-707344.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Background Image">
+    <div class="text-overlay ">
+      <h1 class="text-8xl">Ngumo POS</h1>
+      <p class="text-3xl">Hello,</p>
+      <h1>It is 12:30PM</h1>
+      <h2 class="text-2xl">Login to access the system</h2>
+    </div>
+  </div>
+</div>
+<p-progressSpinner class="overlay-spinner" *ngIf="loading" ariaLabel="loading"></p-progressSpinner>

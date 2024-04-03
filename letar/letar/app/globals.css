@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+
+.navDesktop{
+  margin-right: 1.9rem;
+  cursor: pointer;
+}
+
+.hover-link a {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px; /* Adjust the space for the underline */
+}
+
+.cursor-dot {
+  animation: rotateAndScale 2s infinite alternate ease-in-out;
+
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border: 1px dashed #959595;
+
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  transition: transform 1s ease;
+}
+
+/*.cursor-dot:hover {*/
+/*  animation: rotateAndScale 2s infinite alternate ease-in-out;*/
+/*}*/
+
+@keyframes rotateAndScale {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1.5);
+  }
+}
+
+
+.hover-link a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #d97706;
+  transition: width .3s ease-in-out;
+}
+
+.hover-link a:hover::after {
+  width: 100%;
+}
+.animation-border {
+   animation: borderAnimation 10000s infinite linear;
+ }
+.animation-border-two {
+   animation: borderAnimationTwo 10000s infinite linear;
+ }
+@keyframes borderAnimationTwo {
+  0% {
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to bottom, #d97706, #434343, #171717);
+  }
+}
+
+.animation-border-three {
+   animation: borderAnimationThree 10000s infinite linear;
+ }
+@keyframes borderAnimationThree {
+  0% {
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #d97706, #434343, #171717);
+  }
+}
+
+
+@keyframes borderAnimation {
+  0% {
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #d97706, #434343, #767678);
+  }
+  25% {
+    border-image-slice: 1;
+
+    border-image-source: linear-gradient(to right, #d97706, #434343, #767678);
+  }
+  50% {
+    border-image-slice: 1;
+
+    border-image-source: linear-gradient(to right, #d97706, #434343, #767678);
+  }
+  75% {
+    border-image-slice: 1;
+
+    border-image-source: linear-gradient(to right, #d97706, #434343, #767678);
+  }
+  100% {
+    border-image-slice: 1;
+
+    border-image-source: linear-gradient(to right, #d97706, #434343, #767678);
+  }
+}
+
+
+
+.carousel {
+
+
+  scroll-snap-type: x mandatory;
+}
+
+.card {
+  flex: 0 0 auto;
+  width: 35rem;
+
+}
+
+
+.card i {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.accordion {
+  display: none;
+}
+
+
+
+
+
+
+
+body {
+  /*color: rgb(var(--foreground-rgb));*/
+  /*background: linear-gradient(*/
+  /*    to bottom,*/
+  /*    transparent,*/
+  /*    rgb(var(--background-end-rgb))*/
+  /*  )*/
+  /*  rgb(var(--background-start-rgb));*/
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

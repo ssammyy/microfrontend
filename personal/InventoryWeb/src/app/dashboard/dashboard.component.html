@@ -1,0 +1,180 @@
+
+<app-top-bar></app-top-bar>
+<div class="main-main">
+  <div class="main-header">
+    <mat-icon>
+      <span>home</span>
+    </mat-icon>
+    D a s h b o a r d
+  </div>
+
+  <div class="main-body">
+    <div class="top-section">
+      <div class="c-dashboardInfo col-lg-3 col-md-6">
+        <div class="wrap">
+          <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Today's Sale
+            <svg
+              class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+              </path>
+            </svg>
+          </h4>
+          <span class="hind-font caption-12 c-dashboardInfo__count">ksh 101,500</span>
+        </div>
+      </div>
+      <div class="c-dashboardInfo col-lg-3 col-md-6">
+        <div class="wrap">
+          <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Total Profit
+            <svg
+              class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+              </path>
+            </svg>
+          </h4>
+          <span class="hind-font caption-12 c-dashboardInfo__count">ksh 25,500</span><span
+          class="hind-font caption-12 c-dashboardInfo__subInfo">yesterday: ksh 30,400</span>
+        </div>
+      </div>
+      <div class="c-dashboardInfo col-lg-3 col-md-6">
+        <div class="wrap">
+          <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Total Dues
+            <svg
+              class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+              </path>
+            </svg>
+          </h4>
+          <span class="hind-font caption-12 c-dashboardInfo__count">ksh 25,900</span>
+        </div>
+      </div>
+      <div class="c-dashboardInfo col-lg-3 col-md-6">
+        <div class="wrap">
+          <h4 class="heading heading5 hind-font medium-font-weight c-dashboardInfo__title">Tax with-held
+            <svg
+              class="MuiSvgIcon-root-19" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z">
+              </path>
+            </svg>
+          </h4>
+          <span class="hind-font caption-12 c-dashboardInfo__count">6,40%</span>
+        </div>
+      </div>
+    </div>
+    <div class="cent">
+      <div class="left-mid-section">
+        <strong>Top Selling this Week</strong>
+
+        <ol class="alternating-colors">
+          <li>
+            <div class="li">
+              <strong>Maisha Mabati</strong>
+              <br>
+              <code>250</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Nails</strong>
+              <br>
+              <code>300 KGS</code>
+              <button>restock</button>
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Paint</strong>
+              <br>
+              <code>40</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Cement</strong>
+              <br>
+              <code>200</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+        </ol>
+
+      </div>
+      <div class="right-mid-section">
+        <div class="chart" style="text-align:center">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [title]="chartOptions.title"
+          ></apx-chart>
+        </div>
+
+      </div>
+      <div class="sub-left">
+        <strong>Top Selling this Week</strong>
+
+        <ol class="alternating-colors">
+          <li>
+            <div class="li">
+              <strong>Maisha Mabati</strong>
+              <br>
+              <code>250</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Nails</strong>
+              <br>
+              <code>300 KGS</code>
+              <button>restock</button>
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Paint</strong>
+              <br>
+              <code>40</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+          <li>
+            <div class="li">
+              <strong>Cement</strong>
+              <br>
+              <code>200</code>
+              <button>restock</button>
+
+            </div>
+
+          </li>
+        </ol>
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

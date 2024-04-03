@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  height: 80vh;
+  border-radius: 30px 30px 10px 20px;
+  /*background-color: #E6E6FA;*/
+}
+
+.left-section {
+  flex: 1.5;
+  background-color: #f1f1f1;
+  /* Add any additional styles for the left section here */
+}
+
+.left-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.right-section {
+  border-radius: 0 30px 0 30px;
+  margin: 5% 10% 5% 0;
+  background: rgb(255,255,255);
+  background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgb(210, 232, 241) 100%);
+  flex: .8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  /* Add any additional styles for the right section here */
+}
+
+.right-section h2 {
+  padding-bottom: 40px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  font-weight: lighter;
+
+}
+.typing-text {
+  display: inline-block;
+}
+.stop-cursor-blink {
+  caret-color: transparent;
+}
+
+.right-section h3{
+  padding-bottom: 30px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  font-weight: lighter;
+}
+
+.form-group {
+  letter-spacing: 2px;
+  font-weight: lighter;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 15px;
+  display: flex;
+}
+
+.form-group input {
+  width: 300px;
+  height: 40px;
+  padding: 5px;
+  border: 0;
+  border-radius: 3px ;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #BBC6C8;
+  color: black;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  min-width: 300px;
+
+}
+.main-btn{
+}

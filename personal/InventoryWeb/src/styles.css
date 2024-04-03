@@ -1,0 +1,286 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+  background-color: #F1F6F9;
+  position: relative;
+  font-family: 'Roboto', 'Sans-Serif';
+}
+
+.section-header {
+  font-size: 33px;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  min-width: 90%;
+  margin-top: -50px;
+  position: relative;
+
+}
+
+.main-main {
+  padding: 1rem;
+  /*background-color: #D4F1F4;*/
+  height: 100vh;
+  border-radius: .9rem;
+}
+
+.main-header {
+  color: #BBC6C8;
+  font-weight: lighter;
+}
+
+.main-btn {
+  min-width: 400px;
+}
+
+.main-body {
+  display: grid;
+
+
+}
+.overlay-spinner {
+  position: fixed; /* Positions the spinner over the entire viewport */
+  top: 0;
+  left: 0;
+  width: 100%; /* Stretches the spinner to cover the entire width */
+  height: 100%; /* Stretches the spinner to cover the entire height */
+  z-index: 9999; /* Sets a high z-index to ensure it's above other elements */
+  background-color: rgba(0, 0, 0, 0.3); /* Optional: Add a semi-transparent background */
+  display: flex; /* Centers the spinner horizontally and vertically */
+  justify-content: center;
+  align-items: center;
+}
+
+
+.top-section {
+  /*background-color: #BBC6C8;*/
+  background: white;
+  border-radius: .9rem;
+  padding: 1rem;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.left-mid-section {
+  /*max-width: 60%;*/
+  gap: 10px;
+  margin: 1rem;
+  grid-row-start: 2;
+  grid-column: 1/2;
+  box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: .9rem;
+  padding: 1rem;
+}
+
+.right-mid-section {
+  flex-grow: 1;
+  box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: .9rem;
+  padding: 1rem;
+  margin: 1rem;
+  /*max-width: 1050px;*/
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-left {
+  box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: .9rem;
+  padding: 1rem;
+  /*grid-row-start: 3;*/
+  /*grid-column: 1/1.5;*/
+  margin: 1rem;
+  min-width: 300px;
+
+}
+.row p {
+  align-content: space-between;
+}
+
+.chart {
+  text-align: center;
+  width: 100%;
+}
+
+.username {
+  font-weight: lighter;
+  padding-left: 10px;
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.user-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: row;
+  /* Add other styles for your user icon */
+}
+
+
+
+
+.item-table {
+  height: fit-content;
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.actions{
+  /*align-items: center;*/
+  justify-content: space-evenly;
+  display: flex;
+
+}
+.fa-edit{
+  font-size: x-large;
+  cursor: pointer;
+
+}
+.item-check{
+  color: green;
+  font-size: x-large;
+  cursor: pointer;
+}
+.actions i:hover{
+  transition: ease-in-out 0.1s 0.3s;
+  font-size: xx-large;
+
+}
+.actions input:hover{
+  transition: ease-in-out 0.1s 0.3s;
+  font-size: xx-large;
+
+}
+.actions input{
+  transform: scale(1.5);
+}
+
+.item-table th,
+.item-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.item-table th {
+  /*background-color: blue;*/
+}
+
+.item-table tbody tr:nth-child(even) {
+  background-color: white;
+}
+
+.item-table tbody tr:hover {
+  transition: ease-out 0.4s;
+  background-color: lightgray;
+}
+.item-table{
+  box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: .9rem;
+
+}
+
+.search-label {
+  color: gray;
+  /*background-color: #BBC6C8;*/
+  flex: 2;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  border-radius: .7rem;
+  background-color: #eeeeee;
+  border: none;
+  height: 30px;
+  flex: 1;
+  padding-left: 2rem;
+  outline: none;
+}
+.action-btn{
+  border-radius: .3rem;
+  cursor: pointer;
+  min-width: 14rem;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: large;
+  letter-spacing: .2rem;
+  margin: 1rem;
+  /*margin-left: 40%;*/
+  padding: .6rem;
+  background-color: #002B5B;
+}
+.action-btn-secondary{
+  border-radius: .3rem;
+  cursor: pointer;
+  min-width: 14rem;
+  color: black;
+  font-weight: bold;
+  font-size: large;
+  letter-spacing: .2rem;
+  margin: 1rem;
+  padding: .6rem;
+  border: 1px solid #ddd;
+}
+
+.cancel-btn{
+  border-radius: .3rem;
+  cursor: pointer;
+  min-width: 14rem;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: large;
+  letter-spacing: .2rem;
+  margin: 1rem;
+  /*margin-left: 40%;*/
+  padding: .6rem;
+  background-color: #EA5455;
+
+
+}
+
+
+.cancel-btn:hover{
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+
+}
+html, body {
+  height: 100%;
+}
+
+body {
+
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

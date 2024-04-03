@@ -1,0 +1,54 @@
+.toast {
+  position: fixed; /* Keep it positioned above other content */
+  top: 10px; /* Adjust the top position as needed */
+  right: 10px;  /* Adjust the right position as needed */
+  padding: 10px 20px;
+  width: 30px;
+  border-radius: 5px;  /* Rounded corners */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+  z-index: 9999; /* Ensure it stays on top of other elements */
+  display: flex; /* Allow horizontal alignment of message and button */
+  align-items: center; /* Vertically center content within the toast */
+  animation: toast-in 0.3s ease-in-out forwards; /* Animation for toast entry */
+  opacity: 1; /* Initial opacity */
+}
+
+.toast-info {
+  background-color: #d7effa; /* Light blue for info toasts */
+  color: #3c4858; /* Darker text for better contrast */
+}
+
+.toast-success {
+  background-color: #dff0d8; /* Light green for success toasts */
+  color: #3c763d; /* Darker text for better contrast */
+}
+
+.toast-error {
+  background-color: #f2dede; /* Light red for error toasts */
+  color: #a94442; /* Darker text for better contrast */
+}
+
+.toast-message {
+  flex: 1; /* Allow message to grow within available space */
+  margin-right: 10px; /* Spacing between message and button */
+}
+
+.toast-close {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px; /* Adjust close button size as needed */
+  color: inherit; /* Inherit color from toast background */
+}
+
+/* Animation for toast entry (optional) */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

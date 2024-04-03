@@ -1,0 +1,4 @@
+<ng-container *ngIf="showSideBar">
+  <app-side-bar (onToggleSideNav)="onToggleSideNav($event)"></app-side-bar>
+</ng-container>
+<app-body [collapsed]="isSideNavCollapsed" [screenWidth]="screenWidth"></app-body>

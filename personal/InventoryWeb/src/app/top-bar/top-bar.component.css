@@ -1,0 +1,27 @@
+.top-bar-main{
+  display: flex;
+  color: black;
+  margin-top: -60px;
+  height: 2rem;
+  position: sticky;
+  justify-content: flex-end;
+  width: 100%;
+  z-index: 1;
+}
+.user-section{
+  padding: .4rem;
+background-color: white;
+  border-radius: 7px;
+}
+.person-icon{
+  font-size: xx-large;
+
+  cursor: pointer;
+}
+.person-icon:hover{
+}
+
+/* Your existing styles */
+
+
+

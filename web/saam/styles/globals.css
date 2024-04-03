@@ -1,0 +1,287 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+.logo{
+  padding-left: 4rem;
+  opacity: .7;
+  height: 4rem;
+  width: 14rem;
+  margin-top: -1rem;
+}
+.heading{
+  font-size: xxx-large;
+  color: whitesmoke;
+  letter-spacing: .8rem;
+  font-weight: lighter;
+  text-align: center;
+}
+.info{
+
+}
+
+.card {
+  border-color: black;
+  backdrop-filter: blur(6px);
+/*background-color: */
+  background-image: linear-gradient(to top, rgba(58, 58, 58, 0.09), rgba(168, 168, 168, 0.17), rgba(196, 196, 196, 0.11), rgba(225, 225, 225, 0.12));  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25rem;
+  height: 10rem;
+  width: 25%;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.nav{
+  /*background-color: darkseagreen;*/
+  max-height: 7.5rem;
+  padding-top: 5rem;
+  /*background-color: blue;*/
+  display: flex;
+  width: 100%;
+}
+.nav-items{
+  /*background-color: blue;*/
+  max-height: fit-content;
+  justify-content: flex-end;
+  width: 100%;
+  display: flex;
+  margin-right: 10%;
+  list-style: none;
+
+  /*justify-content: space-evenly;*/
+
+}
+.nav-link{
+  /*background-color: red;*/
+  /*max-height: fit-content;*/
+  font-size: larger;
+  position: relative;
+  cursor: pointer;
+  letter-spacing: .2rem;
+  color: #9f9b95;
+  font-weight: 300;
+  margin-left: 5rem;
+  font-family: 'Fjalla One', sans-serif;
+
+}
+
+
+.nav-link:hover::after {
+  width: 100%; /* Make the line expand to 100% on hover */
+}
+
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px; /* Adjust the thickness of the line as needed */
+  background-color: #0074d9; /* Adjust the line color as needed */
+  left: 0;
+  bottom: -2px; /* Push the line just below the text */
+  transition: width 0.3s ease; /* Add a smooth transition effect */
+}
+
+
+
+/**
+main btn
+ */
+
+.main-btn{
+  padding: 1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+
+}
+
+.main-btn:hover{
+  font-size: 19.5px;
+}
+
+.main-btn::after {
+  content: "";
+  position: absolute;
+
+  transition: width 0.36s ease; /* Add a smooth transition effect */
+}
+
+.first-page{
+  display: flex;
+  margin-top: 2rem;
+  backdrop-filter: blur(6px);
+  flex-wrap: wrap;
+  flex-direction: column;
+
+
+
+}
+
+.cards-container{
+  align-self: flex-end;
+  display: flex;
+  justify-content: space-between;
+  /*margin: 0 auto;*/
+  margin-right: 2rem;
+
+  max-width: 65%;
+}
+.cards{
+  width: 20rem;
+  margin: 2rem;
+  height: 25rem;
+  background-color: lightgray;
+}
+
+.main {
+  /*position: relative;*/
+  /*min-width: 100px;*/
+
+  padding: 0 20px;
+  margin: 0 auto;
+  height: 260px;
+  /*background-color: whitesmoke;*/
+}
+
+.transitionsItem {
+  font-weight: lighter;
+  overflow: hidden;
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  justify-self: flex-start;
+  font-size: 4em;
+  text-transform: uppercase;
+  will-change: transform, opacity, height;
+  white-space: nowrap;
+  cursor: pointer;
+  line-height: 80px;
+}
+
+.container {
+  /*width: 100%;*/
+  margin-top: -3rem;
+  margin-left: 2rem;
+  display: flex;
+  max-width: fit-content;
+  /*flex-direction: row;*/
+}
+
+
+.description{
+  /*align-self: center;*/
+  font-size: larger;
+  font-weight: lighter;
+  letter-spacing: .2rem;
+  /*padding: 0 20px;*/
+  margin: 0 auto;
+  margin-right: 2rem;
+
+  max-width: 65%;
+}
+.page3{
+  height: 100vh;
+  background-color: red;
+}
+
+
+
+
+/* Media query for mobile devices with a maximum width of 768px */
+@media (max-width: 768px) {
+  /* Your CSS styles for mobile devices go here */
+  /* Example: */
+  body {
+    font-size: 16px; /* Adjust font size for better mobile readability */
+  }
+  .first-page{
+    display: flex;
+    margin-top: 2rem;
+    backdrop-filter: blur(6px);
+    justify-content: flex-end; /* Align child to the right */
+    align-items: flex-start;
+    min-height: 2000px;
+    /*flex-direction: row;*/
+
+  }
+  .container {
+    /*width: 100%;*/
+    /*margin-top: 0rem;*/
+    /*margin-left: 2rem;*/
+    display: flex;
+    max-width: fit-content;
+    background-color: #0074d9;
+
+    /*background-color: red;*/
+    /*flex-direction: row;*/
+  }
+  .main {
+    margin: 0 auto;
+    height: 260px;
+  }
+  .transitionsItem {
+    font-weight: lighter;
+    overflow: hidden;
+    width: 100%;
+    color: white;
+    display: flex;
+    justify-content: flex-start;
+    justify-self: flex-start;
+    font-size: 4em;
+    text-transform: uppercase;
+    will-change: transform, opacity, height;
+    white-space: nowrap;
+    cursor: pointer;
+    line-height: 80px;
+  }
+  .description{
+    margin-left: -50%;
+    /*width: 90%;*/
+    /*background-color: red;*/
+    align-self: center;
+    font-size: larger;
+    font-weight: lighter;
+    letter-spacing: .2rem;
+    /*padding: 0 20px;*/
+    /*margin: 0 auto;*/
+    /*margin-right: 2rem;*/
+    /*margin-left: -2rem;*/
+
+    /*max-width: 65%;*/
+  }
+
+
+}
+
+
+
+
+
+

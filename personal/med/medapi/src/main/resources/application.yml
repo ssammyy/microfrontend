@@ -1,0 +1,21 @@
+server.port: 1011
+
+
+# Database connection settings
+spring.datasource.url: jdbc:mysql://167.99.47.126:3306/Ngumo
+spring.datasource.username: bonnie
+spring.datasource.password: Targeted9@22
+
+
+logging:
+  file:
+    name: ./logs/app.log
+  # JPA settings
+spring.jpa.show-sql: true
+spring.jpa.hibernate.ddl-auto: update
+#spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect

@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "Understanding React",
+    "excerpt": "Dive into the basics of React and learn how it works under the hood.",
+    "imageUrl": "https://images.pexels.com/photos/9373924/pexels-photo-9373924.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+  },
+  {
+    "id": 2,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/8267273/pexels-photo-8267273.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  },
+  {
+    "id": 3,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/4694226/pexels-photo-4694226.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  },
+  {
+    "id": 4,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/8836266/pexels-photo-8836266.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  },
+  {
+    "id": 5,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/13228168/pexels-photo-13228168.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  },
+  {
+    "id": 6,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/11545222/pexels-photo-11545222.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  },
+  {
+    "id": 7,
+    "title": "Next.js for Beginners",
+    "excerpt": "Get started with Next.js, the React framework for production.",
+    "imageUrl": "https://images.pexels.com/photos/8445444/pexels-photo-8445444.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+  }
+]

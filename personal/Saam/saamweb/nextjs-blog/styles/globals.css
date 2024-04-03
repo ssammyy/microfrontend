@@ -1,0 +1,55 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+
+
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+:root {
+  --primary-color: #051937; /* Initial primary color */
+}
+
+
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  background-color: #0070f3;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+}
+.navLogo{
+  /*background-color: red;*/
+  width: 10rem;
+  margin-top: -20rem;
+  margin-bottom: -20rem;
+  /*height: 14rem;*/
+
+}
+
+
+
+
+
+

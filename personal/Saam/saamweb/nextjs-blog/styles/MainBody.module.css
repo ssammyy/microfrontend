@@ -1,0 +1,138 @@
+
+.wrapper {
+    height: 100vh;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    overflow-x: hidden;
+    perspective: 10px;
+}
+
+.header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    transform-style: preserve-3d;
+    z-index: -1;
+}
+
+.landingText {
+    /*display: flex;*/
+    position: relative;
+
+
+}
+
+.background {
+    transform: translateZ(-20px) scale(6);
+}
+
+.foreground {
+    transform: translateZ(-5px) scale(1.5);
+}
+
+.background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1;
+    margin-top: -100rem;
+}
+
+.foreground {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    /*z-index: -1;*/
+}
+
+.title {
+    transform: translateZ(5px) scale(1.5);
+    /*background: #333333;*/
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    align-items: center;
+    height: 100vh;
+    font-size: 7rem;
+    color: white;
+    text-shadow: 0 0 5px black;;
+}
+
+.section {
+    /*height: 100vh;*/
+    max-width: 90%;
+    opacity: .3;
+    border-radius: 5px;
+    /*font-size: 1.5rem;*/
+    padding: 2rem;
+    background: #007789;
+    color: black;
+    letter-spacing: 2px;
+    font-weight: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12rem;
+}
+
+.leftSection {
+    /*background-color: #3498db;*/
+    /*width: 50%;*/
+    padding-top: .1rem;
+    max-width: 50%;
+    opacity: 10;
+    color: white;
+
+}
+.blackOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgb(0, 0, 0, 109)); /* Adjust the opacity value (0.5 in this example) as needed */
+    z-index: -1;
+}
+.blackSection{
+    position: relative;
+    /*background-color: black;*/
+    /*height: 100vh;*/
+    color: white;
+
+    padding: 2rem;
+}
+
+.rightSection {
+margin: .2rem;
+    padding-left: 4rem;
+    font-size: 1rem;
+
+    /*width: 50%;*/
+    align-self: flex-end;
+}
+
+
+@media (max-width: 768px) {
+    .title {
+        transform: translateZ(6px) scale(1.5);
+        display: flex;
+        /*background-color: red;*/
+        position: relative;
+        align-items: center;
+        height: 100vh;
+        font-size: 3rem;
+        /*color: blue;*/
+        text-shadow: 0 0 5px black;;
+    }
+
+    .background {
+        width: 80rem;
+        margin-left: 12rem;
+
+
+    }
+
+}

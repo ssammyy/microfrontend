@@ -1,0 +1,28 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#4caf50" type="ball-atom"> Logging you in...</ngx-spinner>
+
+
+<div class="container">
+  <div class="left-section">
+    <!-- Place your background image here -->
+    <img src="https://img.freepik.com/premium-vector/flat-illustration-design-cybersecurity_9206-2585.jpg?w=1380"
+         alt="Background Image" />
+  </div>
+  <div class="right-section">
+    <h2>Login</h2>
+    <h3><span class="typing-text"></span></h3>
+    <!-- Add your login form here -->
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="username">Username</label>
+
+        <input type="text" id="username" name="username" placeholder="Enter your username" [(ngModel)]="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" [(ngModel)]="password"/>
+      </div>
+      <button class="main-btn" type="submit">Log In</button>
+    </form>
+
+  </div>
+</div>
